@@ -14,7 +14,7 @@ import {
   IconPlugConnected,
   IconRadar2,
   IconShield,
-  IconPumpkin,
+  IconPumpkinScary,
 } from '@tabler/icons-react'
 import { sidebarTitle } from '../components/SidebarLabel'
 
@@ -31,7 +31,7 @@ export default {
   mrnewbpawn: sidebarTitle(IconCoin, 'Pawn'),
   mrnewbphonetracker: sidebarTitle(IconRadar2, 'PhoneTracker'),
   mrnewbplatecarriers: sidebarTitle(IconShield, 'PlateCarriers'),
-  mrnewbspookyseason: sidebarTitle(IconPumpkin, 'SpookySeason'),
+  mrnewbspookyseason: sidebarTitle(IconPumpkinScary, 'SpookySeason'),
   mrnewbvehiclerentals: sidebarTitle(IconCar, 'VehicleRentals'),
   mrnewbweapontints: sidebarTitle(IconPalette, 'WeaponTints'),
   '-- partners': {
