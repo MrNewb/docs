@@ -1,0 +1,22 @@
+# Notifications (client)
+
+Show a notification on the local player. Server scripts use [notify(src, data)](/newb_bridge/modules/notifications/server). Payload type: [OxNotification](/newb_bridge/modules/notifications#oxnotification).
+
+## `notify(data)`
+
+**Signature:** `notify(data: OxNotification): void`
+
+| Param | Type |
+| ----- | ---- |
+| `data` | [OxNotification](/newb_bridge/modules/notifications#oxnotification) |
+
+Each client `notify` also fires `Newb_Bridge:Client:NotifyShown` (used by the pause-menu history).
+
+```lua
+bridge.notifications.notify({
+    title = 'Success',
+    description = 'Item used',
+    type = 'success',
+    duration = 4000,
+})
+```

@@ -1,0 +1,16 @@
+# Inputs
+
+Client-only input dialogs (`ox_lib` or `lation_ui`).
+
+- [Client](/newb_bridge/modules/inputs/client) — `inputdialog` / `closeinput`
+- [Server](/newb_bridge/modules/inputs/server) — not implemented
+
+```lua
+local values = bridge.inputs.inputdialog('Rename hive', {
+    { type = 'input', label = 'Name', placeholder = 'Hive #1', required = true },
+    { type = 'number', label = 'Capacity', default = 10, min = 1, max = 50 },
+})
+
+if not values then return end
+local name, capacity = values[1], values[2]
+```

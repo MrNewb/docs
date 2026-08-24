@@ -1,0 +1,22 @@
+# Boss menu
+
+`Bridge.BossMenu` → `bridge.bossmenu`. Full API: [server](/newb_bridge/modules/bossmenu/server).
+
+Same three arguments. Consumer **clients** do not mount this module (noop table). Open it from the server.
+
+| community_bridge | Newb_Bridge |
+| --- | --- |
+| `OpenBossMenu(src, jobName, jobType)` | `openBossMenu(src, jobName, jobType?)` |
+
+community_bridge also listened for `community_bridge:client:OpenBossMenu`. Newb_Bridge relays with `Newb_Bridge:client:openBossMenu:<suffix>` (`qbx`, `qb`, `esx`, `vms`, `tk`, `okok`, `codem`, `zat`, `m`). You do not trigger those.
+
+```lua
+-- Old
+Bridge.BossMenu.OpenBossMenu(src, 'police', 'job')
+
+-- New
+if not bridge.framework.hasJob(src, 'police', nil, true) then return end
+bridge.bossmenu.openBossMenu(src, 'police', 'job')
+```
+
+`jobType` is provider-specific (`'job'` / `'gang'`). Gate job/duty yourself before opening.

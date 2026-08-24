@@ -1,0 +1,158 @@
+import { Callout, Tabs } from 'nextra/components'
+
+# Item setup
+
+Paste the matching snippet into your items file. Copy PNGs from `[INSTALL]/imgs/` (not `imgs/no outline/`) into:
+
+| Inventory | Image folder |
+| --- | --- |
+| ox_inventory | `ox_inventory/web/images/` |
+| qb-inventory / ps-inventory | `html/images/` |
+| one_inventory | `one_inventory/web/images/` |
+
+OX is ox_inventory (ESX and Qbox that run ox use this tab). QB is `qb-core/shared/items.lua`. Names match `[INSTALL]/ox_inventory_items.txt`. one_inventory only needs the PNG in that folder.
+
+<Callout type="info">
+  Usable items are `beehive`, `queen_bee`, `bee_trap`, `beekeeping_guide`, and `beekeeper_suit`. Use is registered with `bridge.framework.registerItemUse`. Do **not** add `server.export` on ox_inventory items.
+</Callout>
+
+<Tabs items={['OX', 'QB']} storageKey="inventory-items">
+<Tabs.Tab>
+
+Add to `ox_inventory/data/items.lua`:
+
+```lua
+["beehive"] = {
+	label = "Beehive",
+	weight = 2000,
+	stack = false,
+	close = true,
+	description = "A portable beehive. Use to place a hive in the world.",
+},
+["queen_bee"] = {
+	label = "Queen Bee",
+	weight = 10,
+	stack = true,
+	close = true,
+	description = "A queen bee. Use to inspect genetics, or install in a hive to start production.",
+},
+["worker_bees"] = {
+	label = "Worker Bees",
+	weight = 10,
+	stack = true,
+	close = true,
+	description = "Worker bees for your hive. Required for honey and wax production.",
+},
+["bees_wax"] = {
+	label = "Bees Wax",
+	weight = 1,
+	stack = true,
+	close = true,
+	description = "Beeswax harvested from a hive. Can be sold to the beekeeper.",
+},
+["bees_honey"] = {
+	label = "Wild Honey",
+	weight = 1,
+	stack = true,
+	close = true,
+	description = "Default wild honey from hives outside specialty pollen regions.",
+},
+["blue_honey"] = {
+	label = "Blue Blossom Honey",
+	weight = 1,
+	stack = true,
+	close = true,
+	description = "Coastal blue-region honey with a light floral finish.",
+},
+["green_honey"] = {
+	label = "Forest Bloom Honey",
+	weight = 1,
+	stack = true,
+	close = true,
+	description = "Forest-region honey with deep woodland notes.",
+},
+["red_honey"] = {
+	label = "Desert Flame Honey",
+	weight = 1,
+	stack = true,
+	close = true,
+	description = "Desert-region honey with a rich, warm profile.",
+},
+["amber_honey"] = {
+	label = "Amber Dune Honey",
+	weight = 1,
+	stack = true,
+	close = true,
+	description = "Amber dune-region honey with a golden sweetness.",
+},
+["lavender_honey"] = {
+	label = "Lavender Ridge Honey",
+	weight = 1,
+	stack = true,
+	close = true,
+	description = "Lavender ridge-region honey with a soft floral aroma.",
+},
+["citrus_honey"] = {
+	label = "Coastal Citrus Honey",
+	weight = 1,
+	stack = true,
+	close = true,
+	description = "Coastal citrus-region honey with bright, zesty notes.",
+},
+["wildflower_honey"] = {
+	label = "Wildflower Meadow Honey",
+	weight = 1,
+	stack = true,
+	close = true,
+	description = "Wildflower meadow-region honey with mixed floral tones.",
+},
+["bee_trap"] = {
+	label = "Bee Trap",
+	weight = 500,
+	stack = true,
+	close = true,
+	description = "Use near a wild bee swarm to catch worker bees. May rarely catch a queen.",
+},
+["beekeeping_guide"] = {
+	label = "Beekeeper's Strain Guide",
+	weight = 250,
+	stack = false,
+	close = true,
+	description = "A field guide to queen strains and regional honey production. Use to read.",
+},
+["beekeeper_suit"] = {
+	label = "Beekeeper Suit",
+	weight = 1500,
+	stack = false,
+	close = true,
+	description = "A full veil and coveralls. Use to put it on or take it off. Wild bees cannot sting you while it is on.",
+},
+```
+
+</Tabs.Tab>
+<Tabs.Tab>
+
+Add to your QBCore shared items (`qb-core/shared/items.lua`):
+
+```lua
+['beehive'] = { name = 'beehive', label = 'Beehive', weight = 2000, type = 'item', image = 'beehive.png', unique = true, useable = true, shouldClose = true, combinable = nil, description = 'A portable beehive. Use to place a hive in the world.' },
+['queen_bee'] = { name = 'queen_bee', label = 'Queen Bee', weight = 10, type = 'item', image = 'queen_bee.png', unique = false, useable = true, shouldClose = true, combinable = nil, description = 'A queen bee. Use to inspect genetics, or install in a hive to start production.' },
+['worker_bees'] = { name = 'worker_bees', label = 'Worker Bees', weight = 10, type = 'item', image = 'worker_bees.png', unique = false, useable = false, shouldClose = true, combinable = nil, description = 'Worker bees for your hive. Required for honey and wax production.' },
+['bees_wax'] = { name = 'bees_wax', label = 'Bees Wax', weight = 1, type = 'item', image = 'bees_wax.png', unique = false, useable = false, shouldClose = true, combinable = nil, description = 'Beeswax harvested from a hive. Can be sold to the beekeeper.' },
+['bees_honey'] = { name = 'bees_honey', label = 'Wild Honey', weight = 1, type = 'item', image = 'bees_honey.png', unique = false, useable = false, shouldClose = true, combinable = nil, description = 'Default wild honey from hives outside specialty pollen regions.' },
+['blue_honey'] = { name = 'blue_honey', label = 'Blue Blossom Honey', weight = 1, type = 'item', image = 'blue_honey.png', unique = false, useable = false, shouldClose = true, combinable = nil, description = 'Coastal blue-region honey with a light floral finish.' },
+['green_honey'] = { name = 'green_honey', label = 'Forest Bloom Honey', weight = 1, type = 'item', image = 'green_honey.png', unique = false, useable = false, shouldClose = true, combinable = nil, description = 'Forest-region honey with deep woodland notes.' },
+['red_honey'] = { name = 'red_honey', label = 'Desert Flame Honey', weight = 1, type = 'item', image = 'red_honey.png', unique = false, useable = false, shouldClose = true, combinable = nil, description = 'Desert-region honey with a rich, warm profile.' },
+['amber_honey'] = { name = 'amber_honey', label = 'Amber Dune Honey', weight = 1, type = 'item', image = 'amber_honey.png', unique = false, useable = false, shouldClose = true, combinable = nil, description = 'Amber dune-region honey with a golden sweetness.' },
+['lavender_honey'] = { name = 'lavender_honey', label = 'Lavender Ridge Honey', weight = 1, type = 'item', image = 'lavender_honey.png', unique = false, useable = false, shouldClose = true, combinable = nil, description = 'Lavender ridge-region honey with a soft floral aroma.' },
+['citrus_honey'] = { name = 'citrus_honey', label = 'Coastal Citrus Honey', weight = 1, type = 'item', image = 'citrus_honey.png', unique = false, useable = false, shouldClose = true, combinable = nil, description = 'Coastal citrus-region honey with bright, zesty notes.' },
+['wildflower_honey'] = { name = 'wildflower_honey', label = 'Wildflower Meadow Honey', weight = 1, type = 'item', image = 'wildflower_honey.png', unique = false, useable = false, shouldClose = true, combinable = nil, description = 'Wildflower meadow-region honey with mixed floral tones.' },
+['bee_trap'] = { name = 'bee_trap', label = 'Bee Trap', weight = 500, type = 'item', image = 'bee_trap.png', unique = false, useable = true, shouldClose = true, combinable = nil, description = 'Use near a wild bee swarm to catch worker bees. May rarely catch a queen.' },
+['beekeeping_guide'] = { name = 'beekeeping_guide', label = "Beekeeper's Strain Guide", weight = 250, type = 'item', image = 'beekeeping_guide.png', unique = true, useable = true, shouldClose = true, combinable = nil, description = 'A field guide to queen strains and regional honey production. Use to read.' },
+['beekeeper_suit'] = { name = 'beekeeper_suit', label = 'Beekeeper Suit', weight = 1500, type = 'item', image = 'beekeeper_suit.png', unique = true, useable = true, shouldClose = true, combinable = nil, description = 'A full veil and coveralls. Use to put it on or take it off. Wild bees cannot sting you while it is on.' },
+```
+
+</Tabs.Tab>
+</Tabs>
+
+Item names must match config. Defaults: `Config.BeeTrap.ItemName` = `bee_trap`, `Config.BeekeeperSuit.ItemName` = `beekeeper_suit`, `Config.BeeGenetics.StrainGuideItem` = `beekeeping_guide`, `Config.HoneyTypes` items listed above.

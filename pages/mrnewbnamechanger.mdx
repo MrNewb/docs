@@ -1,0 +1,87 @@
+# MrNewbNameChanger
+
+Vouchers, marriage certificates, and an optional records clerk. Name updates live, no relog. Built on [Newb_Bridge](/newb_bridge/getting-started).
+
+[GitHub](https://github.com/MrNewb/MrNewbNameChanger) · [Installation](/mrnewbnamechanger/install) · [Item setup](/mrnewbnamechanger/install/inventory) · [Exports](/mrnewbnamechanger/exports)
+
+<img src="/docs/images/namechangevoucher.png" alt="Name change voucher" style={{ maxWidth: "8rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/blankmarriagecertificate.png" alt="Blank marriage certificate" style={{ maxWidth: "8rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/filledcertificate.png" alt="Filled certificate" style={{ maxWidth: "8rem" }} loading="lazy" decoding="async" />
+
+## Features
+
+- `namechangevoucher`: personal name change
+- Blank marriage certificate: officiant fills it, recipient uses the signed copy
+- Optional job gate for officiants (`Config.Marriage`)
+- Optional paid records clerk (`Config.RecordsClerk`)
+- Name filter: letters only, max length, blocked words
+- Certificate NUI for both filing and viewing
+
+## Requirements
+
+- [Newb_Bridge](/newb_bridge)
+- ox_lib
+- oxmysql
+- Compatible inventory (ox_inventory recommended)
+- ESX, QBCore, or Qbox for the name write (`OpenUpdatePlayerName`)
+- Target via the bridge when `Config.RecordsClerk.Enabled` (ships `false`)
+
+No SQL to import. QB/Qbox save `charinfo` through the framework. ESX updates `users.firstname` / `users.lastname` in place. The write compares `bridge.framework.getResourceName()` to `qb-core`, `qbx_core`, or `es_extended`, not `bridge.frameworks`.
+
+## Config files
+
+`configs/config.lua`:
+
+| Key | Default | Purpose |
+| --- | --- | --- |
+| `Config.Debug` | `false` | Reloads clerk points on resource start. Leave off live. |
+| `Config.Items.NameChangeVoucher` | `'namechangevoucher'` | Personal voucher item |
+| `Config.Items.MarriageCertificate` | `'blankmarriagecertificate'` | Blank certificate the officiant uses |
+| `Config.Items.FilledCertificate` | `'filledcertificate'` | Signed certificate the recipient uses |
+| `Config.NameFilter.MaxLength` | `32` | Max length per first or last name |
+| `Config.NameFilter.BadWords` | `'fart'`, `'bitch'`, `'fuck'` | Case-insensitive substring rejects |
+| `Config.Marriage.RequireJob` | `false` | When `true`, filling a blank certificate needs an allowed job |
+| `Config.Marriage.AllowedJobs` | `'police'`, `'judge'`, `'pastor'` | Jobs that may fill a blank certificate |
+| `Config.RecordsClerk.Enabled` | `false` | Spawn clerk NPCs. Set `true` to turn them on. |
+| `Config.RecordsClerk.Price` | `10000` | Charge for a clerk name change |
+| `Config.RecordsClerk.Account` | `'cash'` | `'cash'` or `'bank'` |
+| `Config.RecordsClerk.Cooldown` | `86400` | Seconds per character (in memory, cleared on resource restart) |
+| `Config.RecordsClerk.Locations` | `CityHall` | Clerk points. Each entry needs `Coords` (`vector4`). Shipped model is `ig_priest`. Optional: `Model` (fallback `s_m_m_judge_01`), `Label` (target option text; omit to use the locale), `Scenario` (default `WORLD_HUMAN_CLIPBOARD`), `SpawnRadius` (default `50.0`), `InteractDistance` (default `2.5`), `Icon` (default `fa-solid fa-id-card`). |
+
+Names are letters only (`A-Z`). No spaces, hyphens, or apostrophes.
+
+```lua
+bridge.inventory.addItem(src, 'namechangevoucher', 1)
+```
+
+Item use registers at start. Don't add `server.export` or double-register the voucher. Leave `consume` off the item defs.
+
+## Open hook
+
+Override `OpenUpdatePlayerName(src, firstName, lastName)` in `resource/open/server/update.lua` for custom identity stacks. Return `true` when the live name actually updated.
+
+The shipped function reads **`bridge.framework.getResourceName()`** (the `framework` module, not `bridge.frameworks`) and branches on those slugs:
+
+```lua
+local framework = bridge.framework.getResourceName() -- 'qb-core' | 'qbx_core' | 'es_extended'
+```
+
+| Slug | Write |
+| --- | --- |
+| `qb-core` / `qbx_core` | `charinfo.firstname` / `lastname`, then `Save` + `UpdatePlayerData` |
+| `es_extended` | `xPlayer.setName` / `set('firstName'|'lastName')`, then `users.firstname` / `users.lastname` |
+| anything else | `return false` |
+
+If the write returns `false`, vouchers and marriage certificates keep the item (no notify). The clerk refunds `Price`.
+
+## Exports
+
+Server-only. Use this from other resources when you need a scripted name change (admin menu, character creator fix-up, etc.) without consuming a voucher.
+
+```lua
+local ok = exports.MrNewbNameChanger:ChangePlayerName(src, 'Jane', 'Doe')
+```
+
+Same filter as items and the clerk. No item consumed, no clerk cooldown. On success it fires `MrNewbNameChanger:Server:NameChanged`.
+
+Full signatures: [Server exports](/mrnewbnamechanger/exports/server-exports) · [Server events](/mrnewbnamechanger/exports/server-events).

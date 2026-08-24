@@ -1,0 +1,379 @@
+# Framework (server)
+
+Authoritative player APIs. Local status and display money live on [client](/newb_bridge/modules/framework/client). Shared types: [Framework](/newb_bridge/modules/framework).
+
+## `getIdentifier(src)`
+
+**Signature:** `getIdentifier(src: number | string): string?`
+
+| Param | Type |
+| ----- | ---- |
+| `src` | `number` \| `string` |
+
+| **Returns** | `string?` |
+
+```lua
+local id = bridge.framework.getIdentifier(source)
+```
+
+## `getSrcFromIdentifier(identifier)`
+
+**Signature:** `getSrcFromIdentifier(identifier: string): number?`
+
+| Param | Type |
+| ----- | ---- |
+| `identifier` | `string` |
+
+| **Returns** | `number?` |
+
+```lua
+local src = bridge.framework.getSrcFromIdentifier('ABC12345')
+```
+
+## `getCharacterName(identifier)`
+
+**Signature:** `getCharacterName(identifier: string): string?, string?, string?`
+
+| Param | Type |
+| ----- | ---- |
+| `identifier` | `string` | Character id (`citizenid` / ESX identifier), **not** a player source |
+
+| **Returns** | `string?`, `string?`, `string?` — full, first, last |
+
+```lua
+local full = bridge.framework.getCharacterName(identifier)
+```
+
+## `getPlayer(src)` / `getGroups(src)` / `hasGroup(src, group, grade?, duty?)`
+
+Cached bridge-player snapshot (job + gang). Populated on load; cleared on unload.
+
+| Method | Signature | Returns |
+| ------ | --------- | ------- |
+| `getPlayer` | `(src: number \| string)` | [BridgePlayer](/newb_bridge/modules/framework#bridgeplayer)? |
+| `getGroups` | `(src: number \| string)` | `table<string, number>?` |
+| `hasGroup` | `(src: number \| string, group: string, grade?: number, duty?: boolean)` | `boolean` |
+| `getSourceByCharId` | `(charId: string)` | `number?` |
+
+```lua
+local player = bridge.framework.getPlayer(source)
+if player and player:hasGroup('police', 2, true) then end
+
+if bridge.framework.hasGroup(source, 'ballas') then end
+local src = bridge.framework.getSourceByCharId(charId)
+```
+
+## `getPlayerBucket(src)` / `setPlayerBucket(src, bucketId)`
+
+**Signatures:** `getPlayerBucket(src): number` · `setPlayerBucket(src, bucketId): boolean`
+
+Routing bucket via ox_lib `Player:setRoutingBucket`. `setPlayerBucket` replicates `bucket` to the client.
+
+```lua
+bridge.framework.setPlayerBucket(source, 2)
+print(bridge.framework.getPlayerBucket(source))
+```
+
+## `getPlayerMetadata(src, key)` / `setPlayerMetadata(src, key, value)`
+
+**Signatures:** `getPlayerMetadata(src, key): any` · `setPlayerMetadata(src, key, value): void`
+
+`setPlayerMetadata` is a one-key wrapper around `setMetadata` (`type = 'set'`).
+
+```lua
+local hunger = bridge.framework.getPlayerMetadata(source, 'hunger')
+bridge.framework.setPlayerMetadata(source, 'hunger', 100)
+```
+
+## `getFrameworkJobs()`
+
+**Signature:** `getFrameworkJobs(): table`
+
+| **Returns** | `table` |
+
+```lua
+local jobs = bridge.framework.getFrameworkJobs()
+```
+
+## `setPlayerDuty(src, onDuty)`
+
+**Signature:** `setPlayerDuty(src: number | string, onDuty: boolean): boolean`
+
+| Param | Type |
+| ----- | ---- |
+| `src` | `number` \| `string` |
+| `onDuty` | `boolean` |
+
+| **Returns** | `boolean` |
+
+```lua
+bridge.framework.setPlayerDuty(source, true)
+```
+
+## `setPlayerJob(src, name, grade)`
+
+**Signature:** `setPlayerJob(src: number | string, name: string, grade: number | string): boolean`
+
+| Param | Type |
+| ----- | ---- |
+| `src` | `number` \| `string` |
+| `name` | `string` |
+| `grade` | `number` \| `string` |
+
+| **Returns** | `boolean` |
+
+```lua
+bridge.framework.setPlayerJob(source, 'police', 0)
+```
+
+## `getPlayersByJob(jobName)`
+
+**Signature:** `getPlayersByJob(jobName: string): number[]`
+
+| Param | Type |
+| ----- | ---- |
+| `jobName` | `string` |
+
+| **Returns** | `number[]` — server ids |
+
+```lua
+local cops = bridge.framework.getPlayersByJob('police')
+```
+
+## `addHunger(src, value)` / `addThirst(src, value)`
+
+**Signature:** `addHunger(src: number | string, value: number): number?` / `addThirst(src: number | string, value: number): number?`
+
+| Param | Type |
+| ----- | ---- |
+| `src` | `number` \| `string` |
+| `value` | `number` |
+
+| **Returns** | `number?` (clamped 0–100) |
+
+```lua
+bridge.framework.addHunger(source, 10)
+bridge.framework.addThirst(source, -5)
+```
+
+## `getOwnedVehicles(src)`
+
+**Signature:** `getOwnedVehicles(src: number | string): OwnedVehicle[]`
+
+| Param | Type |
+| ----- | ---- |
+| `src` | `number` \| `string` |
+
+| **Returns** | [OwnedVehicle](/newb_bridge/modules/framework#ownedvehicle)[] |
+
+```lua
+local vehicles = bridge.framework.getOwnedVehicles(source)
+```
+
+## `registerCommand(commandName, helpText, params?, restrictedGroup?, callback)`
+
+**Signature:** `registerCommand(commandName: string, helpText: string, params?: table[], restrictedGroup?: string, callback: fun(src: number, args: table, rawCommand: string)): void`
+
+| Param | Type | Description |
+| ----- | ---- | ----------- |
+| `commandName` | `string` | Command name |
+| `helpText` | `string` | Help text |
+| `params` | `table[]?` | ox_lib command params |
+| `restrictedGroup` | `string?` | ACE group restriction |
+| `callback` | `fun(src: number, args: table, rawCommand: string)` | Command handler |
+
+```lua
+bridge.framework.registerCommand('givewater', 'Give water', nil, 'admin', function(src)
+    bridge.inventory.addItem(src, 'water', 1)
+end)
+```
+
+## `isAdmin(src)`
+
+**Signature:** `isAdmin(src: number | string): boolean`
+
+| Param | Type |
+| ----- | ---- |
+| `src` | `number` \| `string` |
+
+| **Returns** | `boolean` |
+
+```lua
+if not bridge.framework.isAdmin(source) then return end
+```
+
+## `setMetadata(src, payload)`
+
+**Signature:** `setMetadata(src: number | string, payload: MetadataPayload): void`
+
+| Param | Type | Description |
+| ----- | ---- | ----------- |
+| `src` | `number` \| `string` | Player source |
+| `payload` | [MetadataPayload](/newb_bridge/modules/framework#metadatapayload) | Metadata operations |
+
+```lua
+bridge.framework.setMetadata(source, {
+    stress = { type = 'add', value = 5 },
+})
+```
+
+## `addMoney(src, moneyType, moneyAmount, reason?)`
+
+**Signature:** `addMoney(src: number | string, moneyType: MoneyType, moneyAmount: number, reason?: string): boolean`
+
+| Param | Type |
+| ----- | ---- |
+| `src` | `number` \| `string` |
+| `moneyType` | [MoneyType](/newb_bridge/modules/framework#moneytype) |
+| `moneyAmount` | `number` |
+| `reason` | `string?` |
+
+| **Returns** | `boolean` |
+
+```lua
+bridge.framework.addMoney(source, 'bank', 500, 'paycheck')
+```
+
+## `removeMoney(src, moneyType, moneyAmount, reason?)`
+
+**Signature:** `removeMoney(src: number | string, moneyType: MoneyType, moneyAmount: number, reason?: string): boolean`
+
+| Param | Type |
+| ----- | ---- |
+| `src` | `number` \| `string` |
+| `moneyType` | [MoneyType](/newb_bridge/modules/framework#moneytype) |
+| `moneyAmount` | `number` |
+| `reason` | `string?` |
+
+| **Returns** | `boolean` |
+
+```lua
+bridge.framework.removeMoney(source, 'cash', 100, 'shop-purchase')
+```
+
+## `getMoney(src, moneyType)`
+
+**Signature:** `getMoney(src: number | string, moneyType: MoneyType): number`
+
+| Param | Type |
+| ----- | ---- |
+| `src` | `number` \| `string` |
+| `moneyType` | [MoneyType](/newb_bridge/modules/framework#moneytype) |
+
+| **Returns** | `number` |
+
+```lua
+local bank = bridge.framework.getMoney(source, 'bank')
+```
+
+## `hasJob(src, job, grade?, duty?)`
+
+**Signature:** `hasJob(src: number | string, job: string, grade?: number, duty?: boolean): boolean`
+
+| Param | Type |
+| ----- | ---- |
+| `src` | `number` \| `string` |
+| `job` | `string` |
+| `grade` | `number?` |
+| `duty` | `boolean?` |
+
+| **Returns** | `boolean` |
+
+```lua
+if bridge.framework.hasJob(source, 'ambulance', nil, true) then end
+```
+
+## `getPlayerJobData(src)`
+
+**Signature:** `getPlayerJobData(src: number | string): PlayerJobData?`
+
+| Param | Type |
+| ----- | ---- |
+| `src` | `number` \| `string` |
+
+| **Returns** | [PlayerJobData](/newb_bridge/modules/framework#playerjobdata)? |
+
+```lua
+local job = bridge.framework.getPlayerJobData(source)
+```
+
+## `getDutyCountJob(jobName)` / `getOnlineCountJob(jobName)` / `getJobCounts(jobName)`
+
+| Method | Returns |
+| ------ | ------- |
+| `getDutyCountJob(jobName)` | `number` — players on duty |
+| `getOnlineCountJob(jobName)` | `number` — players online with the job |
+| `getJobCounts(jobName)` | `{ count: number, onDuty: number }` |
+
+The host writes `GlobalState.newbsJobCounts`. Consumer copies of the framework module read that snapshot for counts (their local duty cache is never fed).
+
+```lua
+local count = bridge.framework.getDutyCountJob('police')
+local online = bridge.framework.getOnlineCountJob('police')
+local snapshot = bridge.framework.getJobCounts('police')
+print(snapshot.count, snapshot.onDuty)
+```
+
+## `getPlayersOnDuty(jobName)` / `getPlayersWithJob(jobName)`
+
+**Signature:** `getPlayersOnDuty(jobName: string): table<number, true>` / `getPlayersWithJob(jobName: string): table<number, true>`
+
+| Param | Type |
+| ----- | ---- |
+| `jobName` | `string` |
+
+| Method | Returns |
+| ------ | ------- |
+| `getPlayersOnDuty` | `table<number, true>` — on duty |
+| `getPlayersWithJob` | `table<number, true>` — online with the job (on or off duty) |
+
+`getPlayersByJob` is the same set as `getPlayersWithJob`, returned as a sorted array.
+
+```lua
+for src in pairs(bridge.framework.getPlayersOnDuty('police')) do end
+for src in pairs(bridge.framework.getPlayersWithJob('police')) do end
+```
+
+## `registerItemUse(itemName, cb)`
+
+**Signature:** `registerItemUse(itemName: string, cb: fun(src: number, item: ItemUseItem)): void`
+
+| Param | Type | Description |
+| ----- | ---- | ----------- |
+| `itemName` | `string` | Item name |
+| `cb` | `fun(src: number, item: ItemUseItem)` | Use callback |
+
+```lua
+bridge.framework.registerItemUse('bandage', function(src, item)
+    bridge.inventory.removeItem(src, item.name, 1, nil, item.slot)
+    bridge.notifications.notify(src, { description = 'You feel better', type = 'success' })
+end)
+```
+
+Register usable items **only** here — including when the inventory is ox_inventory. Do not add `server.export` on the item, `exports.ox_inventory:registerHook('usingItem')`, or a client `exports('itemName')` use callback. Omit `consume` on ox item defs that should stay in inventory (`consume = 0` is truthy and skips the framework use path).
+
+The callback receives `{ name, label, metadata, slot, count }` (`metadata` is copied from `info` when needed). Hardcode any client event string inside the callback. Re-register on `onResourceStart` if the consumer can restart without a full reboot.
+
+## `getPlayers()`
+
+**Signature:** `getPlayers(): number[]`
+
+| **Returns** | `number[]` — connected player server ids |
+
+```lua
+for _, src in ipairs(bridge.framework.getPlayers()) do end
+```
+
+## `getPlayerDob(src)`
+
+**Signature:** `getPlayerDob(src: number | string): string?`
+
+| Param | Type |
+| ----- | ---- |
+| `src` | `number` \| `string` |
+
+| **Returns** | `string?` |
+
+```lua
+local dob = bridge.framework.getPlayerDob(source)
+```

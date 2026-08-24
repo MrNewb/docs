@@ -1,0 +1,268 @@
+import { YouTubePoster } from '../components/YouTubePoster'
+
+# MrNewbPlateCarriers
+
+Metadata plate carriers, modular armor plates, optional helmets, and repair stations. Built on [Newb_Bridge](/newb_bridge/getting-started).
+
+[Tebex](https://mrnewbscripts.tebex.io/package/6630425) · [Discord](https://discord.gg/mrnewbscripts) · [Installation](/mrnewbplatecarriers/install) · [Exports](/mrnewbplatecarriers/exports) · [Preview](https://www.youtube.com/watch?v=O9fWLQDGZ6A)
+
+<YouTubePoster id="O9fWLQDGZ6A" title="MrNewbPlateCarriers preview" className="resource-video" />
+
+## Requirements
+
+- [Newb_Bridge](/newb_bridge)
+- ox_lib
+- Inventory with per-item metadata (`setMetadata`)
+- ESX, QBCore, or Qbox via the bridge
+
+ox_inventory item defs must **not** include `server.export`. Use is registered with `bridge.framework.registerItemUse`.
+
+`Config.Settings.RequireMetadataInventory` errors on start if the bridge inventory is `esx-framework`, or `auto` with none of the known metadata inventories running.
+
+## Where you edit
+
+`configs/config.lua` — one file.
+
+| Key | Purpose |
+| --- | --- |
+| `Config.Utility.Debug` | Console noise. Leave `false` live |
+| `Config.Utility.RunSelfChecks` | Optional boot checks. Leave `false` live |
+| `Config.Settings.PlayBrokenPlateSound` | `true`. Frontend `lock_break` when equipped armor hits 0 |
+| `Config.Settings.DisableVestClothing` | `false`. Skip component 9 / prop 0 |
+| `Config.Settings.EnableOxExclusiveFeatures` | `false`. ox_inventory drag-insert hook |
+| `Config.Settings.RequireMetadataInventory` | `true`. Boot error on `esx-framework` / empty `auto` |
+| `Config.Settings.ArmorSyncInterval` | `500` ms vest condition sync |
+| `Config.Settings.PlateCooldown` | `1500` ms between plate inserts |
+| `Config.Settings.ActionDistance` | `3.0` station range |
+| `Config.Settings.DiminishingRepairs` | `Enabled` `true`, `Percent` `0.03`, `Minimum` `0.5` |
+| `Config.Settings.Gates` | `InVehicle` / `Swimming` / `Dead` / `Cuffed` (all `true`) |
+| `Config.Settings.Durations` | Equip/Remove `1500`, Insert `2500`, Repair `4000` |
+| `Config.VestItems` | Carrier item names and clothing |
+| `Config.RepairPlates` | Modular plate item names |
+| `Config.BrokenPlateItem` | Item given when a removed plate is at 0 (`broken_armor_plate`) |
+| `Config.RepairMaterialItem` | Field-repair item (`armor_repair_material`) |
+| `Config.RepairMaterialValue` | Condition added per material use (`10`) |
+| `Config.HelmetItems` | Helmet item names and clothing |
+| `Config.Damage.Enabled` | `true`. `false` skips `weaponDamageEvent` (vest still tracks ped armor) |
+| `Config.Damage` | `DefaultMultiplier`, `HeadMultiplier` `1.35`, `LimbMultiplier` `0.7`, `MaxLossPerHit` `100`, `WeaponMultipliers`. Head hits also apply helmet loss |
+| `Config.Stations` | Repair / salvage benches. Shipped empty |
+| `Config.RegisteredKeyMapping` | Default key for `/removevest` (`O`) |
+
+Labels: `locales/en.json`. Restart after config or item changes.
+
+## Item names
+
+Carriers (`Config.VestItems`):
+
+`pegasus_carrier`, `merryweather_carrier`, `fib_carrier`, `noose_carrier`, `armstrong_carrier`.
+
+Plates (`Config.RepairPlates`) — keep these names on upgrade; they are also the modular plate names:
+
+`pegasus_light_repair_plate`, `merryweather_standard_repair_plate`, `fib_tactical_repair_plate`, `noose_heavy_repair_plate`, `armstrong_elite_repair_plate`.
+
+Helmet, broken plate, and repair material — names already in shipped config. Add the inventory defs if you want the features. No PNGs ship for them.
+
+| Item | Config | Notes |
+| --- | --- | --- |
+| `tactical_helmet` | `Config.HelmetItems` | Shipped enabled. Empty `HelmetItems` to disable |
+| `broken_armor_plate` | `Config.BrokenPlateItem` | Given when a removed plate is at 0 |
+| `armor_repair_material` | `Config.RepairMaterialItem` | Field repair and the station default cost |
+
+### Carrier fields
+
+| Field | Purpose |
+| --- | --- |
+| `Strength` | Armor cap is `Strength * 10` |
+| `Condition` | Seed value used only when migrating a carrier that has no `Plates` table |
+| `SlotCount` | Plate slots (shipped `2`) |
+| `PlateType` | Fallback type check if `CompatibleTypes` is missing |
+| `CompatibleTypes` | Plate `Type` values this carrier accepts |
+| `DefaultPlate` | Plate item used to fill slots on first normalize |
+| `Resist` | Multiplier on incoming vest loss (`1.0` = full) |
+| `Clothing` | `{ drawable = { male, female }, texture = { male, female } }` |
+| `Jobs` | Optional `{ jobName = minGrade }`. Omit = anyone |
+
+Shipped compatibility: Pegasus light only; Merryweather light+standard; FIB through tactical; NOOSE through heavy; Armstrong all five types.
+
+### Plate fields
+
+| Field | Purpose |
+| --- | --- |
+| `RepairValue` | Fallback max if `PlateMax` is missing |
+| `PlateMax` | New-plate condition / max |
+| `Type` | Must appear in the carrier’s `CompatibleTypes` |
+| `Material` | Stored on the plate (inspect / salvage flavor) |
+| `Weight` | Added into carrier `PlateWeight` |
+| `Priority` | Damage order (lower first). Ties use slot order |
+
+### Helmet fields
+
+`Strength`, `Condition`, `Resist`, `Clothing`, optional `Jobs`. Max condition is `Strength * 10`. Condition `> 0` disables critical hits (`SetPedSuffersCriticalHits`). Head hits apply helmet loss through `Resist`.
+
+## Clothing component IDs
+
+The clothing table is **drawable / texture per gender**, not the component index. Those IDs are hardcoded:
+
+| Gear | Native | Index |
+| --- | --- | --- |
+| Carrier | `SetPedComponentVariation` | component **9** (body armor) |
+| Helmet | `SetPedPropIndex` | prop **0** (hat) |
+
+Shipped drawables: every carrier `male = 11`, `female = 1`; `tactical_helmet` `male = 39`, `female = 38`. Textures are `0`. Change the drawable numbers to match your clothing pack.
+
+`Config.Settings.DisableVestClothing` skips both vest and helmet appearance. Freemode peds only (`mp_m_freemode_01` / `mp_f_freemode_01`).
+
+## Metadata
+
+`SchemaVersion = 2`. Older items migrate the first time they are handled. You do not need to rewrite every inventory row on install.
+
+On normalize: `SerialNumber` is preserved (or generated). `Strength`, `Clothing`, `SlotCount`, and `PlateCarrier` come from the current config. A missing `Plates` table is filled from legacy `Condition` using `DefaultPlate`. `Condition` becomes the sum of plate conditions (capped at `Strength * 10`). `description` is rewritten.
+
+### Carrier (`NormalizeCarrierMetadata`)
+
+```lua
+{
+    SchemaVersion = 2,
+    PlateCarrier = true,
+    SerialNumber = '...',
+    Strength = 6,
+    SlotCount = 2,
+    Clothing = { drawable = { male = 11, female = 1 }, texture = { male = 0, female = 0 } },
+    Plates = {
+        [1] = {
+            slot = 1,
+            item = 'merryweather_standard_repair_plate',
+            condition = 30,
+            max = 30,
+            max0 = 30,
+            serial = '...',
+            material = 'ceramic',
+            priority = 2,
+        },
+    },
+    PlateWeight = 700,
+    Condition = 30, -- sum of plate conditions
+    description = '...',
+}
+```
+
+### Loose plate (after remove / swap)
+
+`PlateCondition`, `PlateMax`, `PlateMax0`, `PlateSerial`.
+
+### Broken plate
+
+`material`, `originalItem`, `serial`.
+
+### Helmet (`NormalizeHelmetMetadata`)
+
+```lua
+{
+    SchemaVersion = 2,
+    PlateHelmet = true,
+    SerialNumber = '...',
+    Strength = 5,
+    Condition = 50,
+    MaxCondition = 50,
+    Clothing = { drawable = { male = 39, female = 38 }, texture = { male = 0, female = 0 } },
+    description = '...',
+}
+```
+
+Equipped gear is stored on player metadata keys `PlateCarrier` and `PlateHelmet` as `{ name, metadata }`.
+
+## Repair / insert / remove
+
+**Equip** — use a carrier item. Progress `Durations.Equip`. Swapping returns the old carrier to inventory.
+
+**Insert** — use a plate while wearing a compatible carrier → first empty slot. If every slot is filled, **slot 1 is replaced**. Use a plate with no vest equipped → menu of carriers in inventory. With `EnableOxExclusiveFeatures`, dragging a plate onto a carrier in ox_inventory inserts with no progress bar.
+
+**Remove plate** — `/inspectvest` or `OpenPlateCarrierMenu` on the equipped carrier. Condition `> 0` returns the plate item; `0` returns `broken_armor_plate`.
+
+**Field repair** — use `armor_repair_material` while wearing a vest. Repairs the lowest-percent plate by `RepairMaterialValue`. If `DiminishingRepairs.Enabled`, that plate’s `max` drops by `Percent` (`0.03`) down to `max0 * Minimum` (`0.5`).
+
+**Station repair** — equipped vest only. Pays `station.repairCost` (default one `armor_repair_material`) and fills each damaged plate to its diminished max.
+
+**Station salvage** — one `broken_armor_plate` → `salvageYield` of `armor_repair_material` (default 1).
+
+**Unequip** — `/removevest` (key `Config.RegisteredKeyMapping`) or `ForceRemovePlayerVest`. Helmet: `/removehelmet`.
+
+Gates (`InVehicle`, `Swimming`, `Dead`, `Cuffed`) block the progress callback when true.
+
+## Stations
+
+`Config.Stations` ships empty. Uncomment and set your own coords:
+
+```lua
+['mission_row_armory'] = {
+    coords = vector4(452.6, -980.0, 30.7, 90.0),
+    model = `prop_tool_bench02`,
+    jobs = { police = 0 },
+    repairCost = { [Config.RepairMaterialItem] = 1 },
+    salvageYield = 1,
+    radius = 50.0,
+},
+```
+
+| Field | Purpose |
+| --- | --- |
+| `coords` | `vector4` (heading in `w`) |
+| `model` | Bench prop (default `prop_tool_bench02`) |
+| `jobs` | Optional job → min grade. Omit = anyone |
+| `repairCost` | Item → count. Default `{ [RepairMaterialItem] = 1 }` |
+| `salvageYield` | Materials per broken plate (default `1`) |
+| `radius` | Interaction spawn radius (default `50`) |
+
+Must be within `Config.Settings.ActionDistance` (`3.0`). Recipes are validated server-side.
+
+Optional Buckshot_Crafting JSON: `[INSTALL]/crafting/README.md`.
+
+## State bags
+
+Replicated, **read-only** snapshots. Do not write these from another resource.
+
+| Bag | Shape |
+| --- | --- |
+| `plateCarrier` | `{ equipped, name, condition, max, plates }` or `{ equipped = false }` |
+| `plateHelmet` | `{ equipped, name, condition, max }` or `{ equipped = false }` |
+
+`plates[slot]` is `{ item, condition, max, material }` or `false` for an empty slot.
+
+## Exports
+
+Server: `IsPlayerWearingVest`, `ForceRemovePlayerVest`, `IsPlayerWearingHelmet`, `ForceRemovePlayerHelmet`, `GetPlateArmorState`.
+
+Client: `IsPlayerWearingVest`, `GetPlateCarrierState`, `IsPlayerWearingHelmet`, `GetPlateArmorState`, `OpenPlateCarrierMenu`.
+
+Client vest / helmet checks take no player id (local ped).
+
+Full signatures: [Server exports](/mrnewbplatecarriers/exports/server-exports) · [Client exports](/mrnewbplatecarriers/exports/client-exports).
+
+## Commands
+
+| Command | What it does |
+| --- | --- |
+| `/removevest` | Unequip the carrier (also keybound, shipped `O`) |
+| `/removehelmet` | Unequip the helmet |
+| `/inspectvest` | Remove plates from the equipped carrier |
+
+## Layout
+
+| Path | Role |
+| --- | --- |
+| `resource/shared/vest_helpers.lua` | Migration, plate condition, serial |
+| `resource/server/inventory_capability.lua` | Metadata-inventory boot check |
+| `resource/server/permissions.lua` | Optional `Jobs` gate |
+| `resource/server/equip_and_remove_vest.lua` | Equip/remove, usable carriers |
+| `resource/server/sync_vest_state.lua` | Condition + `plateCarrier` bag |
+| `resource/server/repair_plates.lua` | Insert / remove / field repair |
+| `resource/server/helmet.lua` | Helmet metadata + `plateHelmet` bag |
+| `resource/server/damage.lua` | Hit classification |
+| `resource/server/stations.lua` | Repair / salvage callbacks |
+| `resource/server/ox_inventory.lua` | Optional drag-insert hook |
+| `resource/server/selfcheck.lua` | Optional boot asserts (`RunSelfChecks`) |
+| `resource/client/appearance.lua` | Component 9 / prop 0 |
+| `resource/client/vest.lua` | Equip visuals, `/removevest` + keybind, client vest exports |
+| `resource/client/helmet.lua` | Helmet events, `/removehelmet`, client helmet / HUD exports |
+| `resource/client/inspect_vest_menu.lua` | Slot inspection |
+| `resource/client/stations.lua` | Armor-bench interactions |

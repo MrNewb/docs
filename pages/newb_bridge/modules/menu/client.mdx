@@ -1,0 +1,138 @@
+# Menu (client)
+
+Client-only context menus. Auto-detect order: `ox_lib` → `lation_ui` → `qb-menu`. There is no `registerContext` / `showContext` — `openMenu` registers and shows in one call.
+
+No [server](/newb_bridge/modules/menu/server) implementation.
+
+## `openMenu(data)`
+
+**Signature:** `openMenu(data: ContextMenuProps | ContextMenuProps[]): string?`
+
+| Param | Type | Description |
+| ----- | ---- | ----------- |
+| `data` | `ContextMenuProps` \| `ContextMenuProps[]` | One menu or stacked menus |
+
+| **Returns** | `string?` — shown menu id |
+
+```lua
+bridge.menu.openMenu({
+    id = 'hive_menu',
+    title = 'Beehive',
+    canClose = true,
+    options = {
+        {
+            title = 'Extract honey',
+            description = 'Harvest from this hive',
+            icon = 'fa-solid fa-jar',
+            onSelect = function()
+                TriggerServerEvent('myresource:extractHoney')
+            end,
+        },
+        {
+            title = 'Inspect',
+            icon = 'fa-solid fa-magnifying-glass',
+            onSelect = function() end,
+        },
+    },
+})
+```
+
+### Positioned menu
+
+```lua
+bridge.menu.openMenu({
+    id = 'quick_actions',
+    title = 'Actions',
+    position = 'top-right',
+    canClose = true,
+    options = {
+        { title = 'Inventory', icon = 'fa-solid fa-box', onSelect = function() end },
+        { title = 'Phone', icon = 'fa-solid fa-phone', onSelect = function() end },
+    },
+})
+```
+
+### Stacked menus (submenu)
+
+Works on `ox_lib` and `lation_ui`. `qb-menu` has no nested `menu` submenus — pass a single menu table instead.
+
+```lua
+bridge.menu.openMenu({
+    {
+        id = 'shop_root',
+        title = 'Shop',
+        options = {
+            { title = 'Food', menu = 'shop_food', icon = 'fa-solid fa-burger' },
+            { title = 'Drinks', menu = 'shop_drinks', icon = 'fa-solid fa-bottle-water' },
+        },
+    },
+    {
+        id = 'shop_food',
+        title = 'Food',
+        menu = 'shop_root',
+        options = {
+            {
+                title = 'Sandwich',
+                description = '$25',
+                onSelect = function()
+                    TriggerServerEvent('shop:buy', 'sandwich')
+                end,
+            },
+        },
+    },
+    {
+        id = 'shop_drinks',
+        title = 'Drinks',
+        menu = 'shop_root',
+        options = {
+            {
+                title = 'Water',
+                description = '$5',
+                onSelect = function()
+                    TriggerServerEvent('shop:buy', 'water')
+                end,
+            },
+        },
+    },
+})
+```
+
+## `closeMenu()`
+
+**Signature:** `closeMenu(): void`
+
+Closes the active context menu.
+
+```lua
+bridge.menu.closeMenu()
+```
+
+## Types
+
+### `ContextMenuProps`
+
+| Field | Type |
+| ----- | ---- |
+| `id` | `string` |
+| `title` | `string?` |
+| `subtitle` | `string?` lation_ui |
+| `position` | `'top-left'` \| `'top-right'` \| `'bottom-left'` \| `'bottom-right'` \| `'offcenter-left'` \| `'offcenter-right'` |
+| `menu` | `string?` |
+| `canClose` | `boolean?` |
+| `onExit` | `fun()?` |
+| `onBack` | `fun()?` |
+| `options` | `ContextMenuOption[]` |
+
+### `ContextMenuOption`
+
+| Field | Type |
+| ----- | ---- |
+| `title` | `string?` |
+| `description` | `string?` |
+| `disabled` | `boolean?` |
+| `menu` | `string?` |
+| `icon` | `string?` |
+| `onSelect` | `fun(args?: any)?` |
+| `event` | `string?` |
+| `serverEvent` | `string?` |
+| `args` | `any?` |

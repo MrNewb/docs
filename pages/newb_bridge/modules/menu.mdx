@@ -1,0 +1,23 @@
+# Menu
+
+Client-only context menus. Auto-detect order: `ox_lib` → `lation_ui` → `qb-menu`. There is no `registerContext` / `showContext` — `openMenu` registers and shows in one call.
+
+- [Client](/newb_bridge/modules/menu/client) — `openMenu` / `closeMenu`
+- [Server](/newb_bridge/modules/menu/server) — not implemented
+
+```lua
+bridge.menu.openMenu({
+    id = 'hive_menu',
+    title = 'Beehive',
+    canClose = true,
+    options = {
+        {
+            title = 'Extract honey',
+            icon = 'fa-solid fa-jar',
+            onSelect = function()
+                TriggerServerEvent('myresource:extractHoney')
+            end,
+        },
+    },
+})
+```

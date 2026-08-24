@@ -1,0 +1,65 @@
+import { Callout } from 'nextra/components'
+
+# Notifications
+
+`Bridge.Notify` → `bridge.notifications`. Full API: [client](/newb_bridge/modules/notifications/client) · [server](/newb_bridge/modules/notifications/server).
+
+community_bridge takes positional strings. Newb_Bridge takes one ox_lib-shaped table. There is no `SendNotify` / `SendNotification` split — one `notify`.
+
+<Callout type="warning">
+  Server `notify` is `notify(src, data)`. Passing only a table (the client shape) on the server will not deliver to a player.
+</Callout>
+
+## Client
+
+| community_bridge | Newb_Bridge |
+| --- | --- |
+| `SendNotify(message, type, time)` | `notify({ description, type, duration })` |
+| `SendNotification(title, message, type, time, props)` | `notify({ title, description, type, duration, ... })` |
+| `ShowHelpText` / `HideHelpText` | `bridge.textui` — [Text UI](/newb_bridge/migrating/textui) |
+
+```lua
+-- Old
+Bridge.Notify.SendNotify('Item used', 'success', 4000)
+Bridge.Notify.SendNotification('Saved', 'Item used', 'success', 4000)
+
+-- New
+bridge.notifications.notify({
+    description = 'Item used',
+    type = 'success',
+    duration = 4000,
+})
+
+bridge.notifications.notify({
+    title = 'Saved',
+    description = 'Item used',
+    type = 'success',
+    duration = 4000,
+})
+```
+
+`type` values: `'inform'` | `'error'` | `'success'` | `'warning'`. community_bridge often passed `'success'` as a default for `SendNotification`; `'inform'` is the Newb_Bridge default.
+
+Each client `notify` also fires `Newb_Bridge:Client:NotifyShown` (pause-menu history). You do not need to trigger `community_bridge:Client:Notify`.
+
+## Server
+
+| community_bridge | Newb_Bridge |
+| --- | --- |
+| `SendNotify(src, message, type, time)` | `notify(src, { description, type, duration })` |
+| `SendNotification(src, title, message, type, time, props)` | `notify(src, { title, description, type, duration })` |
+| `ShowHelpText(src, ...)` / `HideHelpText(src)` | No server TextUI. Notify, or trigger your own client event |
+
+```lua
+-- Old
+Bridge.Notify.SendNotify(src, 'Welcome back', 'inform', 5000)
+
+-- New
+bridge.notifications.notify(src, {
+    description = 'Welcome back',
+    type = 'inform',
+    duration = 5000,
+})
+```
+
+Do not call `bridge.framework.notify` — that method is not implemented on framework providers.

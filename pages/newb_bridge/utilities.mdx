@@ -1,0 +1,734 @@
+# Utilities
+
+Standalone exports from `exports.Newb_Bridge`. These are separate from the `bridge.*` modules but ship with the same resource.
+
+---
+
+## `AddInteraction(id, payload)` (client)
+
+**Signature:** `AddInteraction(id: string, payload: InteractionPayload): boolean, string?`
+
+Registers a distance-based world point that spawns a ped or prop when the player enters range. Target options are wired automatically. Ped vs prop is detected from the model. `radius` defaults to **100** and is clamped to **1–175**.
+
+| Param | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | `string` | Unique interaction id |
+| `payload` | [InteractionPayload](#interactionpayload) | Spawn and target config |
+
+| **Returns** | `true` on success; `false, 'missing'` (no id/payload) or `false, 'coords'` (invalid coords). An existing id is **replaced**, not rejected. |
+
+```lua
+exports.Newb_Bridge:AddInteraction('pharmacy_clerk', {
+    model = 's_m_m_doctor_01',
+    coords = vec3(100.0, 200.0, 30.0),
+    heading = 90.0,
+    radius = 50.0,
+    options = {
+        {
+            label = 'Talk',
+            icon = 'fa-solid fa-comments',
+            distance = 2.0,
+            onSelect = function(data) end,
+        },
+    },
+    onSpawn = function(interaction)
+        SetEntityInvincible(interaction.entity, true)
+    end,
+})
+```
+
+---
+
+## `RemoveInteraction(id, target?)`
+
+**Signature:** `RemoveInteraction(id: string, target?: number): boolean`
+
+| Side | client removes locally; server triggers `Newb_Bridge:Interaction:Remove` |
+| **Returns** | `boolean` |
+
+Server `target` is an optional player source. Omit it to broadcast to every client. A bad `target` does **not** fall back to broadcast.
+
+```lua
+-- Client
+exports.Newb_Bridge:RemoveInteraction('pharmacy_clerk')
+
+-- Server (all clients)
+exports.Newb_Bridge:RemoveInteraction('pharmacy_clerk')
+
+-- Server (one player)
+exports.Newb_Bridge:RemoveInteraction('pharmacy_clerk', src)
+```
+
+---
+
+## `UpdateInteraction(id, updates)` (client)
+
+**Signature:** `UpdateInteraction(id: string, updates: Partial<InteractionPayload>): boolean`
+
+| **Returns** | `boolean` |
+
+Updatable fields: `model`, `heading`, `scenario`, `anim`, `component`, `weapon`, `options`, `onEnter`, `canSpawn`, `coords`, `radius`, `bucket`. A model change respawns the entity.
+
+```lua
+exports.Newb_Bridge:UpdateInteraction('pharmacy_clerk', {
+    heading = 180.0,
+    options = { { label = 'Closed', disabled = true } },
+})
+```
+
+---
+
+## `RemoveAllInteractions()` (client)
+
+**Signature:** `RemoveAllInteractions(): void`
+
+Removes every interaction registered by the current resource.
+
+```lua
+exports.Newb_Bridge:RemoveAllInteractions()
+```
+
+---
+
+## `GetClosestInteraction()` (client)
+
+**Signature:** `GetClosestInteraction(): InteractionSummary?`
+
+| **Returns** | [InteractionSummary](#interactionsummary)? |
+
+No parameters. Uses the local player's position.
+
+```lua
+local closest = exports.Newb_Bridge:GetClosestInteraction()
+if closest and closest.distance < 5.0 then
+    print('Nearest:', closest.id)
+end
+```
+
+---
+
+## `GetNearbyInteractions()` (client)
+
+**Signature:** `GetNearbyInteractions(): InteractionSummary[]`
+
+| **Returns** | [InteractionSummary](#interactionsummary)[] — sorted by distance |
+
+```lua
+for _, interaction in ipairs(exports.Newb_Bridge:GetNearbyInteractions()) do
+    print(interaction.id, interaction.distance)
+end
+```
+
+---
+
+## `GetInteractionByEntity(entity)` (client)
+
+**Signature:** `GetInteractionByEntity(entity: number): string?, Interaction?`
+
+Reverse-lookup by the spawned prop/ped entity handle.
+
+| **Returns** | `id`, interaction table — or `nil` if not managed |
+
+```lua
+local id = exports.Newb_Bridge:GetInteractionByEntity(entity)
+if id then
+    exports.Newb_Bridge:RemoveInteraction(id)
+end
+```
+
+---
+
+## `AddInteractionsBatch(entries, options?)` (client)
+
+**Signature:** `AddInteractionsBatch(entries: InteractionBatchEntry[] | table<string, InteractionPayload>, options?: InteractionBatchOptions): number`
+
+Registers many interactions across frames so large sets (shops, hives, businesses) do not hitch on join. Returns a generation token used by `CancelInteractionBatch`.
+
+Defaults (hardcoded in `utility/client/interactions.lua`): `batchSize` 25, `batchDelayMs` 0, `batchThreshold` 1, `sortByDistance` true.
+
+```lua
+local batch = {
+    { id = 'hive_1', payload = { model = `prop_beehive`, coords = vec1, heading = 0.0, radius = 175.0, options = opts } },
+    { id = 'hive_2', payload = { model = `prop_beehive`, coords = vec2, heading = 90.0, radius = 175.0, options = opts } },
+}
+
+exports.Newb_Bridge:AddInteractionsBatch(batch, {
+    batchSize = 25,
+    onComplete = function(added, failed)
+        lib.print.debug(('Registered %s (%s failed)'):format(added, failed))
+    end,
+})
+
+-- Map form also works:
+exports.Newb_Bridge:AddInteractionsBatch({
+    ['shop_register'] = { model = `prop_till_01`, coords = shopVec, heading = 0.0, radius = 40.0, options = opts },
+})
+```
+
+### `CancelInteractionBatch()` (client)
+
+Abort the active batch before starting a fresh sync.
+
+```lua
+exports.Newb_Bridge:CancelInteractionBatch()
+```
+
+### `BeginInteractionBulk()` / `CommitInteractionBulk()` (client)
+
+Suppress per-point point-manager rebuilds while registering many interactions synchronously, then flush once.
+
+```lua
+exports.Newb_Bridge:BeginInteractionBulk()
+for i = 1, #entries do
+    exports.Newb_Bridge:AddInteraction(entries[i].id, entries[i].payload)
+end
+exports.Newb_Bridge:CommitInteractionBulk()
+```
+
+Prefer `AddInteractionsBatch` for large sets that should spread across frames.
+
+---
+
+## `PropPlacer(model, ...)` (client)
+
+**Signature:** `PropPlacer(model: string | number | string[] | number[] | PlacerCallOptions, forceGround?: boolean, allowedMaterials?: table<number, boolean>, maxDistance?: number, placementType?: string, marker?: PlacerMarker, previewBehavior?: table, options?: PlacerOptions): vector4 | PlacerResult | PlacerMultiResult | false`
+
+Interactive prop/ped/vehicle placement UI. Returns placement coords, or `false` if cancelled, already placing, or the model failed to load.
+
+Positional arguments work as before, or pass **everything in one table** — a `model` key selects the table form:
+
+```lua
+local placement = exports.Newb_Bridge:PropPlacer({
+    model = 'jim_g_beehive_prop_2',
+    forceGround = true, -- alias: snapToGround
+    maxDistance = 10.0,
+    heightAdjust = false,
+})
+```
+
+| Field | Type | Default | Description |
+| ----- | ---- | ------- | ----------- |
+| `model` | `string` \| `number` \| array | — | Model, or list of models (↑/↓ cycles them) |
+| `forceGround` | `boolean?` | — | Snap the preview to the ground (alias: `snapToGround`) |
+| `allowedMaterials` | `table<number, boolean>?` | — | Raycast material whitelist |
+| `maxDistance` | `number?` | `10.0` | Max distance from player |
+| `placementType` | `'auto' \| 'ped' \| 'prop' \| 'vehicle'` | `'auto'` | Preview entity type (alias: `type`) |
+| `marker` | `table?` | — | Head marker over the preview (see PlacerMarker below). Also accepted inside `options` |
+| `previewBehavior` | `table?` | — | Ped scenario/anim preview, or `{ options = {...} }` cycle |
+| `multi` | `boolean?` | `false` | Keep placing until Backspace; returns `{ multi = true, results = {...} }` |
+| `maxPlacements` | `number?` | — | Cap for multi place; shows `placed / max` in the panel and auto-finishes |
+| `heightAdjust` | `boolean?` | `true` | `false` pins the preview to ground height and hides raise/lower |
+| `collisionToggle` | `boolean?` | `false` | G opens the transform gizmo on the preview |
+| `startMode` | `'position' \| 'model' \| 'animation'` | — | Adjustment mode the placer opens in |
+| `startHeading` | `number?` | player heading | Initial preview heading |
+| `groundOffset` | `boolean \| number \| 'measure'` | `-min.z` | Visual lift of the prop preview. Default puts the model's render-box bottom on the surface; `false` pins the pivot to the surface; a number is an explicit lift; `'measure'` grounds the preview with `PlaceObjectOnGroundProperly` like the placed prop (for models whose render box doesn't match the mesh, e.g. the moonshine still or beehive). Returned coords stay at the aimed surface point — `CreateObject` re-applies the model-bottom offset at spawn |
+| `rotateStep` | `number \| table` | `5` | Degrees per scroll notch; a table can override `fine` (Alt, 1) and `coarse` (Shift, 22.5) too |
+| `returnCancel` | `boolean?` | `false` | H also cancels (return-to-menu flows) |
+| `isPositionValid` | `function?` | — | `fun(coords): boolean` polled while placing; false blocks placement |
+| `localeOverrides` | `table?` | — | Override any placer UI string for this session |
+| `placedMarker` | `table?` | — | `{ radius, colour }` marker on each multi placement |
+| `placedPreview` | `table?` | — | `{ model, existing }` persistent preview entities at placed spots |
+
+Options may also be nested under an `options` key instead of sitting flat on the table.
+
+### `PlacerMarker`
+
+The marker is always a table. `preset` pulls in the stock shape; any explicit field overrides it. While placing, the marker recolors automatically (red on invalid surface, amber when too far, gray while idle).
+
+```lua
+marker = { preset = 'bouncing_arrow' }
+
+-- or fully custom
+marker = {
+    type = 2,                                 -- DrawMarker type
+    scale = { x = 0.4, y = 0.4, z = 0.4 },
+    color = { 34, 139, 230, 220 },            -- r, g, b, a
+    offset = { x = 0.0, y = 0.0, z = 0.45 },  -- from ped head / model top; a bare number is z
+    rotation = { x = 180.0, y = 0.0, z = 0.0 },
+    bob = true,
+    faceCamera = true,
+}
+```
+
+| **Returns** | `vector4` (`x`, `y`, `z`, `w` heading); a table with `modelIndex`/`previewIndex` when cycling; `{ multi = true, results = {...} }` for multi place; `false` on cancel / already placing / invalid model |
+
+```lua
+local placement = exports.Newb_Bridge:PropPlacer('jim_g_beehive_prop_2', true, nil, 10.0)
+
+if placement then
+  TriggerServerEvent('myresource:placeHive', placement)
+end
+```
+
+---
+
+## `CreateZone(options)` (client)
+
+**Signature:** `CreateZone(options: ZoneCreatorOptions): OxLibZoneTable?`
+
+Interactive zone creator with a NUI panel. Returns an **ox_lib-compatible** data table you can pass directly to `lib.zones.poly`, `lib.zones.box`, or `lib.zones.sphere`. Returns `nil` if the player cancels or validation fails.
+
+| Param | Type | Description |
+| ----- | ---- | ----------- |
+| `options` | [ZoneCreatorOptions](#zonecreatoroptions) | Zone type, name, and optional defaults |
+
+| **Returns** | [OxLibPolyZone](#oxlibpolyzone) \| [OxLibBoxZone](#oxlibboxzone) \| [OxLibSphereZone](#oxlibspherezone) \| `nil` |
+
+### Zone types
+
+| Type | Placement | Description |
+| ---- | --------- | ----------- |
+| `poly` | Freecam | Polygon from placed points + thickness |
+| `box` | On foot | Center + width/length/height + rotation |
+| `sphere` | On foot | Center + radius |
+
+`name` is **required**. Aliases: `zoneid`, `zoneId`.
+
+### Basic examples
+
+```lua
+-- Polygon (freecam)
+local poly = exports.Newb_Bridge:CreateZone({
+    type = 'poly',
+    name = 'shop_floor',
+    maxDistance = 50.0,
+})
+
+if poly then
+    lib.zones.poly(poly)
+end
+```
+
+```lua
+-- Box (on foot)
+local box = exports.Newb_Bridge:CreateZone({
+    type = 'box',
+    name = 'storage_room',
+})
+
+if box then
+    lib.zones.box(box)
+end
+```
+
+```lua
+-- Sphere (on foot)
+local sphere = exports.Newb_Bridge:CreateZone({
+    type = 'sphere',
+    name = 'atm_area',
+})
+
+if sphere then
+    lib.zones.sphere(sphere)
+end
+```
+
+### Controls
+
+**Poly (freecam)**
+
+| Input | Action |
+| ----- | ------ |
+| LMB | Add point (requires laser hit) |
+| RMB | Undo last point |
+| Scroll | Change step size |
+| Shift + Scroll | Adjust thickness |
+| X | Toggle edit / fly camera |
+| WASD / Q / Left Ctrl | Move camera (fly mode; Q up, Left Ctrl down) |
+| Shift | Move faster (fly mode) |
+| F | Swap freecam / on-foot |
+| E | Confirm |
+| Backspace | Cancel |
+
+On confirm, if the laser is hitting a surface, the current aim point is appended as the final polygon point.
+
+**Box / sphere (on foot)**
+
+| Input | Action |
+| ----- | ------ |
+| Scroll | Adjust height (box) or radius (sphere) |
+| Shift + Scroll | Change step size |
+| Ctrl + Scroll | Adjust width (box) |
+| Alt + Scroll | Adjust length (box) |
+| Left / Right arrow | Rotate heading (box) |
+| B | Toggle free movement (optional lock with tablet anim) |
+| F | Swap freecam / on-foot |
+| E | Confirm (requires laser hit) |
+| Backspace | Cancel |
+
+### Freecam events (anticheat)
+
+Poly zones enter freecam before placement. Listen on the client to whitelist noclip-like behavior:
+
+```lua
+AddEventHandler('Newb_Bridge:client:zoneCreatorEnteredFreecam', function(data)
+    -- data.name, data.type, data.anchor, data.maxDistance
+end)
+
+AddEventHandler('Newb_Bridge:client:zoneCreatorExitedFreecam', function(data)
+    -- data.name, data.type
+end)
+```
+
+See [Events](/newb_bridge/events#zone-creator-freecam).
+
+### Validation errors
+
+| Error key | When |
+| --------- | ---- |
+| `missing_name` | `name` not provided |
+| `invalid_type` | Type is not `poly`, `box`, or `sphere` |
+| `already_active` | Creator already open |
+| `min_points` | Poly confirmed with fewer than 2 placed points |
+| `no_aim` | Box/sphere confirmed without laser hit, or poly point added without hit |
+| `outside_bounds` | Box/sphere center outside `maxDistance` from anchor |
+
+---
+
+## `useGizmo(entity, options?)` (client)
+
+**Signature:** `useGizmo(entity: number | GizmoCallOptions, options?: GizmoOptions): GizmoResult?`
+
+Opens the translation/rotation gizmo. Pass an entity handle to edit an existing entity, or a table with a `model` key to **spawn-and-edit**: the gizmo spawns a translucent frozen preview (ped/vehicle models get the matching entity type), edits it, and cleans it up on cancel.
+
+| Option | Type | Default | Description |
+| ------ | ---- | ------- | ----------- |
+| `deleteOnConfirm` | `boolean?` | `true` | Remove the entity after confirm. `false` keeps a spawned preview as the placed entity (alpha/collision restored) |
+| `label` | `string?` | entity archetype | Shown in the gizmo panel header |
+| `outline` | `boolean?` | `true` for non-peds | Draw the green entity outline while editing. `nil` keeps the non-peds-only default |
+| `model` | `string \| number` | — | Spawn-and-edit form only: model to spawn |
+| `coords` | `vector3 \| vector4` | 2.5m in front of player | Spawn-and-edit: spawn position (`w` used as heading) |
+| `heading` | `number?` | `coords.w` | Spawn-and-edit: spawn heading |
+| `rotation` | `vector3 \| table` | — | Spawn-and-edit: full rotation to seed the preview |
+| `ped` | `boolean?` | auto | Spawn-and-edit: force a ped. Vehicles spawn automatically when the model is a vehicle |
+
+| **Returns** | [GizmoResult](#gizmoresult) \| `nil` when cancelled |
+
+```lua
+-- edit an existing entity
+local result = exports.Newb_Bridge:useGizmo(prop, { deleteOnConfirm = false, label = 'Shop shelf' })
+
+-- spawn-and-edit: no manual CreateObject / alpha / cleanup needed
+local placed = exports.Newb_Bridge:useGizmo({
+    model = 'prop_disp_cabinet_01',
+    coords = vec4(215.4, -810.1, 30.7, 90.0),
+})
+if placed then
+    print(placed.x, placed.y, placed.z, placed.heading)
+end
+```
+
+---
+
+## `Dialogue()` (client)
+
+**Signature:** `Dialogue(): Dialogue`
+
+Returns the dialogue API table. Identical to `bridge.dialogue`. See [Dialogue (client)](/newb_bridge/modules/dialogue/client).
+
+```lua
+local Dialogue = exports.Newb_Bridge:Dialogue()
+local id = Dialogue.RegisterMenu({ title = 'Shop', options = {} })
+Dialogue.OpenMenu(id, ped)
+```
+
+---
+
+## `VersionCheck(repoPath, resourceName)` (server)
+
+**Signature:** `VersionCheck(repoPath: string, resourceName: string): nil`
+
+Checks GitHub `resources.json` for newer versions and prints patch notes to the server console.
+
+| Param | Type | Description |
+| ----- | ---- | ----------- |
+| `repoPath` | `string` | `"username/reponame"` on GitHub |
+| `resourceName` | `string` | Resource folder name to look up in JSON |
+
+| **Returns** | `nil` |
+
+```lua
+AddEventHandler('onResourceStart', function(resource)
+    if resource ~= GetCurrentResourceName() then return end
+    exports.Newb_Bridge:VersionCheck('MrNewb/patchnotes', 'MrNewbBeeKeeping')
+end)
+```
+
+The JSON repo should contain a `resources.json` entry keyed by resource name with `versions` and optional `repo` for release links.
+
+---
+
+## Types
+
+### `InteractionPayload`
+
+World interaction export payload (`AddInteraction`).
+
+| Field | Type |
+| ----- | ---- |
+| `model` | `number` \| `string` |
+| `coords` | `vector3` |
+| `heading` | `number` |
+| `radius` | `number` |
+| `options` | `TargetOption[]?` |
+| `snapToGround` | `boolean?` props |
+| `invincible` | `boolean?` peds, default `true` |
+| `component` | `table?` ped clothing |
+| `anim` | `table?` ped animation |
+| `scenario` | `string?` |
+| `weapon` | `number?` |
+| `onSpawn` | `fun(self: Interaction)?` |
+| `onDespawn` | `fun(self: Interaction)?` |
+| `onEnter` | `fun(self: Interaction): boolean?` — return `false` to skip spawn |
+| `canSpawn` | `fun(self: Interaction): boolean?` — in-range spawn gate |
+| `bucket` | `number` \| `string?` — only spawn when the local player is in this routing bucket (default `0`) |
+| `rotation` | `table?` — prop pitch/roll/yaw from gizmo placement |
+| `matrix` | `table?` — full entity matrix from gizmo placement |
+
+### `InteractionSummary`
+
+Return shape from `GetClosestInteraction()` / `GetNearbyInteractions()`.
+
+| Field | Type |
+| ----- | ---- |
+| `id` | `string` |
+| `distance` | `number` |
+| `coords` | `vector3` |
+| `heading` | `number` |
+| `radius` | `number` |
+| `model` | `number` \| `string` |
+| `scenario` | `string?` |
+
+### `GizmoResult`
+
+Return from `useGizmo(entity)`.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `handle` | `number` | Entity handle (deleted when `deleteOnConfirm` is true) |
+| `position` | `vector3` | Final coords (from matrix `at` when present) |
+| `rotation` | `vector3` | Raw `GetEntityRotation` |
+| `heading` | `number` | |
+| `x`, `y`, `z` | `number` | |
+| `pitch`, `roll`, `yaw` | `number` | Rounded rotation components |
+| `matrix` | `table?` | `{ forward, right, up, at }` from `GetEntityMatrix` |
+
+### `ZoneCreatorOptions`
+
+Options for `CreateZone(options)`.
+
+| Field | Type | Default | Description |
+| ----- | ---- | ------- | ----------- |
+| `type` | `'poly'` \| `'box'` \| `'sphere'` | `'poly'` | Zone shape. Alias: `zoneType` |
+| `name` | `string` | — | **Required.** Zone name. Aliases: `zoneid`, `zoneId` |
+| `mode` | `'freecam'` \| `'onfoot'` | `freecam` for poly, `onfoot` for box/sphere | Starting mode (F swaps mid-session). Alias: `startMode` |
+| `maxDistance` | `number` | `50.0` | Poly freecam radius from anchor |
+| `anchor` | `vector3` | player position | Center / bounds origin |
+| `planeZ` | `number` | anchor or ped Z | Starting Z for placement |
+| `step` | `number` | `5` (poly/box), `1` (sphere) | Step size index (1–11) |
+| `height` | `number` | poly `8`, box `2`, sphere `1.05` | Poly thickness, box height, or sphere radius |
+| `thickness` | `number` | — | Alias for poly `height` |
+| `radius` | `number` | — | Alias for sphere `height` |
+| `width` | `number` | `2.0` | Box width |
+| `length` | `number` | `2.0` | Box length |
+| `rotation` | `number` | ped heading | Box rotation (degrees) |
+| `allowMovement` | `boolean` | `true` | Allow walking during on-foot placement |
+| `movementToggle` | `boolean` | `true` | Show B key movement lock toggle |
+| `elevatedStart` | `boolean` | `false` | Start poly freecam elevated |
+| `elevatedHeight` | `number` | `18.0` | Elevated camera height |
+| `elevatedPitch` | `number` | `-35.0` | Elevated camera pitch |
+| `cameraHeight` | `number` | `1.65` | Eye-level freecam height |
+| `cameraPitch` | `number` | `0.0` | Eye-level freecam pitch |
+| `camEaseMs` | `number` | `1200` | Freecam enter/exit blend in ms; `0` for a hard cut |
+
+### `OxLibPolyZone`
+
+Return from `CreateZone` when `type = 'poly'`. Pass to `lib.zones.poly(...)`.
+
+| Field | Type |
+| ----- | ---- |
+| `name` | `string` |
+| `points` | `vector3[]` |
+| `thickness` | `number` |
+
+### `OxLibBoxZone`
+
+Return from `CreateZone` when `type = 'box'`. Pass to `lib.zones.box(...)`.
+
+| Field | Type |
+| ----- | ---- |
+| `name` | `string` |
+| `coords` | `vector3` |
+| `size` | `vector3` |
+| `rotation` | `number` |
+
+### `OxLibSphereZone`
+
+Return from `CreateZone` when `type = 'sphere'`. Pass to `lib.zones.sphere(...)`.
+
+| Field | Type |
+| ----- | ---- |
+| `name` | `string` |
+| `coords` | `vector3` |
+| `radius` | `number` |
+
+---
+
+## Commands and keybinds (client)
+
+Helpers also live on the `bridge` table after `import.lua`. Prefer `exports.Newb_Bridge:…` when you need rename-safe calls.
+
+### `RegisterCommand(name, handler, restricted?)`
+
+```lua
+exports.Newb_Bridge:RegisterCommand('myclientcmd', function(source, args, raw)
+    print('ran', raw)
+end, false)
+
+-- Same via bridge:
+bridge.registerCommand('myclientcmd', function(source, args, raw) end, false)
+```
+
+### `RegisterKeybind(name, description, defaultKey, handler)`
+
+```lua
+exports.Newb_Bridge:RegisterKeybind('my_open', 'Open shop', 'F6', function()
+    bridge.menu.openMenu({ id = 'shop', title = 'Shop', options = {} })
+end)
+```
+
+### `GetBoundKey(commandName)`
+
+Returns the display label for a registered key mapping (or `nil`).
+
+```lua
+local key = exports.Newb_Bridge:GetBoundKey('my_open') or 'F6'
+bridge.textui.showTextUI(('[%s] Open shop'):format(key))
+```
+
+Server admin commands still use `bridge.framework.registerCommand` (ACE + `lib.addCommand`).
+
+---
+
+## DUI surfaces (client)
+
+World-space DUI boards and prop texture replacement. Confirm with **E**, cancel with **Backspace**. Pixel sizes clamp to 256–2048; world size clamps to 0.25–12 m.
+
+### Content fields
+
+`content` (alias `dui` on register/update) is normalized by `normalizeContent`:
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `src` | `string` | URL / `nui://` page. Alias: `url` |
+| `width` / `height` | `number` | Texture pixels (default 1024) |
+| `worldWidth` / `worldHeight` | `number?` | On-world quad size in meters |
+| `aspect` | `number?` | Height/width; default `height / width` |
+| `normal` | `vector3?` | Surface normal; heading is used when omitted |
+| `cornerTL` / `cornerBR` | `vector3?` | Placed-quad corners from `CreateDuiPlacement` |
+| `planeW` / `planeH` | `number?` | Signed plane extents from placement |
+| `txd` / `txn` | `string?` | Optional texture dictionary / name on the content table |
+
+`RegisterDuiSurface(key, data)` requires `data.coords`. Pass `content` or `dui`.
+
+### Register / update / clear
+
+```lua
+exports.Newb_Bridge:RegisterDuiSurface('billboard_1', {
+    coords = vec4(100.0, 200.0, 30.0, 90.0),
+    content = {
+        src = 'https://example.com/board.html',
+        width = 1024,
+        height = 512,
+        worldWidth = 4.0,
+        worldHeight = 2.0,
+    },
+})
+
+exports.Newb_Bridge:UpdateDuiSurface('billboard_1', {
+    content = { src = 'https://example.com/board-v2.html' },
+})
+
+exports.Newb_Bridge:UnregisterDuiSurface('billboard_1')
+exports.Newb_Bridge:ClearDuiSurfaces()
+```
+
+### Placement sessions
+
+`CreateDuiPlacement` is two clicks: first corner, then opposite corner (aspect locked). Options: `content` (or content fields on the table), `maxDistance` (default **20**), `label`. Returns `{ ok = true, coords, content }` or `{ ok = false, cancelled = true }` / `{ ok = false, reason = 'already_active' }`.
+
+`CreateLaserTargetPlacement` is a single aim: `{ maxDistance?, label? }` → `{ ok = true, coords, normal }` or the same failure tables.
+
+```lua
+-- Place a DUI board in the world (interactive)
+local result = exports.Newb_Bridge:CreateDuiPlacement({
+    content = { src = 'nui://my_resource/html/board.html', width = 512, height = 512 },
+    maxDistance = 15.0,
+    label = 'Place board',
+})
+if result.ok then
+    exports.Newb_Bridge:RegisterDuiSurface('placed_board', {
+        coords = result.coords,
+        content = result.content,
+    })
+end
+
+-- Laser target only (coords + normal, no DUI yet)
+local aim = exports.Newb_Bridge:CreateLaserTargetPlacement({
+    maxDistance = 20.0,
+    label = 'Aim surface',
+})
+```
+
+### Queries
+
+`HasDuiPlacement(content)` is a **geometry** check (`cornerTL` plus `planeW` or `worldWidth`) — not “is this key registered”. `GetDuiBoardCenter` / `GetDuiTargetRadius` use the same content table.
+
+```lua
+if exports.Newb_Bridge:HasDuiPlacement(content) then
+    local center = exports.Newb_Bridge:GetDuiBoardCenter(content, coords)
+    local radius = exports.Newb_Bridge:GetDuiTargetRadius(content)
+end
+```
+
+### Prop texture replacement
+
+The second argument (`entity`) is unused — texture replacement is by `txd`/`txn` name.
+
+```lua
+exports.Newb_Bridge:ApplyPropDuiTexture('tv_screen', entity, {
+    txd = 'prop_tv_flat_01',
+    txn = 'script_rt_tvscreen',
+    width = 512,
+    height = 512,
+}, {
+    src = 'nui://my_resource/html/tv.html',
+    width = 512,
+    height = 512,
+})
+
+exports.Newb_Bridge:UpdatePropDuiTexture('tv_screen', { src = 'nui://my_resource/html/tv2.html' })
+print(exports.Newb_Bridge:HasPropDuiTexture('tv_screen'))
+exports.Newb_Bridge:ClearPropDuiTexture('tv_screen')
+```
+
+---
+
+## Task Groups and Task HUD
+
+Full APIs live on dedicated module pages:
+
+- [Task Groups](/newb_bridge/modules/taskgroups) — `bridge.taskGroups`, `CreateTaskGroup`, `OpenTaskGroupMenu`, …
+- [Task HUD](/newb_bridge/modules/task/client) — `bridge.task` / `exports.Newb_Bridge:Task()` (WIP)
+
+```lua
+-- Quick links
+local groups = exports.Newb_Bridge:TaskGroups()
+exports.Newb_Bridge:OpenTaskGroupMenu() -- client; server: OpenTaskGroupMenu(src)
+
+local Task = exports.Newb_Bridge:Task()
+Task.show({ title = 'Delivery', tasks = { { label = 'Drop off', current = 0, max = 1 } } })
+```
+
+Matching exports: `CreateTaskGroup`, `AddToTaskGroup`, `RemoveFromTaskGroup`, `ClearTaskGroup`, `DeleteTaskGroup`, `IsInTaskGroup`, `IsTaskGroupLeader`, `GetTaskGroupLeader`, `SetTaskGroupLeader`, `GetTaskGroupMembers`, `GetPlayerTaskGroups`, `GetTaskGroupMemberCount`, `GetLocalTaskGroups` (client), `CloseTaskGroupMenu` (client), `IsTaskGroupMenuOpen` (client), `CompleteTask` (client).
+

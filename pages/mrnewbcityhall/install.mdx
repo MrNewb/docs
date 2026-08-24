@@ -1,0 +1,49 @@
+import { Callout, Steps } from 'nextra/components'
+
+# Installation
+
+<Callout type="warning">
+  Start this **after** ox_lib, your framework, your inventory, and Newb_Bridge. The bridge auto-detects running resources; if this script starts first, detection can miss them. Keep the folder named `MrNewbCityHall`.
+</Callout>
+
+<Steps>
+### Dependencies
+
+[Newb_Bridge](/newb_bridge), ox_lib, your framework (jobs, **bank** money, name / DOB), and target via the bridge. Server artifact `/server:6116` or newer, plus OneSync (`fxmanifest.lua`). oxmysql is not required.
+
+Optional ID resources (checked at purchase time, first match wins):
+
+1. `um-idcard` started → `CreateMetaLicense(src, Config.IdCardItem)` (default `id_card`)
+2. Else `bl_idcard` started → `createLicense(src, Config.IdCardItem)`
+3. Else `bridge.inventory.addItem` `Config.IdCardItem` with name + DOB metadata
+
+### Items
+
+This resource does not ship `[INSTALL]/` item defs or images. If you use the fallback path, add `id_card` to your inventory yourself (or start `um-idcard` / `bl_idcard` before CityHall).
+
+### Configure
+
+| File | Contents |
+| --- | --- |
+| `configs/cityhall.lua` | `Config.AvailableJobs` (shipped: `bus` / `taxi` at grade `0`; police / sheriff / ambulance / mechanic are commented), `Config.IdCardPrice` (`100`, bank only), `Config.IdCardItem` (`id_card`), `Config.InteractDistance` (`5.0`), `Config.ApplicationCooldown` (`60`), one desk `'Job Center'` |
+| `configs/applications.lua` | `Config.Applications` — shipped `police` and `mechanic`. Only `question` and `required` are read; `type` is unused |
+| `configs/webhooks.lua` | Server-only. Per-job Discord URLs. Empty string = submit rejected (application still listed) |
+
+Labels: `locales/en.json` (this resource ships English only).
+
+### Add to server.cfg
+
+Swap `qbx_core` / `ox_inventory` for whatever you actually run. If you use `um-idcard` or `bl_idcard`, ensure that resource before CityHall.
+
+```cfg
+ensure ox_lib
+ensure qbx_core
+ensure ox_inventory
+ensure Newb_Bridge
+ensure MrNewbCityHall
+```
+
+### Restart the server
+
+Restart after config or locale changes. No admin commands and no exports. Review applications on the Discord webhook you configured.
+</Steps>

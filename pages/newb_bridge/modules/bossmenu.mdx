@@ -1,0 +1,15 @@
+# Boss menu
+
+Server-only. Opens the configured boss menu UI on the player's client via the active boss-menu provider (`Config.BossMenu`).
+
+- [Client](/newb_bridge/modules/bossmenu/client) — host relay only (consumer noop)
+- [Server](/newb_bridge/modules/bossmenu/server) — `openBossMenu`
+
+Auto-detect order: `qbx_management` → `qb-management` → `esx_society` → `vms_bossmenu` → `tk_bosstablet` → `okokBossMenu` → `codem-bossmenu` → `zat-bossmenu` → `m-BossMenu`.
+
+```lua
+-- Server
+if bridge.framework.hasJob(src, 'police', nil, true) then
+    bridge.bossmenu.openBossMenu(src, 'police', 'job')
+end
+```

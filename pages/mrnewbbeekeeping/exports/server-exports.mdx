@@ -1,0 +1,31 @@
+# Server exports
+
+VIP extras only apply when `Config.Vip.Enabled` is `true` in `configs/sv_config.lua`. `IsPlayerHiveVip` is also `false` until the player is at the base `MaxHivesPerPlayer` cap.
+
+```lua
+local vip = exports.MrNewbBeeKeeping:IsPlayerHiveVip(source)
+local bonus = exports.MrNewbBeeKeeping:GetPlayerHiveBonusHives(source)
+local limit = exports.MrNewbBeeKeeping:GetPlayerHiveLimit(source)
+local atCap = exports.MrNewbBeeKeeping:IsPlayerAtHiveLimit(source)
+```
+
+| Export | Returns |
+| --- | --- |
+| `IsPlayerHiveVip(src)` | `true` if VIP extras apply |
+| `GetPlayerHiveBonusHives(src)` | Extra slots (`Config.Vip.ExtraHives`), or `0` |
+| `GetPlayerHiveLimit(src)` | `MaxHivesPerPlayer` + bonus. `0` means unlimited |
+| `IsPlayerAtHiveLimit(src)` | `true` when owned hives are at that personal cap |
+
+VIP membership is `Config.IsPlayerHiveVip(src)` (default ACE `mrnewb.vip`) and/or entries in `Config.Vip.VipPlayers` (citizen id, `license:…`, `discord:…`, or a bare numeric Discord **role** id). Numeric role ids are resolved only when `Badger_Discord_API` is started (`GetDiscordRoles`).
+
+Net events and `lib.callback` names under `MrNewbBeeKeeping:*` are internal (hive sync, shop, admin NUI, item use). Do not call them from other resources.
+
+Editable hooks live in `resource/open/`:
+
+| Function | File | Role |
+| --- | --- | --- |
+| `RollQueenTrait(src, zone)` | `open/server/custom.lua` | Return a trait id, or `''` for the default roll |
+| `ResolveHoneyRewardItem(src, coords, amount, zoneType, defaultItem)` | `open/server/custom.lua` | Return the honey item name, or `false` to give nothing |
+| `OnTrapCatch(src, swarmId, context)` | `open/server/custom.lua` | After a successful catch. `context` is `{ rewardCount, gotQueen, settings }` |
+| `ApplyBeekeeperSuit(ped)` / `RestoreBeekeeperSuit(ped, outfit)` | `open/client/custom.lua` | Custom clothing (return `true` to skip built-in) |
+| `OnMinigameFailed()` / `OnAttachHoneycomb()` / `OnAttachHiveSmoker()` | `open/client/custom.lua` | Return `true` to skip the built-in behavior |

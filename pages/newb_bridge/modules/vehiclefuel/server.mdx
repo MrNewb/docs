@@ -1,0 +1,33 @@
+# Vehicle fuel (server)
+
+Asks the player’s client to apply fuel via `Newb_Bridge:client:setFuel`. Local apply lives on [client](/newb_bridge/modules/vehiclefuel/client).
+
+## `set(source, vehicle, amount)`
+
+**Signature:** `set(source: number, vehicle: number, amount: number): boolean`
+
+| Param | Type | Description |
+| ----- | ---- | ----------- |
+| `source` | `number` | Player server id |
+| `vehicle` | `number` | Vehicle entity handle (server) |
+| `amount` | `number` | Fuel level (provider-specific scale, usually 0–100) |
+
+```lua
+local vehicle = GetVehiclePedIsIn(GetPlayerPed(source), false)
+bridge.vehiclefuel.set(source, vehicle, 75.0)
+```
+
+### Full tank after repair
+
+```lua
+RegisterNetEvent('MyGarage:Server:FinishRepair', function(netId)
+    local src = source
+    local ped = GetPlayerPed(src)
+    if ped == 0 or not DoesEntityExist(ped) then return end
+
+    local vehicle = NetworkGetEntityFromNetworkId(netId)
+    if vehicle == 0 then return end
+
+    bridge.vehiclefuel.set(src, vehicle, 100.0)
+end)
+```

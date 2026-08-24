@@ -1,0 +1,40 @@
+import { Callout } from 'nextra/components'
+
+# Dialogue
+
+`Bridge.Dialogue` → `bridge.dialogue`. Full API: [client](/newb_bridge/modules/dialogue/client).
+
+<Callout type="warning">
+  This is a different system, not a rename. community_bridge `Open(name, dialogue, character, options, onSelected)` is a one-shot NUI prompt. Newb_Bridge is ox_lib-style **registered menus** (`RegisterMenu` / `OpenMenu`) with option callbacks, nested menus, and optional ped camera. Rewrite the flow.
+</Callout>
+
+| community_bridge | Newb_Bridge |
+| --- | --- |
+| `Open(name, dialogue, characterOptions, dialogueOptions, onSelected)` | `RegisterMenu(menu)` then `OpenMenu(id, target?)` |
+| `Close(name)` | `Close(sessionId)` | Session id from the open, not the menu name |
+
+```lua
+-- Old
+Bridge.Dialogue.Open('beekeeper', 'Need supplies?', entity, {
+    { label = 'Buy jar' },
+    { label = 'Sell honey' },
+}, function(selected)
+    if selected == 1 then end
+end)
+
+-- New
+bridge.dialogue.RegisterMenu({
+    id = 'beekeeper',
+    title = 'Beekeeper',
+    text = 'Need supplies?',
+    options = {
+        { title = 'Buy jar', onSelect = function() end },
+        { title = 'Sell honey', onSelect = function() end },
+    },
+})
+bridge.dialogue.OpenMenu('beekeeper', entity)
+```
+
+`OpenMenu` target can be a ped/entity handle, coords, or a `DialogueTargetOptions` table (camera offsets). Accessing `bridge.dialogue` on the server throws — keep it client-side, same as community_bridge.
+
+Update/remove options at runtime with `UpdateMenu`, `SetMenuOption`, `RemoveMenuOption`. That did not exist on community_bridge.

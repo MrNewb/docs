@@ -1,0 +1,40 @@
+# Server exports
+
+ox_inventory invokes these with its item-use signature (`event`, `item`, `inventory`). Do not call them from another resource.
+
+Item defs: [Item setup](/mrnewbweapontints/install/inventory).
+
+## setweapontint
+
+`server.export = 'MrNewbWeaponTints.setweapontint'`
+
+```lua
+exports('setweapontint', function(event, item, inventory)
+```
+
+| Arg | Purpose |
+| --- | --- |
+| `event` | `'usingItem'` allows the use. `'usedItem'` writes metadata |
+| `item` | Must have `item.server.tint` (`1`–`7`) |
+| `inventory.id` | Player source |
+
+Returns `false` when `GetCurrentWeapon` is empty (notify `WeaponTints.NotEquipped`). Returns `true` on `usingItem` when a weapon is equipped.
+
+On `usedItem`:
+
+1. Reads `item.server.tint`
+2. If the weapon name contains `MK2`, remaps through the table in `resource/server/weapon_items.lua`
+3. Sets `metadata.tint` and `metadata.weapontint` (`item.label`)
+4. `SetMetadata` on that slot, success notify (`WeaponTints.HasBeenApplied`), `ox_inventory:disarm`
+
+## newbserialfile
+
+`server.export = 'MrNewbWeaponTints.newbserialfile'`
+
+```lua
+exports('newbserialfile', function(event, item, inventory)
+```
+
+Same equipped-weapon gate as the tint export.
+
+On `usedItem` sets `metadata.serial` to locale `WeaponTints.SerialRemoved`, then metadata, notify (`WeaponTints.SerialRemovedSuccess`), and disarm. Does not change `tint`.

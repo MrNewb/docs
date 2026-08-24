@@ -1,0 +1,95 @@
+# Task HUD (client)
+
+WIP / experimental. Prefer Task Groups for party membership; use this HUD only if you accept API churn.
+
+Client-only objective card (left or right). Access via `bridge.task` or `exports.Newb_Bridge:Task()`. Accessing this module on the [server](/newb_bridge/modules/task/server) throws.
+
+Players can collapse the card with the `newbs_toggle_task_hud` keybind (default **H**). When every tracked row reaches its `max`, the HUD shows a 30s “task complete” bar, then clears.
+
+## Payload types
+
+```lua
+---@class BridgeTaskItem
+---@field id? string
+---@field label string
+---@field current? number
+---@field max? number
+---@field value? string  -- preformatted (e.g. "5/10"); wins over current/max
+
+---@class BridgeTaskPayload
+---@field title string
+---@field description? string
+---@field tasks? BridgeTaskItem[]
+---@field position? 'left'|'right'
+---@field type? 'dense'|'weight'|'gather'  -- default dense
+---@field expanded? boolean  -- gather only: show detail rows (default true)
+```
+
+## `show(data)`
+
+**Signature:** `show(data: BridgeTaskPayload): void`
+
+Shows or replaces the active task card.
+
+```lua
+bridge.task.show({
+    title = 'Honey Run',
+    description = 'Collect and deliver honey',
+    position = 'right',
+    type = 'dense',
+    tasks = {
+        { id = 'collect', label = 'Collect jars', current = 0, max = 5 },
+        { id = 'deliver', label = 'Deliver to buyer', current = 0, max = 1 },
+    },
+})
+```
+
+## `update(data)`
+
+**Signature:** `update(data: BridgeTaskPayload | table): void`
+
+Patches the active task (opens a new one if none is active). Ignored while the complete bar is running.
+
+```lua
+bridge.task.update({
+    tasks = {
+        { id = 'collect', label = 'Collect jars', current = 3, max = 5 },
+        { id = 'deliver', label = 'Deliver to buyer', current = 0, max = 1 },
+    },
+})
+```
+
+## `hide()` / `complete()` / `toggle()`
+
+| Method | Behavior |
+| ------ | -------- |
+| `hide()` | Clears the task without the complete animation |
+| `complete()` | Clears immediately (also `exports.Newb_Bridge:CompleteTask()`) |
+| `toggle()` | Collapse / restore; during complete bar, dismisses |
+
+```lua
+bridge.task.hide()
+bridge.task.complete()
+-- or
+exports.Newb_Bridge:CompleteTask()
+```
+
+## Queries
+
+| Method | Returns |
+| ------ | ------- |
+| `isOpen()` | `boolean` — card currently painted |
+| `hasTask()` | `boolean` — an active payload exists |
+| `isCompleting()` | `boolean` — 30s complete bar running |
+| `get()` | `BridgeTaskPayload?` |
+
+```lua
+if bridge.task.hasTask() and not bridge.task.isCompleting() then
+    local payload = bridge.task.get()
+    print(payload.title)
+end
+```
+
+## Auto-complete behavior
+
+If every row that has a `max` also has `current >= max`, the HUD enters the complete state automatically. Call `complete()` yourself when you want to skip the 30s bar.

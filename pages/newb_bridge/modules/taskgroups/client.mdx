@@ -1,0 +1,32 @@
+# Task groups (client)
+
+Local membership mirror and menu. Create / add / kick live on [server](/newb_bridge/modules/taskgroups/server).
+
+| Method | Signature | Returns |
+| ------ | --------- | ------- |
+| `has` | `(groupId: string)` | `boolean` |
+| `isLeader` | `(groupId: string)` | `boolean` |
+| `getGroups` | `()` | `string[]` |
+| `getMembers` | `(groupId: string)` | `number[]` (awaits server) |
+| `getLeader` | `(groupId: string)` | `number \| false` (awaits server) |
+
+```lua
+local groups = bridge.taskGroups.getGroups()
+if groups[1] and bridge.taskGroups.isLeader(groups[1]) then
+    bridge.notifications.notify({ description = 'You lead this crew', type = 'inform' })
+end
+
+exports.Newb_Bridge:OpenTaskGroupMenu()
+exports.Newb_Bridge:CloseTaskGroupMenu()
+print(exports.Newb_Bridge:IsTaskGroupMenuOpen())
+```
+
+Client exports: `IsInTaskGroup`, `IsTaskGroupLeader`, `GetLocalTaskGroups`, `GetTaskGroupMembers`, `GetTaskGroupLeader`, `TaskGroups`, `OpenTaskGroupMenu`, `CloseTaskGroupMenu`, `IsTaskGroupMenuOpen`.
+
+The client also registers the `taskgroups` command (toggles the menu).
+
+## Events
+
+| Event | When |
+| ----- | ---- |
+| `Newb_Bridge:client:taskGroupsChanged` | Local group mirror updated |

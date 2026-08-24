@@ -1,0 +1,53 @@
+import { Callout, Steps } from 'nextra/components'
+
+# Installation
+
+<Callout type="warning">
+  Start this **after** ox_lib, your framework, your inventory, Newb_Bridge, and your phone resource. The bridge auto-detects running resources; if this script starts first, detection can miss them. Keep the folder named `MrNewbPhoneTracker`.
+</Callout>
+
+<Steps>
+### Dependencies
+
+[Newb_Bridge](/newb_bridge), ox_lib, server artifact `/server:6116` or newer plus OneSync, and one supported phone resource. On start the script walks the adapter table with `pairs` and keeps the first name already `started` — that is not start-order priority. See [Phones](/mrnewbphonetracker#phones).
+
+### Add items and images
+
+Paste from [Item setup](/mrnewbphonetracker/install/inventory). Copy `tracker.png` from `[INSTALL]/images/` into:
+
+| Inventory | Image folder |
+| --- | --- |
+| ox_inventory | `ox_inventory/web/images/` |
+| qb-inventory / ps-inventory | `html/images/` |
+| one_inventory | `one_inventory/web/images/` |
+
+Do **not** add `server.export` on the ox_inventory item. Use is registered with `bridge.framework.registerItemUse`.
+
+### Configure
+
+Edit `configs/config.lua`:
+
+- `Config.RequiredJob` — job name → minimum grade (shipped `police = 0`). Array `{ 'police', 'sheriff' }` or a single string also work.
+- `Config.TrackerItem` — usable item (`tracker`)
+- `Config.PingCooldown` — seconds between pings per player (`10`; `0` disables)
+- `Config.Utility.Debug` — shipped `false`
+
+Using the item opens the handheld GPS overlay (digits only, max 10). qb-phone / charinfo overrides: `OpenFindSourceByCharPhone` in `resource/open/server/phone_lookup.lua`.
+
+### Add to server.cfg
+
+Swap `qbx_core` / `ox_inventory` / `lb-phone` for whatever you actually run. The phone must be started before this resource.
+
+```cfg
+ensure ox_lib
+ensure qbx_core
+ensure ox_inventory
+ensure Newb_Bridge
+ensure lb-phone
+ensure MrNewbPhoneTracker
+```
+
+### Restart the server
+
+Restart after config or item changes.
+</Steps>

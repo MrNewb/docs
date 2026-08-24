@@ -1,0 +1,42 @@
+# Notifications
+
+`bridge.notifications` uses ox_lib-shaped notification tables.
+
+- [Client](/newb_bridge/modules/notifications/client) — `notify(data)`
+- [Server](/newb_bridge/modules/notifications/server) — `notify(src, data)`
+
+Auto-detect order: `ox_lib` → `vms_notifyv2` → `codem-notification` → `brutal_notify` → `fl-notify` → `mythic_notify` → `okokNotify` → `pnotify` → `solaire_notify` → `t-notify` → `lation_ui` → `wasabi_notify` → `zsx_uiv2`.
+
+```lua
+-- Client
+bridge.notifications.notify({
+    description = 'Item used',
+    type = 'success',
+})
+
+-- Server
+bridge.notifications.notify(source, {
+    description = 'Welcome back',
+    type = 'inform',
+})
+```
+
+## Types
+
+### `OxNotification`
+
+| Field | Type |
+| ----- | ---- |
+| `id` | `string?` |
+| `title` | `string?` |
+| `description` | `string?` |
+| `duration` | `number?` default `3000` |
+| `showDuration` | `boolean?` |
+| `position` | `'top'` \| `'top-right'` \| `'top-left'` \| `'bottom'` \| `'bottom-right'` \| `'bottom-left'` \| `'center-right'` \| `'center-left'` |
+| `type` | `'inform'` \| `'error'` \| `'success'` \| `'warning'` |
+| `style` | `table?` |
+| `icon` | `string?` |
+| `iconColor` | `string?` |
+| `iconAnimation` | `'spin'` \| `'spinPulse'` \| `'spinReverse'` \| `'pulse'` \| `'beat'` \| `'fade'` \| `'beatFade'` \| `'bounce'` \| `'shake'` |
+| `alignIcon` | `'top'` \| `'center'` |
+| `sound` | `table?` |

@@ -1,0 +1,80 @@
+# MrNewbGiftBox
+
+Configurable gift boxes with guaranteed items, weighted extras (ox_lib selector), and optional account money. Built on [Newb_Bridge](/newb_bridge/getting-started).
+
+[Tebex](https://mrnewbscripts.tebex.io/package/6878322) · [GitHub](https://github.com/MrNewb/MrNewbGiftBox) · [Installation](/mrnewbgiftbox/install) · [Exports](/mrnewbgiftbox/exports/server-exports) · [Item images](/mrnewbgiftbox/install/inventory-images)
+
+<img src="/docs/images/giftbox.png" alt="giftbox item" style={{ maxWidth: "8rem" }} loading="lazy" decoding="async" />
+
+## Features
+
+- One usable item per key in `Config.GiftBoxes`
+- Per-entry `always` (always granted) or `weight` (relative chance via `lib.selector`)
+- Optional `account` reward (`cash` / `bank` / `money`)
+- Cancellable unwrap progress on the client
+- Guaranteed rewards are space-checked before the box is consumed
+- Server exports to give a box or grant that box's rewards without unwrapping
+
+## Requirements
+
+- [Newb_Bridge](/newb_bridge)
+- ox_lib
+- Framework + inventory via the bridge
+
+oxmysql is not required. Do **not** add `server.export` on ox_inventory items. Omit `consume` on the item defs.
+
+## Config files
+
+`configs/config.lua` is loaded as a **server script** only. Loot tables stay off the client. Every key under `Config.GiftBoxes` is registered with `bridge.framework.registerItemUse` at start. Add a matching inventory item for each key. Reward `item` names (`water`, `phone`, `sandwich`, …) must already exist in your inventory.
+
+`always = true` always grants that entry. Entries with `weight` (any number `> 0`) are pooled into ox_lib's `lib.selector` and **one** extra is rolled per open. Weights are relative: `50` is two and a half times as likely as `20`. Same idea as LootTables. If an entry has neither `always` nor `weight`, it is skipped.
+
+```lua
+Config.GiftBoxes = {
+    ['starter_box'] = {
+        items = {
+            { item = 'water', count = 2, metadata = { description = 'Everyone who ever drank this has died.' }, always = true },
+            { item = 'phone', count = 1, always = true },
+            { item = 'sandwich', count = 1, weight = 20 },
+            { item = 'bandage', count = 3, weight = 50 },
+        },
+        account = { accountType = 'bank', amount = 500, always = true },
+    },
+    ['gang_kit'] = {
+        items = {
+            { item = 'weapon_pistol', count = 1, metadata = { serie = 'Scratched', serial = 'Scratched' }, always = true },
+        },
+    },
+}
+```
+
+| Field | Default | Purpose |
+| --- | --- | --- |
+| `items[].item` | — | Inventory item to grant |
+| `items[].count` | — | Amount |
+| `items[].metadata` | optional | Passed to `bridge.inventory.addItem` |
+| `items[].always` | optional | `true` always grants |
+| `items[].weight` | optional | Relative selector weight (`> 0`) |
+| `account.accountType` | `'bank'` | `cash`, `bank`, or `money` |
+| `account.amount` | — | Money granted (must be `>= 1`) |
+| `account.always` | optional | `true` always grants money |
+| `account.weight` | optional | Puts the money reward in the same weighted pool as items |
+
+Shipped keys: `starter_box`, `gang_kit`. Add your own keys and matching items.
+
+## Exports
+
+| Export | What it does |
+| --- | --- |
+| `GiveGiftBox(src, giftBoxName, amount?)` | Add the box item. `giftBoxName` must exist in `Config.GiftBoxes`. `amount` defaults to `1`. |
+| `GiveGiftBoxRewards(src, giftBoxName)` | Roll and grant that box's rewards. No unwrap, no item consumed. Returns `false` if the player or key is missing, `true` on success. |
+| `GetItemPool(src, giftBoxName)` | Alias of `GiveGiftBoxRewards`. |
+
+```lua
+exports.MrNewbGiftBox:GiveGiftBox(source, 'starter_box', 1)
+exports.MrNewbGiftBox:GiveGiftBoxRewards(source, 'starter_box')
+```
+
+Details: [Server exports](/mrnewbgiftbox/exports/server-exports).
+
+No commands.

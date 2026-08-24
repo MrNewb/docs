@@ -1,0 +1,36 @@
+# Modules
+
+All modules are accessed through the global `bridge` table after importing `@Newb_Bridge/import.lua`. Modules are **lazy-loaded** on first access based on your [Configuration](/newb_bridge/configuration) provider settings. The host preloads every configured provider at startup.
+
+Modules without an implementation become a quiet noop table (every method is a no-op function). `bridge.dialogue` and `bridge.task` error if accessed on the server. `bridge.dispatch` and `bridge.bossmenu` are host-only on the client (consumer clients get the noop table).
+
+## Available modules
+
+| Module | Client | Server |
+| ------ | ------ | ------ |
+| `bridge.framework` | [Client](/newb_bridge/modules/framework/client) | [Server](/newb_bridge/modules/framework/server) |
+| `bridge.inventory` | [Client](/newb_bridge/modules/inventory/client) | [Server](/newb_bridge/modules/inventory/server) |
+| `bridge.notifications` | [Client](/newb_bridge/modules/notifications/client) | [Server](/newb_bridge/modules/notifications/server) |
+| `bridge.menu` | [Client](/newb_bridge/modules/menu/client) | [Server](/newb_bridge/modules/menu/server) |
+| `bridge.inputs` | [Client](/newb_bridge/modules/inputs/client) | [Server](/newb_bridge/modules/inputs/server) |
+| `bridge.progressbar` | [Client](/newb_bridge/modules/progressbar/client) | [Server](/newb_bridge/modules/progressbar/server) |
+| `bridge.textui` | [Client](/newb_bridge/modules/textui/client) | [Server](/newb_bridge/modules/textui/server) |
+| `bridge.target` | [Client](/newb_bridge/modules/target/client) | [Server](/newb_bridge/modules/target/server) |
+| `bridge.vehiclekeys` | [Client](/newb_bridge/modules/vehiclekeys/client) | [Server](/newb_bridge/modules/vehiclekeys/server) |
+| `bridge.vehiclefuel` | [Client](/newb_bridge/modules/vehiclefuel/client) | [Server](/newb_bridge/modules/vehiclefuel/server) |
+| `bridge.bossmenu` | [Client](/newb_bridge/modules/bossmenu/client) | [Server](/newb_bridge/modules/bossmenu/server) |
+| `bridge.dispatch` | [Client](/newb_bridge/modules/dispatch/client) | [Server](/newb_bridge/modules/dispatch/server) |
+| `bridge.dialogue` | [Client](/newb_bridge/modules/dialogue/client) | [Server](/newb_bridge/modules/dialogue/server) |
+| `bridge.taskGroups` | [Client](/newb_bridge/modules/taskgroups/client) | [Server](/newb_bridge/modules/taskgroups/server) |
+| `bridge.task` | [Client](/newb_bridge/modules/task/client) | [Server](/newb_bridge/modules/task/server) |
+
+## Related docs
+
+- [Utilities](/newb_bridge/utilities): `PropPlacer`, `AddInteraction`, `VersionCheck`, and other exports
+- [Events](/newb_bridge/events): player load/unload and bridge events
+- [Migrating](/newb_bridge/migrating): community_bridge → Newb_Bridge
+
+## Notes
+
+- **Server money:** `getMoney` / `addMoney` / `removeMoney` are the authoritative money APIs. Client `getAccountBalance` is display-only.
+- **Host-proxied:** `bridge.framework` (and inventory when the provider is `qb-inventory` / `qb-framework` / `esx-framework`) is a funcref into Newb_Bridge. Do not call it per-frame.

@@ -1,0 +1,29 @@
+# Framework
+
+There is no SQL file to import. The plate write lives in `resource/server/plates.lua`. `bridge.framework.getResourceName()` picks the table. Any other core notifies `Checks.FrameworkUnsupported` and **does not** consume the item.
+
+Item defs: [Item setup](/mrnewbcustomplates/install/inventory). Qbox and ESX that run ox_inventory use the OX tab. `qb-core` uses the QB tab (`qb-core/shared/items.lua`).
+
+Ownership is the same lookup that loads the row: identifier plus `UPPER(TRIM(plate))` on the old plate, so padded / mixed-case rows still hit. Uniqueness is a separate `SELECT` on the new plate. The `UPDATE` then matches the **stored** `plate` value (index-friendly) rather than scanning with `UPPER(TRIM(...))`. The item is removed first and given back if the write fails or throws.
+
+## qbx_core / qb-core
+
+Table: `player_vehicles`. Owner column: `citizenid`. Props column: `mods`.
+
+1. `SELECT plate, mods ... WHERE citizenid = ? AND UPPER(TRIM(plate)) = ? LIMIT 1`
+2. Reject if a row already uses the new plate (`SELECT 1 ... WHERE UPPER(TRIM(plate)) = ?`)
+3. Decode `mods` JSON, set `plate` to the new value, encode it back
+4. `UPDATE player_vehicles SET plate = ?, mods = ? WHERE plate = ? LIMIT 1` using the stored old plate
+
+## es_extended
+
+Table: `owned_vehicles`. Owner column: `owner`. Props column: `vehicle`.
+
+1. `SELECT plate, vehicle ... WHERE owner = ? AND UPPER(TRIM(plate)) = ? LIMIT 1`
+2. Reject if a row already uses the new plate
+3. Decode `vehicle` JSON, set `plate` to the new value, encode it back
+4. `UPDATE owned_vehicles SET plate = ?, vehicle = ? WHERE plate = ? LIMIT 1` using the stored old plate
+
+## After the SQL write
+
+On success the resource sets `SetVehicleNumberPlateText` plus entity state `ox_lib:setVehicleProperties` `{ plate = newPlate }`, then `bridge.vehiclekeys.remove` / `give`. If `jg-mechanic` is started it also calls `vehiclePlateUpdated(oldPlate, newPlate)`.

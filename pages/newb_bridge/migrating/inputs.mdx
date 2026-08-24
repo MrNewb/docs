@@ -1,0 +1,54 @@
+import { Callout } from 'nextra/components'
+
+# Inputs
+
+`Bridge.Input` → `bridge.inputs`. Full API: [client](/newb_bridge/modules/inputs/client).
+
+<Callout type="warning">
+  There is no `isQBFormat` converter. `Input.Open(title, data, true, submitText)` returned a **named** map (`{ amount = '5' }`). `inputdialog` returns an **array** of values in row order, or `nil` if cancelled. Index `[1]`, do not look up `result.amount`.
+</Callout>
+
+| community_bridge | Newb_Bridge |
+| --- | --- |
+| `Open(title, data, isQBFormat, submitText)` | `inputdialog(heading, rows, options?)` |
+| — | `closeinput()` | `lation_ui` only |
+| `GetResourceName()` | `getResourceName()` | |
+
+Ox-shaped community_bridge calls passed `data` as the ox_lib rows table. That maps 1:1 except the function name and the return:
+
+```lua
+-- Old (ox format)
+local result = Bridge.Input.Open('Rename hive', {
+    { type = 'input', label = 'Name', required = true },
+    { type = 'number', label = 'Capacity', default = 10 },
+}, false)
+
+-- New
+local values = bridge.inputs.inputdialog('Rename hive', {
+    { type = 'input', label = 'Name', placeholder = 'Hive #1', required = true },
+    { type = 'number', label = 'Capacity', default = 10, min = 1, max = 50 },
+})
+if not values then return end
+local name, capacity = values[1], values[2]
+```
+
+QB-format:
+
+```lua
+-- Old
+local result = Bridge.Input.Open('Amount', {
+    inputs = {
+        { name = 'amount', type = 'number', label = 'Amount' },
+    },
+}, true, 'Submit')
+print(result.amount)
+
+-- New
+local values = bridge.inputs.inputdialog('Amount', {
+    { type = 'number', label = 'Amount', required = true },
+})
+if not values then return end
+print(values[1])
+```
+
+`submitText` is unused. Cancel handling is `{ allowCancel = true }` (default) on the third argument.

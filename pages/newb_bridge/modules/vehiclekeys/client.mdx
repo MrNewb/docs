@@ -1,0 +1,39 @@
+# Vehicle keys (client)
+
+**Prefer server** [`give(src, vehicle, plate)`](/newb_bridge/modules/vehiclekeys/server) for all authoritative grants.
+
+For **qb-vehiclekeys**, **qbx_vehiclekeys**, **vehicles_keys**, and **okokGarage**, client `give` / `remove` are **no-ops**. Those stacks already expose (or encourage) client-reachable grant paths that cheaters can abuse. Newb_Bridge does not add another ox_lib callback or net event on top of that. Grant keys from the server after spawn, purchase, garage pull, or rental.
+
+Providers with real **client exports** (for example **MrNewbVehicleKeys**, wasabi, Renewed) still implement client `give` / `remove` via those exports.
+
+## `give(vehicle, plate?)`
+
+**Signature:** `give(vehicle: number, plate?: string): void`
+
+| Param | Type | Description |
+| ----- | ---- | ----------- |
+| `vehicle` | `number` | Vehicle entity handle |
+| `plate` | `string?` | Plate override |
+
+No-op on qb / qbx / vehicles_keys / okokGarage — use the server API instead.
+
+```lua
+-- Providers with client exports (e.g. MrNewbVehicleKeys):
+bridge.vehiclekeys.give(cache.vehicle)
+bridge.vehiclekeys.give(vehicle, 'ABC123')
+```
+
+## `remove(vehicle, plate?)`
+
+**Signature:** `remove(vehicle: number, plate?: string): void`
+
+| Param | Type | Description |
+| ----- | ---- | ----------- |
+| `vehicle` | `number` | Vehicle entity handle |
+| `plate` | `string?` | Plate override |
+
+Same provider rules as `give`.
+
+```lua
+bridge.vehiclekeys.remove(cache.vehicle)
+```

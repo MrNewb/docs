@@ -1,0 +1,20 @@
+# Dialogue
+
+Client-only NUI dialogue system. Access via `bridge.dialogue` (lazy) or `exports.Newb_Bridge:Dialogue()`.
+
+- [Client](/newb_bridge/modules/dialogue/client) — menus, open/close, ped speech/anim
+- [Server](/newb_bridge/modules/dialogue/server) — not available (throws)
+
+```lua
+bridge.dialogue.RegisterMenu({
+    id = 'beekeeper',
+    title = 'Beekeeper',
+    text = 'Need supplies?',
+    options = {
+        { title = 'Buy jar', onSelect = function() end },
+        { title = 'Sell honey', onSelect = function() end },
+    },
+})
+
+bridge.dialogue.OpenMenu('beekeeper', shopPed)
+```

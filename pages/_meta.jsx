@@ -1,0 +1,45 @@
+import {
+  IconApple,
+  IconBuildingCommunity,
+  IconCar,
+  IconCoin,
+  IconDice,
+  IconGift,
+  IconHeartHandshake,
+  IconHexagon,
+  IconHome,
+  IconId,
+  IconLicense,
+  IconPalette,
+  IconPlugConnected,
+  IconRadar2,
+  IconShield,
+  IconPumpkin,
+} from '@tabler/icons-react'
+import { sidebarTitle } from '../components/SidebarLabel'
+
+export default {
+  index: sidebarTitle(IconHome, 'Introduction'),
+  newb_bridge: sidebarTitle(IconPlugConnected, 'Newb_Bridge'),
+  mrnewbbeekeeping: sidebarTitle(IconHexagon, 'BeeKeeping'),
+  mrnewbcityhall: sidebarTitle(IconBuildingCommunity, 'CityHall'),
+  mrnewbcustomplates: sidebarTitle(IconLicense, 'CustomPlates'),
+  mrnewbgiftbox: sidebarTitle(IconGift, 'GiftBox'),
+  mrnewbloottables: sidebarTitle(IconDice, 'LootTables'),
+  mrnewbnamechanger: sidebarTitle(IconId, 'NameChanger'),
+  mrnewborganics: sidebarTitle(IconApple, 'Organics'),
+  mrnewbpawn: sidebarTitle(IconCoin, 'Pawn'),
+  mrnewbphonetracker: sidebarTitle(IconRadar2, 'PhoneTracker'),
+  mrnewbplatecarriers: sidebarTitle(IconShield, 'PlateCarriers'),
+  mrnewbspookyseason: sidebarTitle(IconPumpkin, 'SpookySeason'),
+  mrnewbvehiclerentals: sidebarTitle(IconCar, 'VehicleRentals'),
+  mrnewbweapontints: sidebarTitle(IconPalette, 'WeaponTints'),
+  '-- partners': {
+    type: 'separator',
+  },
+  partners: sidebarTitle(IconHeartHandshake, 'Partners'),
+  tacolink: {
+    display: 'hidden',
+    title: 'TacoLink (renamed)',
+  },
+}

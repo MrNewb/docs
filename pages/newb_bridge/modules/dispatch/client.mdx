@@ -1,0 +1,5 @@
+# Dispatch (client)
+
+Consumer clients do not mount `bridge.dispatch` — they get a quiet noop table. Send alerts from the [server](/newb_bridge/modules/dispatch/server).
+
+The host client listens for `Newb_Bridge:dispatch:internalAlert` and draws a temporary blip + notification when `Config.Dispatch` is `"internal"`.

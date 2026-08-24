@@ -1,0 +1,74 @@
+import { Callout } from 'nextra/components'
+
+# Target
+
+`Bridge.Target` → `bridge.target`. Full API: [client](/newb_bridge/modules/target/client).
+
+Zones take **one payload table**, not positional name/coords/size. Every option needs a unique `name` and a `label`.
+
+<Callout type="warning">
+  community_bridge `FixOptions` rewrote `onSelect` so it received an **entity handle**. Newb_Bridge passes an ox_target **data table** (`data.entity`, `data.coords`, …). `function(entity)` callbacks that call natives on the first argument will break.
+</Callout>
+
+## Zones
+
+| community_bridge | Newb_Bridge |
+| --- | --- |
+| `AddBoxZone(name, coords, size, heading, options, debug?)` | `addBoxZone({ name, coords, size, rotation, options, debug? })` |
+| `AddSphereZone(name, coords, radius, options, debug?)` | `addSphereZone({ name, coords, radius, options, debug? })` |
+| `RemoveZone(name)` | `removeZone(zoneId)` | Id or name |
+
+```lua
+-- Old
+Bridge.Target.AddBoxZone('shop_zone', vec3(100.0, 200.0, 30.0), vec3(2, 2, 2), 0.0, {
+    { label = 'Open Shop', icon = 'fa-solid fa-cart-shopping', onSelect = function(entity) end },
+})
+Bridge.Target.AddSphereZone('atm_zone', vec3(0, 0, 0), 1.5, options)
+Bridge.Target.RemoveZone('shop_zone')
+
+-- New
+bridge.target.addBoxZone({
+    name = 'shop_zone',
+    coords = vec3(100.0, 200.0, 30.0),
+    size = vec3(2, 2, 2),
+    rotation = 0,
+    options = {
+        {
+            name = 'open_shop',
+            label = 'Open Shop',
+            icon = 'fa-solid fa-cart-shopping',
+            onSelect = function(data)
+                -- data.entity
+            end,
+        },
+    },
+})
+bridge.target.addSphereZone({
+    name = 'atm_zone',
+    coords = vec3(0, 0, 0),
+    radius = 1.5,
+    options = { { name = 'use_atm', label = 'Use ATM', onSelect = function() end } },
+})
+bridge.target.removeZone('shop_zone')
+```
+
+## Entities and globals
+
+| community_bridge | Newb_Bridge |
+| --- | --- |
+| `AddLocalEntity(entities, options)` | `addLocalEntity(entities, options)` |
+| `RemoveLocalEntity(entities, optionNames?)` | `removeLocalEntity(...)` |
+| `AddNetworkedEntity(netids, options)` | `addEntity(netIds, options)` |
+| `RemoveNetworkedEntity(netids, optionNames?)` | `removeEntity(...)` |
+| `AddModel(models, options)` | `addModel(...)` |
+| `RemoveModel(model)` | `removeModel(models, optionNames?)` |
+| `AddGlobalPlayer(options)` | `addGlobalPlayer(options)` |
+| `RemoveGlobalPlayer()` | `removeGlobalPlayer(optionNames?)` |
+| `AddGlobalPed(options)` | `addGlobalPed(options)` |
+| `RemoveGlobalPed(options)` | `removeGlobalPed(optionNames?)` |
+| `AddGlobalVehicle(options)` | `addGlobalVehicle(options)` |
+| `RemoveGlobalVehicle(options)` | `removeGlobalVehicle(optionNames?)` | Pass **option names**, not the original options table |
+| `DisableTargeting(bool)` | `disableTargeting(disable)` |
+| `CreateCanInteract` / `CanInteract` / `FixOptions` | — | Not exposed. Put logic in `canInteract` |
+
+For a ped or prop that should spawn in range, prefer [`AddInteraction`](/newb_bridge/migrating/utilities) over a permanent local entity + target.

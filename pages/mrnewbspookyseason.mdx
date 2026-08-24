@@ -1,0 +1,126 @@
+import { YouTubePoster } from '../components/YouTubePoster'
+
+# MrNewbSpookySeason
+
+Halloween event: ghost hunts, pumpkin searches, grave digging, trick-or-treat, decorations, and an event-token shop. Built on [Newb_Bridge](/newb_bridge/getting-started).
+
+[GitHub](https://github.com/MrNewb/MrNewbsSpookySeason) · [Discord](https://discord.gg/mrnewbscripts) · [Installation](/mrnewbspookyseason/install) · [Preview](https://www.youtube.com/watch?v=hi4yJjPZ7RE)
+
+<YouTubePoster id="hi4yJjPZ7RE" title="MrNewbSpookySeason preview" className="resource-video" />
+
+## Features
+
+- Pumpkin searches that roll the `pumpkin` loot table
+- Grave digging that rolls the `grave` loot table
+- Trick-or-treat door knocks (`trickOrTreat` loot)
+- Ghost hunts (needs [pengu_digiscanner](https://github.com/PenguScript/pengu_digiscanner))
+- Event-token shop (`pumpkin_basket` / `rotten_casket`, optional digiscanner)
+- Usable `pumpkin_basket` and `rotten_casket` that roll their own loot tables
+- Optional Halloween weather around shops
+- Seasonal decorations as spawned props
+
+## Requirements
+
+- [Newb_Bridge](/newb_bridge)
+- ox_lib
+- Artifact `/server:6116` or newer, OneSync
+- Framework + inventory + target via the bridge
+- [pengu_digiscanner](https://github.com/PenguScript/pengu_digiscanner) if you want ghost hunts
+
+oxmysql is not required. Keep the folder named `MrNewbsSpookySeason`.
+
+## Config files
+
+### Client-visible — `configs/config.lua`
+
+| Key | Purpose |
+| --- | --- |
+| `Config.WeatherFeature` | `true` forces Halloween weather near shops (pauses qb-weathersync / cd_easytime / Renewed-Weathersync via `OpenSpookyToggleWeatherSync`) |
+| `Config.TrickOrTreatBlips` | `true` draws trick-or-treat blips |
+| `Config.Shops` | Token shops. Shipped `SpookyShop` |
+| `Config.Decorations` | Prop list (`position` `vector4`, `model`) |
+
+Shop entry:
+
+```lua
+SpookyShop = {
+    position = vector4(-1726.4633, -192.4515, 58.8, 270.3187),
+    model = `m24_1_prop_m41_ghost_dom_01a`,
+    inventory = {
+        pumpkin_basket = 25,
+        rotten_casket = 50,
+    },
+},
+```
+
+`inventory` is item name → **event_token** cost. If `pengu_digiscanner` is started, the shop also adds `WEAPON_DIGISCANNER` (ox_inventory) or `weapon_digiscanner` (otherwise) at **15** tokens.
+
+Override weather pause/resume in `resource/open/client/weather.lua` (`OpenSpookyToggleWeatherSync`).
+
+### Server-only — `configs/sv_config.lua`
+
+Do not load this on the client. Loot tables and scavenger coords stay here.
+
+| Key | Purpose |
+| --- | --- |
+| `Config.LootTypes` | Named pools: `pumpkin`, `grave`, `trickOrTreat`, `pumpkin_basket`, `rotten_casket` |
+| `Config.Pumpkins` | Search spots (`position`, `model`, `lootTable`) |
+| `Config.Graves` | Dig spots (`position`, `lootTable`) |
+| `Config.GhostHunts` | Ghost peds (`position`, `model`). Needs pengu_digiscanner |
+| `Config.TrickOrTreat` | Door knocks (`targetPoint`, `model`, `pedSpawn`, `lootTable`) |
+
+Loot row:
+
+| Field | Purpose |
+| --- | --- |
+| `rewardType` | `'item'` or `'cash'` |
+| `name` | Inventory item when `rewardType` is `'item'` |
+| `count` | Fixed amount. If omitted, rolls `min`–`max` |
+| `min` / `max` | Range used when `count` is omitted |
+| `metadata` | Optional item metadata |
+
+`cash` pays `bridge.framework.addMoney(src, 'cash', count, 'spooky_season')`. Each interaction rolls **one** row from that pool (`math.random`).
+
+Usable `pumpkin_basket` / `rotten_casket` consume the item after a 5s progress bar, then roll `pumpkin_basket` / `rotten_casket`.
+
+## Items
+
+| Item | Role |
+| --- | --- |
+| `event_token` | Shop currency. Also granted from some loot rows |
+| `candy_corn` | Loot |
+| `chocolate_bar` | Loot |
+| `pumpkin_basket` | Shop + usable loot crate |
+| `rotten_casket` | Shop + usable loot crate |
+| `id_card` | Grave / rotten casket loot (register it if your inventory does not already have it) |
+
+Paste: [Item setup](/mrnewbspookyseason/install/inventory). Gallery: [Item images](/mrnewbspookyseason/install/inventory-images).
+
+<img src="/docs/images/event_token.png" alt="event_token" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/candy_corn.png" alt="candy_corn" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/chocolate_bar.png" alt="chocolate_bar" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/pumpkin_basket.png" alt="pumpkin_basket" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/rotten_casket.png" alt="rotten_casket" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+
+Do **not** add `server.export` on ox_inventory items. Use is registered with `bridge.framework.registerItemUse`.
+
+## Layout
+
+| Path | Role |
+| --- | --- |
+| `configs/config.lua` | Shops, decorations, weather / blip toggles |
+| `configs/sv_config.lua` | Loot tables and scavenger locations (server) |
+| `resource/client/decorations.lua` | Seasonal props |
+| `resource/client/pumpkins.lua` | Pumpkin targets |
+| `resource/client/graves.lua` | Grave targets |
+| `resource/client/ghosthunt.lua` | Ghost hunts + pengu_digiscanner |
+| `resource/client/trickortreat.lua` | Door knocks |
+| `resource/client/shops.lua` | Token shop + Halloween weather |
+| `resource/client/usables.lua` | Progress bar callback for crate items |
+| `resource/open/client/weather.lua` | `OpenSpookyToggleWeatherSync` |
+| `resource/server/rewards.lua` | Loot roll + grant |
+| `resource/server/shops.lua` | Token purchases |
+| `resource/server/usables.lua` | `pumpkin_basket` / `rotten_casket` use |
+| `[INSTALL]/images/` | Item PNGs |
+
+No public exports. Labels: `locales/en.json`.

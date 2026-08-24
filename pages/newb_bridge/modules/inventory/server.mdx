@@ -1,0 +1,403 @@
+# Inventory (server)
+
+Writes, stashes, shops, and hooks. Local reads live on [client](/newb_bridge/modules/inventory/client). Shared types: [Inventory](/newb_bridge/modules/inventory).
+
+**Argument order:** `metadata` comes **before** `slot` on add/remove.
+
+```lua
+-- community_bridge (metadata LAST on remove)
+-- Bridge.Inventory.RemoveItem(src, item, count, slot, metadata)
+
+-- Newb_Bridge (metadata BEFORE slot)
+bridge.inventory.removeItem(src, item, count, metadata, slot)
+```
+
+## `Items(itemName?)`
+
+**Signature:** `Items(itemName?: string): ItemDefinition | table<string, ItemDefinition> | nil`
+
+Same as [client](/newb_bridge/modules/inventory/client#itemsitemname).
+
+```lua
+local def = bridge.inventory.Items('bandage')
+```
+
+## `getImagePath(itemName)` / `getItemInfo(itemName)`
+
+Same signatures as the client. Use these on the server when you need an icon URL or a normalized label/weight/image row.
+
+```lua
+local info = bridge.inventory.getItemInfo('bandage')
+```
+
+## `addItem(inv, item, count?, metadata?, slot?)`
+
+**Signature:** `addItem(inv: InventoryRef, item: string, count?: number, metadata?: table, slot?: number): any`
+
+| Param | Type | Description |
+| ----- | ---- | ----------- |
+| `inv` | [InventoryRef](/newb_bridge/modules/inventory#inventoryref) | Player source or stash id |
+| `item` | `string` | Item name |
+| `count` | `number?` | Default `1` |
+| `metadata` | `table?` | Item metadata |
+| `slot` | `number?` | Target slot |
+
+| **Returns** | `any` (provider-specific) |
+
+```lua
+bridge.inventory.addItem(source, 'water', 2)
+bridge.inventory.addItem(source, 'water', 1, { durability = 100 })
+bridge.inventory.addItem(source, 'water', 1, { durability = 100 }, 5) -- optional slot
+```
+
+## `removeItem(inv, item, count?, metadata?, slot?)`
+
+**Signature:** `removeItem(inv: InventoryRef, item: string, count?: number, metadata?: table, slot?: number): any`
+
+| Param | Type |
+| ----- | ---- |
+| `inv` | [InventoryRef](/newb_bridge/modules/inventory#inventoryref) |
+| `item` | `string` |
+| `count` | `number?` |
+| `metadata` | `table?` |
+| `slot` | `number?` |
+
+| **Returns** | `any` |
+
+```lua
+bridge.inventory.removeItem(source, 'water', 1)
+bridge.inventory.removeItem(source, 'water', 1, { durability = 100 })
+bridge.inventory.removeItem(source, 'water', 1, nil, 5) -- metadata omitted, slot 5
+```
+
+## `hasItem(inv, item, count?, metadata?)`
+
+**Signature:** `hasItem(inv: InventoryRef, item: string, count?: number, metadata?: table): boolean`
+
+| Param | Type |
+| ----- | ---- |
+| `inv` | [InventoryRef](/newb_bridge/modules/inventory#inventoryref) |
+| `item` | `string` |
+| `count` | `number?` |
+| `metadata` | `table?` |
+
+| **Returns** | `boolean` |
+
+```lua
+if not bridge.inventory.hasItem(source, 'water', 1) then return end
+```
+
+## `getItemCount(inv, item, metadata?)`
+
+**Signature:** `getItemCount(inv: InventoryRef, item: string, metadata?: table): number`
+
+| Param | Type |
+| ----- | ---- |
+| `inv` | [InventoryRef](/newb_bridge/modules/inventory#inventoryref) |
+| `item` | `string` |
+| `metadata` | `table?` |
+
+| **Returns** | `number` |
+
+```lua
+local count = bridge.inventory.getItemCount(source, 'water')
+```
+
+## `getInventoryItems(inv)`
+
+**Signature:** `getInventoryItems(inv: InventoryRef): table`
+
+| Param | Type |
+| ----- | ---- |
+| `inv` | [InventoryRef](/newb_bridge/modules/inventory#inventoryref) |
+
+| **Returns** | occupied slots — slot-keyed map on ox / m-Inventory / one_inventory; sorted array on other adapters. Iterate with `pairs`. |
+
+```lua
+local items = bridge.inventory.getInventoryItems(source)
+```
+
+## `setMetadata(inv, slot, metadata)`
+
+**Signature:** `setMetadata(inv: InventoryRef, slot: number, metadata: table): boolean?`
+
+| Param | Type |
+| ----- | ---- |
+| `inv` | [InventoryRef](/newb_bridge/modules/inventory#inventoryref) |
+| `slot` | `number` |
+| `metadata` | `table` |
+
+| **Returns** | `boolean?` |
+
+```lua
+bridge.inventory.setMetadata(source, 3, { durability = 50 })
+```
+
+## `getSlot(inv, slot)`
+
+**Signature:** `getSlot(inv: InventoryRef, slot: number): InventorySlotItem?`
+
+| Param | Type |
+| ----- | ---- |
+| `inv` | [InventoryRef](/newb_bridge/modules/inventory#inventoryref) |
+| `slot` | `number` |
+
+| **Returns** | [InventorySlotItem](/newb_bridge/modules/inventory#inventoryslotitem)? |
+
+```lua
+local item = bridge.inventory.getSlot(source, 1)
+```
+
+## `clearInventory(inv, keep?)`
+
+**Signature:** `clearInventory(inv: InventoryRef, keep?: string | string[]): any`
+
+| Param | Type | Description |
+| ----- | ---- | ----------- |
+| `inv` | [InventoryRef](/newb_bridge/modules/inventory#inventoryref) | Player or stash |
+| `keep` | `string` \| `string[]?` | Item names to keep |
+
+| **Returns** | `any` |
+
+```lua
+bridge.inventory.clearInventory(source)
+bridge.inventory.clearInventory(source, { 'id_card' })
+```
+
+## `canCarryItem(inv, item, count?, metadata?)`
+
+**Signature:** `canCarryItem(inv: InventoryRef, item: string, count?: number, metadata?: table): boolean`
+
+| Param | Type |
+| ----- | ---- |
+| `inv` | [InventoryRef](/newb_bridge/modules/inventory#inventoryref) |
+| `item` | `string` |
+| `count` | `number?` |
+| `metadata` | `table?` |
+
+| **Returns** | `boolean` |
+
+```lua
+if bridge.inventory.canCarryItem(source, 'water', 5) then
+    bridge.inventory.addItem(source, 'water', 5)
+end
+```
+
+## `registerStash(id, label, slots, maxWeight, owner?, groups?, coords?)`
+
+**Signature:** `registerStash(id: string, label: string, slots: number, maxWeight: number, owner?: string | boolean, groups?: table, coords?: vector3 | vector3[]): boolean?`
+
+| Param | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | `string` | Stash id |
+| `label` | `string` | Display label |
+| `slots` | `number` | Slot count |
+| `maxWeight` | `number` | Max weight |
+| `owner` | `string` \| `boolean?` | Owner scope |
+| `groups` | `table?` | Job/group access |
+| `coords` | `vector3` \| `vector3[]?` | Stash locations |
+
+| **Returns** | `boolean?` |
+
+```lua
+bridge.inventory.registerStash('pharmacy_storage', 'Pharmacy', 50, 100000, false, { ambulance = 0 })
+```
+
+## `registerHook(eventName, callback, options?)` / `removeHooks(hookId?)`
+
+**Signature:** `registerHook(eventName: string, callback: function, options?: table): number | false | nil`
+
+Ox_inventory-style inventory hooks. Real wrap on `ox_inventory` and `m-Inventory`. `one_inventory`, `tgiann-inventory`, and `origen_inventory` forward only if that resource exposes `registerHook` / `RegisterHook`. Everyone else (`qb-inventory`, `qs-inventory`, `jaksam_inventory`, `core_inventory`, `codem-inventory`, `qb-framework`, `esx-framework`) logs a debug warning and returns `false`.
+
+```lua
+local hookId = bridge.inventory.registerHook('swapItems', function(payload)
+    print(payload.fromInventory, payload.toInventory)
+end, { print = true })
+
+bridge.inventory.removeHooks(hookId)
+```
+
+## `openStash(src, id)`
+
+**Signature:** `openStash(src: number, id: string): boolean?`
+
+Opens a registered stash. Gate distance/restrictions before calling. Returns `false` when the adapter has no server-side force-open (`codem-inventory`). `origen_inventory` opens via `OpenInventoryById`; `qs-inventory` reuses `RegisterStash(src, …)` (inferred, not a dedicated force-open).
+
+```lua
+bridge.inventory.openStash(source, 'pharmacy_storage')
+```
+
+## `registerShop(shopType, shopData)` / `openShop(src, shopType)`
+
+**Signatures:** `registerShop(shopType: string, shopData: BridgeShopData): boolean?` · `openShop(src: number, shopType: string): boolean?`
+
+Ox-format shop data. Adapters map `inventory` / `groups` / `locations` as needed. Script-opened shops omit coords on ox/qb so the provider’s proximity check does not block a scripted open.
+
+**Shops work on** `ox_inventory`, `m-Inventory`, `one_inventory`, `tgiann-inventory`, and `qb-inventory`.
+
+**Shops return `false` on** `origen_inventory`, `qs-inventory`, `jaksam_inventory`, `core_inventory`, `codem-inventory`, `qb-framework`, and `esx-framework`.
+
+```lua
+bridge.inventory.registerShop('247', {
+    name = '24/7',
+    inventory = {
+        { name = 'water', price = 5 },
+        { name = 'sandwich', price = 8 },
+    },
+})
+
+bridge.inventory.openShop(source, '247')
+```
+
+## Examples
+
+### Give a reward
+
+```lua
+local function giveReward(src, item, count, metadata)
+    count = count or 1
+
+    if not bridge.inventory.canCarryItem(src, item, count) then
+        bridge.notifications.notify(src, {
+            description = 'Not enough inventory space.',
+            type = 'error',
+            duration = 4000,
+        })
+        return false
+    end
+
+    return bridge.inventory.addItem(src, item, count, metadata)
+end
+
+giveReward(source, 'water', 3)
+
+giveReward(source, 'weapon_license', 1, {
+    issued = os.date('%Y-%m-%d'),
+    holder = bridge.framework.getIdentifier(source),
+})
+```
+
+### Check ingredients before crafting
+
+```lua
+local recipe = {
+    { item = 'iron', count = 2 },
+    { item = 'copper', count = 1 },
+}
+
+local function hasIngredients(src, ingredients)
+    for i = 1, #ingredients do
+        local entry = ingredients[i]
+        if bridge.inventory.getItemCount(src, entry.item) < entry.count then
+            return false, entry.item
+        end
+    end
+    return true
+end
+
+local function consumeIngredients(src, ingredients)
+    for i = 1, #ingredients do
+        local entry = ingredients[i]
+        if not bridge.inventory.removeItem(src, entry.item, entry.count) then
+            return false
+        end
+    end
+    return true
+end
+
+RegisterNetEvent('myresource:craft', function()
+    local src = source
+    local ok, missing = hasIngredients(src, recipe)
+    if not ok then
+        bridge.notifications.notify(src, {
+            description = ('Missing: %s'):format(missing),
+            type = 'error',
+        })
+        return
+    end
+
+    if not consumeIngredients(src, recipe) then return end
+    bridge.inventory.addItem(src, 'lockpick', 1)
+end)
+```
+
+### Metadata-specific remove
+
+Use when multiple stacks of the same item exist with different metadata (QB-style `info`, ox-style `metadata`):
+
+```lua
+local plate = 'ABC123'
+
+bridge.inventory.removeItem(source, 'vehiclekeys', 1, { plate = plate })
+
+local slotItem = bridge.inventory.getSlot(source, 4)
+if slotItem and slotItem.name == 'vehiclekeys' then
+    bridge.inventory.removeItem(source, 'vehiclekeys', 1, nil, slotItem.slot)
+end
+```
+
+### Iterate player inventory
+
+Slots use ox field names (`name`, `count`, `slot`, `metadata`). Iterate with `pairs` — ox_inventory keys by slot number, so `#items` / `ipairs` miss items in gapped slots.
+
+```lua
+local items = bridge.inventory.getInventoryItems(source)
+
+for _, slot in pairs(items) do
+    print(slot.slot, slot.name, slot.count, json.encode(slot.metadata))
+end
+
+local function findItemByMetadata(src, itemName, filter)
+    for _, slot in pairs(bridge.inventory.getInventoryItems(src)) do
+        if slot.name == itemName and lib.table.contains(slot.metadata or {}, filter) then
+            return slot
+        end
+    end
+end
+```
+
+### Stash registration and open
+
+Requires a full inventory provider — not `qb-framework` / `esx-framework`.
+
+```lua
+bridge.inventory.registerStash('mechanic_parts', 'Mechanic parts', 60, 120000, false, {
+    mechanic = 0,
+})
+
+RegisterNetEvent('myshop:openPartsBin', function()
+    bridge.inventory.openStash(source, 'mechanic_parts')
+end)
+```
+
+### Shop registration
+
+```lua
+bridge.inventory.registerShop('247', {
+    name = '24/7',
+    inventory = {
+        { name = 'water', price = 5 },
+        { name = 'sandwich', price = 8 },
+    },
+})
+
+bridge.framework.registerCommand('shop', 'Open the 24/7', {}, nil, function(src)
+    bridge.inventory.openShop(src, '247')
+end)
+```
+
+### Inventory hooks
+
+Real on `ox_inventory` / `m-Inventory`; optional wrap on `one_inventory` / `tgiann-inventory` / `origen_inventory`. Callback receives ox-shaped payload; return `false` to cancel.
+
+```lua
+local hookId = bridge.inventory.registerHook('swapItems', function(payload)
+    if payload.fromInventory == 'police_evidence' then
+        return false
+    end
+end, {
+    inventoryFilter = { 'police_evidence' },
+})
+
+-- Later: bridge.inventory.removeHooks(hookId)
+```

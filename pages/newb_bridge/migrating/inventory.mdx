@@ -1,0 +1,69 @@
+import { Callout } from 'nextra/components'
+
+# Inventory
+
+`Bridge.Inventory` → `bridge.inventory`. Full API: [client](/newb_bridge/modules/inventory/client) · [server](/newb_bridge/modules/inventory/server).
+
+<Callout type="error">
+  Add/remove argument order is reversed for the last two params. community_bridge is `(src, item, count, slot, metadata)`. Newb_Bridge is `(inv, item, count, metadata, slot)`. Copy-paste without swapping this will write metadata into a slot index.
+</Callout>
+
+## Server
+
+| community_bridge | Newb_Bridge | Notes |
+| --- | --- | --- |
+| `AddItem(src, item, count, slot, metadata)` | `addItem(inv, item, count?, metadata?, slot?)` | `inv` is source or stash id |
+| `RemoveItem(src, item, count, slot, metadata)` | `removeItem(inv, item, count?, metadata?, slot?)` | Same order change |
+| `HasItem(src, item, requiredCount)` | `hasItem(inv, item, count?, metadata?)` | Optional metadata match |
+| `GetItemCount(src, item, metadata)` | `getItemCount(inv, item, metadata?)` | |
+| `GetPlayerInventory(src)` | `getInventoryItems(inv)` | Ox-shaped occupied slots |
+| `GetItemBySlot(src, slot)` | `getSlot(inv, slot)` | |
+| `SetMetadata(src, item, slot, metadata)` | `setMetadata(inv, slot, metadata)` | **No item name argument** |
+| `CanCarryItem(src, item, count)` | `canCarryItem(inv, item, count?, metadata?)` | |
+| `Items()` | `Items(itemName?)` | Pass a name for one definition |
+| `GetItemInfo(item)` | `getItemInfo(itemName)` | Includes resolved `image` |
+| `GetImagePath(item)` | `getImagePath(itemName)` | |
+| `RegisterStash(id, label, slots, weight, owner, groups, coords)` | `registerStash(...)` | Same args; weight is `maxWeight` |
+| `OpenStash(src, type, id)` | `openStash(src, id)` | **No inventory type.** Stash only. Gate distance first |
+| `ClearStash(id, type)` | `clearInventory(inv, keep?)` | Optional keep list. Works on players too |
+| `RegisterShop(title, inventory, coords, groups)` | `registerShop(shopType, shopData)` | One ox-format table, not four positionals |
+| `OpenShop(src, shopTitle)` | `openShop(src, shopType)` | Unsupported providers return `false` |
+| `AddTrunkItems` / `AddStashItems` / `UpdatePlate` / `OpenPlayerInventory` / `StripPNG` | — | Use `addItem(stashId, ...)` / ox_inventory exports |
+| — | `registerHook` / `removeHooks` | ox_inventory-style hooks |
+
+```lua
+-- Old
+Bridge.Inventory.RemoveItem(src, 'water', 1, slot, metadata)
+Bridge.Inventory.AddItem(src, 'water', 1, nil, { durability = 100 })
+Bridge.Inventory.SetMetadata(src, 'water', 3, { durability = 50 })
+Bridge.Inventory.OpenStash(src, 'stash', 'pharmacy_storage')
+Bridge.Inventory.RegisterShop('247', {
+    { name = 'water', price = 5 },
+}, coords, { police = 0 })
+
+-- New
+bridge.inventory.removeItem(src, 'water', 1, metadata, slot)
+bridge.inventory.addItem(src, 'water', 1, { durability = 100 })
+bridge.inventory.setMetadata(src, 3, { durability = 50 })
+bridge.inventory.openStash(src, 'pharmacy_storage')
+bridge.inventory.registerShop('247', {
+    name = '24/7',
+    inventory = { { name = 'water', price = 5 } },
+    groups = { police = 0 },
+})
+```
+
+community_bridge `Shops.CreateShop` / `OpenShop` is a separate shop UI. That module does not exist here. Inventory-backed shops are `registerShop` / `openShop` only — and only on ox_inventory, m-Inventory, one_inventory, tgiann-inventory, and qb-inventory.
+
+## Client
+
+| community_bridge | Newb_Bridge |
+| --- | --- |
+| `HasItem(item, requiredCount)` | `hasItem(item, count?, metadata?)` |
+| `GetItemCount(item)` | `getItemCount(item, metadata?)` |
+| `GetPlayerInventory()` | `getInventoryItems()` |
+| `GetItemInfo(item)` | `getItemInfo(itemName)` |
+| `GetImagePath(item)` | `getImagePath(itemName)` |
+| `Items()` | `Items(itemName?)` |
+
+No client add/remove. Writes stay on the server.

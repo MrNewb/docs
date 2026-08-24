@@ -1,0 +1,60 @@
+import { Callout, Tabs } from 'nextra/components'
+
+# Item setup
+
+Register **each** key in `Config.GiftBoxes` as a usable item. Shipped keys: `starter_box`, `gang_kit`. Add a new item whenever you add a new box key.
+
+Copy `giftbox.png` from `[INSTALL]/` into:
+
+| Inventory | Image folder |
+| --- | --- |
+| ox_inventory | `ox_inventory/web/images/` |
+| qb-inventory / ps-inventory | `html/images/` |
+| one_inventory | `one_inventory/web/images/` |
+
+OX is ox_inventory (ESX and Qbox that run ox use this tab). QB is `qb-core/shared/items.lua`. one_inventory only needs the PNG in that folder. You can point extra boxes at the same `giftbox.png`.
+
+<Callout type="warning">
+  Do **not** add `server.export` on ox_inventory items. Use is registered with `bridge.framework.registerItemUse`. Omit `consume` on the item defs.
+</Callout>
+
+<Tabs items={['OX', 'QB']} storageKey="inventory-items">
+<Tabs.Tab>
+
+Add to `ox_inventory/data/items.lua`:
+
+```lua
+['starter_box'] = {
+    label = 'Starter Gift Box',
+    weight = 1000,
+    stack = true,
+    close = true,
+    description = 'A gift box',
+    client = {
+        image = 'giftbox.png',
+    },
+},
+['gang_kit'] = {
+    label = 'Gang Kit',
+    weight = 1000,
+    stack = true,
+    close = true,
+    description = 'A gift box',
+    client = {
+        image = 'giftbox.png',
+    },
+},
+```
+
+</Tabs.Tab>
+<Tabs.Tab>
+
+Add to your QBCore shared items (`qb-core/shared/items.lua`):
+
+```lua
+['starter_box'] = { name = 'starter_box', label = 'Starter Gift Box', weight = 1000, type = 'item', image = 'giftbox.png', unique = false, useable = true, shouldClose = true, combinable = nil, description = 'A gift box' },
+['gang_kit'] = { name = 'gang_kit', label = 'Gang Kit', weight = 1000, type = 'item', image = 'giftbox.png', unique = false, useable = true, shouldClose = true, combinable = nil, description = 'A gift box' },
+```
+
+</Tabs.Tab>
+</Tabs>

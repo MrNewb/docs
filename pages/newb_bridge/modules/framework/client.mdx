@@ -1,0 +1,215 @@
+# Framework (client)
+
+Local player helpers. Identity, jobs, money, metadata, commands, and item use live on [server](/newb_bridge/modules/framework/server). Shared types: [Framework](/newb_bridge/modules/framework).
+
+## `getStress()`
+
+**Signature:** `getStress(): number`
+
+| **Returns** | `number` — local player stress level |
+
+```lua
+local stress = bridge.framework.getStress()
+```
+
+## `getHunger()`
+
+**Signature:** `getHunger(): number`
+
+| **Returns** | `number` — local player hunger |
+
+```lua
+local hunger = bridge.framework.getHunger()
+```
+
+## `getThirst()`
+
+**Signature:** `getThirst(): number`
+
+| **Returns** | `number` — local player thirst |
+
+```lua
+local thirst = bridge.framework.getThirst()
+```
+
+## `setStatus(statusType, value)`
+
+**Signature:** `setStatus(statusType: string, value: number): void`
+
+| Param | Type | Description |
+| ----- | ---- | ----------- |
+| `statusType` | `string` | `'stress'`, `'hunger'`, or `'thirst'` |
+| `value` | `number` | New status value |
+
+```lua
+bridge.framework.setStatus('stress', 0)
+```
+
+## `isOnDuty()`
+
+**Signature:** `isOnDuty(): boolean`
+
+| **Returns** | `boolean` — whether the local player is on duty |
+
+```lua
+if bridge.framework.isOnDuty() then end
+```
+
+## `hasJob(job, grade?, duty?)`
+
+**Signature:** `hasJob(job: string, grade?: number, duty?: boolean): boolean`
+
+| Param | Type | Description |
+| ----- | ---- | ----------- |
+| `job` | `string` | Job name |
+| `grade` | `number?` | Minimum grade |
+| `duty` | `boolean?` | Require on-duty |
+
+| **Returns** | `boolean` |
+
+```lua
+if bridge.framework.hasJob('police', 2, true) then
+    bridge.notifications.notify({ description = 'On duty as Sergeant', type = 'inform' })
+end
+```
+
+## `getPlayerJobData()`
+
+**Signature:** `getPlayerJobData(): PlayerJobData?`
+
+| **Returns** | [PlayerJobData](/newb_bridge/modules/framework#playerjobdata)? |
+
+```lua
+local job = bridge.framework.getPlayerJobData()
+if job then print(job.jobName, job.grade) end
+```
+
+## `getPlayerData()`
+
+**Signature:** `getPlayerData(): table?`
+
+| **Returns** | `table?` — live framework player data |
+
+```lua
+local data = bridge.framework.getPlayerData()
+```
+
+## `getPlayerMetadata(key)`
+
+**Signature:** `getPlayerMetadata(key: string): any`
+
+| Param | Type | Description |
+| ----- | ---- | ----------- |
+| `key` | `string` | Metadata key (e.g. `'stress'`, `'hunger'`) |
+
+| **Returns** | `any` |
+
+```lua
+local licenses = bridge.framework.getPlayerMetadata('licenses')
+```
+
+## `hasGroup(group, grade?, duty?)`
+
+**Signature:** `hasGroup(group: string, grade?: number, duty?: boolean): boolean`
+
+Job **or** gang group from the client cache. Same grade/duty rules as `hasJob`.
+
+```lua
+if bridge.framework.hasGroup('ballas', 1) then end
+```
+
+## `getGroups()`
+
+**Signature:** `getGroups(): table<string, number>?`
+
+| **Returns** | `table<string, number>?` — cached job/gang name → grade |
+
+```lua
+local groups = bridge.framework.getGroups()
+```
+
+## `getPlayerBucket()`
+
+**Signature:** `getPlayerBucket(): number`
+
+| **Returns** | `number` — local routing bucket (`LocalPlayer.state.bucket`, default `0`) |
+
+```lua
+local bucket = bridge.framework.getPlayerBucket()
+```
+
+## `getFrameworkJobs()`
+
+**Signature:** `getFrameworkJobs(): table`
+
+| **Returns** | `table` — all jobs registered in the framework |
+
+```lua
+local jobs = bridge.framework.getFrameworkJobs()
+```
+
+## `getIdentifier()`
+
+**Signature:** `getIdentifier(): string?`
+
+| **Returns** | `string?` — character identifier (citizenid / identifier) |
+
+```lua
+local id = bridge.framework.getIdentifier()
+```
+
+## `getCharacterName()`
+
+**Signature:** `getCharacterName(): string?, string?, string?`
+
+| **Returns** | `string?`, `string?`, `string?` — full name, first name, last name |
+
+```lua
+local full, first, last = bridge.framework.getCharacterName()
+```
+
+## `getIsPlayerLoaded()`
+
+**Signature:** `getIsPlayerLoaded(): boolean`
+
+| **Returns** | `boolean` |
+
+```lua
+if bridge.framework.getIsPlayerLoaded() then end
+```
+
+## `getAccountBalance(moneyType)`
+
+**Signature:** `getAccountBalance(moneyType: MoneyType): number`
+
+| Param | Type | Description |
+| ----- | ---- | ----------- |
+| `moneyType` | [MoneyType](/newb_bridge/modules/framework#moneytype) | Account type (QBX also accepts `'money'`) |
+
+| **Returns** | `number` |
+
+Client balance is **not authoritative**. Use server `getMoney` for payouts or security checks.
+
+```lua
+local cash = bridge.framework.getAccountBalance('cash')
+```
+
+## `isPlayerDead()`
+
+**Signature:** `isPlayerDead(): boolean`
+
+| **Returns** | `boolean` — dead or in last stand |
+
+```lua
+if bridge.framework.isPlayerDead() then return end
+```
+
+## `getPlayerDob()`
+
+**Signature:** `getPlayerDob(): string?`
+
+| **Returns** | `string?` — date of birth |
+
+```lua
+local dob = bridge.framework.getPlayerDob()
+```

@@ -1,0 +1,47 @@
+import { Callout, Steps } from 'nextra/components'
+
+# Installation
+
+<Callout type="warning">
+  Start this **after** ox_lib, your framework, your inventory, and Newb_Bridge. The bridge auto-detects running resources; if this script starts first, detection can miss them. Keep the folder named `MrNewbGiftBox`.
+</Callout>
+
+<Steps>
+### Dependencies
+
+[Newb_Bridge](/newb_bridge), ox_lib, and your framework plus inventory through the bridge. oxmysql is not required.
+
+### Add items and images
+
+Register **each** key in `Config.GiftBoxes` as a usable item. The resource calls `bridge.framework.registerItemUse` for every entry at start. If you add `holiday_box`, you also add a `holiday_box` inventory item. Reward `item` names inside the box table must already exist in your inventory.
+
+Paste from [Item setup](/mrnewbgiftbox/install/inventory). Copy `giftbox.png` from `[INSTALL]/` into:
+
+| Inventory | Image folder |
+| --- | --- |
+| ox_inventory | `ox_inventory/web/images/` |
+| qb-inventory / ps-inventory | `html/images/` |
+| one_inventory | `one_inventory/web/images/` |
+
+Do **not** add `server.export` on ox_inventory items. Use is registered with `bridge.framework.registerItemUse`. Omit `consume` on the item defs.
+
+### Configure
+
+Edit `configs/config.lua` (server-only). `always = true` always grants. `weight` is a relative ox_lib selector weight (not `0`-`1`). One weighted extra is rolled per open. `account` is optional (`accountType` of `cash` / `bank` / `money`, `amount`, plus `always` or `weight`).
+
+### Add to server.cfg
+
+Swap `qbx_core` / `ox_inventory` for whatever you actually run.
+
+```cfg
+ensure ox_lib
+ensure qbx_core
+ensure ox_inventory
+ensure Newb_Bridge
+ensure MrNewbGiftBox
+```
+
+### Restart the server
+
+Restart after config or item changes. Exports: [Server exports](/mrnewbgiftbox/exports/server-exports).
+</Steps>

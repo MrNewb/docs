@@ -1,0 +1,64 @@
+import { Callout, Steps } from 'nextra/components'
+
+# Installation
+
+<Callout type="warning">
+  Start Newb_Bridge **after** ox_lib, your **framework**, **inventory**, **target**, and any other resource it bridges. If those start later, auto-detect can miss them and the wrong (or no) provider is used. **Never** start Newb_Bridge before the framework. Scripts that import `@Newb_Bridge/import.lua` must start **after** the bridge — `import.lua` errors if it is not running.
+</Callout>
+
+<Steps>
+### Requirements
+
+[ox_lib](https://github.com/overextended/ox_lib), [oxmysql](https://github.com/overextended/oxmysql) (the bridge fxmanifest loads `@oxmysql/lib/MySQL.lua` for `getOwnedVehicles`), a FiveM server with `lua54`, and the framework / inventory / target you already run. Providers default to `"auto"` except `Config.Dispatch`, which defaults to `"internal"`.
+
+### Add the resource
+
+Put the folder in `resources` as **`Newb_Bridge`**. Do not rename it — `import.lua` looks up that name.
+
+### Add to server.cfg
+
+```cfg
+ensure ox_lib
+ensure oxmysql
+ensure qbx_core          # or qb-core / es_extended
+ensure ox_inventory      # your inventory
+ensure ox_target         # optional; any other bridged resource too
+ensure Newb_Bridge
+
+# scripts that use bridge.*
+ensure your_script
+```
+
+### Configure
+
+Leave providers on `"auto"` in `settings/bridge_resources.lua`, or pin them. On start, the server console prints which provider each module resolved to. Details: [Configuration](/newb_bridge/configuration).
+
+### Import
+
+Add the bridge import to each resource `fxmanifest.lua`:
+
+```lua
+shared_scripts {
+    '@ox_lib/init.lua',
+    '@Newb_Bridge/import.lua',
+    -- your shared scripts
+}
+
+dependencies {
+    'ox_lib',
+    'Newb_Bridge',
+}
+```
+
+This exposes the global `bridge` table and the resolved `Config`. Modules are **lazy-loaded** the first time you access them (`bridge.inventory`, `bridge.menu`, etc.). The host preloads every configured provider at startup.
+</Steps>
+
+## Next steps
+
+- [Configuration](/newb_bridge/configuration): force or auto-detect providers
+- [Supported](/newb_bridge/supported): framework, inventory, and other provider tables
+- [Resource layout](/newb_bridge/resource-layout): fxmanifest pattern and player lifecycle
+- [Modules](/newb_bridge/modules): full API reference (params, returns, examples)
+- [Utilities](/newb_bridge/utilities): world interactions, prop placement, dialogue
+- [Events](/newb_bridge/events): player load/unload
+- [Migrating](/newb_bridge/migrating): community_bridge → Newb_Bridge

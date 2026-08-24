@@ -1,0 +1,43 @@
+import { Callout, Steps } from 'nextra/components'
+
+# Installation
+
+<Callout type="warning">
+  Start this **after** ox_lib, your framework, your inventory, and Newb_Bridge. The bridge auto-detects running resources; if this script starts first, detection can miss them. Keep the folder named `MrNewbVehicleRentals`.
+</Callout>
+
+<Steps>
+### Dependencies
+
+[Newb_Bridge](/newb_bridge), ox_lib, your framework, and your inventory. Vehicle keys and fuel come through the bridge (auto-detect).
+
+### Add items and images
+
+The only item is `rental_paperwork`. Paste the def from [Item setup](/mrnewbvehiclerentals/install/inventory). Copy `[INSTALL]/images/rental_paperwork.png` into:
+
+| Inventory | Image folder |
+| --- | --- |
+| ox_inventory | `ox_inventory/web/images/` |
+| qb-inventory / ps-inventory | `html/images/` |
+| one_inventory | `one_inventory/web/images/` |
+
+Do **not** add `server.export` on the ox_inventory item. The paperwork is a token; return is from the rental menu.
+
+### Configure
+
+Edit `configs/config.lua` (`Config.Agencies`, `Config.BlipCategory`, `Config.BlipCategoryLabel`). Location fields, `platePrefix`, blip categories, stock `price`, and spawn pads are documented on the [resource page](/mrnewbvehiclerentals). There is no deposit; `price` is charged from **bank** and refunded to **bank** on a valid return.
+
+### Add to server.cfg
+
+Swap `qbx_core` / `ox_inventory` for whatever you actually run.
+
+```cfg
+ensure ox_lib
+ensure qbx_core
+ensure ox_inventory
+ensure Newb_Bridge
+ensure MrNewbVehicleRentals
+```
+
+### Restart the server
+</Steps>

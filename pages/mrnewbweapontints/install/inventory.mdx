@@ -1,0 +1,117 @@
+import { Callout } from 'nextra/components'
+
+# Item setup
+
+<Callout type="warning">
+  ox_inventory only. There is no QB tab. These items **do** use `server.export` — that is the exception to the usual MrNewb item rule. Leave `allowArmed = true` or the player cannot use the item with a weapon out.
+</Callout>
+
+Paste into `ox_inventory/data/items.lua`. The `export` strings must match exactly (`MrNewbWeaponTints.<export>`). Each tint item sets `server.tint` (1–7). The serial file has no tint; it uses `consume = 0.50`.
+
+The player must have a weapon equipped (`ox_inventory:GetCurrentWeapon`). `usingItem` returning `false` cancels and does not consume. `usedItem` writes metadata and disarms.
+
+To add another tint, copy one of these blocks, change the item name, `label`, and `server.tint`. Keep `server.export = 'MrNewbWeaponTints.setweapontint'`. You still only get GTA’s built-in indices.
+
+| Item | Label | `server.export` | Extra |
+| --- | --- | --- | --- |
+| `greentint` | Green Weapon Tint | `MrNewbWeaponTints.setweapontint` | `server.tint = 1` |
+| `goldtint` | Gold Weapon Tint | `MrNewbWeaponTints.setweapontint` | `server.tint = 2` |
+| `pinktint` | Pink Weapon Tint | `MrNewbWeaponTints.setweapontint` | `server.tint = 3` |
+| `armytint` | Army Weapon Tint | `MrNewbWeaponTints.setweapontint` | `server.tint = 4` |
+| `lspdtint` | LSPD Weapon Tint | `MrNewbWeaponTints.setweapontint` | `server.tint = 5` |
+| `orangetint` | Orange Weapon Tint | `MrNewbWeaponTints.setweapontint` | `server.tint = 6` |
+| `platinumtint` | Platinum Weapon Tint | `MrNewbWeaponTints.setweapontint` | `server.tint = 7` |
+| `newbserialfile` | Heavy File | `MrNewbWeaponTints.newbserialfile` | `consume = 0.50` |
+
+```lua
+['newbserialfile'] = {
+    label = 'Heavy File',
+    stack = false,
+    close = true,
+    allowArmed = true,
+    weight = 10,
+    server = {
+        export = 'MrNewbWeaponTints.newbserialfile',
+    },
+    consume = 0.50,
+},
+['greentint'] = {
+    label = 'Green Weapon Tint',
+    stack = false,
+    close = true,
+    allowArmed = true,
+    weight = 10,
+    server = {
+        export = 'MrNewbWeaponTints.setweapontint',
+        tint = 1,
+    },
+},
+['goldtint'] = {
+    label = 'Gold Weapon Tint',
+    stack = false,
+    close = true,
+    allowArmed = true,
+    weight = 10,
+    server = {
+        export = 'MrNewbWeaponTints.setweapontint',
+        tint = 2,
+    },
+},
+['pinktint'] = {
+    label = 'Pink Weapon Tint',
+    stack = false,
+    close = true,
+    allowArmed = true,
+    weight = 10,
+    server = {
+        export = 'MrNewbWeaponTints.setweapontint',
+        tint = 3,
+    },
+},
+['armytint'] = {
+    label = 'Army Weapon Tint',
+    stack = false,
+    close = true,
+    allowArmed = true,
+    weight = 10,
+    server = {
+        export = 'MrNewbWeaponTints.setweapontint',
+        tint = 4,
+    },
+},
+['lspdtint'] = {
+    label = 'LSPD Weapon Tint',
+    stack = false,
+    close = true,
+    allowArmed = true,
+    weight = 10,
+    server = {
+        export = 'MrNewbWeaponTints.setweapontint',
+        tint = 5,
+    },
+},
+['orangetint'] = {
+    label = 'Orange Weapon Tint',
+    stack = false,
+    close = true,
+    allowArmed = true,
+    weight = 10,
+    server = {
+        export = 'MrNewbWeaponTints.setweapontint',
+        tint = 6,
+    },
+},
+['platinumtint'] = {
+    label = 'Platinum Weapon Tint',
+    stack = false,
+    close = true,
+    allowArmed = true,
+    weight = 10,
+    server = {
+        export = 'MrNewbWeaponTints.setweapontint',
+        tint = 7,
+    },
+},
+```
+
+Copy the PNGs from `[INSTALL]/images/` into `ox_inventory/web/images/`.

@@ -1,0 +1,22 @@
+# Dispatch
+
+Server-side dispatch alerts that route through the configured provider (`Config.Dispatch`). When set to `"internal"`, Newb_Bridge notifies eligible on-duty players with a blip + notification.
+
+- [Client](/newb_bridge/modules/dispatch/client) — host internal-alert listener (consumer noop)
+- [Server](/newb_bridge/modules/dispatch/server) — `sendAlert`
+
+`Config.Dispatch` defaults to `"internal"`. Auto-detect order when set to `"auto"`: `ps-dispatch` → `cd_dispatch` → `tk_dispatch` → `rcore_dispatch` → `lb-tablet` → `origen_police` → `core_dispatch` → `kartik-mdt` → `codem-dispatch` → `wasabi_mdt` → `redutzu-mdt`. Fallback is `internal`.
+
+```lua
+-- Server
+bridge.dispatch.sendAlert(src, { 'police', 'sheriff' }, storeCoords, {
+    title = 'Store Robbery',
+    description = 'Armed robbery in progress',
+    code = '10-31',
+}, {
+    sprite = 161,
+    scale = 1.2,
+    colour = 1,
+    text = 'Robbery',
+}, true)
+```

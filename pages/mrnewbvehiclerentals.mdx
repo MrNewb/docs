@@ -1,0 +1,119 @@
+import { YouTubePoster } from '../components/YouTubePoster'
+
+# MrNewbVehicleRentals
+
+Rental desks (peds or props), a `rental_paperwork` item, and nearby returns. Stock can be cars, bikes, boats, or anything else you put in the list. Built on [Newb_Bridge](/newb_bridge/getting-started).
+
+[GitHub](https://github.com/MrNewb/MrNewbVehicleRentals) · [Discord](https://discord.gg/mrnewbscripts) · [Installation](/mrnewbvehiclerentals/install) · [Preview](https://www.youtube.com/watch?v=uJylvMP8_PY)
+
+<YouTubePoster id="uJylvMP8_PY" title="MrNewbVehicleRentals preview" className="resource-video" />
+
+## Requirements
+
+- [Newb_Bridge](/newb_bridge)
+- ox_lib
+- Framework + inventory via the bridge
+- Vehicle keys and fuel via the bridge (auto-detect)
+
+There is no deposit. `stock.price` is taken from **bank** on rent and refunded to **bank** on a valid return.
+
+## Where you edit
+
+`configs/config.lua` — `Config.Agencies`, plus `Config.BlipCategory` / `Config.BlipCategoryLabel` for the shared map legend group.
+
+The table key is the agency id: menu title, blip name, interaction label, and the `rentalLocation` written onto paperwork.
+
+```lua
+Config.BlipCategory = 12
+Config.BlipCategoryLabel = 'Vehicle Rentals'
+
+Config.Agencies = {
+    ['Jims Discount Rentals'] = {
+        coords = vector4(-905.4276, -2337.7114, 6.7090, 330.5889),
+        model = 'u_m_y_babyd',
+        platePrefix = 'JIM',
+        animdata = {
+            dict = 'amb@world_human_muscle_flex@arms_in_front@idle_a',
+            anim = 'idle_b',
+            flags = 1,
+        },
+        blip = { sprite = 227, color = 5, scale = 0.8, category = 12 },
+        stock = {
+            ['brioso3'] = {
+                model = 'brioso3',
+                label = 'Brioso 300 Widebody',
+                price = 550,
+            },
+        },
+        vehicleSpawn = {
+            vector4(-912.7270, -2329.4360, 6.2954, 58.1394),
+        },
+    },
+}
+```
+
+| Field | Required | Purpose |
+| --- | --- | --- |
+| `Config.BlipCategory` | no | Default `SetBlipCategory` index for agency blips (shipped `12`). |
+| `Config.BlipCategoryLabel` | no | Legend name for custom categories **12–133** (`BLIP_CAT_<index>`). |
+| `coords` | yes | Desk `vector4` (heading in `w`). |
+| `model` | yes | Ped or prop at the desk. Ped vs prop comes from the model. |
+| `platePrefix` | no | Plate prefix for this agency (defaults to `RN`). Starts an 8-character plate; the rest is random digits (e.g. `JIM` → `JIM00421`). |
+| `stock` | yes | Map of spawn model → `{ model, label, price }`. Key and `model` must match. |
+| `stock[].model` | yes | Vehicle / bike / boat model to spawn. |
+| `stock[].label` | yes | Menu title and paperwork `vehName`. |
+| `stock[].price` | yes | Bank charge on rent, bank refund on return. |
+| `vehicleSpawn` | yes | Array of `vector4` spawn pads. First clear pad is used. |
+| `blip` | no | `{ sprite, color, scale, category }`. Label is the location key. Omit to skip. |
+| `blip.category` | no | Per-agency category override; falls back to `Config.BlipCategory`. |
+| `animdata` | no | Ped idle: `{ dict, anim, flags }`. `flags` defaults to `1`. |
+| `entityType` | no | Optional leftover (`'ped'` / `'object'`). Not read at runtime. |
+
+Shipped agencies and prefixes:
+
+| Agency | Stock | `platePrefix` |
+| --- | --- | --- |
+| `'Jims Discount Rentals'` | cars | `JIM` |
+| `'Mayos Floaters'` | boats / jetski | `MAY` |
+| `'Dickles Shit Rentals'` | cars | `DKL` |
+| `'Lees Wheely Good Bikes'` | BMX | `LEE` |
+
+All shipped desks use blip category **12** under the legend label **Vehicle Rentals**. Change `Config.BlipCategory` / `Config.BlipCategoryLabel` (or per-agency `blip.category`) to regroup them.
+
+## Player flows
+
+Target the desk. The menu lists every `stock` entry, then return rows for paperwork that belongs to **this** location when that vehicle is nearby.
+
+**Rent** — pick a vehicle. The script checks bank and inventory space, spawns on the first clear `vehicleSpawn` pad with a plate from that agency's `platePrefix`, charges bank, gives keys, and adds one `rental_paperwork`. If every pad is blocked, spawn fails.
+
+**Return** — bring the vehicle back near the desk and use the return row. Bank is refunded, keys are removed, the vehicle is deleted, and that paperwork slot is removed.
+
+Stopping the resource cleans up active rental vehicles.
+
+## Paperwork
+
+Item name is hardcoded: `rental_paperwork`. It is not a usable item. Return is from the rental menu, not from using the item.
+
+| Metadata | Source |
+| --- | --- |
+| `plate` | Plate from the agency `platePrefix` |
+| `rentalLocation` | Location table key |
+| `vehNetId` | Network id |
+| `vehName` | `stock.label` |
+| `renter` | Character display name |
+| `description` | Locale paperwork line |
+
+Defs: [Item setup](/mrnewbvehiclerentals/install/inventory). Gallery: [Item images](/mrnewbvehiclerentals/install/inventory-images).
+
+<img src="/docs/images/rental_paperwork.png" alt="rental_paperwork item" style={{ maxWidth: "8rem" }} loading="lazy" decoding="async" />
+
+## Layout
+
+| Path | Role |
+| --- | --- |
+| `configs/config.lua` | `Config.Agencies` locations and stock |
+| `resource/shared/utils.lua` | Shared helpers / locale init |
+| `resource/client/rental_desks.lua` | Blips + desk interactions |
+| `resource/client/rental_menu.lua` | Rent / return menu + spawn |
+| `resource/server/rental_transactions.lua` | Rent / return, money, paperwork |
+| `[INSTALL]/images/rental_paperwork.png` | Item icon |

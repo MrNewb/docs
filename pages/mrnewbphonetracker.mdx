@@ -1,0 +1,69 @@
+# MrNewbPhoneTracker
+
+Job-gated tracker item. Enter a phone number on the handheld GPS overlay; if that player is online, you get a waypoint. Built on [Newb_Bridge](/newb_bridge/getting-started).
+
+[GitHub](https://github.com/MrNewb/MrNewbPhoneTracker) · [Discord](https://discord.gg/mrnewbscripts) · [Installation](/mrnewbphonetracker/install) · [Item images](/mrnewbphonetracker/install/inventory-images)
+
+<img src="/docs/images/tracker.png" alt="tracker item" style={{ maxWidth: "8rem" }} loading="lazy" decoding="async" />
+
+## Requirements
+
+- [Newb_Bridge](/newb_bridge)
+- ox_lib
+- Artifact `/server:6116` or newer, OneSync
+- A supported phone resource started **before** this script. Detection uses `pairs` among already-started adapters — not start order. See [Phones](#phones)
+- Inventory item named `Config.TrackerItem` (`tracker`). Shipped image file is `tracker.png`
+
+## Where you edit
+
+`configs/config.lua`:
+
+| Key | Purpose |
+| --- | --- |
+| `Config.RequiredJob` | Who may use the item. Map of job name → minimum grade (`police = 0` allows any rank). Array form `{ 'police', 'sheriff' }` and a single string `'police'` also work. Multiple jobs are OR. |
+| `Config.TrackerItem` | Usable item (`tracker`) |
+| `Config.PingCooldown` | Seconds between pings **per player**, server-enforced. Shipped `10`. `0` disables. The timer starts before lookup, so miss spam is blocked too. |
+| `Config.Utility.Debug` | Console logs. Shipped `false` |
+
+qb-phone / charinfo lookups: `resource/open/server/phone_lookup.lua`. Labels: `locales/en.json` (`Device`, `Restricted`, `Dispatch`).
+
+## Using the tracker
+
+Use the item. Wrong job or missing item notifies and never opens the device.
+
+The NUI is a handheld GPS overlay (not an ox_lib dialog). Digits only, max 10. Dial or Enter submits. Escape closes.
+
+- **Hit** — device closes, waypoint + timed blip (sprite 161, 100 seconds).
+- **Miss / empty / cooldown / no item** — device stays open and shows the miss line on the glass.
+
+## Phones
+
+On start, the script walks this adapter table and keeps the **first** name whose `GetResourceState` is `started`:
+
+| Resource name | How it resolves a number |
+| --- | --- |
+| `gksphone` | Loop online players; `exports['gksphone']:GetPhoneBySource(playerId)` |
+| `lb-phone` | `exports['lb-phone']:GetSourceFromNumber(phoneNumber)` |
+| `NPWD` | Loop online players; `exports.npwd.getPlayerData({ source }).phoneNumber` |
+| `okokPhone` | Loop online players; `exports.okokPhone:getPhoneNumberFromSource(playerId)` |
+| `qs-smartphone` | Loop online players; `exports['qs-base']:GetPlayerPhone(playerId)` |
+| `qb-phone` | `OpenFindSourceByCharPhone(phoneNumber)` |
+| `qs-smartphone-pro` | Loop online players; `exports['qs-smartphone-pro']:GetPhoneNumberFromIdentifier(identifier, false)` |
+| `roadphone` | `exports['roadphone']:getPlayerFromPhone(phoneNumber)` → `.source` |
+| `yseries` | Loop online players; `exports.yseries:GetPhoneNumberBySourceId(playerId)` |
+
+Lua `pairs` order is not a guaranteed priority list. If more than one of these phones is started, stop the unused ones so the match is obvious.
+
+Adapters live in `resource/server/tracker.lua`. There are no other phone names in the tree.
+
+### `OpenFindSourceByCharPhone`
+
+Used only by the `qb-phone` adapter. Phone lives on `charinfo`, not a phone-resource export.
+
+Override `OpenFindSourceByCharPhone` in `resource/open/server/phone_lookup.lua` if your stack stores numbers somewhere else.
+
+Shipped logic:
+
+1. Framework `qbx_core` — `exports.qbx_core:GetPlayer(playerId).PlayerData.charinfo.phone`
+2. Framework `qb-core` — `QBCore.Functions.GetPlayer(playerId).PlayerData.charinfo.phone`
+3. Anything else — `false`

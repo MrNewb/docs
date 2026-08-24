@@ -1,0 +1,25 @@
+# Target
+
+Client-only targeting (`ox_target`, `tgiann-target`, `core_focus`, `qb-target`, or `sleepless_interact`).
+
+Each option needs a unique `name` and display `label`.
+
+- [Client](/newb_bridge/modules/target/client) — zones, entities, models, `disableTargeting`
+- [Server](/newb_bridge/modules/target/server) — not implemented
+
+```lua
+bridge.target.addBoxZone({
+    name = 'shop_zone',
+    coords = vec3(100.0, 200.0, 30.0),
+    size = vec3(2, 2, 2),
+    rotation = 0,
+    options = {
+        {
+            name = 'open_shop',
+            label = 'Open Shop',
+            icon = 'fa-solid fa-cart-shopping',
+            onSelect = function() end,
+        },
+    },
+})
+```

@@ -1,0 +1,110 @@
+# Task groups (server)
+
+Membership and party helpers. Local queries and menu toggle live on [client](/newb_bridge/modules/taskgroups/client).
+
+Prefer `bridge.taskGroups` after `@Newb_Bridge/import.lua`. Matching exports also exist (`CreateTaskGroup`, `AddToTaskGroup`, …).
+
+## Create / membership
+
+| Method | Signature | Returns |
+| ------ | --------- | ------- |
+| `create` | `(groupId: string, leaderSrc?: number)` | `boolean` |
+| `add` | `(groupId: string, src: number)` | `boolean` |
+| `remove` | `(groupId: string, src: number)` | `boolean` |
+| `clear` | `(groupId: string)` | `boolean` |
+| `delete` | `(groupId: string)` | `boolean` |
+
+```lua
+local groupId = ('delivery_%s'):format(src)
+bridge.taskGroups.create(groupId, src)
+```
+
+## Queries
+
+| Method | Signature | Returns |
+| ------ | --------- | ------- |
+| `has` | `(groupId: string, src: number)` | `boolean` |
+| `isLeader` | `(groupId: string, src: number)` | `boolean` |
+| `getLeader` | `(groupId: string)` | `number \| false` |
+| `setLeader` | `(groupId: string, src: number)` | `boolean` |
+| `getMembers` | `(groupId: string)` | `number[]` |
+| `getPlayerGroups` | `(src: number)` | `string[]` |
+| `getMemberCount` | `(groupId: string)` | `number` |
+| `getPrimaryGroupId` | `(src: number)` | `string?` |
+
+```lua
+if not bridge.taskGroups.has(groupId, src) then return end
+local members = bridge.taskGroups.getMembers(groupId)
+for i = 1, #members do
+    TriggerClientEvent('MyJob:Client:SyncCrew', members[i], payload)
+end
+```
+
+## Party helpers
+
+| Method | Signature | Returns |
+| ------ | --------- | ------- |
+| `createWithOptions` | `(src: number, options: table)` | `string?` group id |
+| `leaveAllGroups` | `(src: number)` | `void` |
+| `joinByCode` | `(src: number, code: string)` | `boolean, string?, string?` |
+| `kickMember` | `(groupId: string, actor: number, target: number)` | `boolean` |
+| `disband` | `(groupId: string, actor: number)` | `boolean` |
+| `getBrowsableGroups` | `()` | `table[]` |
+| `buildClientGroup` | `(groupId: string)` | menu-ready group table or `nil` |
+
+`createWithOptions` options: `{ id?, name?, image?, maxPlayers?, public? }`.
+
+```lua
+local groupId = bridge.taskGroups.createWithOptions(src, {
+    name = 'Moonshine Run',
+    maxPlayers = 4,
+    public = true,
+})
+if not groupId then return end
+```
+
+## Menu
+
+```lua
+exports.Newb_Bridge:OpenTaskGroupMenu(src)
+```
+
+Server only has `OpenTaskGroupMenu`. `CloseTaskGroupMenu` / `IsTaskGroupMenuOpen` are [client](/newb_bridge/modules/taskgroups/client) exports.
+
+## Events
+
+Emitted by Newb_Bridge:
+
+| Event | When |
+| ----- | ---- |
+| `Newb_Bridge:server:taskGroupCreated` | Group created |
+| `Newb_Bridge:server:taskGroupMemberAdded` | Member joined |
+| `Newb_Bridge:server:taskGroupMemberRemoved` | Member left / kicked |
+| `Newb_Bridge:server:taskGroupLeaderChanged` | Leader changed |
+| `Newb_Bridge:server:taskGroupCleared` | Members cleared |
+| `Newb_Bridge:server:taskGroupDeleted` | Group deleted |
+
+```lua
+AddEventHandler('Newb_Bridge:server:taskGroupMemberAdded', function(groupId, memberSrc)
+    print(memberSrc, 'joined', groupId)
+end)
+```
+
+## End-to-end example
+
+```lua
+RegisterNetEvent('MyHeist:Server:StartCrew', function()
+    local src = source
+    local ped = GetPlayerPed(src)
+    if ped == 0 or not DoesEntityExist(ped) then return end
+
+    local groupId = bridge.taskGroups.createWithOptions(src, {
+        name = 'Vault Crew',
+        maxPlayers = 4,
+        public = false,
+    })
+    if not groupId then return end
+
+    TriggerClientEvent('MyHeist:Client:CrewReady', src, groupId)
+end)
+```

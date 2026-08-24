@@ -1,0 +1,18 @@
+# Vehicle fuel
+
+Fuel is applied on the client (most providers are client-driven). The server path relays through `Newb_Bridge:client:setFuel` so server scripts can still set fuel for a player.
+
+- [Client](/newb_bridge/modules/vehiclefuel/client) — local `set(vehicle, amount)`
+- [Server](/newb_bridge/modules/vehiclefuel/server) — `set(source, vehicle, amount)` relay
+
+Auto-detect order: `ox_fuel` → `rcore_fuel` → `okokGasStation` → `LegacyFuel` → `cdn-fuel` → `lc_fuel` → `qb-fuel` → `Renewed-Fuel` → `ps-fuel` → `qs-fuelstations` → `ti_fuel`. Fallback is `internal` (native `SetVehicleFuelLevel`).
+
+The client event handler only runs when triggered by the server (`source == 65535`).
+
+```lua
+-- Client
+bridge.vehiclefuel.set(cache.vehicle, 75.0)
+
+-- Server (relays a net id to that player's client)
+bridge.vehiclefuel.set(source, vehicle, 75.0)
+```

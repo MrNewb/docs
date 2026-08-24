@@ -1,0 +1,42 @@
+import { Tabs } from 'nextra/components'
+
+# Item setup
+
+Paste the matching snippet into your items file. The item name is `tracker`. The shipped PNG is `tracker.png` — ox_inventory loads `{itemName}.png`, so keep that filename.
+
+| Inventory | Image folder |
+| --- | --- |
+| ox_inventory | `ox_inventory/web/images/` |
+| qb-inventory / ps-inventory | `html/images/` |
+| one_inventory | `one_inventory/web/images/` |
+
+OX is ox_inventory (ESX and Qbox that run ox use this tab). QB is `qb-core/shared/items.lua`. one_inventory only needs the PNG in that folder.
+
+Do **not** add `server.export` on the ox_inventory item. Use is registered with `bridge.framework.registerItemUse`.
+
+<Tabs items={['OX', 'QB']} storageKey="inventory-items">
+<Tabs.Tab>
+
+Add to `ox_inventory/data/items.lua`:
+
+```lua
+['tracker'] = {
+    label = 'tracker',
+    weight = 200,
+    stack = false,
+    close = true,
+    description = 'Property Of LSPD',
+},
+```
+
+</Tabs.Tab>
+<Tabs.Tab>
+
+Add to your QBCore shared items (`qb-core/shared/items.lua`):
+
+```lua
+['tracker'] = { name = 'tracker', label = 'tracker', weight = 200, type = 'item', image = 'tracker.png', unique = true, useable = true, shouldClose = true, combinable = nil, description = 'Property Of LSPD' },
+```
+
+</Tabs.Tab>
+</Tabs>

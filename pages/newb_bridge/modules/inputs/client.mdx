@@ -1,0 +1,49 @@
+# Inputs (client)
+
+Client-only input dialogs (`ox_lib` or `lation_ui`). No [server](/newb_bridge/modules/inputs/server) implementation.
+
+## `inputdialog(heading, rows, options?)`
+
+**Signature:** `inputdialog(heading: string, rows: string[] | InputDialogRowProps[], options?: InputDialogOptionsProps): string[] | number[] | boolean[] | nil`
+
+| Param | Type | Description |
+| ----- | ---- | ----------- |
+| `heading` | `string` | Dialog title |
+| `rows` | `string[]` \| `InputDialogRowProps[]` | Simple labels or ox_lib row definitions |
+| `options` | `InputDialogOptionsProps?` | Dialog options (`{ allowCancel?: boolean }`). Passed through to ox_lib / lation. |
+
+| **Returns** | `string[]` \| `number[]` \| `boolean[]` \| `nil` (`nil` if cancelled) |
+
+```lua
+local values = bridge.inputs.inputdialog('Rename hive', {
+    { type = 'input', label = 'Name', placeholder = 'Hive #1', required = true },
+    { type = 'number', label = 'Capacity', default = 10, min = 1, max = 50 },
+})
+
+if not values then return end
+local name, capacity = values[1], values[2]
+```
+
+Simple string rows:
+
+```lua
+local result = bridge.inputs.inputdialog('Note', { 'Enter a note' })
+if result then print(result[1]) end
+```
+
+## `closeinput()` (optional)
+
+**Signature:** `closeinput(): void`
+
+| **Provider** | `lation_ui` only |
+| **Description** | Closes the active input dialog |
+
+```lua
+bridge.inputs.closeinput()
+```
+
+## Types
+
+Dialog rows use ox_lib `InputDialogRowProps` (`type`, `label`, `min`, `max`, `options`, etc.). See [ox_lib input dialog](https://overextended.dev/ox_lib/Modules/Interface/Client/input).
+
+`inputdialog` returns `string[]` \| `number[]` \| `boolean[]` \| `nil` when cancelled.

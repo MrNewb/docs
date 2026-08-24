@@ -1,0 +1,141 @@
+# MrNewbOrganics
+
+Fruit and vegetable picking plus farmers market vendors. Built on [Newb_Bridge](/newb_bridge/getting-started).
+
+[GitHub](https://github.com/MrNewb/MrNewbOrganics) · [Discord](https://discord.gg/mrnewbscripts) · [Installation](/mrnewborganics/install)
+
+## Requirements
+
+- [Newb_Bridge](/newb_bridge)
+- ox_lib
+- Framework via the bridge (identifier for pick cooldown, **bank** payout)
+- Inventory via the bridge (pick yield, sell)
+- Target via the bridge
+- Inventory items for every `rewardItem.item` and every key in a market's `shopItems`
+
+## Where you edit
+
+One file: `configs/config.lua`.
+
+| Key | Purpose |
+| --- | --- |
+| `Config.PickingTypes` | Harvest sites keyed by type name |
+| `Config.FarmersMarket` | Vendor NPCs. Set `Enabled = false` to skip them |
+
+Labels: `locales/en.json`. Restart after config or item changes.
+
+### Pick type
+
+```lua
+['Apple Trees'] = {
+    locations = {
+        vector4(347.5, 6517.5, 30.5, 1.0),
+    },
+    rewardItem = { item = 'apple', count = 1, metadata = {} },
+    anim = { dict = 'amb@prop_human_movie_bulb@idle_a', name = 'idle_a', flag = 1 },
+},
+['Pineapples'] = {
+    locations = {
+        vector4(2188.4407, 5098.7378, 47.0, 42.9676),
+    },
+    rewardItem = { item = 'pineapple', count = 1, metadata = {} },
+    anim = { dict = 'amb@world_human_gardener_plant@male@base', name = 'base', flag = 1 },
+    propModel = 'prop_pineapple',
+},
+```
+
+| Field | Used? | Notes |
+| --- | --- | --- |
+| `locations` | yes | Array of `vector4`. One harvest site per entry (`Type_1`, `Type_2`, …) |
+| `rewardItem.item` | yes | Inventory item granted on a successful pick |
+| `rewardItem.count` | yes | Amount (`1` if omitted or below `1`) |
+| `rewardItem.metadata` | optional | Passed to `bridge.inventory.addItem` |
+| `anim` | optional | `{ dict, name, flag }` played before the server grant |
+| `propModel` | optional | World model. When set, the site is a spawned prop; when omitted, it is a sphere zone |
+
+Shipped types: `Apple Trees`, `Pineapples`, `Lettuce`. Only pineapple and lettuce set `propModel`.
+
+#### Props vs zones
+
+- **`propModel` set** — `AddInteraction` spawns that model. `vector4.w` is heading. Spawn radius `50`, `snapToGround`. Target distance `3.0`.
+- **`propModel` omitted** — `bridge.target.addSphereZone` at the point. `vector4.w` is zone radius (`1.5` if missing or below `0.5`). Target distance `3.0`.
+
+#### Pick blip
+
+One map blip per type, on the **first** location only. Sprite `280`, colour `2`, scale `0.8`, category `9`. Label is locale `Blips.pickblip`. There is no per-type blip table in config.
+
+### Farmers market
+
+```lua
+Config.FarmersMarket = {
+    Enabled = true,
+    Markets = {
+        ['Mr Solitaire'] = {
+            blip = { id = 52, color = 2, scale = 0.8, label = 'Farmers Market' },
+            entityType = 'ped',
+            model = 'cs_brad',
+            coords = vector4(1263.4164, 3545.6189, 34.1728, 204.9759),
+            shopItems = {
+                apple = 5,
+                pineapple = 10,
+                lettuce = 7,
+            },
+        },
+    },
+}
+```
+
+| Field | Purpose |
+| --- | --- |
+| `Enabled` | Skip all vendors when `false` |
+| `blip` | Optional map blip (`id`, `color`, `scale`, `label`) |
+| `model` | Ped model for `AddInteraction` |
+| `coords` | `vector4` (heading in `w`) |
+| `shopItems` | Item name → **bank** price per unit (a bare number) |
+| `entityType` | Unused leftover. Ped vs prop comes from `model` |
+
+Ped spawn radius is hardcoded `100.0`. Target distance is `3.0`. Payout is `price * count` to **bank**, not an inventory money item. The menu lists every `shopItems` key; selling an item you do not hold notifies and stops.
+
+## Items
+
+Not usable. Skip names you already have.
+
+| Item | Role |
+| --- | --- |
+| `apple` | Apple Trees pick + market |
+| `pineapple` | Pineapples pick + market |
+| `lettuce` | Lettuce pick + market |
+
+`[INSTALL]/images/` ships `apple.png`, `pineapple.png`, and `lettuce.png`. Gallery: [Item images](/mrnewborganics/install/inventory-images).
+
+<img src="/docs/images/apple.png" alt="apple" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/pineapple.png" alt="pineapple" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/lettuce.png" alt="lettuce" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+
+## Cooldown and yield
+
+Not configurable. After a completed pick anim:
+
+- Client hides the target for **60 seconds**
+- Server locks that player identifier on that site for **60 seconds**
+- Yield is `rewardItem.count` of `rewardItem.item`
+- Server rejects anyone farther than **10.0** from the site
+- Market sells reject anyone farther than **5.0** from the vendor. Batch cap is **1000**
+
+There is no skill check and no `Config.Debug`.
+
+No exports and no commands.
+
+## Layout
+
+| Path | Role |
+| --- | --- |
+| `configs/config.lua` | Pick types, farmers market |
+| `resource/client/fruit_picking.lua` | Prop or zone targets, blips |
+| `resource/client/farmers_market.lua` | Vendor peds and sell menu |
+| `resource/server/fruit_picking.lua` | Pick validation and cooldown |
+| `resource/server/farmers_market.lua` | Sell + bank payout |
+| `resource/shared/locales.lua` | Locale init |
+| `[INSTALL]/images/` | Item PNGs |
+
+Start order and item paste: [Installation](/mrnewborganics/install).

@@ -1,0 +1,53 @@
+# Text UI (client)
+
+Client-only on-screen helper text (`ox_lib`, `lation_ui`, `okokTextUI`, `cd_drawtextui`, `jg-textui`, `lab-TextUI`, `zsx_uiv2`).
+
+The `lab-TextUI` adapter ignores `options` and `isTextUIOpen()` always returns `false`.
+
+No [server](/newb_bridge/modules/textui/server) implementation.
+
+## `showTextUI(text, options?)`
+
+**Signature:** `showTextUI(text: string, options?: OxTextUIOptions): void`
+
+| Param | Type |
+| ----- | ---- |
+| `text` | `string` |
+| `options` | [OxTextUIOptions](#oxtextuioptions)? |
+
+```lua
+bridge.textui.showTextUI('[E] Open shop', { position = 'right-center' })
+```
+
+## `hideTextUI()`
+
+**Signature:** `hideTextUI(): void`
+
+```lua
+bridge.textui.hideTextUI()
+```
+
+## `isTextUIOpen()` (optional)
+
+**Signature:** `isTextUIOpen(): boolean`
+
+| **Returns** | `boolean` |
+| **Note** | Provider-dependent |
+
+```lua
+if bridge.textui.isTextUIOpen() then
+    bridge.textui.hideTextUI()
+end
+```
+
+## Types
+
+### `OxTextUIOptions`
+
+| Field | Type |
+| ----- | ---- |
+| `position` | `'right-center'` \| `'left-center'` \| `'top-center'` \| `'bottom-center'` \| `'top-left'` \| `'top-right'` \| `'bottom-left'` \| `'bottom-right'` \| `'center'` |
+| `icon` | `string` \| `table?` |
+| `iconColor` | `string?` |
+| `keybind` | `string?` |
+| `title` | `string?` |

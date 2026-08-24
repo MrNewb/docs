@@ -1,0 +1,103 @@
+import { Callout, Tabs } from 'nextra/components'
+
+# Item setup
+
+These are **not** usable items. The script never registers `registerItemUse`. They only need to exist in your inventory so players can sell, buy back, or smelt them.
+
+Skip any name you already have. Copy the matching PNG from `[INSTALL]/images/` if you want this art.
+
+| Item | Label | Typical use |
+| --- | --- | --- |
+| `metalscrap` | Metal Scrap | Sell / smelt |
+| `iron` | Iron | Sell / smelt reward |
+| `steel` | Steel | Sell |
+| `copper` | Copper | Sell |
+| `aluminum` | Aluminum | Sell |
+| `plastic` | Plastic | Sell |
+| `glass` | Glass | Sell |
+| `rubber` | Rubber | Sell |
+| `radio` | Radio | Sell |
+| `phone` | Phone | Sell |
+| `laptop` | Laptop | Sell |
+| `rolex` | Golden Watch | Sell / smelt |
+| `goldchain` | Golden Chain | Sell / smelt |
+| `diamond_ring` | Diamond Ring | Sell / smelt |
+| `sapphire_ring` | Sapphire Ring | Sell |
+| `emerald_necklace` | Emerald Necklace | Sell |
+| `ruby_ring` | Ruby Ring | Sell |
+| `diamond_necklace` | Diamond Necklace | Sell |
+| `gold` | Gold Bar | Sell / smelt reward |
+| `diamond` | Diamond | Sell / smelt reward |
+
+Copy PNGs from `[INSTALL]/images/` into:
+
+| Inventory | Image folder |
+| --- | --- |
+| ox_inventory | `ox_inventory/web/images/` |
+| qb-inventory / ps-inventory | `html/images/` |
+| one_inventory | `one_inventory/web/images/` |
+
+OX is ox_inventory (ESX and Qbox that run ox use this tab). QB is `qb-core/shared/items.lua`. one_inventory only needs the PNGs in that folder.
+
+<Callout type="warning">
+  Do **not** add `server.export` and do **not** mark these usable. Pawn sells and smelts them as normal inventory items. Omit `consume`.
+</Callout>
+
+<Tabs items={['OX', 'QB']} storageKey="inventory-items">
+<Tabs.Tab>
+
+Add any missing names to `ox_inventory/data/items.lua`:
+
+```lua
+['metalscrap'] = { label = 'Metal Scrap', weight = 100, stack = true, close = false },
+['iron'] = { label = 'Iron', weight = 100, stack = true, close = false },
+['steel'] = { label = 'Steel', weight = 100, stack = true, close = false },
+['copper'] = { label = 'Copper', weight = 100, stack = true, close = false },
+['aluminum'] = { label = 'Aluminum', weight = 100, stack = true, close = false },
+['plastic'] = { label = 'Plastic', weight = 50, stack = true, close = false },
+['glass'] = { label = 'Glass', weight = 50, stack = true, close = false },
+['rubber'] = { label = 'Rubber', weight = 50, stack = true, close = false },
+['radio'] = { label = 'Radio', weight = 1000, stack = true, close = false },
+['phone'] = { label = 'Phone', weight = 190, stack = true, close = false },
+['laptop'] = { label = 'Laptop', weight = 2000, stack = true, close = false },
+['rolex'] = { label = 'Golden Watch', weight = 1500, stack = true, close = false },
+['goldchain'] = { label = 'Golden Chain', weight = 1500, stack = true, close = false },
+['diamond_ring'] = { label = 'Diamond Ring', weight = 1500, stack = true, close = false },
+['sapphire_ring'] = { label = 'Sapphire Ring', weight = 1500, stack = true, close = false },
+['emerald_necklace'] = { label = 'Emerald Necklace', weight = 1500, stack = true, close = false },
+['ruby_ring'] = { label = 'Ruby Ring', weight = 1500, stack = true, close = false },
+['diamond_necklace'] = { label = 'Diamond Necklace', weight = 1500, stack = true, close = false },
+['gold'] = { label = 'Gold Bar', weight = 100, stack = true, close = false },
+['diamond'] = { label = 'Diamond', weight = 1000, stack = true, close = false },
+```
+
+</Tabs.Tab>
+<Tabs.Tab>
+
+Add any missing names to your QBCore shared items (`qb-core/shared/items.lua`):
+
+```lua
+['metalscrap'] = { name = 'metalscrap', label = 'Metal Scrap', weight = 100, type = 'item', image = 'metalscrap.png', unique = false, useable = false, shouldClose = false, combinable = nil, description = 'Scrap metal' },
+['iron'] = { name = 'iron', label = 'Iron', weight = 100, type = 'item', image = 'iron.png', unique = false, useable = false, shouldClose = false, combinable = nil, description = 'Iron' },
+['steel'] = { name = 'steel', label = 'Steel', weight = 100, type = 'item', image = 'steel.png', unique = false, useable = false, shouldClose = false, combinable = nil, description = 'Steel' },
+['copper'] = { name = 'copper', label = 'Copper', weight = 100, type = 'item', image = 'copper.png', unique = false, useable = false, shouldClose = false, combinable = nil, description = 'Copper' },
+['aluminum'] = { name = 'aluminum', label = 'Aluminum', weight = 100, type = 'item', image = 'aluminum.png', unique = false, useable = false, shouldClose = false, combinable = nil, description = 'Aluminum' },
+['plastic'] = { name = 'plastic', label = 'Plastic', weight = 50, type = 'item', image = 'plastic.png', unique = false, useable = false, shouldClose = false, combinable = nil, description = 'Plastic scrap' },
+['glass'] = { name = 'glass', label = 'Glass', weight = 50, type = 'item', image = 'glass.png', unique = false, useable = false, shouldClose = false, combinable = nil, description = 'Broken glass' },
+['rubber'] = { name = 'rubber', label = 'Rubber', weight = 50, type = 'item', image = 'rubber.png', unique = false, useable = false, shouldClose = false, combinable = nil, description = 'Rubber scrap' },
+['radio'] = { name = 'radio', label = 'Radio', weight = 1000, type = 'item', image = 'radio.png', unique = false, useable = false, shouldClose = false, combinable = nil, description = 'A radio' },
+['phone'] = { name = 'phone', label = 'Phone', weight = 190, type = 'item', image = 'phone.png', unique = false, useable = false, shouldClose = false, combinable = nil, description = 'A phone' },
+['laptop'] = { name = 'laptop', label = 'Laptop', weight = 2000, type = 'item', image = 'laptop.png', unique = false, useable = false, shouldClose = false, combinable = nil, description = 'A laptop' },
+['rolex'] = { name = 'rolex', label = 'Golden Watch', weight = 1500, type = 'item', image = 'rolex.png', unique = false, useable = false, shouldClose = false, combinable = nil, description = 'A gold watch' },
+['goldchain'] = { name = 'goldchain', label = 'Golden Chain', weight = 1500, type = 'item', image = 'goldchain.png', unique = false, useable = false, shouldClose = false, combinable = nil, description = 'A gold chain' },
+['diamond_ring'] = { name = 'diamond_ring', label = 'Diamond Ring', weight = 1500, type = 'item', image = 'diamond_ring.png', unique = false, useable = false, shouldClose = false, combinable = nil, description = 'A diamond ring' },
+['sapphire_ring'] = { name = 'sapphire_ring', label = 'Sapphire Ring', weight = 1500, type = 'item', image = 'sapphire_ring.png', unique = false, useable = false, shouldClose = false, combinable = nil, description = 'A sapphire ring' },
+['emerald_necklace'] = { name = 'emerald_necklace', label = 'Emerald Necklace', weight = 1500, type = 'item', image = 'emerald_necklace.png', unique = false, useable = false, shouldClose = false, combinable = nil, description = 'An emerald necklace' },
+['ruby_ring'] = { name = 'ruby_ring', label = 'Ruby Ring', weight = 1500, type = 'item', image = 'ruby_ring.png', unique = false, useable = false, shouldClose = false, combinable = nil, description = 'A ruby ring' },
+['diamond_necklace'] = { name = 'diamond_necklace', label = 'Diamond Necklace', weight = 1500, type = 'item', image = 'diamond_necklace.png', unique = false, useable = false, shouldClose = false, combinable = nil, description = 'A diamond necklace' },
+['gold'] = { name = 'gold', label = 'Gold Bar', weight = 100, type = 'item', image = 'gold.png', unique = false, useable = false, shouldClose = false, combinable = nil, description = 'A gold bar' },
+['diamond'] = { name = 'diamond', label = 'Diamond', weight = 1000, type = 'item', image = 'diamond.png', unique = false, useable = false, shouldClose = false, combinable = nil, description = 'A diamond' },
+```
+
+</Tabs.Tab>
+</Tabs>

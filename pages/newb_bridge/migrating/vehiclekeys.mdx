@@ -1,0 +1,27 @@
+import { Callout } from 'nextra/components'
+
+# Vehicle keys
+
+`Bridge.VehicleKey` → `bridge.vehiclekeys`. Full API: [client](/newb_bridge/modules/vehiclekeys/client) · [server](/newb_bridge/modules/vehiclekeys/server).
+
+community_bridge only implemented **client** `GiveKeys` / `RemoveKeys`. Newb_Bridge has a server grant path. Use the server after spawn, purchase, garage pull, or rental.
+
+<Callout type="warning">
+  Client `give` / `remove` are **no-ops** on qb-vehiclekeys, qbx_vehiclekeys, vehicles_keys, and okokGarage. Grant from the server or keys never arrive on those stacks.
+</Callout>
+
+| community_bridge (client) | Newb_Bridge |
+| --- | --- |
+| `GiveKeys(vehicle, plate?)` | Client: `give(vehicle, plate?)` · Server: `give(src, vehicle, plate?)` |
+| `RemoveKeys(vehicle, plate?)` | Client: `remove(vehicle, plate?)` · Server: `remove(src, vehicle, plate?)` |
+
+```lua
+-- Old (client, after creating a vehicle)
+Bridge.VehicleKey.GiveKeys(vehicle)
+
+-- New — server, after the client reports the entity / net id
+bridge.vehiclekeys.give(src, vehicle)
+bridge.vehiclekeys.give(src, 0, plate) -- plate-only providers
+```
+
+Client-export providers (MrNewbVehicleKeys, wasabi, Renewed, …) still implement client `give` / `remove`. Prefer server anyway so one call works across providers.

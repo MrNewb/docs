@@ -1,0 +1,46 @@
+import { Callout, Tabs } from 'nextra/components'
+
+# Item setup
+
+Required item: `customizableplate` (must match `Config.PlateItemName`).
+
+Copy `customizableplate.png` from `[INSTALL]/itemimages/` into:
+
+| Inventory | Image folder |
+| --- | --- |
+| ox_inventory | `ox_inventory/web/images/` |
+| qb-inventory / ps-inventory | `html/images/` |
+| one_inventory | `one_inventory/web/images/` |
+
+OX is ox_inventory (ESX and Qbox that run ox use this tab). QB is `qb-core/shared/items.lua`. one_inventory only needs the PNG in that folder.
+
+<Callout type="warning">
+  Do **not** add `server.export` on the ox_inventory item. Use is registered with `bridge.framework.registerItemUse`. Omit `consume` on the item def.
+</Callout>
+
+<Tabs items={['OX', 'QB']} storageKey="inventory-items">
+<Tabs.Tab>
+
+Add to `ox_inventory/data/items.lua`:
+
+```lua
+['customizableplate'] = {
+    label = 'Custom Plate',
+    weight = 200,
+    stack = false,
+    close = true,
+    description = 'Apply a custom plate to a vehicle you own.',
+},
+```
+
+</Tabs.Tab>
+<Tabs.Tab>
+
+Add to your QBCore shared items (`qb-core/shared/items.lua`):
+
+```lua
+['customizableplate'] = { name = 'customizableplate', label = 'Custom Plate', weight = 200, type = 'item', image = 'customizableplate.png', unique = true, useable = true, shouldClose = true, combinable = nil, description = 'Apply a custom plate to a vehicle you own.' },
+```
+
+</Tabs.Tab>
+</Tabs>

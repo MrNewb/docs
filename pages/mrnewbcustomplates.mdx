@@ -1,0 +1,68 @@
+import { YouTubePoster } from '../components/YouTubePoster'
+
+# MrNewbCustomPlates
+
+Usable `customizableplate` item. The player types a plate on a license-plate overlay, it is filtered, then applied to a nearby owned vehicle. Built on [Newb_Bridge](/newb_bridge/getting-started).
+
+[GitHub](https://github.com/MrNewb/MrNewbCustomPlates) · [Discord](https://discord.gg/mrnewbscripts) · [Installation](/mrnewbcustomplates/install) · [Item setup](/mrnewbcustomplates/install/inventory) · [Preview](https://www.youtube.com/watch?v=fGq9QBig3j4)
+
+<YouTubePoster id="fGq9QBig3j4" title="MrNewbCustomPlates preview" className="resource-video" />
+
+<img src="/docs/images/MrNewbCustomPlates-V3.png" alt="MrNewbCustomPlates V3" style={{ maxWidth: "100%" }} loading="lazy" decoding="async" />
+
+<img src="/docs/images/customizableplate.png" alt="Customizable plate item" style={{ maxWidth: "12rem" }} loading="lazy" decoding="async" />
+
+## Features
+
+- License-plate NUI with min/max length from config (max is clamped to 8)
+- Letters and numbers only — non-alphanumeric characters are stripped as you type, then uppercased
+- Banned-word and length rejects stay on the overlay (no close-then-notify)
+- Substring filter against `FilteredWords`, checked on client and server
+- Must be outside the vehicle, within `10.0` of a networked vehicle they own (server allows `12.0`)
+- Identifier-scoped ownership lookup plus unique-plate check, then an index-friendly SQL write
+- Optional 5s apply progress (mechanic anim at the rear bumper)
+- Vehicle-key swap through `bridge.vehiclekeys`
+- Optional ox_inventory hook that blocks **giving** the plate item to another player (not moving it in your own inventory)
+
+## Requirements
+
+- [Newb_Bridge](/newb_bridge)
+- ox_lib
+- oxmysql
+- Artifact `/server:6116` or newer, OneSync
+- Compatible inventory (ox_inventory recommended)
+- ESX, QBCore, or Qbox — other cores get a framework-unsupported notify and **do not** consume the item
+- Vehicle keys via Newb_Bridge (auto-detect). The script calls `bridge.vehiclekeys.remove` then `bridge.vehiclekeys.give` so key metadata follows the new plate. [MrNewbVehicleKeys](https://github.com/MrNewb/MrNewbVehicleKeysV2) is the usual pairing.
+
+There is no SQL file to import. The resource updates the framework vehicle table in place. No exports and no commands.
+
+## Config files
+
+`configs/config.lua`:
+
+| Key | Default | Purpose |
+| --- | --- | --- |
+| `PlateItemName` | `'customizableplate'` | Usable item. Inventory name must match. |
+| `EnableOxExclusive` | `false` | When `true` and ox_inventory is started, a `swapItems` hook blocks player-to-player transfers. Slot moves in your own inventory still work. |
+| `ProgressBarEnabled` | `true` | Walks to the rear bumper, then a 5s cancellable apply progress. |
+| `FilteredWords` | `'badword'`, `'fuck'`, `'asshole'` | Case-insensitive substring rejects. Keep entries long enough that they cannot swallow an innocent plate (`ass` would also block `CLASS`). |
+| `Settings.MinCharacters` | `8` | Minimum plate length. |
+| `Settings.MaxCharacters` | `8` | Maximum plate length. GTA plates are 8 characters; anything higher is clamped. |
+
+Labels: `locales/en.json`. Do **not** add `server.export` on the ox_inventory item. Use is registered with `bridge.framework.registerItemUse`. Omit `consume` on the item def.
+
+## Player flow
+
+Use the item. Wrong vehicle (inside it, nothing nearby, not networked) notifies and never opens the overlay.
+
+The NUI is a license-plate overlay, not an ox_lib dialog. It must ack `plateReady` within 2s or you get `UiUnavailable` and mouse is returned. Escape or click outside cancels (same path as the cancel button). Submit stays disabled until min length.
+
+On a valid plate the ped walks to the rear bumper. If `ProgressBarEnabled`, a 5s cancellable mechanic progress runs (`mini@repair` / `fixing_a_ped`). The server then re-checks plate text, distance, ownership, uniqueness, and that the item is still in inventory. Same plate as the vehicle already has is rejected. The item is removed first and given back if the write fails or throws.
+
+If `jg-mechanic` is started, the resource calls `vehiclePlateUpdated(oldPlate, newPlate)` after a successful apply.
+
+## After the SQL write
+
+On success the resource sets `SetVehicleNumberPlateText` plus entity state `ox_lib:setVehicleProperties` `{ plate = newPlate }`, then swaps keys. SQL details: [Framework](/mrnewbcustomplates/install/framework).
+
+Inventory icons by [Decay Studios](https://discord.gg/yDXZwZPjdN).

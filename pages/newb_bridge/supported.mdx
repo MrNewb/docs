@@ -1,0 +1,98 @@
+import { ProviderKey, ProviderTable } from '../../components/ProviderChart'
+
+# Supported
+
+What Newb_Bridge can bind. Check order in each table is from `settings/auto_detect.lua`. Pin a name in [Configuration](/newb_bridge/configuration) to skip detect.
+
+## Key
+
+<ProviderKey />
+
+## Framework
+
+<ProviderTable group="framework" />
+
+## Inventory
+
+<ProviderTable group="inventory" />
+
+## Target
+
+<ProviderTable group="target" />
+
+## Vehicle keys
+
+<ProviderTable group="vehicle-keys" />
+
+## Vehicle fuel
+
+<ProviderTable group="vehicle-fuel" />
+
+## Menu
+
+<ProviderTable group="menu" />
+
+## Notifications
+
+<ProviderTable group="notifications" />
+
+## Inputs
+
+<ProviderTable group="inputs" />
+
+## Text UI
+
+<ProviderTable group="text-ui" />
+
+## Progress bar
+
+<ProviderTable group="progress-bar" />
+
+## Boss menu
+
+<ProviderTable group="boss-menu" />
+
+## Dispatch
+
+Default is `"internal"`. The auto list is used when `Config.Dispatch` is `"auto"`.
+
+<ProviderTable group="dispatch" />
+
+## Locales
+
+JSON files in `locales/`. Same convar as ox_lib: `setr ox:locale en` in `server.cfg`. Unknown or missing files fall back to `en`.
+
+| Code | Language |
+| --- | --- |
+| `en` | English (default) |
+| `en-pirate` | English (pirate) |
+| `af` | Afrikaans |
+| `ar` | Arabic |
+| `bg` | Bulgarian |
+| `cs` | Czech |
+| `da` | Danish |
+| `de` | German |
+| `el` | Greek |
+| `es` | Spanish |
+| `fi` | Finnish |
+| `fr` | French |
+| `hi` | Hindi |
+| `hr` | Croatian |
+| `hu` | Hungarian |
+| `it` | Italian |
+| `ja` | Japanese |
+| `ko` | Korean |
+| `lt` | Lithuanian |
+| `nl` | Dutch |
+| `no` | Norwegian |
+| `pl` | Polish |
+| `pt` | Portuguese |
+| `ro` | Romanian |
+| `ru` | Russian |
+| `sv` | Swedish |
+| `th` | Thai |
+| `tr` | Turkish |
+| `zh` | Chinese |
+| `zh-cn` | Chinese (Simplified) |
+| `zh-hk` | Chinese (Hong Kong) |
+| `zh-tw` | Chinese (Traditional) |

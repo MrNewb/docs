@@ -1,0 +1,59 @@
+import { YouTubePoster } from '../components/YouTubePoster'
+
+# MrNewbBeeKeeping
+
+Player-owned beekeeping: place hives, manage queens and workers, harvest regional honey, sell at the shop, and catch wild swarms.
+
+[Tebex](https://mrnewbscripts.tebex.io/) · [Discord](https://discord.gg/mrnewbscripts) · [Installation](/mrnewbbeekeeping/install) · [Commands](/mrnewbbeekeeping/install/commands) · [Exports](/mrnewbbeekeeping/exports/server-exports) · [Preview](https://www.youtube.com/watch?v=vlsbrSD9l0M)
+
+<YouTubePoster id="vlsbrSD9l0M" title="MrNewbBeeKeeping preview" className="resource-video" />
+
+## Features
+
+- Hive placement and ownership — personal cap, optional VIP extras, owner or allowlist access
+- Production loop — workers produce honey and wax; queen health and genetics affect output. An **open** hive does not tick
+- Seven regional honey types (blue, green, red, amber, lavender, citrus, wildflower) plus default wild honey
+- Queen genetics — trait strains, zone modifiers, breeding cells, in-game strain guide
+- Wild swarms — particles, sting damage, trap catches, optional respawn
+- Beekeeper suit — blocks swarm stings while worn
+- Beekeeper shop — buy supplies, sell honey and wax (`PayTo` is `bank` or `cash`)
+- Admin NUI — hive list and access, map blips, delete, owner/stale wipe, grant queens, strain builder (`/HiveAdmin`)
+
+## Requirements
+
+- [Newb_Bridge](/newb_bridge)
+- ox_lib, oxmysql
+- Artifact `/server:6116` or newer, OneSync
+- Compatible inventory (ox_inventory recommended)
+- Hive props ship in `stream/` (YTYP is registered in `fxmanifest.lua`)
+
+## Config files
+
+| File | What it does |
+| --- | --- |
+| `configs/config.lua` | Client-visible settings: hives, minigames, placement, swarms, trap, suit, honey types, shops |
+| `configs/genetics.lua` | Strain labels and breeding gates |
+| `configs/placement.lua` | Blacklist zones and placeable ground hashes |
+| `configs/sv_config.lua` | Admin/VIP, hive cap, colony rates, shop prices, zones |
+| `resource/open/client/custom.lua` | Client hooks (suit, skip sting) |
+| `resource/open/server/custom.lua` | Server hooks (queen trait, honey reward, trap catch) |
+| `resource/open/client/minigames.lua` | Honey extraction minigames |
+
+Shop location ids must match an `ItemsForSale` key (shipped: `newb_beekeeper_shop`). Prices and caps belong in `sv_config.lua`. Restart after config or item changes.
+
+Start order and items: [Installation](/mrnewbbeekeeping/install).
+
+## Exports
+
+| Export | What it does |
+| --- | --- |
+| `IsPlayerHiveVip(src)` | Whether VIP extras apply for that player |
+| `GetPlayerHiveBonusHives(src)` | Extra hive slots from VIP (`0` if not VIP) |
+| `GetPlayerHiveLimit(src)` | Personal cap (`MaxHivesPerPlayer` + bonus). `0` = unlimited |
+| `IsPlayerAtHiveLimit(src)` | Whether the player is at that cap |
+
+```lua
+exports.MrNewbBeeKeeping:GetPlayerHiveLimit(source)
+```
+
+Details: [Server exports](/mrnewbbeekeeping/exports/server-exports).

@@ -1,0 +1,55 @@
+import { Callout, Steps } from 'nextra/components'
+
+# Installation
+
+<Callout type="warning">
+  Start this **after** ox_lib, oxmysql, your framework, your inventory, and Newb_Bridge. The bridge auto-detects running resources; if this script starts first, detection can miss them. Keep the folder named `MrNewbNameChanger`.
+</Callout>
+
+<Steps>
+### Dependencies
+
+[Newb_Bridge](/newb_bridge), ox_lib, oxmysql, and a compatible inventory.
+
+No SQL to import. QB/Qbox save through the framework. ESX updates `users.firstname` / `users.lastname` in `OpenUpdatePlayerName` (`resource/open/server/update.lua`). That function reads `bridge.framework.getResourceName()` (`qb-core` / `qbx_core` / `es_extended`), not `bridge.frameworks`. Override it for custom identity stacks.
+
+### Add items and images
+
+Required items: `namechangevoucher`, `blankmarriagecertificate`, `filledcertificate` (must match `Config.Items`).
+
+Paste from [Item setup](/mrnewbnamechanger/install/inventory). Copy PNGs from `[INSTALL]/images/` into:
+
+| Inventory | Image folder |
+| --- | --- |
+| ox_inventory | `ox_inventory/web/images/` |
+| qb-inventory / ps-inventory | `html/images/` |
+| one_inventory | `one_inventory/web/images/` |
+
+Do **not** add `server.export` on ox_inventory items. Use is registered with `bridge.framework.registerItemUse`. Omit `consume` on the item defs.
+
+### Configure
+
+Edit `configs/config.lua`:
+
+- `Config.Items`: voucher and certificate names
+- `Config.NameFilter`: `MaxLength` (`32`) and `BadWords`
+- `Config.Marriage`: `RequireJob`, `AllowedJobs`
+- `Config.RecordsClerk`: `Enabled` (ships `false`), `Price`, `Account` (`cash` / `bank`), `Cooldown` (seconds, in memory, cleared on restart), `Locations` (shipped `CityHall` uses `ig_priest`). The clerk NUI takes the name first; pay runs on the server after confirm.
+
+### Add to server.cfg
+
+Swap `qbx_core` / `ox_inventory` for whatever you actually run.
+
+```cfg
+ensure ox_lib
+ensure oxmysql
+ensure qbx_core
+ensure ox_inventory
+ensure Newb_Bridge
+ensure MrNewbNameChanger
+```
+
+### Restart the server
+
+Restart after config or item changes. Item use registers at start. Don't double-register the voucher.
+</Steps>

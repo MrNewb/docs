@@ -1,0 +1,32 @@
+# Vehicle keys (server)
+
+Authoritative grants. Client `give` / `remove` are no-ops on qb / qbx / vehicles_keys / okokGarage — see [client](/newb_bridge/modules/vehiclekeys/client).
+
+## `give(src, vehicle, plate?)`
+
+**Signature:** `give(src: number, vehicle: number, plate?: string): void`
+
+| Param | Type |
+| ----- | ---- |
+| `src` | `number` |
+| `vehicle` | `number` |
+| `plate` | `string?` |
+
+```lua
+bridge.vehiclekeys.give(source, vehicle)
+bridge.vehiclekeys.give(source, 0, plate) -- plate-only providers
+```
+
+## `remove(src, vehicle, plate?)`
+
+**Signature:** `remove(src: number, vehicle: number, plate?: string): void`
+
+| Param | Type |
+| ----- | ---- |
+| `src` | `number` |
+| `vehicle` | `number` |
+| `plate` | `string?` |
+
+```lua
+bridge.vehiclekeys.remove(source, vehicle, plate)
+```

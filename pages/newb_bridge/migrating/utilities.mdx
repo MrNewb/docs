@@ -1,0 +1,151 @@
+import { Callout } from 'nextra/components'
+
+# Libraries and utilities
+
+community_bridge `cLib` helpers and a few leftover modules. Newb_Bridge keeps spawn/place/version as **exports**. Callbacks and locales are ox_lib — not a Newb_Bridge module.
+
+## Entity → AddInteraction
+
+`Bridge.Entity` / `ClientEntity.Create` → `exports[bridge.name]:AddInteraction`. Full payload: [Utilities](/newb_bridge/utilities).
+
+| community_bridge | Newb_Bridge |
+| --- | --- |
+| `Entity.Create({ id, coords, entityType, model, heading, spawnDistance, targets, OnSpawn, OnRemove })` | `AddInteraction(id, { model, coords, heading, radius, options, onSpawn, onDespawn })` |
+| `Entity.CreateBulk(entities)` | `AddInteractionsBatch(entries, options?)` |
+| `Entity.Destroy(id)` | `RemoveInteraction(id)` |
+| `Entity.Get(id)` / `GetAll()` | `GetClosestInteraction` / `GetNearbyInteractions` |
+| `SetTargets` / `UpdateCoords` / `ChangeModel` / `SetAnim` | `UpdateInteraction(id, updates)` |
+| `entityType = 'vehicle'` | — | AddInteraction is ped or prop (from the model) |
+| Server `ServerEntity.Create` network spawn | Client `CreatePed` / `CreateObject` with `isNetwork = true`, or AddInteraction for local range spawn |
+
+```lua
+-- Old
+Bridge.Entity.Create({
+    id = 'pharmacy_clerk',
+    coords = vec3(100.0, 200.0, 30.0),
+    entityType = 'ped',
+    model = 's_m_m_doctor_01',
+    heading = 90.0,
+    spawnDistance = 50.0,
+    targets = {
+        { label = 'Talk', icon = 'fa-solid fa-comments', onSelect = function(entity) end },
+    },
+    OnSpawn = function(entityData) end,
+    OnRemove = function(entityData) end,
+})
+
+-- New
+exports[bridge.name]:AddInteraction('pharmacy_clerk', {
+    model = 's_m_m_doctor_01',
+    coords = vec3(100.0, 200.0, 30.0),
+    heading = 90.0,
+    radius = 50.0,
+    options = {
+        {
+            name = 'talk',
+            label = 'Talk',
+            icon = 'fa-solid fa-comments',
+            distance = 2.0,
+            onSelect = function(data) end,
+        },
+    },
+    onSpawn = function(interaction)
+        SetEntityInvincible(interaction.entity, true)
+    end,
+})
+```
+
+`radius` is spawn distance (default 100, clamped 1–175). Do not periodically remove/re-add for distance. Server `RemoveInteraction(id)` broadcasts `Newb_Bridge:Interaction:Remove`.
+
+## Placeable → PropPlacer
+
+| community_bridge | Newb_Bridge |
+| --- | --- |
+| `Placeable.PlaceObject(model, distance, snapToGround, allowedMats, offset)` | `PropPlacer({ model, maxDistance, snapToGround, allowedMaterials, ... })` |
+| `Placeable.StopPlacing()` | Cancel in the placer UI (Backspace / H depending on options) |
+| `PlaceableObject.Create(model, settings)` | Same `PropPlacer` table form |
+
+```lua
+-- Old
+local coords = Bridge.Placeable.PlaceObject(`prop_beehive`, 10.0, true)
+
+-- New
+local result = exports[bridge.name]:PropPlacer({
+    model = `prop_beehive`,
+    maxDistance = 10.0,
+    snapToGround = true,
+})
+if not result then return end
+```
+
+Returns `false` on cancel. Transform after place: `exports[bridge.name]:useGizmo(entity)`.
+
+## Callbacks
+
+There is no Newb_Bridge callback module. Use [ox_lib callbacks](https://overextended.dev/ox_lib/Modules/Interface/Lua/callback) (`lib.callback.register` / `lib.callback.await`).
+
+```lua
+-- Old
+Bridge.Callback.Register('myresource:getData', function(src)
+    return { ok = true }
+end)
+local data = Bridge.Callback.Trigger('myresource:getData', src)
+
+-- New
+lib.callback.register('myresource:getData', function(src)
+    return { ok = true }
+end)
+local data = lib.callback.await('myresource:getData', false, src)
+```
+
+Every `lib.callback.register` handler must return an explicit value. Use a sentinel (`false`, `''`, `{}`) for cancel — not a bare `return`.
+
+## Version check
+
+| community_bridge | Newb_Bridge |
+| --- | --- |
+| `Version.AdvancedVersionChecker(repoPath, resourceName)` | `exports[bridge.name]:VersionCheck(repoPath, resourceName)` |
+| `Version.VersionChecker(repoPath, tebex)` | — |
+
+## Locales
+
+Use [ox_lib locales](https://overextended.dev/ox_lib/Modules/Interface/Client/locale). Same pattern as community_bridge `Language.Locale` (`locale('key.nested')`, JSON under `locales/`), and they are identical in practice.
+
+`bridge.locale` / `exports[bridge.name]:Locale` exists only so Newb_Bridge can pass its own strings across `import.lua` and host exports. It is not a public API and is not maintained for use outside that path. Do not call it from your resource.
+
+```lua
+-- Old
+Bridge.Language.Locale('notifications.saved')
+
+-- New — ox_lib, in your resource
+locale('notifications.saved')
+```
+
+## Zones
+
+community_bridge `cZones.Create` / `Destroy` was a runtime wrapper around ox_lib / PolyZone. Do not wrap zone creation through Newb_Bridge. Register the zone with ox_lib directly (`lib.zones.poly`, `lib.zones.box`, `lib.zones.sphere`) so you skip that extra layer.
+
+`CreateZone` is only the placement editor. It returns an **ox_lib-compatible** table (poly points + thickness, or box/sphere geometry) that you pass into `lib.zones` yourself. It does not spawn a live zone.
+
+```lua
+-- Old — wrapper creates and tracks the zone
+Bridge.Zones.Create('poly', { name = 'shop_floor', points = points, thickness = 4.0 })
+
+-- New — editor returns geometry; ox_lib owns the zone
+local poly = exports[bridge.name]:CreateZone({
+    type = 'poly',
+    name = 'shop_floor',
+})
+if not poly then return end
+lib.zones.poly(poly)
+```
+
+Target interaction areas are still `bridge.target.addBoxZone` / `addSphereZone` — those are target options, not lib zones. See [Target](/newb_bridge/migrating/target).
+
+## Point / markers / particles / math
+
+`Bridge.Point`, `Marker`, `Particle`, `Anim`, `Cutscene`, `Scaleform`, `Raycast`, `Math`, `Tables`, `SQL`, `Logs`, `Shell` have no Newb_Bridge module. Use ox_lib (`lib.points`, `lib.addKeybind`, …), oxmysql, or natives.
+
+<Callout type="info">
+  Newb_Bridge also ships `bridge.task` (objective HUD) and `bridge.taskGroups` (temporary player groups). Those are new — community_bridge has no equivalent to migrate from.
+</Callout>

@@ -1,0 +1,18 @@
+# Client exports
+
+The client only exports `GetJobPayout`. Loot rolls are server-only.
+
+## GetJobPayout
+
+```lua
+exports.MrNewbLootTables:GetJobPayout(jobName, payTier)
+```
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `jobName` | string | Key in `Config.JobPayouts` |
+| `payTier` | string? | `'low'`, `'mid'`, or `'high'`. Default `'low'` |
+
+First call for a `jobName` fetches the rolled values from the server and caches `{ id, low, mid, high }`. Later calls read the cache. Missing job or unknown tier returns `0`.
+
+This is the same rolled number the server stored at start — not a new random. The client never receives the min/max ranges.

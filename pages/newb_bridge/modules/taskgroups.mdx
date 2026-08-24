@@ -1,0 +1,25 @@
+# Task groups
+
+Temporary player groups for jobs, heists, and party-style activities. Available as `bridge.taskGroups` and via `exports.Newb_Bridge:TaskGroups()`.
+
+- [Client](/newb_bridge/modules/taskgroups/client) — local mirror and menu
+- [Server](/newb_bridge/modules/taskgroups/server) — membership, party helpers, events
+
+Server owns membership; clients get a local mirror plus NUI menu helpers.
+
+Limits come from `Config.TaskGroups` in `settings/bridge_resources.lua`: `DefaultMaxPlayers` / `MaxMaxPlayers` / `MinMaxPlayers` (2–8), `InviteRadius` (10.0), `JoinCodeLength` (6), `MaxNameLength` (32), `DefaultImage`.
+
+```lua
+-- Server
+local groupId = bridge.taskGroups.createWithOptions(src, {
+    name = 'Vault Crew',
+    maxPlayers = 4,
+    public = false,
+})
+
+-- Client
+local groups = bridge.taskGroups.getGroups()
+if groups[1] and bridge.taskGroups.isLeader(groups[1]) then
+    exports.Newb_Bridge:OpenTaskGroupMenu()
+end
+```

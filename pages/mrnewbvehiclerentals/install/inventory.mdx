@@ -1,0 +1,55 @@
+import { Tabs } from 'nextra/components'
+
+# Item setup
+
+The item name must be `rental_paperwork`. That string is hardcoded on add and remove.
+
+It is not a usable item. Do **not** add ox_inventory `server.export`, and do not register `registerItemUse` for it. Metadata is written on rent; the rental menu reads it to offer a return.
+
+| Metadata | Purpose |
+| --- | --- |
+| `plate` | Match the spawned vehicle |
+| `rentalLocation` | Must equal the desk key in `Config.Agencies` |
+| `vehNetId` | Network id at rent time |
+| `vehName` | Stock label |
+| `renter` | Character display name |
+| `description` | Locale paperwork line |
+
+qb-inventory / ps-inventory must keep that data on the item (`info`).
+
+Copy `rental_paperwork.png` from `[INSTALL]/images/` into:
+
+| Inventory | Image folder |
+| --- | --- |
+| ox_inventory | `ox_inventory/web/images/` |
+| qb-inventory / ps-inventory | `html/images/` |
+| one_inventory | `one_inventory/web/images/` |
+
+OX is ox_inventory (ESX and Qbox that run ox use this tab). QB is `qb-core/shared/items.lua`. one_inventory only needs the PNG in that folder.
+
+<Tabs items={['OX', 'QB']} storageKey="inventory-items">
+<Tabs.Tab>
+
+Add to `ox_inventory/data/items.lua`:
+
+```lua
+['rental_paperwork'] = {
+    label = 'Rental Paperwork',
+    weight = 220,
+    stack = false,
+    close = true,
+    description = 'Paperwork for a rental vehicle',
+},
+```
+
+</Tabs.Tab>
+<Tabs.Tab>
+
+Add to your QBCore shared items (`qb-core/shared/items.lua`):
+
+```lua
+['rental_paperwork'] = { name = 'rental_paperwork', label = 'Rental Paperwork', weight = 220, type = 'item', image = 'rental_paperwork.png', unique = true, useable = false, shouldClose = false, combinable = nil, description = 'Paperwork for a rental vehicle' },
+```
+
+</Tabs.Tab>
+</Tabs>

@@ -1,0 +1,99 @@
+import { Callout } from 'nextra/components'
+
+# Migrating from community_bridge
+
+Replace [community_bridge](https://github.com/TheOrderFivem/community_bridge) with Newb_Bridge in a resource you control. This is a rewrite of the call surface, not a drop-in rename.
+
+Newb_Bridge covers the modules MrNewb scripts use. community_bridge modules that have no counterpart stay on community_bridge, or you call the underlying resource yourself.
+
+## Swap the import
+
+Stop starting `community_bridge` for that resource. Start `Newb_Bridge` after ox_lib, the framework, and the inventory/target you already run. Details: [Installation](/newb_bridge/getting-started).
+
+```lua
+-- fxmanifest.lua
+shared_scripts {
+    '@ox_lib/init.lua',
+    '@Newb_Bridge/import.lua',
+}
+
+dependencies {
+    'ox_lib',
+    'Newb_Bridge',
+}
+```
+
+```lua
+-- Old
+local Bridge = exports.community_bridge:Bridge()
+Bridge.Framework.GetPlayerIdentifier(src)
+
+-- New — `bridge` is global after import.lua
+bridge.framework.getIdentifier(src)
+```
+
+Do not keep both bridges in the same consumer. `bridge` and `Bridge` are different objects.
+
+## Conventions that apply everywhere
+
+| community_bridge | Newb_Bridge |
+| --- | --- |
+| `Bridge.Module.PascalCase(...)` | `bridge.module.camelCase(...)` |
+| `exports.community_bridge:Bridge()` | `@Newb_Bridge/import.lua` → global `bridge` |
+| `exports.community_bridge:Framework()` | `bridge.framework` (host-proxied) |
+| `GetResourceName()` | `getResourceName()` |
+| Optional QB-format flags (`useQb`, `isQBFormat`, `isQBInput`) | ox_lib-shaped tables only |
+| Inventory `slot` before `metadata` | `metadata` before `slot` |
+| Framework methods for items | `bridge.inventory` |
+
+Lifecycle events: [Events](/newb_bridge/events).
+
+| community_bridge | Newb_Bridge | Payload |
+| --- | --- | --- |
+| `community_bridge:Server:OnPlayerLoaded` | `Newb_Bridge:server:playerLoad` | `src` |
+| `community_bridge:Server:OnPlayerUnload` | `Newb_Bridge:server:playerUnload` | `src` |
+| `community_bridge:Client:OnPlayerLoaded` | `Newb_Bridge:client:playerLoad` | none |
+| `community_bridge:Client:OnPlayerUnload` | `Newb_Bridge:client:playerUnload` | none |
+| `community_bridge:Server:OnPlayerJobChange` | `Newb_Bridge:server:playerJobUpdate` | `src`, `jobName` |
+| `QBCore:Client:OnJobUpdate` / `esx:setJob` | `Newb_Bridge:client:playerJobUpdate` | `jobName`, `jobLabel`, `gradeName`, `gradeLevel` |
+
+Listen with `AddEventHandler`. Only the host emits these.
+
+## Module guides
+
+| community_bridge | Newb_Bridge | Guide |
+| --- | --- | --- |
+| `Bridge.Framework` | `bridge.framework` | [Framework](/newb_bridge/migrating/framework) |
+| `Bridge.Inventory` | `bridge.inventory` | [Inventory](/newb_bridge/migrating/inventory) |
+| `Bridge.Notify` | `bridge.notifications` | [Notifications](/newb_bridge/migrating/notifications) |
+| `Bridge.HelpText` | `bridge.textui` | [Text UI](/newb_bridge/migrating/textui) |
+| `Bridge.Menu` | `bridge.menu` | [Menu](/newb_bridge/migrating/menu) |
+| `Bridge.Input` | `bridge.inputs` | [Inputs](/newb_bridge/migrating/inputs) |
+| `Bridge.ProgressBar` | `bridge.progressbar` | [Progress bar](/newb_bridge/migrating/progressbar) |
+| `Bridge.Target` | `bridge.target` | [Target](/newb_bridge/migrating/target) |
+| `Bridge.VehicleKey` | `bridge.vehiclekeys` | [Vehicle keys](/newb_bridge/migrating/vehiclekeys) |
+| `Bridge.Fuel` | `bridge.vehiclefuel` | [Vehicle fuel](/newb_bridge/migrating/vehiclefuel) |
+| `Bridge.BossMenu` | `bridge.bossmenu` | [Boss menu](/newb_bridge/migrating/bossmenu) |
+| `Bridge.Dispatch` | `bridge.dispatch` | [Dispatch](/newb_bridge/migrating/dispatch) |
+| `Bridge.Dialogue` | `bridge.dialogue` | [Dialogue](/newb_bridge/migrating/dialogue) |
+| `Bridge.Entity` / `Placeable` / `Callback` / `Version` / `Language` / `cZones` | utilities + ox_lib | [Libraries and utilities](/newb_bridge/migrating/utilities) |
+
+## No Newb_Bridge equivalent
+
+These community_bridge modules are out of scope. Leave them on community_bridge, or talk to the resource they wrap.
+
+| Module | What it did |
+| --- | --- |
+| `Bridge.Banking` | Society / management accounts (`GetAccountMoney`, `AddAccountMoney`). Player wallets are `bridge.framework.getMoney` / `addMoney` / `removeMoney`. |
+| `Bridge.Clothing` | Appearance get/set/restore and clothing menus |
+| `Bridge.Doorlock` | `ToggleDoorLock`, `GetClosestDoor` |
+| `Bridge.Housing` | Property enter/leave |
+| `Bridge.Phone` | Phone number and emails |
+| `Bridge.Shops` | Built-in shop UI (`OpenShop`, `CreateShop`, checkout). Inventory-backed shops are `bridge.inventory.registerShop` / `openShop`. |
+| `Bridge.Skills` | XP / skill levels |
+| `Bridge.Weather` | Weather sync toggle |
+| `Bridge.SQL` / `Logs` / `Scaleform` / `Particle` / `Cutscene` / `Marker` / `Anim` / `Shell` / `Raycast` / `Math` / `Tables` | cLib helpers. Use ox_lib, oxmysql, or natives. |
+
+<Callout type="warning">
+  `bridge.framework.getPlayer` is a cached snapshot (`charId`, `name`, `groups`, `hasGroup`). It is not the QB/ESX player object community_bridge returned from `GetPlayer`. Do not call `.Functions` or `.PlayerData` on it.
+</Callout>

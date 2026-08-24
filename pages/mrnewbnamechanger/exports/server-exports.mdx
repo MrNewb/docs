@@ -1,0 +1,35 @@
+# Server exports
+
+One export. Server-only.
+
+## ChangePlayerName
+
+Writes a new first and last name for an online player. Runs the same `Config.NameFilter` path as vouchers and the records clerk (trim, letters only, max length, blocked words), then `OpenUpdatePlayerName`.
+
+Does **not** consume an item and does **not** start the clerk cooldown.
+
+```lua
+---@param src number
+---@param firstName string
+---@param lastName string
+---@return boolean
+local ok = exports.MrNewbNameChanger:ChangePlayerName(src, 'Jane', 'Doe')
+if not ok then
+    -- offline, bad name, or OpenUpdatePlayerName returned false
+end
+```
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `src` | number | Player server id |
+| `firstName` | string | New first name |
+| `lastName` | string | New last name |
+
+| Return | Meaning |
+| --- | --- |
+| `true` | Ped exists, name passed the filter, and `OpenUpdatePlayerName` returned truthy |
+| `false` | Invalid `src`, player ped missing, name rejected by the filter, or the open hook failed |
+
+On success it also fires `MrNewbNameChanger:Server:NameChanged`. See [Server events](/mrnewbnamechanger/exports/server-events).
+
+Override the write in `resource/open/server/update.lua` (`OpenUpdatePlayerName`) for custom identity stacks.

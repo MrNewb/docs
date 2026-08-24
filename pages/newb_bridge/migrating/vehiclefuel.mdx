@@ -1,0 +1,30 @@
+import { Callout } from 'nextra/components'
+
+# Vehicle fuel
+
+`Bridge.Fuel` → `bridge.vehiclefuel`. Full API: [client](/newb_bridge/modules/vehiclefuel/client) · [server](/newb_bridge/modules/vehiclefuel/server).
+
+<Callout type="warning">
+  There is no `GetFuel`. Read with `GetVehicleFuelLevel(vehicle)` (or your fuel resource’s export) if you need the current level. Newb_Bridge only **sets**.
+</Callout>
+
+| community_bridge | Newb_Bridge |
+| --- | --- |
+| `SetFuel(vehicle, fuel, type?)` | Client: `set(vehicle, amount)` · Server: `set(src, vehicle, amount)` |
+| `GetFuel(vehicle)` | — | Native / provider export |
+| `type` (ti_fuel RON grade) | — | Not forwarded |
+
+```lua
+-- Old (client)
+local level = Bridge.Fuel.GetFuel(vehicle)
+Bridge.Fuel.SetFuel(vehicle, 100.0)
+
+-- New (client)
+local level = GetVehicleFuelLevel(vehicle)
+bridge.vehiclefuel.set(vehicle, 100.0)
+
+-- New (server) — asks that player's client to apply
+bridge.vehiclefuel.set(src, vehicle, 75.0)
+```
+
+Server `set` fires `Newb_Bridge:client:setFuel` (`netId`, `amount`). You do not trigger that event yourself.

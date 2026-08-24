@@ -1,0 +1,53 @@
+import { Callout, Steps } from 'nextra/components'
+
+# Installation
+
+<Callout type="warning">
+  Start this **after** ox_lib and Newb_Bridge. The bridge auto-detects running resources; if this script starts first, detection can miss them. Keep the folder named `MrNewbLootTables`.
+</Callout>
+
+<Steps>
+### Dependencies
+
+[Newb_Bridge](/newb_bridge) and ox_lib. oxmysql is not required. If you pass a player source into a loot export so it can add items, your inventory must already be running (the bridge resolves it).
+
+This resource does not ship items or `[INSTALL]/` images. Loot `name` values must exist in your inventory.
+
+### Configure
+
+Edit `configs/config.lua`. That file is listed under `server_scripts` only — players never receive the tables.
+
+| Key | Purpose |
+| --- | --- |
+| `Config.Utility.Debug` | Console roll traces (`[MrNewbLootTables] …`) |
+| `Config.LootTables` | Weighted tables. Shipped: `convenience_store`, `house_robbery`, `vehicle_search`, `dumpster` (stock qb-core items) |
+| `Config.JobPayouts` | Per-job `low_tier` / `mid_tier` / `high_tier` ranges. Shipped: `taxi`, `bus`, `trucker`, `tow`, `garbage`, `mechanic`, `vineyard`, `hotdog`, `reporter` |
+
+Loot row fields: `name` (required), `min` / `max` (count; omitted → `1`; capped at `1000`), `chance` (`lib.selector` **weight**, not a percent — omitted or `0` skips the row), `shared`, `metadata`.
+
+Payout **config** keys are `*_tier`. The export argument is `'low'` / `'mid'` / `'high'` — not `'mid_tier'`.
+
+Payout ranges are rolled once when the table is registered (resource start for config jobs). Those numbers stay fixed until restart. `shared = true` removes that loot row from the **server-global** live table after it hits (not per player).
+
+`GetSingleLootRoll` on a missing id returns `{}`. Same id with no selectable weights returns `false`.
+
+### Add to server.cfg
+
+Start this **before** any resource that calls its exports.
+
+```cfg
+ensure ox_lib
+ensure qbx_core
+ensure ox_inventory
+ensure Newb_Bridge
+ensure MrNewbLootTables
+```
+
+Swap `qbx_core` / `ox_inventory` for whatever you actually run. Callers that only need payouts can omit the inventory line.
+
+### Restart the server
+
+Restart after config changes so tables and payout rolls rebuild. Runtime `RegisterLootTable` **replaces** a loot id without a restart. `RegisterPayoutTable` **does not** overwrite a payout id that already exists.
+
+No public net events, no commands, no SQL. Exports: [Server](/mrnewbloottables/exports/server-exports) · [Client](/mrnewbloottables/exports/client-exports).
+</Steps>

@@ -1,0 +1,106 @@
+# Server exports
+
+All loot exports live in `resource/server/loot.lua`. Payouts live in `resource/server/payout.lua`.
+
+## GetLootRoll
+
+```lua
+exports.MrNewbLootTables:GetLootRoll(lootTableId, rollType, src, maxRewards)
+```
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `lootTableId` | string | Key in `Config.LootTables` or a runtime `RegisterLootTable` id |
+| `rollType` | string | `'single'` or `'multiple'` |
+| `src` | number? | If set, each rolled item is added with `bridge.inventory.addItem` |
+| `maxRewards` | number? | Used only for `'multiple'`. Defaults to `1`, capped at `25` |
+
+`'single'` returns one result table or `false` / `{}` (see below). `'multiple'` returns an array. Any other `rollType` returns `{}`.
+
+The player must exist on the server (`GetPlayerPed` + `DoesEntityExist`) or the grant is skipped. The roll result is still returned.
+
+## GetSingleLootRoll
+
+```lua
+exports.MrNewbLootTables:GetSingleLootRoll(lootTableId, src)
+```
+
+Same as `GetLootRoll(lootTableId, 'single', src)`.
+
+| Result | When |
+| --- | --- |
+| `{ name, count, metadata, shared }` | Weighted hit |
+| `{}` | Unknown `lootTableId` |
+| `false` | Table exists but has no selectable entries (empty, or every `chance` is 0) |
+
+`count` is `math.random(min, max)`, capped at `1000`. `metadata` defaults to `{}`.
+
+## GetMultipleLootRolls
+
+```lua
+exports.MrNewbLootTables:GetMultipleLootRolls(lootTableId, src, maxRewards)
+```
+
+Same as `GetLootRoll(lootTableId, 'multiple', src, maxRewards)`. Loops `maxRewards` times (default `1`, max `25`) and stops early if the selector is empty. Unknown `lootTableId` returns `{}`. Empty weights return `{}` — not `false`. Only `GetSingleLootRoll` uses `false` for an empty selector.
+
+A `shared` hit is stripped from the table **inside** the loop, so the same shared row cannot land twice in one call.
+
+## GetLootTable
+
+```lua
+exports.MrNewbLootTables:GetLootTable(lootTableId)
+```
+
+Returns a **copy** of the current contents. Does not roll. Mutating the returned table does not change the live table. Missing `lootTableId` returns `{}`.
+
+## RegisterLootTable
+
+```lua
+exports.MrNewbLootTables:RegisterLootTable(lootTableId, lootEntries)
+```
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `lootTableId` | string | Table id |
+| `lootEntries` | table[] | Rows with `name`, optional `min` / `max` / `chance` / `shared` / `metadata`. `chance` is a `lib.selector` weight; omitted or `0` is skipped |
+
+If `lootTableId` already exists it is replaced. Returns `true` on success, `false` on bad arguments. Entries are copied on register so `shared` removals do not mutate `Config.LootTables`. Config tables are registered this way on resource start.
+
+## RemoveLootTable
+
+```lua
+exports.MrNewbLootTables:RemoveLootTable(lootTableId)
+```
+
+Returns `true` if the table was present, `false` otherwise.
+
+## RegisterPayoutTable
+
+```lua
+exports.MrNewbLootTables:RegisterPayoutTable(jobName, payoutTiers)
+```
+
+```lua
+payoutTiers = {
+    low_tier = { min = 50, max = 150 },
+    mid_tier = { min = 150, max = 300 },
+    high_tier = { min = 200, max = 500 },
+}
+```
+
+All three tiers are required. Each range is rolled once in the constructor.
+
+If `jobName` already exists, `payoutTiers` is ignored and the call still returns `true`. Returns `false` on bad arguments. There is no remove-payout export.
+
+## GetJobPayout
+
+```lua
+exports.MrNewbLootTables:GetJobPayout(jobName, payTier)
+```
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `jobName` | string | Key in `Config.JobPayouts` |
+| `payTier` | string? | `'low'`, `'mid'`, or `'high'`. Default `'low'` |
+
+Returns the number rolled at register time, or `0`. Do not pass `'mid_tier'` — that looks up `self.mid_tier`, which is nil.

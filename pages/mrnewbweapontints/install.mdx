@@ -1,0 +1,43 @@
+import { Callout, Steps } from 'nextra/components'
+
+# Installation
+
+<Callout type="warning">
+  ox_inventory is required. This resource has no ESX / QBCore / Qbox install pages. Start this **after** ox_lib, ox_inventory, and Newb_Bridge. Keep the folder named `MrNewbWeaponTints`.
+</Callout>
+
+<Steps>
+### Dependencies
+
+[Newb_Bridge](/newb_bridge), ox_lib, and ox_inventory. Artifact `/server:6116` or newer, OneSync. Other inventories are not supported.
+
+### Add items and images
+
+Paste every item from [Item setup](/mrnewbweapontints/install/inventory) into `ox_inventory/data/items.lua`. Each def **must** include `server.export` and `allowArmed = true` — `server.export` is the exception to the usual MrNewb item rule; `allowArmed` is required so the item can be used with a weapon out.
+
+| Item | `server.export` |
+| --- | --- |
+| `greentint` … `platinumtint` | `'MrNewbWeaponTints.setweapontint'` |
+| `newbserialfile` | `'MrNewbWeaponTints.newbserialfile'` |
+
+Tint items also set `server.tint` (1–7). MK2 weapons remap through a built-in index table.
+
+Copy the PNGs from `[INSTALL]/images/` into `ox_inventory/web/images/`. Filenames: [Item images](/mrnewbweapontints/install/inventory-images).
+
+### Configure
+
+There is no `configs/` file. Names, tints, consume, and exports are the ox_inventory item defs. Notify strings are `locales/*.json`.
+
+### Add to server.cfg
+
+```cfg
+ensure ox_lib
+ensure ox_inventory
+ensure Newb_Bridge
+ensure MrNewbWeaponTints
+```
+
+### Restart the server
+
+Restart after item, image, or locale changes so ox_inventory reloads `items.lua`.
+</Steps>

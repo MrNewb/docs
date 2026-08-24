@@ -1,0 +1,31 @@
+# Server events
+
+Local server event only. Use `AddEventHandler`, not `RegisterNetEvent` / `TriggerClientEvent`.
+
+## MrNewbNameChanger:Server:NameChanged
+
+Fires after a successful name write from any path:
+
+- name change voucher
+- filled marriage certificate
+- records clerk
+- `ChangePlayerName` export
+
+```lua
+---@param src number
+---@param identifier string|nil
+---@param firstName string
+---@param lastName string
+AddEventHandler('MrNewbNameChanger:Server:NameChanged', function(src, identifier, firstName, lastName)
+    -- logs, MDT, phone contacts, etc.
+end)
+```
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `src` | number | Player server id |
+| `identifier` | string\|nil | `bridge.framework.getIdentifier(src)` at write time |
+| `firstName` | string | New first name (already filtered) |
+| `lastName` | string | New last name (already filtered) |
+
+Does not fire when the filter rejects the name or `OpenUpdatePlayerName` returns false.

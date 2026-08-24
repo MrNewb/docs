@@ -1,0 +1,14 @@
+import { Callout } from 'nextra/components'
+
+# Commands
+
+| Command | Where | What it does |
+| --- | --- | --- |
+| `/HiveAdmin [hiveId]` | in-game | Open the hive admin NUI. Optional `hiveId` selects that hive. Gated by `Config.IsHiveAdmin` in `sv_config.lua` |
+| `/reloadhives` | in-game | Client-only hive resync. Registered only when `Config.General.Debug` is `true` |
+
+<Callout type="info">
+  Delete, map blips, grant queen, strain builder, and owner wipe live in the admin panel — not as separate chat commands.
+</Callout>
+
+There is no `migrate_beekeeping` console command in 2.0.0. The `mrnewb_beekeeping` table is created on start.

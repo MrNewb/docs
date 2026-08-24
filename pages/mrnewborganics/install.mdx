@@ -1,0 +1,50 @@
+import { Callout, Steps } from 'nextra/components'
+
+# Installation
+
+<Callout type="warning">
+  Start this **after** ox_lib, your framework, your inventory, and Newb_Bridge. The bridge auto-detects running resources; if this script starts first, detection can miss them. Keep the folder named `MrNewbOrganics`.
+</Callout>
+
+<Steps>
+### Dependencies
+
+[Newb_Bridge](/newb_bridge), ox_lib, framework + inventory + target via the bridge. Server artifact `/server:6116` or newer, plus OneSync (`fxmanifest.lua`). oxmysql is not required.
+
+### Add items and images
+
+Paste the defs from [Item setup](/mrnewborganics/install/inventory). Copy PNGs from `[INSTALL]/images/` into:
+
+| Inventory | Image folder |
+| --- | --- |
+| ox_inventory | `ox_inventory/web/images/` |
+| qb-inventory / ps-inventory | `html/images/` |
+| one_inventory | `one_inventory/web/images/` |
+
+The pack ships `apple.png`, `pineapple.png`, and `lettuce.png`. These produce items are not usable — do not add `server.export`. Market payout is **bank**, not an inventory money item.
+
+### Configure
+
+Edit `configs/config.lua`:
+
+- `Config.PickingTypes` — `locations` (`vector4`), `rewardItem`, `anim`, optional `propModel` (spawned prop) or omit it for a sphere zone
+- `Config.FarmersMarket` — `Enabled`, vendor `model` / `coords` / `shopItems` (item → bank price)
+
+Field tables: [MrNewbOrganics](/mrnewborganics).
+
+### Add to server.cfg
+
+Swap `qbx_core` / `ox_inventory` for whatever you actually run.
+
+```cfg
+ensure ox_lib
+ensure qbx_core
+ensure ox_inventory
+ensure Newb_Bridge
+ensure MrNewbOrganics
+```
+
+### Restart the server
+
+Restart after config or item changes.
+</Steps>

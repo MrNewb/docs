@@ -1,0 +1,19 @@
+# Progress bar
+
+Client-only progress bars.
+
+- [Client](/newb_bridge/modules/progressbar/client) — `openprogressbar` / `progressActive` / `cancelProgress`
+- [Server](/newb_bridge/modules/progressbar/server) — not implemented
+
+```lua
+local finished = bridge.progressbar.openprogressbar({
+    duration = 5000,
+    label = 'Harvesting honey...',
+    canCancel = true,
+    disable = { move = true, combat = true },
+})
+
+if finished then
+    TriggerServerEvent('myresource:finishHarvest')
+end
+```

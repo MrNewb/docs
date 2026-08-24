@@ -1,0 +1,46 @@
+# Server exports
+
+Two exports (plus one alias). Both take a player source. Neither plays the unwrap progress.
+
+The player ped is validated with `GetPlayerPed` / `DoesEntityExist`. Unknown box keys are rejected.
+
+## GiveGiftBox
+
+Gives the box item. Does not open it. `giftBoxName` must exist in `Config.GiftBoxes`.
+
+```lua
+---@param src number
+---@param giftBoxName string  -- key in Config.GiftBoxes
+---@param amount? number      -- default 1
+exports.MrNewbGiftBox:GiveGiftBox(source, 'starter_box', 1)
+```
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `src` | number | Player id |
+| `giftBoxName` | string | Key in `Config.GiftBoxes` (required) |
+| `amount` | number | Count (default `1`) |
+
+## GiveGiftBoxRewards
+
+Rolls that box's items and account reward and grants them. No unwrap animation, no item removed.
+
+```lua
+---@param src number
+---@param giftBoxName string
+---@return boolean  -- false if the player or key is missing, true on success
+exports.MrNewbGiftBox:GiveGiftBoxRewards(source, 'starter_box')
+```
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `src` | number | Player id |
+| `giftBoxName` | string | Key in `Config.GiftBoxes` |
+
+Returns `false` when the player is invalid or `Config.GiftBoxes[giftBoxName]` is missing. Returns `true` after the rolls are granted.
+
+Normal player use goes through `resource/server/gift_box.lua`: unwrap progress on the client, space check for `always` items, `removeItem` on the box, then `giveGiftBoxRewards`.
+
+## GetItemPool
+
+Alias of `GiveGiftBoxRewards`. Prefer `GiveGiftBoxRewards` in new code.

@@ -1,0 +1,38 @@
+# Boss menu (server)
+
+Opens the configured boss menu UI on the player's client via the active boss-menu provider (`Config.BossMenu`). Consumer clients do not mount `bridge.bossmenu` — see [client](/newb_bridge/modules/bossmenu/client).
+
+The server relays to the player via `Newb_Bridge:client:openBossMenu:<suffix>` (`qbx`, `qb`, `esx`, `vms`, `tk`, `okok`, `codem`, `zat`, `m`).
+
+## `openBossMenu(src, jobName, jobType?)`
+
+**Signature:** `openBossMenu(src: number, jobName: string, jobType?: string): void`
+
+| Param | Type | Description |
+| ----- | ---- | ----------- |
+| `src` | `number` | Player server id |
+| `jobName` | `string` | Job name (must match the society / management job) |
+| `jobType` | `string?` | Boss menu type (e.g. `'job'` or `'gang'` depending on provider) |
+
+```lua
+bridge.framework.registerCommand('bossmenu', 'Open the police boss menu', {}, nil, function(src)
+    local ped = GetPlayerPed(src)
+    if ped == 0 or not DoesEntityExist(ped) then return end
+
+    if not bridge.framework.hasJob(src, 'police', nil, true) then
+        return bridge.notifications.notify(src, {
+            description = 'On-duty police only.',
+            type = 'error',
+        })
+    end
+
+    bridge.bossmenu.openBossMenu(src, 'police', 'job')
+end)
+```
+
+### Gang / society variant
+
+```lua
+-- When your provider expects a gang type
+bridge.bossmenu.openBossMenu(src, 'ballas', 'gang')
+```

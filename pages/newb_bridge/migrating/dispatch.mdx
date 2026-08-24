@@ -1,0 +1,52 @@
+import { Callout } from 'nextra/components'
+
+# Dispatch
+
+`Bridge.Dispatch` → `bridge.dispatch`. Full API: [server](/newb_bridge/modules/dispatch/server).
+
+<Callout type="error">
+  community_bridge `SendAlert` is a **client** call that packs a table and hits `community_bridge:Server:DispatchAlert`. Newb_Bridge `sendAlert` is **server-only**. Consumer clients get a noop table. Move the call to the server and flatten the payload into separate arguments.
+</Callout>
+
+| community_bridge (client) | Newb_Bridge (server) |
+| --- | --- |
+| `SendAlert({ jobs, coords, message, code, icon, blipData, time, vehicle, ped })` | `sendAlert(src, jobs, coords, data, blip, alertFlash?)` |
+
+```lua
+-- Old (client)
+Bridge.Dispatch.SendAlert({
+    jobs = { 'police' },
+    coords = GetEntityCoords(PlayerPedId()),
+    message = 'Armed robbery in progress',
+    code = '10-31',
+    icon = 'fas fa-store',
+    blipData = { sprite = 161, color = 1, scale = 1.2 },
+    time = 100000,
+})
+
+-- New (server)
+bridge.dispatch.sendAlert(src, { 'police', 'sheriff' }, storeCoords, {
+    title = 'Store Robbery',
+    description = 'Armed robbery in progress',
+    code = '10-31',
+    length = 12,
+    icon = 'store',
+}, {
+    sprite = 161,
+    colour = 1,
+    scale = 1.2,
+    text = 'Robbery',
+}, true)
+```
+
+Field mapping:
+
+| community_bridge | Newb_Bridge |
+| --- | --- |
+| `data.message` | `data.description` (and optional `data.title`) |
+| `data.blipData.color` | `blip.colour` |
+| `data.time` (ms) | `data.length` / `blip.length` (**minutes**) |
+| `data.vehicle` / `plate` / `ped` | — | Not on the Newb_Bridge payload |
+| default jobs `{ 'police' }` | same if you pass `'police'` or omit handling on your side |
+
+Internal dispatch (`Config.Dispatch = "internal"`) draws a blip + notify on `Newb_Bridge:dispatch:internalAlert`. Do not trigger `community_bridge:Client:DispatchAlert`.

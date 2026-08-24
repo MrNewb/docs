@@ -1,0 +1,92 @@
+# Progress bar (client)
+
+Client-only progress bars. No [server](/newb_bridge/modules/progressbar/server) implementation.
+
+## `openprogressbar(data)`
+
+**Signature:** `openprogressbar(data: OxProgressBar): boolean?`
+
+`openProgressBar` is the same function (alias on every provider).
+
+| Param | Type |
+| ----- | ---- |
+| `data` | [OxProgressBar](#oxprogressbar) |
+
+| **Returns** | `boolean?` — `true` completed, `false` cancelled |
+
+```lua
+local finished = bridge.progressbar.openprogressbar({
+    duration = 5000,
+    label = 'Harvesting honey...',
+    canCancel = true,
+    disable = { move = true, combat = true },
+    anim = {
+        dict = 'amb@world_human_gardener_plant@male@base',
+        clip = 'base',
+    },
+})
+
+if finished then
+    TriggerServerEvent('myresource:finishHarvest')
+end
+```
+
+## `progressActive()` (optional)
+
+**Signature:** `progressActive(): boolean`
+
+| **Providers** | Real on `ox_lib` and `lation_ui`. `zsx_uiv2` tracks its own callback. `wasabi_uikit` / `progressbar` always return `false`. |
+| **Returns** | `boolean` |
+
+```lua
+if bridge.progressbar.progressActive() then return end
+```
+
+## `cancelProgress()` (optional)
+
+**Signature:** `cancelProgress(): void`
+
+| **Providers** | Real on `ox_lib` and `lation_ui`. Other adapters are no-ops (`zsx_uiv2` has no cancel export). |
+| **Description** | Cancels the active progress bar |
+
+```lua
+bridge.progressbar.cancelProgress()
+```
+
+## Types
+
+### `OxProgressBar`
+
+| Field | Type |
+| ----- | ---- |
+| `duration` | `number` ms |
+| `label` | `string` |
+| `canCancel` | `boolean?` |
+| `useWhileDead` | `boolean?` |
+| `allowRagdoll` | `boolean?` |
+| `allowSwimming` | `boolean?` |
+| `allowCuffed` | `boolean?` |
+| `allowFalling` | `boolean?` |
+| `anim` | `OxProgressAnim?` |
+| `disable` | `OxProgressDisable?` |
+| `prop` | `OxProgressProp` \| `OxProgressProp[]?` |
+| `position` | `'middle'` \| `'bottom'` ox_lib |
+
+### `OxProgressAnim`
+
+| Field | Type |
+| ----- | ---- |
+| `dict` | `string?` |
+| `clip` | `string?` |
+| `flag` | `number?` |
+| `scenario` | `string?` |
+
+### `OxProgressDisable`
+
+| Field | Type |
+| ----- | ---- |
+| `move` | `boolean?` |
+| `sprint` | `boolean?` |
+| `car` | `boolean?` |
+| `combat` | `boolean?` |
+| `mouse` | `boolean?` |

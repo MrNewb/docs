@@ -1,0 +1,108 @@
+# MrNewbWeaponTints
+
+ox_inventory tint items plus a heavy file that strips weapon serials. Built on [Newb_Bridge](/newb_bridge/getting-started).
+
+This is the exception to the usual MrNewb item rule: these items **do** use ox_inventory `server.export`. ox_inventory only — there is no QB tab.
+
+[GitHub](https://github.com/MrNewb/MrNewbWeaponTints) · [Discord](https://discord.gg/mrnewbscripts) · [Installation](/mrnewbweapontints/install) · [Item setup](/mrnewbweapontints/install/inventory) · [Exports](/mrnewbweapontints/exports)
+
+## Features
+
+- Seven vanilla weapon tints as usable items (`greentint` … `platinumtint`)
+- `newbserialfile` writes a filed-off serial onto the equipped weapon
+- MK2 weapons remap `server.tint` through a built-in index table
+- ox_inventory metadata (`tint`, `weapontint`, `serial`) — no SQL, no config file
+- Strings in `locales/*.json` (ox_lib)
+
+## Requirements
+
+- [Newb_Bridge](/newb_bridge)
+- ox_lib
+- **ox_inventory** (hard dependency in `fxmanifest.lua`)
+- Artifact `/server:6116` or newer, OneSync
+
+No config file. Item names, `server.tint`, and `server.export` live in `ox_inventory/data/items.lua`. Start after ox_lib, ox_inventory, and Newb_Bridge. Keep the folder named `MrNewbWeaponTints` — the `server.export` strings include that name. No commands.
+
+## Items
+
+| Item | Label | Export | Extra |
+| --- | --- | --- | --- |
+| `greentint` | Green Weapon Tint | `MrNewbWeaponTints.setweapontint` | `server.tint = 1` |
+| `goldtint` | Gold Weapon Tint | `MrNewbWeaponTints.setweapontint` | `server.tint = 2` |
+| `pinktint` | Pink Weapon Tint | `MrNewbWeaponTints.setweapontint` | `server.tint = 3` |
+| `armytint` | Army Weapon Tint | `MrNewbWeaponTints.setweapontint` | `server.tint = 4` |
+| `lspdtint` | LSPD Weapon Tint | `MrNewbWeaponTints.setweapontint` | `server.tint = 5` |
+| `orangetint` | Orange Weapon Tint | `MrNewbWeaponTints.setweapontint` | `server.tint = 6` |
+| `platinumtint` | Platinum Weapon Tint | `MrNewbWeaponTints.setweapontint` | `server.tint = 7` |
+| `newbserialfile` | Heavy File | `MrNewbWeaponTints.newbserialfile` | `consume = 0.50` |
+
+<img src="/docs/images/greentint.png" alt="greentint" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/goldtint.png" alt="goldtint" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/pinktint.png" alt="pinktint" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/armytint.png" alt="armytint" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/lspdtint.png" alt="lspdtint" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/orangetint.png" alt="orangetint" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/platinumtint.png" alt="platinumtint" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/newbserialfile.png" alt="newbserialfile" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+
+The equipped weapon is required (`ox_inventory:GetCurrentWeapon`). `usingItem` returns `false` with no weapon in hand (item is not consumed) and `true` when a weapon is equipped. `usedItem` writes metadata, notifies, and disarms so the next draw shows the new tint or serial.
+
+`allowArmed = true` is required on every item. Without it, ox_inventory blocks use while a weapon is out. Tint items omit `consume`. `newbserialfile` sets `consume = 0.50` (two uses).
+
+Green is a dark military green, not neon. Custom weapon streams that replace tint palettes can hide or clash with these indices.
+
+Tint items set `metadata.tint` and `metadata.weapontint` (the item label) on the **weapon slot**. The serial file sets `metadata.serial` to the locale string `WeaponTints.SerialRemoved` (`The serial number has been filed off` in `locales/en.json`). ox_inventory applies `metadata.tint` when the weapon is drawn. `weapontint` is display-only.
+
+MK2 weapons remap the vanilla tint id through a built-in table in `resource/server/weapon_items.lua`. A weapon is treated as MK2 when its item name contains `MK2` (case-insensitive):
+
+| `server.tint` | MK2 index |
+| --- | --- |
+| 0 | 0 |
+| 1 | 18 |
+| 2 | 23 |
+| 3 | 13 |
+| 4 | 8 |
+| 5 | 22 |
+| 6 | 15 |
+| 7 | 24 |
+
+Unknown ids pass through unchanged. There is no tint `0` item. Custom MK2 weapons must include `MK2` in the item name or they get vanilla tint ids.
+
+## Adding a tint
+
+Duplicate a shipped tint in `ox_inventory/data/items.lua`, change the name, `label`, and `server.tint` (`1`–`7`). Keep `server.export = 'MrNewbWeaponTints.setweapontint'`. Copy a PNG whose filename matches the item name. Extra items only pick a different built-in GTA index — you cannot add a visual the game does not already ship.
+
+## Locales
+
+`locales/*.json`, loaded with `lib.locale()`. ox_lib picks the client language. Edit `locales/en.json` (or add a file) and restart.
+
+| Key | When |
+| --- | --- |
+| `WeaponTints.NotEquipped` | Use with no current weapon |
+| `WeaponTints.HasBeenApplied` | Tint applied (`item.label`, `weapon.label`) |
+| `WeaponTints.SerialRemoved` | Written into `metadata.serial` |
+| `WeaponTints.SerialRemovedSuccess` | Serial file succeeded (`weapon.label`) |
+
+## Layout
+
+| Path | Role |
+| --- | --- |
+| `fxmanifest.lua` | Depends on ox_lib, ox_inventory, Newb_Bridge |
+| `resource/server/weapon_items.lua` | `setweapontint` and `newbserialfile` exports |
+| `locales/*.json` | Equipped / applied / serial strings |
+| `[INSTALL]/images/` | Item PNGs (`armytint`, `goldtint`, `greentint`, `lspdtint`, `orangetint`, `pinktint`, `platinumtint`, `newbserialfile`) |
+
+On start the resource runs Newb_Bridge `VersionCheck` (`MrNewb/patchnotes`).
+
+## Exports
+
+Exact ox_inventory `server.export` strings (resource name + export):
+
+| Export | `server.export` value | Purpose |
+| --- | --- | --- |
+| `setweapontint` | `'MrNewbWeaponTints.setweapontint'` | ox_inventory `usingItem` / `usedItem` tint handler |
+| `newbserialfile` | `'MrNewbWeaponTints.newbserialfile'` | Same hook; writes serial metadata |
+
+These are ox_inventory hooks, not helpers for other resources. Do not call them from your own scripts. Signatures: [Server exports](/mrnewbweapontints/exports/server-exports).
+
+Paste: [Item setup](/mrnewbweapontints/install/inventory).

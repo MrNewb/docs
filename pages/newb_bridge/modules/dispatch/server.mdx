@@ -1,0 +1,53 @@
+# Dispatch (server)
+
+Server-side dispatch alerts that route through the configured provider (`Config.Dispatch`). Client scripts should not call `bridge.dispatch` — see [client](/newb_bridge/modules/dispatch/client).
+
+Access via `bridge.dispatch`.
+
+Prefer on-duty players via `bridge.framework.getPlayersOnDuty` when the framework supports it; otherwise falls back to `getPlayersByJob`.
+
+## `sendAlert(src, jobs, coords, data, blip, alertFlash)`
+
+**Signature:** `sendAlert(src: number, jobs: string | string[], coords: vector3, data?: table, blip?: table, alertFlash?: boolean): boolean`
+
+| Param | Type | Description |
+| ----- | ---- | ----------- |
+| `src` | `number` | Caller source (for logging / provider context) |
+| `jobs` | `string` \| `string[]` | Job names to alert (defaults to `{ 'police' }`) |
+| `coords` | `vector3` | World position for the alert |
+| `data` | `table?` | `{ title?, description?, code?, length?, icon? }` |
+| `blip` | `table?` | `{ sprite?, colour?, scale?, flash?, radius?, length?, text? }` |
+| `alertFlash` | `boolean?` | Flash the blip |
+
+| **Returns** | `boolean` — `true` if at least one eligible player was found (internal provider); provider adapters may always return success after forwarding |
+
+```lua
+RegisterNetEvent('MyStore:Server:RobberyStarted', function(storeCoords)
+    local src = source
+    local ped = GetPlayerPed(src)
+    if ped == 0 or not DoesEntityExist(ped) then return end
+
+    bridge.dispatch.sendAlert(src, { 'police', 'sheriff' }, storeCoords, {
+        title = 'Store Robbery',
+        description = 'Armed robbery in progress',
+        code = '10-31',
+        length = 12,
+        icon = 'store',
+    }, {
+        sprite = 161,
+        colour = 1,
+        scale = 1.2,
+        text = 'Robbery',
+    }, true)
+end)
+```
+
+### Single job string
+
+```lua
+bridge.dispatch.sendAlert(src, 'police', coords, {
+    title = 'Shots Fired',
+    code = '10-71',
+    description = 'Gunshots reported nearby',
+})
+```

@@ -1,0 +1,16 @@
+# Vehicle fuel (client)
+
+Applies fuel on the local vehicle. Server scripts use [set(source, vehicle, amount)](/newb_bridge/modules/vehiclefuel/server).
+
+## `set(vehicle, amount)`
+
+**Signature:** `set(vehicle: number, amount: number): void`
+
+| Param | Type | Description |
+| ----- | ---- | ----------- |
+| `vehicle` | `number` | Local vehicle entity handle |
+| `amount` | `number` | Fuel level (provider-specific scale, usually 0–100) |
+
+```lua
+bridge.vehiclefuel.set(cache.vehicle, 75.0)
+```

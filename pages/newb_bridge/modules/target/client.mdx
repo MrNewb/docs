@@ -1,0 +1,281 @@
+# Target (client)
+
+Client-only targeting (`ox_target`, `tgiann-target`, `core_focus`, `qb-target`, or `sleepless_interact`).
+
+Each option needs a unique `name` and display `label`.
+
+No [server](/newb_bridge/modules/target/server) implementation.
+
+## Zones
+
+### `addBoxZone(payload)`
+
+**Signature:** `addBoxZone(payload: TargetBoxZone): number | string`
+
+| Param | Type |
+| ----- | ---- |
+| `payload` | [TargetBoxZone](#targetboxzone) |
+
+| **Returns** | `number` \| `string` — zone id |
+
+```lua
+bridge.target.addBoxZone({
+    name = 'shop_zone',
+    coords = vec3(100.0, 200.0, 30.0),
+    size = vec3(2, 2, 2),
+    rotation = 0,
+    options = {
+        {
+            name = 'open_shop',
+            label = 'Open Shop',
+            icon = 'fa-solid fa-cart-shopping',
+            onSelect = function() end,
+        },
+    },
+})
+```
+
+### `addSphereZone(payload)`
+
+**Signature:** `addSphereZone(payload: TargetSphereZone): number | string`
+
+| Param | Type |
+| ----- | ---- |
+| `payload` | [TargetSphereZone](#targetspherezone) |
+
+| **Returns** | `number` \| `string` — zone id |
+
+```lua
+bridge.target.addSphereZone({
+    name = 'atm_zone',
+    coords = vec3(0, 0, 0),
+    radius = 1.5,
+    options = { { name = 'use_atm', label = 'Use ATM', onSelect = function() end } },
+})
+```
+
+### `removeZone(zoneId)`
+
+**Signature:** `removeZone(zoneId: string | number): void`
+
+| Param | Type |
+| ----- | ---- |
+| `zoneId` | `string` \| `number` |
+
+```lua
+bridge.target.removeZone('shop_zone')
+```
+
+## Entities
+
+### `addLocalEntity(entities, options)`
+
+**Signature:** `addLocalEntity(entities: number | number[], options: TargetOption | TargetOption[]): void`
+
+| Param | Type |
+| ----- | ---- |
+| `entities` | `number` \| `number[]` |
+| `options` | `TargetOption` \| `TargetOption[]` |
+
+```lua
+bridge.target.addLocalEntity(entity, {
+    {
+        name = 'open_stash',
+        label = 'Open stash',
+        distance = 2.0,
+        onSelect = function(data) end,
+    },
+})
+```
+
+### `removeLocalEntity(entities, optionNames?)`
+
+**Signature:** `removeLocalEntity(entities: number | number[], optionNames?: string | string[]): void`
+
+| Param | Type |
+| ----- | ---- |
+| `entities` | `number` \| `number[]` |
+| `optionNames` | `string` \| `string[]?` |
+
+```lua
+bridge.target.removeLocalEntity(entity, 'open_stash')
+```
+
+### `addEntity(netIds, options)`
+
+**Signature:** `addEntity(netIds: number | number[], options: TargetOption | TargetOption[]): void`
+
+| Param | Type |
+| ----- | ---- |
+| `netIds` | `number` \| `number[]` |
+| `options` | `TargetOption` \| `TargetOption[]` |
+
+```lua
+bridge.target.addEntity(netId, {
+    { name = 'inspect', label = 'Inspect', onSelect = function() end },
+})
+```
+
+### `removeEntity(netIds, optionNames?)`
+
+**Signature:** `removeEntity(netIds: number | number[], optionNames?: string | string[]): void`
+
+| Param | Type |
+| ----- | ---- |
+| `netIds` | `number` \| `number[]` |
+| `optionNames` | `string` \| `string[]?` |
+
+```lua
+bridge.target.removeEntity(netId, 'inspect')
+```
+
+## Global targets
+
+### `addGlobalPed(options)`
+
+**Signature:** `addGlobalPed(options: TargetOption | TargetOption[]): void`
+
+```lua
+bridge.target.addGlobalPed({
+    {
+        name = 'talk_npc',
+        label = 'Talk',
+        distance = 2.0,
+        onSelect = function(data) end,
+    },
+})
+```
+
+### `removeGlobalPed(optionNames?)`
+
+**Signature:** `removeGlobalPed(optionNames?: string | string[]): void`
+
+```lua
+bridge.target.removeGlobalPed('talk_npc')
+```
+
+### `addGlobalPlayer(options)`
+
+**Signature:** `addGlobalPlayer(options: TargetOption | TargetOption[]): void`
+
+```lua
+bridge.target.addGlobalPlayer({
+    {
+        name = 'search_player',
+        label = 'Search',
+        onSelect = function() end,
+    },
+})
+```
+
+### `removeGlobalPlayer(optionNames?)`
+
+**Signature:** `removeGlobalPlayer(optionNames?: string | string[]): void`
+
+```lua
+bridge.target.removeGlobalPlayer('search_player')
+```
+
+### `addGlobalVehicle(options)`
+
+**Signature:** `addGlobalVehicle(options: TargetOption | TargetOption[]): void`
+
+### `removeGlobalVehicle(optionNames?)`
+
+**Signature:** `removeGlobalVehicle(optionNames?: string | string[]): void`
+
+```lua
+bridge.target.addGlobalVehicle({
+    {
+        name = 'lockpick_door',
+        label = 'Lockpick',
+        items = 'lockpick',
+        onSelect = function() end,
+    },
+})
+
+bridge.target.removeGlobalVehicle('lockpick_door')
+```
+
+## Models
+
+### `addModel(models, options)`
+
+**Signature:** `addModel(models: string | number | string[] | number[], options: TargetOption | TargetOption[]): void`
+
+| Param | Type |
+| ----- | ---- |
+| `models` | `string` \| `number` \| `string[]` \| `number[]` |
+| `options` | `TargetOption` \| `TargetOption[]` |
+
+```lua
+bridge.target.addModel('prop_atm_01', {
+    { name = 'use_atm', label = 'Use ATM', onSelect = function() end },
+})
+```
+
+### `removeModel(models, optionNames?)`
+
+**Signature:** `removeModel(models: string | number | string[] | number[], optionNames?: string | string[]): void`
+
+| Param | Type |
+| ----- | ---- |
+| `models` | `string` \| `number` \| `string[]` \| `number[]` |
+| `optionNames` | `string` \| `string[]?` |
+
+```lua
+bridge.target.removeModel('prop_atm_01', 'use_atm')
+```
+
+## `disableTargeting(disable)`
+
+**Signature:** `disableTargeting(disable: boolean): void`
+
+| Param | Type |
+| ----- | ---- |
+| `disable` | `boolean` |
+
+```lua
+bridge.target.disableTargeting(true)  -- disable all targeting
+bridge.target.disableTargeting(false) -- re-enable
+```
+
+## Types
+
+### `TargetOption`
+
+| Field | Type |
+| ----- | ---- |
+| `name` | `string` |
+| `label` | `string` |
+| `icon` | `string?` |
+| `distance` | `number?` |
+| `groups` | `table?` |
+| `items` | `string` \| `string[]?` |
+| `anyItem` | `boolean?` |
+| `canInteract` | `fun(entity: number, distance: number, coords: vector3, name: string, bone?: number): boolean` |
+| `onSelect` | `fun(data: table)?` |
+| `event` | `string?` |
+| `serverEvent` | `string?` |
+| `args` | `any?` |
+
+### `TargetBoxZone`
+
+| Field | Type |
+| ----- | ---- |
+| `name` | `string?` |
+| `coords` | `vector3` \| `vector3[]` |
+| `size` | `vector3?` |
+| `rotation` | `number?` |
+| `debug` | `boolean?` |
+| `options` | `TargetOption` \| `TargetOption[]` |
+
+### `TargetSphereZone`
+
+| Field | Type |
+| ----- | ---- |
+| `name` | `string?` |
+| `coords` | `vector3` |
+| `radius` | `number?` |
+| `debug` | `boolean?` |
+| `options` | `TargetOption` \| `TargetOption[]` |

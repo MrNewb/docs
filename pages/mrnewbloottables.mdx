@@ -1,0 +1,99 @@
+# MrNewbLootTables
+
+Weighted loot tables plus job payout tables. Other resources call the exports; this one owns the rolls.
+
+[GitHub](https://github.com/MrNewb/MrNewbLootTables) · [Discord](https://discord.gg/mrnewbscripts) · [Installation](/mrnewbloottables/install) · [Exports](/mrnewbloottables/exports)
+
+## Requirements
+
+- ox_lib
+- [Newb_Bridge](/newb_bridge)
+- Inventory via the bridge if you pass a player source so the roll can `addItem`
+
+## Config
+
+`configs/config.lua` loads on the **server only**. Weights, `shared` flags, and payout ranges are not shipped to clients.
+
+```lua
+Config.Utility = {
+    Debug = false,
+}
+
+Config.LootTables = {
+    convenience_store = {
+        { name = 'tosti', metadata = {}, min = 1, max = 2, chance = 25, shared = false },
+        { name = 'sandwich', metadata = {}, min = 1, max = 2, chance = 20, shared = false },
+        { name = 'water_bottle', metadata = {}, min = 1, max = 3, chance = 25, shared = false },
+        { name = 'kurkakola', metadata = {}, min = 1, max = 2, chance = 15, shared = false },
+        { name = 'snikkel_candy', metadata = {}, min = 1, max = 3, chance = 10, shared = false },
+        { name = 'twerks_candy', metadata = {}, min = 1, max = 3, chance = 5, shared = false },
+    },
+}
+```
+
+| Field | Meaning |
+| --- | --- |
+| `name` | Inventory item |
+| `metadata` | Passed to `bridge.inventory.addItem` when a player source is supplied |
+| `min` / `max` | Quantity range (`math.random`). Defaults to `1` if omitted. Count is capped at `1000` |
+| `chance` | Weight for `lib.selector` (higher is more likely). `0` or missing skips the entry |
+| `shared` | If `true`, the entry is removed from **that server table** after it hits once |
+
+`shared` is **server-global** for that table, not per player. A later roll on the same id will not see that entry again until you `RegisterLootTable` or restart.
+
+Shipped loot keys: `convenience_store`, `house_robbery`, `vehicle_search`, `dumpster`. Item names are stock qb-core. Add your own.
+
+`Config.Utility.Debug` prints roll traces (`[MrNewbLootTables] …`).
+
+## Job payouts
+
+```lua
+Config.JobPayouts = {
+    taxi = {
+        low_tier = { min = 75, max = 150 },
+        mid_tier = { min = 150, max = 275 },
+        high_tier = { min = 250, max = 400 },
+    },
+}
+```
+
+Each job **must** have `low_tier`, `mid_tier`, and `high_tier`. Each range is rolled **once** when that payout id is registered (config jobs at resource start). Those numbers stay fixed until restart.
+
+Shipped jobs: `taxi`, `bus`, `trucker`, `tow`, `garbage`, `mechanic`, `vineyard`, `hotdog`, `reporter`.
+
+The export tier names are `low`, `mid`, and `high` — not `low_tier`.
+
+```lua
+local pay = exports.MrNewbLootTables:GetJobPayout('taxi', 'mid')
+```
+
+Missing job or unknown tier returns `0`. Client `GetJobPayout` uses the same arguments and caches the server's rolled values. The min/max ranges stay on the server — the client only receives the rolled amounts for that job.
+
+## Loot exports
+
+```lua
+-- One weighted entry. Pass a player source to add the item automatically.
+local item = exports.MrNewbLootTables:GetLootRoll('convenience_store', 'single', src)
+
+-- Up to 3 entries (default maxRewards is 1, hard cap 25)
+local items = exports.MrNewbLootTables:GetLootRoll('house_robbery', 'multiple', src, 3)
+
+exports.MrNewbLootTables:RegisterLootTable('heist_truck', {
+    { name = 'goldchain', min = 1, max = 2, chance = 30, shared = false },
+})
+```
+
+| Export | Side | Signature | Notes |
+| --- | --- | --- | --- |
+| `GetLootRoll` | server | `(lootTableId, rollType, src?, maxRewards?)` | `rollType` `'single'` or `'multiple'`. Anything else returns `{}` |
+| `GetSingleLootRoll` | server | `(lootTableId, src?)` | Missing table → `{}`. Empty weights → `false` |
+| `GetMultipleLootRolls` | server | `(lootTableId, src?, maxRewards?)` | `maxRewards` defaults to `1`, max `25`. Empty weights → `{}` |
+| `GetLootTable` | server | `(lootTableId)` | Copy of current rows, no roll. Missing → `{}` |
+| `RegisterLootTable` | server | `(lootTableId, lootEntries)` | Replaces an existing id. Returns `true` / `false` |
+| `RemoveLootTable` | server | `(lootTableId)` | `true` if removed, `false` if missing |
+| `RegisterPayoutTable` | server | `(jobName, payoutTiers)` | **Does not** replace an existing id. Returns `true` / `false` |
+| `GetJobPayout` | server + client | `(jobName, payTier?)` | `payTier` is `'low'` / `'mid'` / `'high'` (default `'low'`) |
+
+A successful single roll is `{ name, count, metadata, shared }`. Multiple rolls return an array of those.
+
+Details: [Server exports](/mrnewbloottables/exports/server-exports) · [Client exports](/mrnewbloottables/exports/client-exports).

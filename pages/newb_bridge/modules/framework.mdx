@@ -1,0 +1,86 @@
+# Framework
+
+`bridge.framework` wraps your active framework provider (`qbx_core`, `qb-core`, or `es_extended`). Client and server expose **different** methods.
+
+- [Client](/newb_bridge/modules/framework/client) — local player status, job cache, display money
+- [Server](/newb_bridge/modules/framework/server) — identity, jobs, money, metadata, commands, item use
+
+Host-proxied in consumer resources. Do not call `bridge.framework.*` per-frame.
+
+```lua
+-- Client
+if bridge.framework.hasJob('police', 2, true) then
+    local cash = bridge.framework.getAccountBalance('cash')
+end
+
+-- Server
+if bridge.framework.hasJob(source, 'police', nil, true) then
+    bridge.framework.addMoney(source, 'bank', 500, 'paycheck')
+end
+```
+
+## Types
+
+### `PlayerJobData`
+
+Normalized job table from `getPlayerJobData()`.
+
+| Field | Type |
+| ----- | ---- |
+| `jobName` | `string` |
+| `jobLabel` | `string` |
+| `grade` | `number` |
+| `gradeName` | `string` |
+| `onDuty` | `boolean` |
+| `isBoss` | `boolean` |
+
+### `OwnedVehicle`
+
+Entry from `getOwnedVehicles()`.
+
+| Field | Type |
+| ----- | ---- |
+| `vehicle` | `string` |
+| `plate` | `string` |
+
+### `ItemUseItem`
+
+Passed to `registerItemUse` callback as `item`.
+
+| Field | Type |
+| ----- | ---- |
+| `name` | `string` |
+| `label` | `string` |
+| `metadata` | `table` | Normalized from provider `info` / `metadata` |
+| `info` | `table?` | Original provider field when present |
+| `slot` | `number` | From `slot` or `id` |
+| `count` | `number` |
+
+### `MetadataPayload`
+
+`setMetadata(src, payload)` value shape.
+
+```lua
+---@type table<string, { type: 'set' | 'add' | 'remove', value: any }>
+```
+
+### `BridgePlayer`
+
+Cached snapshot from `getPlayer(src)`.
+
+| Field / method | Type |
+| ----- | ---- |
+| `source` | `number` |
+| `charId` | `string` |
+| `name` | `string` |
+| `groups` | `table<string, number>` |
+| `jobName` | `string?` |
+| `onDuty` | `boolean` |
+| `player:hasGroup(group, grade?, duty?)` | `boolean` |
+| `player:getCharId()` | `string` |
+| `player:getName()` | `string` |
+| `player:getGroups()` | `table<string, number>` |
+
+### `MoneyType`
+
+`'cash'` \| `'bank'` \| `'crypto'` (QBX client balance also accepts `'money'`)

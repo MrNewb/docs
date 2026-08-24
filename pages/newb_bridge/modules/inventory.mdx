@@ -1,0 +1,54 @@
+# Inventory
+
+`bridge.inventory` wraps your active inventory provider. On the server, `inv` is a **player source** (`number`) or **stash id** (`string`).
+
+**Argument order:** `metadata` comes **before** `slot` on add/remove.
+
+- [Client](/newb_bridge/modules/inventory/client) — local reads, images, `hasItem`
+- [Server](/newb_bridge/modules/inventory/server) — add/remove, stashes, shops, hooks
+
+See [Supported — Inventory](/newb_bridge/supported#inventory) for auto-detect order and manual fallbacks.
+
+```lua
+-- Client
+if bridge.inventory.hasItem('lockpick', 1) then end
+
+-- Server (metadata before slot)
+if bridge.inventory.canCarryItem(source, 'water', 2) then
+    bridge.inventory.addItem(source, 'water', 2)
+end
+```
+
+## Read API shape
+
+Occupied-slot reads (`getInventoryItems`, `getSlot`) use **ox_inventory field names**:
+
+```lua
+{ name, count, slot, metadata, label?, weight?, durability? }
+```
+
+Native providers (`ox_inventory`, `m-Inventory`, `one_inventory`) pass the provider table through. **ox_inventory keys that table by slot number**, so iterate with `pairs` — `#items` / `ipairs` skip items when slots have gaps. Other adapters return a sorted array. Writes still use provider-native APIs internally.
+
+`Items(name)` is the item **definition** list (one item, or the full list keyed by name), not occupied slots.
+
+## Types
+
+### `InventoryRef`
+
+`number` (player source) or `string` (stash id) for server `inv` arguments.
+
+### `ItemDefinition`
+
+Ox-shaped item definition from `Items(name)`: `{ name, label, weight, stack, close, description?, ... }`.
+
+### `BridgeItemInfo`
+
+Return from `getItemInfo(name)`:
+
+`{ name: string, label: string, stack: boolean, weight: number, description?: string, image: string }`
+
+### `InventorySlotItem`
+
+Ox-shaped occupied slot from `getSlot()` / `getInventoryItems()`:
+
+`{ name: string, count: number, slot: number, metadata: table, label?: string, weight?: number, durability?: number }`

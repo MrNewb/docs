@@ -1,0 +1,24 @@
+# Text UI
+
+`Bridge.HelpText` → `bridge.textui`. Help text on `Bridge.Notify` maps here too. Full API: [client](/newb_bridge/modules/textui/client).
+
+Client only. community_bridge server `HelpText.ShowHelpText(src, ...)` has no counterpart — send a notify or a client event.
+
+| community_bridge | Newb_Bridge |
+| --- | --- |
+| `ShowHelpText(message, position)` | `showTextUI(text, options?)` |
+| `HideHelpText()` | `hideTextUI()` |
+| — | `isTextUIOpen()` | Provider-dependent |
+
+```lua
+-- Old
+Bridge.HelpText.ShowHelpText('Press E to interact', 'right-center')
+Bridge.Notify.ShowHelpText('Press E to interact', 'top-center')
+Bridge.HelpText.HideHelpText()
+
+-- New
+bridge.textui.showTextUI('[E] Open shop', { position = 'right-center' })
+bridge.textui.hideTextUI()
+```
+
+`options` is ox_lib-shaped (`position`, `icon`, `iconColor`, `keybind`, `title`). `lab-TextUI` ignores `options` and `isTextUIOpen()` always returns `false`.

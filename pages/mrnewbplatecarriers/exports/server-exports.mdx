@@ -1,0 +1,33 @@
+# Server exports
+
+All of these take a player source. Check the return before continuing inventory or loadout logic.
+
+## Vest
+
+```lua
+local wearing = exports.MrNewbPlateCarriers:IsPlayerWearingVest(src)
+local removed = exports.MrNewbPlateCarriers:ForceRemovePlayerVest(src)
+```
+
+`IsPlayerWearingVest` is true when player metadata `PlateCarrier` has a metadata table. `ForceRemovePlayerVest` runs the same path as `/removevest` (progress, then item back to inventory) and returns a boolean.
+
+## Helmet
+
+```lua
+local wearingHelmet = exports.MrNewbPlateCarriers:IsPlayerWearingHelmet(src)
+local removedHelmet = exports.MrNewbPlateCarriers:ForceRemovePlayerHelmet(src)
+```
+
+`IsPlayerWearingHelmet` reads player metadata `PlateHelmet`. `ForceRemovePlayerHelmet` matches `/removehelmet`.
+
+## HUD state
+
+```lua
+local armor = exports.MrNewbPlateCarriers:GetPlateArmorState(src)
+```
+
+`armor.carrier` is the `plateCarrier` state bag: `equipped`, and when worn `name`, `condition`, `max`, plus `plates` (slot → `{ item, condition, max, material }` or `false`).
+
+`armor.helmet` is the `plateHelmet` bag: `equipped`, and when worn `name`, `condition`, `max`.
+
+The same snapshots replicate on those player state bags. Do not write the bags from other resources.

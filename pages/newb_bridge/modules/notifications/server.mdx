@@ -1,0 +1,24 @@
+# Notifications (server)
+
+Send a notification to a player. Local display lives on [client](/newb_bridge/modules/notifications/client). Payload type: [OxNotification](/newb_bridge/modules/notifications#oxnotification).
+
+## `notify(src, data)`
+
+**Signature:** `notify(src: number, data: OxNotification): void`
+
+| Param | Type |
+| ----- | ---- |
+| `src` | `number` |
+| `data` | [OxNotification](/newb_bridge/modules/notifications#oxnotification) |
+
+Triggers `Newb_Bridge:client:notify` on the target client.
+
+```lua
+bridge.notifications.notify(source, {
+    description = 'Welcome back',
+    type = 'inform',
+    duration = 5000,
+})
+```
+
+Use this instead of `bridge.framework.notify` — that method does not exist on framework providers.

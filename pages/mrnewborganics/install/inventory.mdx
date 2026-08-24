@@ -1,0 +1,51 @@
+import { Tabs } from 'nextra/components'
+
+# Item setup
+
+Paste the matching snippet into your items file. Copy item PNGs into:
+
+| Inventory | Image folder |
+| --- | --- |
+| ox_inventory | `ox_inventory/web/images/` |
+| qb-inventory / ps-inventory | `html/images/` |
+| one_inventory | `one_inventory/web/images/` |
+
+OX is ox_inventory (ESX and Qbox that run ox use this tab). QB is `qb-core/shared/items.lua`. one_inventory only needs the PNG in that folder.
+
+These items are not usable. `[INSTALL]/` does not ship framework item files — only images.
+
+<Tabs items={['OX', 'QB']} storageKey="inventory-items">
+<Tabs.Tab>
+
+Add to `ox_inventory/data/items.lua`:
+
+```lua
+['apple'] = {
+    label = 'Apple',
+    weight = 1,
+},
+['pineapple'] = {
+    label = 'Pineapple',
+    weight = 1,
+},
+['lettuce'] = {
+    label = 'Lettuce',
+    weight = 1,
+},
+```
+
+</Tabs.Tab>
+<Tabs.Tab>
+
+Add to your QBCore shared items (`qb-core/shared/items.lua`):
+
+```lua
+['apple'] = { name = 'apple', label = 'Apple', weight = 1, type = 'item', image = 'apple.png', unique = false, useable = false, shouldClose = true, combinable = nil, description = 'A ripe apple' },
+['pineapple'] = { name = 'pineapple', label = 'Pineapple', weight = 1, type = 'item', image = 'pineapple.png', unique = false, useable = false, shouldClose = true, combinable = nil, description = 'A ripe pineapple' },
+['lettuce'] = { name = 'lettuce', label = 'Lettuce', weight = 1, type = 'item', image = 'lettuce.png', unique = false, useable = false, shouldClose = true, combinable = nil, description = 'A head of lettuce' },
+```
+
+</Tabs.Tab>
+</Tabs>
+
+Market `shopItems` values are a bare number (bank price per unit), not `{ price = number }`. Payout is bank via the bridge — do not add a `money` item for this script.

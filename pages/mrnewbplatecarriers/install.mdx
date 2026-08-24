@@ -1,0 +1,49 @@
+import { Callout, Steps } from 'nextra/components'
+
+# Installation
+
+<Callout type="warning">
+  Start this **after** ox_lib, your framework, your inventory, and Newb_Bridge. The bridge auto-detects running resources; if this script starts first, detection can miss them. Keep the folder named `MrNewbPlateCarriers`.
+</Callout>
+
+<Steps>
+### Dependencies
+
+[Newb_Bridge](/newb_bridge), ox_lib, and an inventory that stores per-item metadata (`setMetadata`).
+
+### Add items and images
+
+Paste defs from [Item setup](/mrnewbplatecarriers/install/inventory). Copy PNGs from `[INSTALL]/item_images/` into:
+
+| Inventory | Image folder |
+| --- | --- |
+| ox_inventory | `ox_inventory/web/images/` |
+| qb-inventory / ps-inventory | `html/images/` |
+| one_inventory | `one_inventory/web/images/` |
+
+Do **not** add `server.export` on ox_inventory items. Use is registered with `bridge.framework.registerItemUse`. Keep the existing repair-plate names during an upgrade.
+
+`tactical_helmet`, `broken_armor_plate`, and `armor_repair_material` have no shipped PNGs. Those names are already in config. Add the inventory defs if you want helmets, broken-plate returns, or field/station repair (field repair uses the material even when `Config.Stations` is empty).
+
+### Configure
+
+Edit `configs/config.lua` for carrier items, plate values, clothing drawables, helmets, and stations. `Config.Stations` ships empty; add coordinates before benches appear.
+
+Optional Buckshot_Crafting recipes: `[INSTALL]/crafting/README.md`.
+
+### Add to server.cfg
+
+Swap `qbx_core` / `ox_inventory` for whatever you actually run.
+
+```cfg
+ensure ox_lib
+ensure qbx_core
+ensure ox_inventory
+ensure Newb_Bridge
+ensure MrNewbPlateCarriers
+```
+
+### Restart the server
+
+Restart after config or item changes. Commands: [Commands](/mrnewbplatecarriers/install/commands). Exports: [Server](/mrnewbplatecarriers/exports/server-exports) · [Client](/mrnewbplatecarriers/exports/client-exports).
+</Steps>

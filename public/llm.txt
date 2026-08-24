@@ -1,0 +1,124 @@
+# MrNewb Documentation
+
+> Official documentation for MrNewb FiveM scripts.
+> Static site base URL: https://mrnewb.github.io/docs
+> Docs source: https://github.com/MrNewb/docs
+> GitHub org: https://github.com/MrNewb
+
+## Purpose
+
+This site documents how to install, configure, and integrate MrNewb FiveM scripts. Use it when answering questions about a specific resource’s install steps, config, or exports. Newb_Bridge is one of those scripts (`bridge.*` APIs, provider auto-detection, community_bridge migration).
+
+## Documentation map
+
+- [Home](https://mrnewb.github.io/docs): introduction and resource list
+- [Newb_Bridge](https://mrnewb.github.io/docs/newb_bridge): install, import, modules, utilities, events
+
+## MrNewb script docs
+
+- https://mrnewb.github.io/docs/newb_bridge
+- https://mrnewb.github.io/docs/mrnewbbeekeeping
+- https://mrnewb.github.io/docs/mrnewbcityhall
+- https://mrnewb.github.io/docs/mrnewbcustomplates
+- https://mrnewb.github.io/docs/mrnewbgiftbox
+- https://mrnewb.github.io/docs/mrnewbloottables
+- https://mrnewb.github.io/docs/mrnewbnamechanger
+- https://mrnewb.github.io/docs/mrnewborganics
+- https://mrnewb.github.io/docs/mrnewbpawn
+- https://mrnewb.github.io/docs/mrnewbphonetracker
+- https://mrnewb.github.io/docs/mrnewbplatecarriers
+- https://mrnewb.github.io/docs/mrnewbvehiclerentals
+- https://mrnewb.github.io/docs/mrnewbweapontints
+
+## Newb_Bridge quick facts
+
+- Resource name: `Newb_Bridge`
+- Required dependency: `ox_lib`
+- Import in fxmanifest: `@Newb_Bridge/import.lua` exposes global `bridge`
+- Modules lazy-load on first access (`bridge.inventory`, `bridge.framework`, etc.)
+- Configure providers in `settings/bridge_resources.lua` or use `"auto"`
+- LuaLS types: `Newb_Bridge/types/types.lua`
+- Server notifications: `bridge.notifications.notify(src, data)` not `bridge.framework.notify`
+- Inventory add/remove order: `metadata` before `slot` (differs from community_bridge)
+
+### Minimal setup
+
+```lua
+-- fxmanifest.lua
+shared_scripts {
+    '@ox_lib/init.lua',
+    '@Newb_Bridge/import.lua',
+}
+```
+
+```cfg
+ensure ox_lib
+ensure qbx_core          # or qb-core / es_extended
+ensure ox_inventory
+ensure Newb_Bridge
+ensure your_script
+```
+
+## bridge.* modules (API reference)
+
+Each module has a landing page plus nested **Client** and **Server** pages.
+
+- [Framework](https://mrnewb.github.io/docs/newb_bridge/modules/framework): [client](https://mrnewb.github.io/docs/newb_bridge/modules/framework/client) · [server](https://mrnewb.github.io/docs/newb_bridge/modules/framework/server)
+- [Inventory](https://mrnewb.github.io/docs/newb_bridge/modules/inventory): [client](https://mrnewb.github.io/docs/newb_bridge/modules/inventory/client) · [server](https://mrnewb.github.io/docs/newb_bridge/modules/inventory/server)
+- [Notifications](https://mrnewb.github.io/docs/newb_bridge/modules/notifications): [client](https://mrnewb.github.io/docs/newb_bridge/modules/notifications/client) · [server](https://mrnewb.github.io/docs/newb_bridge/modules/notifications/server)
+- [Menu](https://mrnewb.github.io/docs/newb_bridge/modules/menu/client): context menus (client-only)
+- [Inputs](https://mrnewb.github.io/docs/newb_bridge/modules/inputs/client): input dialogs (client-only)
+- [Progress Bar](https://mrnewb.github.io/docs/newb_bridge/modules/progressbar/client): progress UI (client-only)
+- [TextUI](https://mrnewb.github.io/docs/newb_bridge/modules/textui/client): on-screen helper text (client-only)
+- [Target](https://mrnewb.github.io/docs/newb_bridge/modules/target/client): zones, entities, models (client-only)
+- [Vehicle Keys](https://mrnewb.github.io/docs/newb_bridge/modules/vehiclekeys): [client](https://mrnewb.github.io/docs/newb_bridge/modules/vehiclekeys/client) · [server](https://mrnewb.github.io/docs/newb_bridge/modules/vehiclekeys/server)
+- [Vehicle Fuel](https://mrnewb.github.io/docs/newb_bridge/modules/vehiclefuel): [client](https://mrnewb.github.io/docs/newb_bridge/modules/vehiclefuel/client) · [server](https://mrnewb.github.io/docs/newb_bridge/modules/vehiclefuel/server)
+- [Boss Menu](https://mrnewb.github.io/docs/newb_bridge/modules/bossmenu/server): open boss menu (server)
+- [Dialogue](https://mrnewb.github.io/docs/newb_bridge/modules/dialogue/client): NUI dialogue system (client)
+- [Task Groups](https://mrnewb.github.io/docs/newb_bridge/modules/taskgroups): [client](https://mrnewb.github.io/docs/newb_bridge/modules/taskgroups/client) · [server](https://mrnewb.github.io/docs/newb_bridge/modules/taskgroups/server)
+- [Task HUD](https://mrnewb.github.io/docs/newb_bridge/modules/task/client): objective card (client, WIP)
+
+## exports.Newb_Bridge
+
+- `GetConfig()` — bridge Config table
+- `Dialogue()` — dialogue API (client)
+- `PropPlacer(model, forceGround?, allowedMaterials?, maxDistance?)` — client placement, returns vector4 or nil
+- `CreateZone(options)` — client zone creator, returns ox_lib zone table or nil
+- `useGizmo(entity)` — client gizmo editor
+- `AddInteraction(id, payload)` — client world ped/prop spawner with target
+- `RemoveInteraction(id)` — client or server (server broadcasts)
+- `UpdateInteraction(id, updates)` — client
+- `RemoveAllInteractions()` — client
+- `GetClosestInteraction()` — client, no args
+- `GetNearbyInteractions()` — client, no args
+- `VersionCheck(repoPath, resourceName)` — server GitHub version check
+
+## Lifecycle events
+
+- `Newb_Bridge:server:playerLoad` (src)
+- `Newb_Bridge:server:playerUnload` (src)
+- `Newb_Bridge:server:playerJobUpdate` (src, jobName)
+- `Newb_Bridge:client:playerLoad`
+- `Newb_Bridge:client:playerUnload`
+- `Newb_Bridge:client:playerJobUpdate` (jobName, jobLabel, gradeName, gradeLevel)
+- `Newb_Bridge:client:zoneCreatorEnteredFreecam` (data table)
+- `Newb_Bridge:client:zoneCreatorExitedFreecam` (data table)
+
+## community_bridge migration
+
+| Old | New |
+|-----|-----|
+| `exports.community_bridge:Bridge()` | `@Newb_Bridge/import.lua` → `bridge` |
+| `community_bridge:Server:OnPlayerLoaded` | `Newb_Bridge:server:playerLoad` |
+| `community_bridge:Client:OnPlayerUnload` | `Newb_Bridge:client:playerUnload` |
+| `Bridge.Inventory.RemoveItem(src, item, count, slot, metadata)` | `bridge.inventory.removeItem(src, item, count, metadata, slot)` |
+
+## External links
+
+- Discord: https://discord.gg/mrnewbscripts
+- Tebex: https://mrnewbscripts.tebex.io/
+- GitHub org: https://github.com/MrNewb
+
+## Optional
+
+Full markdown pages live under `docs/pages/` in the docs repository. Prefer the published URLs above for canonical answers. When citing APIs, match parameter order and side (client vs server) exactly as documented in the Modules section.

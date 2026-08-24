@@ -1,0 +1,31 @@
+# MrNewb resource layout
+
+## fxmanifest pattern
+
+```lua
+shared_scripts {
+    '@ox_lib/init.lua',
+    '@Newb_Bridge/import.lua',
+    'configs/*.lua',
+    -- shared classes/helpers that run on both sides
+}
+
+client_scripts {
+    'resource/client/*.lua',
+}
+
+server_scripts {
+    'resource/server/*.lua',
+}
+
+dependencies {
+    'ox_lib',
+    'Newb_Bridge',
+}
+```
+
+List scripts explicitly in load order. Avoid `modules/**` globs so escrow and review stay predictable.
+
+## Player lifecycle
+
+Register world objects on `Newb_Bridge:client:playerLoad` and tear them down on `Newb_Bridge:client:playerUnload`. See [Events](/newb_bridge/events).

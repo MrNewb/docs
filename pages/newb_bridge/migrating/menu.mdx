@@ -1,0 +1,71 @@
+import { Callout } from 'nextra/components'
+
+# Menu
+
+`Bridge.Menu` → `bridge.menu`. Full API: [client](/newb_bridge/modules/menu/client).
+
+<Callout type="warning">
+  There is no QB-menu conversion flag. `Menu.Open(data, true)` (`useQb`) will not translate `header` / `txt` / `isMenuHeader` rows. Rebuild the table as ox_lib context (`id`, `title`, `options` with `title` / `description` / `onSelect`).
+</Callout>
+
+| community_bridge | Newb_Bridge |
+| --- | --- |
+| `Open(data, useQb)` | `openMenu(data)` | Registers and shows. Returns the menu id |
+| — | `closeMenu()` | |
+| `GetResourceName()` | `getResourceName()` | |
+
+No `registerContext` / `showContext`. One `openMenu` call.
+
+```lua
+-- Old (ox-shaped)
+Bridge.Menu.Open({
+    id = 'hive_menu',
+    title = 'Beehive',
+    options = {
+        { title = 'Extract honey', icon = 'fa-solid fa-jar', onSelect = function() end },
+    },
+}, false)
+
+-- New
+bridge.menu.openMenu({
+    id = 'hive_menu',
+    title = 'Beehive',
+    canClose = true,
+    options = {
+        {
+            title = 'Extract honey',
+            icon = 'fa-solid fa-jar',
+            onSelect = function()
+                TriggerServerEvent('myresource:extractHoney')
+            end,
+        },
+    },
+})
+```
+
+QB-format community_bridge menus (`header`, `txt`, `params.event`) need a rewrite:
+
+```lua
+-- Old (useQb = true)
+Bridge.Menu.Open({
+    { header = 'Shop', isMenuHeader = true },
+    { header = 'Buy water', txt = '$5', params = { event = 'shop:buy', args = { 'water' } } },
+}, true)
+
+-- New
+bridge.menu.openMenu({
+    id = 'shop',
+    title = 'Shop',
+    options = {
+        {
+            title = 'Buy water',
+            description = '$5',
+            onSelect = function()
+                TriggerServerEvent('shop:buy', 'water')
+            end,
+        },
+    },
+})
+```
+
+Stacked submenus: pass an array of `ContextMenuProps` to `openMenu` (see the [menu module](/newb_bridge/modules/menu/client)). `community_bridge:client:MenuCallback` does not exist.

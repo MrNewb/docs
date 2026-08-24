@@ -1,0 +1,20 @@
+# Vehicle keys
+
+`bridge.vehiclekeys` grants or removes keys for a vehicle entity.
+
+- [Client](/newb_bridge/modules/vehiclekeys/client) — entity-handle grants (provider-dependent)
+- [Server](/newb_bridge/modules/vehiclekeys/server) — authoritative grants
+
+Auto-detect order: `MrNewbVehicleKeys` → `qbx_vehiclekeys` → `cd_garage` → `mVehicle` → `okokGarage` → `qb-vehiclekeys` → `vehicles_keys` → `wasabi_carlock` → `Renewed-Vehiclekeys` → `mk_vehiclekeys` → `ak47_vehiclekeys` → `0r-vehiclekeys`.
+
+When **MrNewbVehicleKeys** is the active key resource, these calls route into its grant/revoke flow.
+
+For plate changes, lock profiles, rentals, and temp keys, call the key resource’s own exports. This page is only the bridge wrapper.
+
+```lua
+-- Server (authoritative)
+bridge.vehiclekeys.give(source, vehicle)
+
+-- Client — only providers with real client exports (e.g. MrNewbVehicleKeys)
+bridge.vehiclekeys.give(cache.vehicle)
+```

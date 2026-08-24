@@ -1,0 +1,257 @@
+# Dialogue (client)
+
+Client-only NUI dialogue system. Access via `bridge.dialogue` (lazy) or `exports.Newb_Bridge:Dialogue()`. Accessing this module on the [server](/newb_bridge/modules/dialogue/server) throws.
+
+## `RegisterMenu(menu)`
+
+**Signature:** `RegisterMenu(menu: DialogueMenu): string`
+
+| Param | Type |
+| ----- | ---- |
+| `menu` | [DialogueMenu](#dialoguemenu) |
+
+| **Returns** | `string` — menu id |
+
+```lua
+local id = bridge.dialogue.RegisterMenu({
+    id = 'beekeeper',
+    title = 'Beekeeper',
+    text = 'Need supplies?',
+    options = {
+        { title = 'Buy jar', onSelect = function() end },
+        { title = 'Sell honey', onSelect = function() end },
+    },
+})
+```
+
+## `UnregisterMenu(id)`
+
+**Signature:** `UnregisterMenu(id: string): boolean`
+
+| Param | Type |
+| ----- | ---- |
+| `id` | `string` |
+
+| **Returns** | `boolean` |
+
+```lua
+bridge.dialogue.UnregisterMenu('beekeeper')
+```
+
+## `UpdateMenu(id, updates)`
+
+**Signature:** `UpdateMenu(id: string, updates: DialogueMenu | table): boolean`
+
+| Param | Type |
+| ----- | ---- |
+| `id` | `string` |
+| `updates` | `DialogueMenu` \| `table` |
+
+| **Returns** | `boolean` |
+
+```lua
+bridge.dialogue.UpdateMenu('beekeeper', { text = 'Welcome back!' })
+```
+
+## `SetMenuOption(id, optionKey, updates)`
+
+**Signature:** `SetMenuOption(id: string, optionKey: string | number, updates: DialogueOption): boolean`
+
+| Param | Type |
+| ----- | ---- |
+| `id` | `string` |
+| `optionKey` | `string` \| `number` |
+| `updates` | [DialogueOption](#dialogueoption) |
+
+| **Returns** | `boolean` |
+
+```lua
+bridge.dialogue.SetMenuOption('beekeeper', 1, { title = 'Buy premium jar', disabled = false })
+```
+
+## `RemoveMenuOption(id, optionKey)`
+
+**Signature:** `RemoveMenuOption(id: string, optionKey: string | number): boolean`
+
+| Param | Type |
+| ----- | ---- |
+| `id` | `string` |
+| `optionKey` | `string` \| `number` |
+
+| **Returns** | `boolean` |
+
+```lua
+bridge.dialogue.RemoveMenuOption('beekeeper', 2)
+```
+
+## `RefreshMenu(id)`
+
+**Signature:** `RefreshMenu(id: string): boolean`
+
+| Param | Type |
+| ----- | ---- |
+| `id` | `string` |
+
+| **Returns** | `boolean` — re-renders the menu if it is open |
+
+```lua
+bridge.dialogue.RefreshMenu('beekeeper')
+```
+
+## `GetMenu(id)`
+
+**Signature:** `GetMenu(id: string): DialogueMenu?`
+
+| Param | Type |
+| ----- | ---- |
+| `id` | `string` |
+
+| **Returns** | [DialogueMenu](#dialoguemenu)? |
+
+```lua
+local menu = bridge.dialogue.GetMenu('beekeeper')
+```
+
+## `OpenMenu(id, target?)`
+
+**Signature:** `OpenMenu(id: string, target?: number | vector3 | vector4 | DialogueTargetOptions): void`
+
+| Param | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | `string` | Registered menu id |
+| `target` | `number` \| `vector3` \| `vector4` \| [DialogueTargetOptions](#dialoguetargetoptions)? | Ped entity or world position |
+
+Fails silently if the player is too far from the target.
+
+```lua
+bridge.dialogue.OpenMenu('beekeeper', shopPed)
+
+bridge.dialogue.OpenMenu('beekeeper', {
+    ped = shopPed,
+    maxDistance = 3.0,
+    camFov = 40.0,
+})
+```
+
+## `GetNavigationArgs()`
+
+**Signature:** `GetNavigationArgs(): table?`
+
+| **Returns** | Args from the last menu-navigation select, or `nil` |
+
+```lua
+local args = bridge.dialogue.GetNavigationArgs()
+```
+
+## `Close(sessionId)`
+
+**Signature:** `Close(sessionId: string): void`
+
+| Param | Type | Description |
+| ----- | ---- | ----------- |
+| `sessionId` | `string` | Same as the registered menu `id` (`OpenMenu` does not return a separate session id) |
+
+```lua
+bridge.dialogue.Close('beekeeper')
+```
+
+## `PlayPedSpeech(ped, speech, param?)`
+
+**Signature:** `PlayPedSpeech(ped: number, speech: string | DialogueSpeechOptions, param?: string): boolean`
+
+| Param | Type |
+| ----- | ---- |
+| `ped` | `number` |
+| `speech` | `string` \| `DialogueSpeechOptions` |
+| `param` | `string?` |
+
+| **Returns** | `boolean` |
+
+```lua
+bridge.dialogue.PlayPedSpeech(ped, 'GENERIC_HI', 'SPEECH_PARAMS_FORCE')
+```
+
+## `PlayPedAnim(ped, anim, animId?)`
+
+**Signature:** `PlayPedAnim(ped: number, anim: DialogueAnimOptions, animId?: string): boolean`
+
+| Param | Type |
+| ----- | ---- |
+| `ped` | `number` |
+| `anim` | [DialogueAnimOptions](#dialogueanimoptions) |
+| `animId` | `string?` |
+
+| **Returns** | `boolean` |
+
+```lua
+bridge.dialogue.PlayPedAnim(ped, { dict = 'gestures@m@standing@casual', clip = 'gesture_hello' })
+```
+
+## Types
+
+### `DialogueMenu`
+
+| Field | Type |
+| ----- | ---- |
+| `id` | `string?` |
+| `title` | `string` |
+| `description` | `string?` |
+| `text` | `string?` |
+| `typewriter` | `boolean?` |
+| `menu` | `string?` |
+| `options` | `DialogueOption[]` |
+| `onEnter` | `fun()?` |
+| `onExit` | `fun()?` |
+
+### `DialogueOption`
+
+| Field | Type |
+| ----- | ---- |
+| `title` | `string?` |
+| `description` | `string?` |
+| `input` | `DialogueInputField?` |
+| `disabled` | `boolean?` |
+| `readOnly` | `boolean?` |
+| `item` | `string` \| `{ item, count?, metadata? }?` | Hidden unless `bridge.inventory.hasItem` passes when the menu is built |
+| `menu` | `string?` | Child menu id (only menus linked this way, or via `menu` parent / stack, are navigable) |
+| `onSelect` | `fun(args: any)?` |
+| `event` | `string?` | Client event name |
+| `serverEvent` | `string?` | Server event; consumer handlers must still validate distance/job/etc. |
+| `type` | `'info'` \| `'error'` \| `'success'` \| `'warning'` |
+
+### `DialogueTargetOptions`
+
+| Field | Type |
+| ----- | ---- |
+| `ped` | `number?` |
+| `entity` | `number?` |
+| `coords` | `vector3` \| `vector4?` |
+| `maxDistance` | `number?` |
+| `camFov` | `number?` |
+
+### `DialogueInputField`
+
+Inline input on a `DialogueOption` (`option.input`).
+
+| Field | Type |
+| ----- | ---- |
+| `type` | `'input'` \| `'number'` \| `'checkbox'` \| `'select'` \| `'multi-select'` \| `'slider'` \| `'textarea'` |
+| `label` | `string` |
+| `description` | `string?` |
+| `placeholder` | `string?` |
+| `icon` | `string?` |
+| `required` | `boolean?` |
+| `disabled` | `boolean?` |
+| `default` | `any?` |
+| `password` | `boolean?` — `input` only |
+| `min` / `max` | `number?` — numeric types, or textarea row count |
+| `options` | `{ value, label?, description? }[]?` — `select` / `multi-select` |
+
+### `DialogueAnimOptions`
+
+| Field | Type |
+| ----- | ---- |
+| `dict` | `string` |
+| `clip` | `string` |
+| `flag` | `number?` |
+| `duration` | `number?` |

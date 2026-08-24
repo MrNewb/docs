@@ -1,0 +1,102 @@
+# Configuration
+
+Edit `settings/bridge_resources.lua` inside the **Newb_Bridge** resource.
+
+Set any value to a specific resource name to force it, or `"auto"` to detect the first available provider. `Config.Dispatch` defaults to `"internal"` (not `"auto"`).
+
+```lua
+Config = {}
+
+Config.Debug = false
+Config.VersionCheck = true
+
+Config.Framework = "auto"       -- qbx_core, qb-core, es_extended
+Config.Inventory = "auto"       -- see Supported
+Config.Target = "auto"          -- ox_target, tgiann-target, core_focus, qb-target, sleepless_interact
+Config.VehicleKeys = "auto"     -- MrNewbVehicleKeys, qbx_vehiclekeys, ...
+Config.VehicleFuel = "auto"     -- ox_fuel, LegacyFuel, cdn-fuel, ... (fallback: internal)
+Config.Menu = "auto"            -- ox_lib, lation_ui, qb-menu
+Config.Notifications = "auto"   -- ox_lib, okokNotify, lation_ui, ...
+Config.Inputs = "auto"          -- ox_lib, lation_ui
+Config.TextUI = "auto"          -- ox_lib, lation_ui, okokTextUI, cd_drawtextui, jg-textui, lab-TextUI, zsx_uiv2
+Config.ProgressBar = "auto"     -- ox_lib, lation_ui, wasabi_uikit, progressbar, zsx_uiv2
+Config.BossMenu = "auto"        -- qbx_management, qb-management, esx_society, ...
+Config.Dispatch = "internal"    -- or "auto" / a named provider
+
+Config.TaskGroups = {
+    DefaultMaxPlayers = 8,
+    MaxMaxPlayers = 8,
+    MinMaxPlayers = 2,
+    DefaultImage = '',
+    InviteRadius = 10.0,
+    JoinCodeLength = 6,
+    MaxNameLength = 32,
+}
+```
+
+| Key | Default | Notes |
+| --- | --- | --- |
+| `Config.Debug` | `false` | Placer/DUI NUI debug flag; H copies the aimed material hash in the placer; target zones inherit `debugPoly` when the payload omits `debug` |
+| `Config.VersionCheck` | `true` | Server-console GitHub check for Newb_Bridge on start |
+| `Config.Framework` | `"auto"` | [Supported](/newb_bridge/supported#framework) |
+| `Config.Inventory` | `"auto"` | [Supported](/newb_bridge/supported#inventory) |
+| `Config.Target` | `"auto"` | [Supported](/newb_bridge/supported#target) |
+| `Config.VehicleKeys` | `"auto"` | [Supported](/newb_bridge/supported#vehicle-keys) |
+| `Config.VehicleFuel` | `"auto"` | Falls back to `internal`. [Supported](/newb_bridge/supported#vehicle-fuel) |
+| `Config.Menu` | `"auto"` | [Supported](/newb_bridge/supported#menu) |
+| `Config.Notifications` | `"auto"` | [Supported](/newb_bridge/supported#notifications) |
+| `Config.Inputs` | `"auto"` | [Supported](/newb_bridge/supported#inputs) |
+| `Config.TextUI` | `"auto"` | [Supported](/newb_bridge/supported#text-ui) |
+| `Config.ProgressBar` | `"auto"` | [Supported](/newb_bridge/supported#progress-bar) |
+| `Config.BossMenu` | `"auto"` | [Supported](/newb_bridge/supported#boss-menu) |
+| `Config.Dispatch` | `"internal"` | Built-in blip + notify unless you pin or set `"auto"`. [Supported](/newb_bridge/supported#dispatch) |
+| `Config.TaskGroups` | table above | Shared by the task-group menu and server callbacks |
+
+After auto-detect, those keys hold the **resolved** resource name. `Config.Providers` is the module → provider map `import.lua` consumes (`framework`, `inventory`, `target`, …).
+
+## Auto-detection
+
+When a setting is `"auto"`, Newb_Bridge walks the list in order and picks the first resource that is `started`. If none are started yet (bridge init can run before dependents), it picks the first whose state is not `"missing"`. If still nothing, it uses the module `fallback` when one exists.
+
+Start order in `server.cfg` matters. Bridged resources should be running before scripts that depend on them. On start, the server console prints one line per module (`auto`, `manual`, or `auto, fallback`).
+
+Provider names and check order: [Supported](/newb_bridge/supported).
+
+## Locales
+
+Not a `Config` key. Set the ox_lib convar in `server.cfg`:
+
+```cfg
+setr ox:locale en
+```
+
+Shipped files live in `locales/`. Missing codes fall back to `en`. Full list: [Supported](/newb_bridge/supported#locales).
+
+## Configuration examples
+
+### Force a specific inventory
+
+Use when auto-detect picks the wrong resource (for example both `qs-inventory` and `ox_inventory` are present):
+
+```lua
+-- Newb_Bridge/settings/bridge_resources.lua
+Config.Inventory = "ox_inventory"
+Config.Framework = "qbx_core"
+Config.Target = "ox_target"
+Config.Notifications = "ox_lib"
+```
+
+### Debug which providers loaded
+
+```lua
+-- Server or client after bridge import
+print('Framework:', Config.Framework, Config.Providers.framework)
+print('Inventory:', Config.Inventory, Config.Providers.inventory)
+print(bridge.framework.getResourceName(), bridge.inventory.getResourceName())
+```
+
+The host also prints a one-time `detected scripts:` block to the server console on start.
+
+## IDE support
+
+Full LuaLS types live in `Newb_Bridge/types/types.lua`. Point your language server at the bridge resource for autocomplete on `bridge.*`.

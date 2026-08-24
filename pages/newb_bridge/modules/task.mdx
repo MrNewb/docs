@@ -1,0 +1,27 @@
+# Task HUD
+
+WIP / experimental. The client file is marked work-in-progress. Prefer Task Groups for party membership; use this HUD only if you accept API churn.
+
+Client-only objective card (left or right). Access via `bridge.task` or `exports.Newb_Bridge:Task()`.
+
+- [Client](/newb_bridge/modules/task/client) — `show` / `update` / `hide` / queries
+- [Server](/newb_bridge/modules/task/server) — not available (throws)
+
+```lua
+bridge.task.show({
+    title = 'Honey Run',
+    description = 'Collect and deliver honey',
+    position = 'right',
+    type = 'dense',
+    tasks = {
+        { id = 'collect', label = 'Collect jars', current = 0, max = 5 },
+        { id = 'deliver', label = 'Deliver to buyer', current = 0, max = 1 },
+    },
+})
+
+bridge.task.update({
+    tasks = {
+        { id = 'collect', label = 'Collect jars', current = 3, max = 5 },
+    },
+})
+```

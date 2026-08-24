@@ -1,0 +1,127 @@
+import { Callout } from 'nextra/components'
+
+# Framework
+
+`Bridge.Framework` → `bridge.framework`. Full API: [client](/newb_bridge/modules/framework/client) · [server](/newb_bridge/modules/framework/server).
+
+Naming is camelCase. Item methods that lived on Framework in community_bridge belong on `bridge.inventory`. Money methods are `addMoney` / `removeMoney` / `getMoney` (not `*AccountBalance` on the server).
+
+## Server
+
+| community_bridge | Newb_Bridge | Notes |
+| --- | --- | --- |
+| `GetPlayerIdentifier(src)` | `getIdentifier(src)` | Character id (`citizenid` / ESX identifier) |
+| `GetPlayerSource(citizenid)` | `getSrcFromIdentifier(identifier)` | Also `getSourceByCharId` |
+| `GetPlayerByIdentifier(citizenid)` | — | Use `getSrcFromIdentifier` then `getPlayer` |
+| `GetPlayer(src)` | `getPlayer(src)` | **Snapshot**, not the framework player object |
+| `GetPlayerName(src)` | `getPlayer(src).name` or `getCharacterName(identifier)` | `getCharacterName` takes an **identifier**, not a source |
+| `GetPlayerDob(src)` | `getPlayerDob(src)` | |
+| `GetPlayers()` | `getPlayers()` | Server ids |
+| `GetIsFrameworkAdmin(src)` | `isAdmin(src)` | ACE `admin` |
+| `GetFrameworkJobs()` | `getFrameworkJobs()` | |
+| `GetFrameworkName()` | `getResourceName()` | Provider folder name |
+| `GetPlayerJob(src)` | `getPlayerJobData(src)` | CB returned four values (`name, label, gradeName, gradeLevel`). Use the table |
+| `GetPlayerJobData(src)` | `getPlayerJobData(src)` | Field names differ — see below |
+| `GetPlayerDuty(src)` | `getPlayerJobData(src).onDuty` | |
+| `SetPlayerDuty(src, status)` | `setPlayerDuty(src, onDuty)` | |
+| `SetPlayerJob(src, name, grade)` | `setPlayerJob(src, name, grade)` | |
+| `GetPlayersByJob(job)` | `getPlayersByJob(job)` | Sorted id array. On-duty only: `getPlayersOnDuty` |
+| `GetJobCount(job)` | `getOnlineCountJob(job)` | Duty: `getDutyCountJob`. Both: `getJobCounts` |
+| `GetPlayerGang(src)` | `hasGroup(src, gangName)` / `getGroups(src)` | Job + gang live on the same group table |
+| `GetPlayerMetadata(src, key)` | `getPlayerMetadata(src, key)` | |
+| `SetPlayerMetadata(src, key, value)` | `setPlayerMetadata(src, key, value)` | Multi-key: `setMetadata(src, { key = { type, value } })` |
+| `AddHunger(src, value)` / `AddThirst(src, value)` | `addHunger` / `addThirst` | |
+| `GetHunger(src)` / `GetThirst(src)` | — | Client-only: `getHunger()` / `getThirst()` |
+| `AddStress` / `RemoveStress` | `setMetadata(src, { stress = { type = 'add'\|'remove', value } })` | |
+| `AddAccountBalance(src, type, amount)` | `addMoney(src, moneyType, amount, reason?)` | `'cash'` \| `'bank'` \| `'crypto'` |
+| `RemoveAccountBalance(...)` | `removeMoney(...)` | |
+| `GetAccountBalance(src, type)` | `getMoney(src, moneyType)` | Server is authoritative |
+| `GetOwnedVehicles(src)` | `getOwnedVehicles(src)` | `{ vehicle, plate }[]` |
+| `IsVehicleOwnedByPlayer(src, plate)` | — | Scan `getOwnedVehicles` |
+| `RegisterUsableItem(item, cb)` | `registerItemUse(item, cb)` | Only path for usable items |
+| `GetItem` / `HasItem` / `AddItem` / `RemoveItem` / `GetPlayerInventory` / `GetItemBySlot` / `SetMetadata` | `bridge.inventory.*` | Do not keep calling these on framework |
+| `GetIsPlayerDead(src)` | — | Client: `isPlayerDead()` |
+| `RevivePlayer(src)` | — | Call your ambulance/framework revive |
+| `GetPlayerPhone(src)` | — | No phone module |
+| `GetVehicleProperties` / `SetVehicleProperties` | — | Use ox_lib vehicle properties |
+
+<Callout type="warning">
+  `getCharacterName(identifier)` is not `GetPlayerName(src)`. Pass a citizen id / ESX identifier. For an online player use `bridge.framework.getPlayer(src).name`.
+</Callout>
+
+```lua
+-- Old
+local citizenid = Bridge.Framework.GetPlayerIdentifier(src)
+local first, last = Bridge.Framework.GetPlayerName(src)
+local player = Bridge.Framework.GetPlayer(src)
+Bridge.Framework.AddAccountBalance(src, 'bank', 500)
+Bridge.Framework.RegisterUsableItem('bandage', function(src, item) end)
+
+-- New
+local citizenid = bridge.framework.getIdentifier(src)
+local player = bridge.framework.getPlayer(src)
+local name = player and player.name
+bridge.framework.addMoney(src, 'bank', 500, 'paycheck')
+bridge.framework.registerItemUse('bandage', function(src, item)
+    TriggerClientEvent('MyResource:Client:UseBandage', src)
+end)
+```
+
+`GetPlayerJobData` fields:
+
+| community_bridge | Newb_Bridge |
+| --- | --- |
+| `jobName` / `jobLabel` | same |
+| `gradeRank` | `grade` |
+| `gradeName` / `gradeLabel` | `gradeName` only |
+| `boss` | `isBoss` |
+| `onDuty` | same |
+
+```lua
+-- Old
+local job = Bridge.Framework.GetPlayerJobData(src)
+if job and job.jobName == 'police' and job.onDuty then end
+
+-- New
+if bridge.framework.hasJob(src, 'police', nil, true) then end
+-- or
+local job = bridge.framework.getPlayerJobData(src)
+if job and job.jobName == 'police' and job.onDuty then end
+```
+
+There is no `registerCommand` on community_bridge Framework. Chat commands in Newb_Bridge go through `bridge.framework.registerCommand` on the **server** — do not switch those to `lib.addCommand`. See [Installation](/newb_bridge/getting-started) and the [framework server](/newb_bridge/modules/framework/server) command section.
+
+## Client
+
+| community_bridge | Newb_Bridge | Notes |
+| --- | --- | --- |
+| `GetIsPlayerLoaded()` | `getIsPlayerLoaded()` | Or wait for `Newb_Bridge:client:playerLoad` |
+| `GetPlayerData()` | `getPlayerData()` | Live framework table |
+| `GetPlayerIdentifier()` | `getIdentifier()` | |
+| `GetPlayerName()` | `getCharacterName()` | Returns full, first, last |
+| `GetPlayerDob()` | `getPlayerDob()` | |
+| `GetPlayerJob()` / `GetPlayerJobData()` | `getPlayerJobData()` | Same field rename as server (`gradeRank` → `grade`, `boss` → `isBoss`) |
+| `GetPlayerMetaData(key)` | `getPlayerMetadata(key)` | |
+| `GetHunger()` / `GetThirst()` | `getHunger()` / `getThirst()` | Also `getStress()` |
+| — | `setStatus(statusType, value)` | `'stress'` \| `'hunger'` \| `'thirst'` |
+| `GetAccountBalance(type)` | `getAccountBalance(moneyType)` | Display only |
+| `HasItem` / `GetItemCount` / `GetPlayerInventory` / `GetItemInfo` | `bridge.inventory.*` | |
+| `Notify(...)` | `bridge.notifications.notify({ ... })` | Not on framework |
+| `ShowHelpText` / `HideHelpText` | `bridge.textui.showTextUI` / `hideTextUI` | |
+| `GetIsPlayerDead()` | `isPlayerDead()` | |
+| — | `hasJob(job, grade?, duty?)` | Cached |
+| — | `hasGroup(group, grade?, duty?)` | Job or gang |
+| — | `isOnDuty()` | Cached |
+| — | `getPlayerBucket()` | Routing bucket |
+
+```lua
+-- Old
+if not Bridge.Framework.GetIsPlayerLoaded() then return end
+local job = Bridge.Framework.GetPlayerJobData()
+Bridge.Framework.Notify('Saved', 'success', 3000)
+
+-- New
+if not bridge.framework.getIsPlayerLoaded() then return end
+if bridge.framework.hasJob('police', 2, true) then end
+bridge.notifications.notify({ description = 'Saved', type = 'success', duration = 3000 })
+```

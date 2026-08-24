@@ -1,0 +1,46 @@
+import { Callout } from 'nextra/components'
+
+# Progress bar
+
+`Bridge.ProgressBar` → `bridge.progressbar`. Full API: [client](/newb_bridge/modules/progressbar/client).
+
+<Callout type="warning">
+  There is no `isQBInput` converter and no completion callback argument. Map QB fields (`animation.animDict`, `controlDisables.disableMovement`, `prop.coords`) to ox_lib (`anim.dict`, `disable.move`, `prop.pos`) yourself. `openprogressbar` **returns** `true` / `false` instead of calling `cb(success)`.
+</Callout>
+
+| community_bridge | Newb_Bridge |
+| --- | --- |
+| `Open(options, cb, isQBInput)` | `openprogressbar(data)` | Alias: `openProgressBar` |
+| — | `progressActive()` | ox_lib / lation_ui |
+| — | `cancelProgress()` | ox_lib / lation_ui |
+| `options.style = 'circle'` | `lib.progressCircle` is not wrapped | Use ox_lib directly if you need a circle |
+
+```lua
+-- Old
+Bridge.ProgressBar.Open({
+    duration = 5000,
+    label = 'Harvesting honey...',
+    canCancel = true,
+    disable = { move = true, combat = true },
+    anim = { dict = 'amb@world_human_gardener_plant@male@base', clip = 'base' },
+}, function(success)
+    if success then TriggerServerEvent('myresource:finishHarvest') end
+end)
+
+-- New
+local finished = bridge.progressbar.openprogressbar({
+    duration = 5000,
+    label = 'Harvesting honey...',
+    canCancel = true,
+    disable = { move = true, combat = true },
+    anim = {
+        dict = 'amb@world_human_gardener_plant@male@base',
+        clip = 'base',
+    },
+})
+if finished then
+    TriggerServerEvent('myresource:finishHarvest')
+end
+```
+
+QB-format community_bridge (`animation.animDict`, `controlDisables`, `propTwo`) is not accepted. Convert before calling, or rewrite the table as ox_lib.

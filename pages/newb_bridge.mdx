@@ -1,0 +1,31 @@
+import { Callout } from 'nextra/components'
+
+# Newb_Bridge
+
+Compatibility layer most MrNewb scripts import. You call `bridge.*`; it talks to the framework, inventory, and target you already run.
+
+<Callout>
+  These docs are under construction. Pages will change as they fill in.
+</Callout>
+
+[GitHub](https://github.com/MrNewb/Newb_Bridge) · [Installation](/newb_bridge/getting-started) · [Supported](/newb_bridge/supported)
+
+## Start order
+
+```cfg
+ensure ox_lib
+ensure oxmysql
+ensure Newb_Bridge
+ensure MrNewb_YourScript
+```
+
+The folder name must stay `Newb_Bridge`. Import in each script’s `fxmanifest.lua`:
+
+```lua
+shared_scripts {
+    '@ox_lib/init.lua',
+    '@Newb_Bridge/import.lua',
+}
+```
+
+Leave providers on `"auto"` unless you need to pin one. Dispatch defaults to `"internal"`. Details: [Configuration](/newb_bridge/configuration), [Modules](/newb_bridge/modules).

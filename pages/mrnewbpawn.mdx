@@ -1,0 +1,213 @@
+import { YouTubePoster } from '../components/YouTubePoster'
+
+# MrNewbPawn
+
+Pawn shops with optional buy-back of sold stock, plus foundry box zones for smelting. Built on [Newb_Bridge](/newb_bridge/getting-started).
+
+[GitHub](https://github.com/MrNewb/MrNewbPawn) · [Discord](https://discord.gg/mrnewbscripts) · [Installation](/mrnewbpawn/install) · [Item setup](/mrnewbpawn/install/inventory) · [Item images](/mrnewbpawn/install/inventory-images) · [Preview](https://www.youtube.com/watch?v=T4BHIxLF6F8)
+
+<YouTubePoster id="T4BHIxLF6F8" title="MrNewbPawn preview" className="resource-video" />
+
+<img src="/docs/images/pawn.png" alt="Pawn shop artwork" style={{ maxWidth: "100%" }} loading="lazy" decoding="async" />
+
+## Requirements
+
+- [Newb_Bridge](/newb_bridge)
+- ox_lib
+- Artifact `/server:6116` or newer, OneSync
+- Framework via the bridge (cash)
+- Inventory via the bridge (sell / buy / smelt items)
+- Target via the bridge (shop peds + foundry **box zones**)
+
+Items are **not** usable. The script does not register item use. Names in `itemlist` and `MeltableItems` must exist in your inventory. Shipped PNGs are in `[INSTALL]/images/` (filename = item name).
+
+## Where you edit
+
+`configs/config.lua`.
+
+| Key | Purpose |
+| --- | --- |
+| `Config.Debug` | Box-zone debug draw. Debug also waits two seconds on resource start, then rebuilds shops and foundries. Leave `false` live. |
+| `Config.Logging` | Prints sell / buy / smelt lines to the server console |
+| `Config.PurchaseStock` | Let players buy items others sold at that shop (`true`) |
+| `Config.PurchaseMarkup` | Buy-back **percent** over sell price, rounded **up**. Shipped `20` means sell `$4` → buy `$5`, sell `$8` → buy `$10` |
+| `Config.PawnShops` | Ped shops: `position`, `model`, `itemlist`, optional `Blip` / `storeHours` |
+| `Config.FoundryLocations` | Smelters: `Zone` box (`coords`, `size`, `rotation`), optional `Blip` / `lerpProp` |
+| `Config.MeltableItems` | Smelt recipes |
+
+Sold stock is a Lua table on each shop (`stock`). It is gone when the resource restarts.
+
+### Shop entry
+
+```lua
+['Christians Pawn Shop'] = {
+    position = vector4(412.5550, 314.4313, 103.0210, 220.8834),
+    model = 'a_m_m_farmer_01',
+    radius = 100.0,
+    Blip = { label = 'Christians Pawn Shop', color = 50, sprite = 500, scale = 0.8 },
+    itemlist = { metalscrap = 8, rolex = 140 },
+},
+```
+
+Shipped shops omit `storeHours` (always open). Positions:
+
+| Shop | `position` |
+| --- | --- |
+| `Christians Pawn Shop` | `vector4(412.5550, 314.4313, 103.0210, 220.8834)` |
+| `Stretchs Pawn Shop` | `vector4(183.1389, -1319.7739, 29.3186, 246.9986)` |
+| `Robbies Pawn Shop` | `vector4(-1459.8115, -413.8209, 35.7551, 178.0825)` |
+
+| Field | Purpose |
+| --- | --- |
+| `position` | Ped spawn (`vector4`) |
+| `model` | Ped model |
+| `radius` | AddInteraction spawn radius (default `100.0`) |
+| `Blip` | Optional map blip |
+| `itemlist` | Item name → **sell** price (cash) |
+| `storeHours` | Optional `{ open, close }` using **in-game** `GetClockHours()` (`0`–`23`) |
+
+No `storeHours` (or `open == close`) = always open. `open < close` is a same-day window. `open > close` wraps midnight. Both hours are inclusive. Closed shops notify and skip the menu. Hours are client-only.
+
+### Buy-back
+
+When `Config.PurchaseStock` is `true`, each sale adds that count to `shop.stock[item]`. Buy price is `math.ceil(sellPrice * (100 + PurchaseMarkup) / 100)` from the live config (integer cash never rounds a 20% markup back down to the sell price). Players pay **cash**. Empty stock hides the buy list.
+
+### Foundry entry (target box zone)
+
+Client registers `bridge.target.addBoxZone` from `Zone`. The server only checks distance from `Zone.coords` (within **10.0**).
+
+```lua
+Foundry = {
+    Zone = {
+        coords = vector3(1086.18, -2003.78, 30.98),
+        size = vector3(4.55, 3.00, 3.05),
+        rotation = 229.48,
+    },
+},
+Foundry2 = {
+    Zone = {
+        coords = vector3(1112.93, -2010.13, 32.64),
+        size = vector3(4.50, 7.50, 10.50),
+        rotation = 236.29,
+    },
+    Blip = { label = 'Foundry', color = 6, sprite = 436, scale = 0.8 },
+    lerpProp = {
+        lerpSpeed = 0.25,
+        waypoints = {
+            vector3(1114.6724, -2011.4340, 34.8549),
+            vector3(1112.0618, -2009.6460, 34.8549),
+            vector3(1112.0618, -2009.6460, 32.7968),
+        },
+    },
+},
+```
+
+| Field | Purpose |
+| --- | --- |
+| `Zone.coords` | Box center (`vector3`). Server distance check uses this |
+| `Zone.size` | Box size (`vector3`) for the target zone |
+| `Zone.rotation` | Box heading |
+| `Blip` | Optional; uses `Zone.coords` |
+| `lerpProp` | Optional local prop that travels `waypoints` during the progress bar |
+
+### Smelt recipe
+
+```lua
+Config.MeltableItems = {
+    metalscrap = {
+        prop = 'prop_rub_scrap_06',
+        rewards = {
+            { itemName = 'iron', count = 1 },
+        },
+    },
+    rolex = {
+        rewards = {
+            { itemName = 'gold', count = 1 },
+            { itemName = 'metalscrap', count = 1 },
+        },
+    },
+}
+```
+
+Shipped inputs: `metalscrap`, `diamond_ring`, `goldchain`, `rolex`.
+
+| Field | Purpose |
+| --- | --- |
+| `prop` | Model for `lerpProp` (default `prop_cs_cardbox_01`) |
+| `rewards` | Array of `{ itemName, count }` per input item. Counts multiply by the batch size |
+
+If `rewards` is missing but the entry is an array (`entry[1]`), that array is treated as the recipe (legacy shape).
+
+Server batch cap is **50**. Progress is `amount * 1000` ms, capped at 30s, or the lerp travel time if that is longer.
+
+## Items
+
+Not usable. Skip names you already have; copy PNGs if you want this art.
+
+| Item | Label |
+| --- | --- |
+| `metalscrap` | Metal Scrap |
+| `iron` | Iron |
+| `steel` | Steel |
+| `copper` | Copper |
+| `aluminum` | Aluminum |
+| `plastic` | Plastic |
+| `glass` | Glass |
+| `rubber` | Rubber |
+| `radio` | Radio |
+| `phone` | Phone |
+| `laptop` | Laptop |
+| `rolex` | Golden Watch |
+| `goldchain` | Golden Chain |
+| `diamond_ring` | Diamond Ring |
+| `sapphire_ring` | Sapphire Ring |
+| `emerald_necklace` | Emerald Necklace |
+| `ruby_ring` | Ruby Ring |
+| `diamond_necklace` | Diamond Necklace |
+| `gold` | Gold Bar |
+| `diamond` | Diamond |
+
+Paste: [Item setup](/mrnewbpawn/install/inventory). Gallery: [Item images](/mrnewbpawn/install/inventory-images).
+
+<img src="/docs/images/metalscrap.png" alt="metalscrap" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/iron.png" alt="iron" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/steel.png" alt="steel" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/copper.png" alt="copper" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/aluminum.png" alt="aluminum" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/plastic.png" alt="plastic" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/glass.png" alt="glass" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/rubber.png" alt="rubber" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/radio.png" alt="radio" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/phone.png" alt="phone" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/laptop.png" alt="laptop" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/rolex.png" alt="rolex" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/goldchain.png" alt="goldchain" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/diamond_ring.png" alt="diamond_ring" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/sapphire_ring.png" alt="sapphire_ring" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/emerald_necklace.png" alt="emerald_necklace" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/ruby_ring.png" alt="ruby_ring" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/diamond_necklace.png" alt="diamond_necklace" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/gold.png" alt="gold" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/diamond.png" alt="diamond" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+
+## Layout
+
+| Path | Role |
+| --- | --- |
+| `configs/config.lua` | Shops, markup, foundry boxes, recipes |
+| `resource/client/shops.lua` | Peds, blips, sell / buy menus |
+| `resource/client/foundry.lua` | Target box zones, melt menu, lerp prop |
+| `resource/client/debug.lua` | Debug rebuild on resource start |
+| `resource/server/shops.lua` | Sell / buy; distance **6.0** from shop `position` |
+| `resource/server/foundry.lua` | Smelt; distance **10.0** from `Zone.coords` |
+| `[INSTALL]/images/` | Item PNGs |
+
+## Player flows
+
+**Sell** — target the ped, pick an `itemlist` row, choose a count (max **100**), 3s progress + handoff anim, cash payout. Server requires within **6.0** of `position`.
+
+**Buy pawned stock** — only if `PurchaseStock`. Fetches that shop's in-memory stock, pays cash, subtracts count. Same 6.0 check.
+
+**Smelt** — target the foundry **box zone**, pick a recipe, choose a count (max 50), progress, input removed and rewards added (counts × batch). Server requires within **10.0** of `Zone.coords`.
+
+No exports and no commands.

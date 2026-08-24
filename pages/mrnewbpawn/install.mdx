@@ -1,0 +1,56 @@
+import { Callout, Steps } from 'nextra/components'
+
+# Installation
+
+<Callout type="warning">
+  Start this **after** ox_lib, your framework, your inventory, and Newb_Bridge. The bridge auto-detects running resources; if this script starts first, detection can miss them. Keep the folder named `MrNewbPawn`.
+</Callout>
+
+<Steps>
+### Dependencies
+
+[Newb_Bridge](/newb_bridge), ox_lib, server artifact `/server:6116` or newer plus OneSync, your framework (**cash**), and your inventory. Shop peds use `AddInteraction`. Foundries use `bridge.target.addBoxZone`. oxmysql is not required. There are no ESX / QBCore / Qbox install pages.
+
+### Add items and images
+
+These are **not** usable items. Paste names from [Item setup](/mrnewbpawn/install/inventory) if you don't already have them. Copy PNGs from `[INSTALL]/images/` into:
+
+| Inventory | Image folder |
+| --- | --- |
+| ox_inventory | `ox_inventory/web/images/` |
+| qb-inventory / ps-inventory | `html/images/` |
+| one_inventory | `one_inventory/web/images/` |
+
+Shipped names: `metalscrap`, `iron`, `steel`, `copper`, `aluminum`, `plastic`, `glass`, `rubber`, `radio`, `phone`, `laptop`, `rolex`, `goldchain`, `diamond_ring`, `sapphire_ring`, `emerald_necklace`, `ruby_ring`, `diamond_necklace`, `gold`, `diamond`. Gallery: [Item images](/mrnewbpawn/install/inventory-images).
+
+Do **not** add `server.export`. Do **not** mark them usable.
+
+### Configure
+
+Edit `configs/config.lua`:
+
+- `Config.Debug` — leave `false` on a live server. Debug waits two seconds on resource start, then rebuilds shops and foundries.
+- `Config.Logging` — `true` prints `[MrNewbPawn]` sell/buy/smelt lines to the server console.
+- Shops (`Config.PawnShops`, shipped: `Christians Pawn Shop`, `Stretchs Pawn Shop`, `Robbies Pawn Shop`): `position`, `model`, `itemlist`, `radius` (AddInteraction spawn radius; shipped `100.0`, omitted → `100.0`), optional `Blip`, optional `storeHours` (`open` / `close` via `GetClockHours()`, both ends inclusive; overnight wrap if `open > close`; same `open`/`close` = always open)
+- Buy-back: `Config.PurchaseStock` (`true`), `Config.PurchaseMarkup` — **percent** over sell price, rounded up (shipped `20` → sell `$4` buys at `$5`)
+- Foundries (`Config.FoundryLocations`, shipped: `Foundry`, `Foundry2`): target **box zones** via `Zone` (`coords`, `size`, `rotation`). Client uses `bridge.target.addBoxZone`. Server only checks distance from `Zone.coords` (within **10.0**). Optional `Blip`, optional `lerpProp` (`lerpSpeed`, `waypoints`)
+- Recipes (`Config.MeltableItems`, shipped: `metalscrap`, `diamond_ring`, `goldchain`, `rolex`): optional `prop` (omitted → `prop_cs_cardbox_01`), `rewards = { { itemName, count } }`. Server rejects a melt batch above **50**.
+
+Labels: `locales/en.json` (and the other locale files).
+
+### Add to server.cfg
+
+Swap `qbx_core` / `ox_inventory` for whatever you actually run.
+
+```cfg
+ensure ox_lib
+ensure qbx_core
+ensure ox_inventory
+ensure Newb_Bridge
+ensure MrNewbPawn
+```
+
+### Restart the server
+
+Restart after config, locale, or item changes. Sold stock is in-memory per shop and clears on restart. No exports, no commands, no SQL.
+</Steps>

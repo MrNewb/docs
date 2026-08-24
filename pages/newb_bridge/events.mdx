@@ -1,0 +1,143 @@
+# Events
+
+Newb_Bridge emits lifecycle events when the active framework reports player load/unload. Prefer these over framework-specific hooks. Only the **host** instance emits them (`bridge.isHost`); listen with `AddEventHandler` in your resource.
+
+---
+
+## `Newb_Bridge:server:playerLoad`
+
+| Payload | `src: number` |
+| **When** | Player data is ready on the server |
+
+```lua
+AddEventHandler('Newb_Bridge:server:playerLoad', function(src)
+    -- Initialize per-player server state
+end)
+```
+
+---
+
+## `Newb_Bridge:server:playerUnload`
+
+| Payload | `src: number` |
+| **When** | Player unloads or disconnects |
+
+```lua
+AddEventHandler('Newb_Bridge:server:playerUnload', function(src)
+    -- Cleanup server state for src
+end)
+```
+
+---
+
+## `Newb_Bridge:server:playerJobUpdate`
+
+| Payload | `src: number`, `jobName: string` |
+| **When** | Player job changes |
+
+```lua
+AddEventHandler('Newb_Bridge:server:playerJobUpdate', function(src, jobName)
+    print(('Player %s job: %s'):format(src, jobName))
+end)
+```
+
+---
+
+## `Newb_Bridge:client:playerLoad`
+
+| Payload | none |
+| **When** | Local player data is ready (short delay on QB/QBX/ESX) |
+
+```lua
+AddEventHandler('Newb_Bridge:client:playerLoad', function()
+    -- Safe to read bridge.framework.* on client
+end)
+```
+
+---
+
+## `Newb_Bridge:client:playerUnload`
+
+| Payload | none |
+| **When** | Local player unloads |
+
+```lua
+AddEventHandler('Newb_Bridge:client:playerUnload', function()
+    -- Remove blips, interactions, menus
+end)
+```
+
+---
+
+## `Newb_Bridge:client:playerJobUpdate`
+
+| Payload | `jobName`, `jobLabel`, `gradeName`, `gradeLevel` |
+
+Also fired on duty changes (`QBCore:Client:SetDuty` / equivalent). Same four arguments.
+
+```lua
+AddEventHandler('Newb_Bridge:client:playerJobUpdate', function(jobName, jobLabel, gradeName, gradeLevel)
+    print(jobName, gradeName)
+end)
+```
+
+---
+
+## Bridge utility events
+
+| Event | Side | Payload | Description |
+| ----- | ---- | ------- | ----------- |
+| `Newb_Bridge:client:notify` | client | `data: OxNotification` | Server notification delivery (`source == 65535` only) |
+| `Newb_Bridge:Client:NotifyShown` | client | `data: OxNotification` | Fired after every client `notify` (pause-menu history) |
+| `Newb_Bridge:client:setFuel` | client | `netId: number`, `amount: number` | Fuel sync from server `bridge.vehiclefuel.set` (server-origin only) |
+| `Newb_Bridge:Interaction:Remove` | client | `id: string` | Server-initiated interaction removal (server-origin only) |
+| `Newb_Bridge:dispatch:internalAlert` | client | alert payload | Internal dispatch blip + notify (server-origin only) |
+| `Newb_Bridge:client:openTaskGroupMenu` | client | none | Opens task group NUI (server-origin only) |
+| `Newb_Bridge:client:taskGroupMenuRefresh` | client | menu payload | Refresh open task group menu (server-origin only) |
+| `Newb_Bridge:client:taskGroupsChanged` | client | state table | Local `Player.state.taskGroups` mirror updated |
+| `Newb_Bridge:client:openBossMenu:*` | client | `jobName`, `jobType?` | Boss menu open relay (server-origin only; suffix `qbx` / `qb` / `esx` / `vms` / `tk` / `okok` / `codem` / `zat` / `m`) |
+
+The bridge already handles `Newb_Bridge:client:notify`. Do not register your own copy that calls `bridge.notifications.notify` again — that double-fires. Use `bridge.notifications.notify` on the server (or client) instead.
+
+Task-group **server** events (`taskGroupCreated`, `taskGroupMemberAdded`, …) are listed on [Task groups (server)](/newb_bridge/modules/taskgroups/server#events).
+
+### Zone creator (freecam)
+
+| Event | Side | Payload | Description |
+| ----- | ---- | ------- | ----------- |
+| `Newb_Bridge:client:zoneCreatorEnteredFreecam` | client | [ZoneCreatorFreecamPayload](#zonecreatorfreecampayload) | Fired before poly freecam starts |
+| `Newb_Bridge:client:zoneCreatorExitedFreecam` | client | [ZoneCreatorFreecamPayload](#zonecreatorfreecampayload) | Fired when the creator closes |
+
+Only poly zones use freecam. Box and sphere placement is on foot and does **not** trigger these events.
+
+```lua
+AddEventHandler('Newb_Bridge:client:zoneCreatorEnteredFreecam', function(data)
+    print(('Creating zone %s in freecam'):format(data.name))
+end)
+
+AddEventHandler('Newb_Bridge:client:zoneCreatorExitedFreecam', function(data)
+    print(('Finished zone %s'):format(data.name))
+end)
+```
+
+#### `ZoneCreatorFreecamPayload`
+
+| Field | Type | Enter | Exit | Description |
+| ----- | ---- | ----- | ---- | ----------- |
+| `name` | `string` | yes | yes | Zone name from `CreateZone` |
+| `type` | `string` | yes | yes | Always `'poly'` today |
+| `anchor` | `vector3` | yes | — | Bounds center |
+| `maxDistance` | `number` | yes | — | Max freecam distance from anchor |
+
+---
+
+## Polling alternative (client)
+
+```lua
+CreateThread(function()
+    while not bridge.framework.getIsPlayerLoaded() do
+        Wait(500)
+    end
+    -- initialize
+end)
+```

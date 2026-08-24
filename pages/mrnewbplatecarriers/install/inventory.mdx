@@ -1,0 +1,148 @@
+import { Tabs } from 'nextra/components'
+
+# Item setup
+
+This resource needs an inventory that stores per-item metadata. Inventories without metadata are not compatible.
+
+Keep the existing repair-plate names — they are also the modular plate names. Do not rename them during an upgrade.
+
+`tactical_helmet`, `broken_armor_plate`, and `armor_repair_material` are already named in shipped config. Add the inventory defs if you want those features — field repair uses the material even when stations are empty.
+
+Do **not** add ox_inventory `server.export` fields. Use is registered through Newb_Bridge.
+
+Copy item PNGs into:
+
+| Inventory | Image folder |
+| --- | --- |
+| ox_inventory | `ox_inventory/web/images/` |
+| qb-inventory / ps-inventory | `html/images/` |
+| one_inventory | `one_inventory/web/images/` |
+
+OX is ox_inventory (ESX and Qbox that run ox use this tab). QB is `qb-core/shared/items.lua`. one_inventory only needs the PNG in that folder.
+
+<Tabs items={['OX', 'QB']} storageKey="inventory-items">
+<Tabs.Tab>
+
+Add to `ox_inventory/data/items.lua`:
+
+```lua
+['merryweather_carrier'] = {
+    label = 'Merryweather Strike Carrier',
+    weight = 2000,
+    stack = false,
+    close = true,
+    description = 'Tactical carrier from Merryweather Security, designed for mercenary operations.',
+},
+['pegasus_carrier'] = {
+    label = 'Pegasus Vanguard Carrier',
+    weight = 1500,
+    stack = false,
+    close = true,
+    description = 'A high-end tactical carrier from Pegasus for elite protection.',
+},
+['fib_carrier'] = {
+    label = 'FIB SpecOps Carrier',
+    weight = 2500,
+    stack = false,
+    close = true,
+    description = 'Special operations carrier for the FIB, offering high protection for covert missions.',
+},
+['noose_carrier'] = {
+    label = 'NOOSE Enforcer Carrier',
+    weight = 3000,
+    stack = false,
+    close = true,
+    description = 'Heavy-duty carrier designed for NOOSE enforcement teams.',
+},
+['armstrong_carrier'] = {
+    label = 'Armstrong BlackOps Carrier',
+    weight = 3500,
+    stack = false,
+    close = true,
+    description = 'Elite carrier from Armstrong Security, used by black ops mercenaries.',
+},
+['pegasus_light_repair_plate'] = {
+    label = 'Pegasus Light Repair Plate',
+    weight = 500,
+    stack = false,
+    close = true,
+    description = 'A basic repair plate for light armor, typically used for quick fixes.',
+},
+['merryweather_standard_repair_plate'] = {
+    label = 'Merryweather Standard Repair Plate',
+    weight = 700,
+    stack = false,
+    close = true,
+    description = 'A mid-tier repair plate with good durability, favored by Merryweather contractors.',
+},
+['armstrong_elite_repair_plate'] = {
+    label = 'Armstrong Elite Repair Plate',
+    weight = 1500,
+    stack = false,
+    close = true,
+    description = 'Elite repair plate for extreme conditions, favored by Armstrong Security black ops.',
+},
+['fib_tactical_repair_plate'] = {
+    label = 'FIB Tactical Repair Plate',
+    weight = 900,
+    stack = false,
+    close = true,
+    description = 'A tactical repair plate used by the FIB for covert operations.',
+},
+['noose_heavy_repair_plate'] = {
+    label = 'NOOSE Heavy Repair Plate',
+    weight = 1200,
+    stack = false,
+    close = true,
+    description = 'A heavy, reinforced repair plate used by NOOSE forces for high-risk operations.',
+},
+-- Named in shipped config. Add if you want helmets, broken-plate returns, or field/station repair.
+['tactical_helmet'] = {
+    label = 'Tactical Helmet',
+    weight = 1200,
+    stack = false,
+    close = true,
+    description = 'A metadata-backed tactical helmet.',
+},
+['broken_armor_plate'] = {
+    label = 'Broken Armor Plate',
+    weight = 700,
+    stack = true,
+    close = false,
+    description = 'A damaged armor plate that can be recycled or repaired.',
+},
+['armor_repair_material'] = {
+    label = 'Armor Repair Material',
+    weight = 250,
+    stack = true,
+    close = true,
+    description = 'Material used to repair a damaged equipped plate or at an armor service station.',
+},
+```
+
+</Tabs.Tab>
+<Tabs.Tab>
+
+Add to your QBCore shared items (`qb-core/shared/items.lua`). qb-inventory must preserve each item's `info` metadata.
+
+```lua
+['merryweather_carrier'] = { name = 'merryweather_carrier', label = 'Merryweather Strike Carrier', weight = 2000, type = 'item', image = 'merryweather_carrier.png', unique = true, useable = true, shouldClose = true, description = 'Tactical carrier from Merryweather Security.' },
+['pegasus_carrier'] = { name = 'pegasus_carrier', label = 'Pegasus Vanguard Carrier', weight = 1500, type = 'item', image = 'pegasus_carrier.png', unique = true, useable = true, shouldClose = true, description = 'A high-end tactical carrier from Pegasus.' },
+['fib_carrier'] = { name = 'fib_carrier', label = 'FIB SpecOps Carrier', weight = 2500, type = 'item', image = 'fib_carrier.png', unique = true, useable = true, shouldClose = true, description = 'An FIB special operations carrier.' },
+['noose_carrier'] = { name = 'noose_carrier', label = 'NOOSE Enforcer Carrier', weight = 3000, type = 'item', image = 'noose_carrier.png', unique = true, useable = true, shouldClose = true, description = 'A heavy-duty NOOSE carrier.' },
+['armstrong_carrier'] = { name = 'armstrong_carrier', label = 'Armstrong BlackOps Carrier', weight = 3500, type = 'item', image = 'armstrong_carrier.png', unique = true, useable = true, shouldClose = true, description = 'An elite Armstrong Security carrier.' },
+['pegasus_light_repair_plate'] = { name = 'pegasus_light_repair_plate', label = 'Pegasus Light Repair Plate', weight = 500, type = 'item', image = 'pegasus_light_repair_plate.png', unique = true, useable = true, shouldClose = true, description = 'A light modular armor plate.' },
+['merryweather_standard_repair_plate'] = { name = 'merryweather_standard_repair_plate', label = 'Merryweather Standard Repair Plate', weight = 700, type = 'item', image = 'merryweather_standard_repair_plate.png', unique = true, useable = true, shouldClose = true, description = 'A standard modular armor plate.' },
+['fib_tactical_repair_plate'] = { name = 'fib_tactical_repair_plate', label = 'FIB Tactical Repair Plate', weight = 900, type = 'item', image = 'fib_tactical_repair_plate.png', unique = true, useable = true, shouldClose = true, description = 'A tactical modular armor plate.' },
+['noose_heavy_repair_plate'] = { name = 'noose_heavy_repair_plate', label = 'NOOSE Heavy Repair Plate', weight = 1200, type = 'item', image = 'noose_heavy_repair_plate.png', unique = true, useable = true, shouldClose = true, description = 'A heavy modular armor plate.' },
+['armstrong_elite_repair_plate'] = { name = 'armstrong_elite_repair_plate', label = 'Armstrong Elite Repair Plate', weight = 1500, type = 'item', image = 'armstrong_elite_repair_plate.png', unique = true, useable = true, shouldClose = true, description = 'An elite modular armor plate.' },
+-- Named in shipped config. Add if you want helmets, broken-plate returns, or field/station repair.
+['tactical_helmet'] = { name = 'tactical_helmet', label = 'Tactical Helmet', weight = 1200, type = 'item', image = 'tactical_helmet.png', unique = true, useable = true, shouldClose = true, description = 'A metadata-backed tactical helmet.' },
+['broken_armor_plate'] = { name = 'broken_armor_plate', label = 'Broken Armor Plate', weight = 700, type = 'item', image = 'broken_armor_plate.png', unique = false, useable = false, shouldClose = false, description = 'A damaged armor plate for recycling or repair.' },
+['armor_repair_material'] = { name = 'armor_repair_material', label = 'Armor Repair Material', weight = 250, type = 'item', image = 'armor_repair_material.png', unique = false, useable = true, shouldClose = true, description = 'Material used to repair a damaged equipped plate or at an armor service station.' },
+```
+
+The snippet references matching `.png` filenames. Carriers and plates ship in `[INSTALL]/item_images/`. Supply your own icons for `tactical_helmet`, `broken_armor_plate`, and `armor_repair_material`.
+
+</Tabs.Tab>
+</Tabs>

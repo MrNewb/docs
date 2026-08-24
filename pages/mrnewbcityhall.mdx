@@ -1,0 +1,141 @@
+# MrNewbCityHall
+
+City hall NPCs for ID replacements, walk-up job assignment, and job applications with optional Discord webhooks. Built on [Newb_Bridge](/newb_bridge/getting-started).
+
+[GitHub](https://github.com/MrNewb/MrNewbCityHall) · [Discord](https://discord.gg/mrnewbscripts) · [Installation](/mrnewbcityhall/install)
+
+## Features
+
+- Walk-up job assignment per desk (`availableJobs` → grade)
+- Bank-paid ID replacement via `um-idcard`, `bl_idcard`, or an `id_card` inventory item
+- Job applications with optional Discord webhooks
+- Multiple desks, optional map blips, target via the bridge
+
+## Requirements
+
+- [Newb_Bridge](/newb_bridge)
+- ox_lib
+- Artifact `/server:6116` or newer, OneSync
+- Framework via the bridge (jobs, bank money, character name / DOB)
+- Target via the bridge
+- An ID path: `um-idcard`, `bl_idcard`, or an `id_card` inventory item
+
+oxmysql is not required. This resource does not ship `[INSTALL]/` items or images.
+
+## Config files
+
+### Jobs and locations — `configs/cityhall.lua`
+
+```lua
+Config.IdCardPrice = 100
+Config.IdCardItem = 'id_card'
+Config.InteractDistance = 5.0
+Config.ApplicationCooldown = 60
+
+Config.AvailableJobs = {
+    --['police'] = 1,
+    --['sheriff'] = 1,
+    --['ambulance'] = 1,
+    --['mechanic'] = 1,
+    ['bus'] = 0,
+    ['taxi'] = 0,
+}
+
+Config.CityHallLocations = {
+    ['Job Center'] = {
+        location = vector4(-267.76, -959.02, 30.22, 206.42),
+        model = 's_m_y_hwaycop_01',
+        availableJobs = Config.AvailableJobs,
+        blipData = {
+            sprite = 419,
+            color = 0,
+            scale = 0.8,
+            label = 'City Hall',
+        },
+    },
+}
+```
+
+| Key | Purpose |
+| --- | --- |
+| `Config.AvailableJobs` | Default job → grade map. Shipped `bus` / `taxi` at grade `0`; police / sheriff / ambulance / mechanic are commented examples at grade `1`. Reuse this table on a location or pass a different map per desk. |
+| `Config.IdCardPrice` | Bank charge for a replacement ID. |
+| `Config.IdCardItem` | Inventory / license item name (`id_card`). Passed to `um-idcard` / `bl_idcard` / `bridge.inventory.addItem`. |
+| `Config.InteractDistance` | Target distance and server range check (`5.0`). |
+| `Config.ApplicationCooldown` | Seconds per character identifier between submits (`60`). In memory; resets on resource restart. |
+| `location` | Ped spawn (`vector4`, heading in `w`). |
+| `model` | Ped model for `AddInteraction`. |
+| `availableJobs` | Jobs offered at **that** desk. The number is the grade granted. |
+| `blipData` | Optional map blip. Omit it to skip the blip. |
+
+The client always registers a ped interaction from `model`. There is no `entityType` field.
+
+### Applications — `configs/applications.lua`
+
+```lua
+Config.Applications = {
+    police = {
+        label = 'Police Department',
+        description = 'Apply to become a police officer.',
+        questions = {
+            { question = 'Why do you want to join the police force?', type = 'text', required = true },
+            { question = 'Do you have any prior experience in law enforcement?', type = 'text', required = false },
+        },
+    },
+}
+```
+
+Shipped keys: `police`, `mechanic`. Every desk shows every key in `Config.Applications`. Applications are not filtered by that desk's `availableJobs`. `label` is the application-list option title, the input-dialog title (`Application for Police Department`), and the submit notify. Falls back to the `appType` key if `label` is missing. `description` is stored on the template and is not shown.
+
+#### Question fields the code uses
+
+| Field | Used? | Notes |
+| --- | --- | --- |
+| `question` | yes | Input label. |
+| `required` | yes | Empty / whitespace fails when `true`. Answers longer than 500 characters fail for required and optional fields. |
+| `type` | no | Shipped examples set `type = 'text'`. The dialog always builds `type = 'input'` (single-line text). Cap is 20 questions. |
+
+No select, number, or textarea types. Extra fields on a question are ignored.
+
+### Webhooks — `configs/webhooks.lua`
+
+```lua
+Config.Webhooks = {
+    police = '',
+    mechanic = '',
+}
+```
+
+`configs/webhooks.lua` is a **server** script — URLs never go to clients. Keys must match `Config.Applications`. Empty or missing URLs reject the submit (`Applications are not configured for that job.`) — the menu still lists the application. The URL must be a Discord webhook (`https://discord.com/api/webhooks/...`, also `discordapp.com`, PTB, and Canary). Invalid URLs print a console error and reject the submit.
+
+Submits are queued and flushed after 2 seconds (cap 25 pending; oldest dropped if full). Each queued application is its own HTTP POST (one embed), not a batched payload.
+
+#### Webhook payload
+
+```json
+{
+  "username": "City Hall Applications",
+  "avatar_url": "https://avatars.githubusercontent.com/u/47620135?v=4&size=64",
+  "embeds": [
+    {
+      "color": 3447003,
+      "title": "New Police Application",
+      "description": "A new job application has been submitted and is ready for review!",
+      "thumbnail": { "url": "https://avatars.githubusercontent.com/u/47620135?v=4&size=64" },
+      "fields": [
+        { "name": "Application Information", "value": "Name: Jane Doe | Player ID: ABC123", "inline": false },
+        { "name": "Application Responses", "value": "Question: ... (Required)\\nanswer text", "inline": false },
+        { "name": "Submitted", "value": "<t:…:R>", "inline": true },
+        { "name": "Status", "value": "Awaiting Review", "inline": true }
+      ],
+      "timestamp": "2026-08-22T19:00:00Z",
+      "footer": {
+        "text": "City Hall Application System",
+        "icon_url": "https://avatars.githubusercontent.com/u/47620135?v=4&size=64"
+      }
+    }
+  ]
+}
+```
+
+`title` uses the capitalized `appType` key (`police` → `Police`), not `label`. `Player ID` is `bridge.framework.getIdentifier`, not the server source id. If the Application Responses field is longer than 1024 characters, the server keeps the first 1000 and appends a shortened notice.

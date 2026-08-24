@@ -1,0 +1,29 @@
+# Client exports
+
+These run on the local client. Vest and helmet checks take no player id.
+
+## Vest
+
+```lua
+local wearing = exports.MrNewbPlateCarriers:IsPlayerWearingVest()
+local state = exports.MrNewbPlateCarriers:GetPlateCarrierState()
+```
+
+`IsPlayerWearingVest` is the local visual flag (true after the equip event). `GetPlateCarrierState` returns `LocalPlayer.state.plateCarrier` or `{ equipped = false }`.
+
+## Helmet and combined HUD
+
+```lua
+local wearingHelmet = exports.MrNewbPlateCarriers:IsPlayerWearingHelmet()
+local armor = exports.MrNewbPlateCarriers:GetPlateArmorState()
+```
+
+`GetPlateArmorState` returns `{ carrier = ..., helmet = ... }` from the local state bags (same shape as the server export).
+
+## Inspect menu
+
+```lua
+exports.MrNewbPlateCarriers:OpenPlateCarrierMenu()
+```
+
+Opens the equipped-carrier plate list (`/inspectvest`). No-ops with an error notify if no vest is equipped. Selecting a slot asks the server to remove that plate.
