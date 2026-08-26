@@ -3,6 +3,7 @@ import Head from 'next/head'
 import Router from 'next/router'
 import { useEffect } from 'react'
 import type { AppProps } from 'next/app'
+import { FallingTaco } from '../components/FallingTaco'
 import '../styles.css'
 
 // Dev-only: Nextra's sidebar prefetches every visible child. Each prefetch
@@ -66,6 +67,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       <Head>
         <style>{`:root{--font-inter:${inter.style.fontFamily},ui-sans-serif,system-ui,sans-serif}`}</style>
       </Head>
+      <FallingTaco />
       <Component {...pageProps} />
     </>
   )

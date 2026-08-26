@@ -1,6 +1,7 @@
 import React from 'react'
 import { DocsThemeConfig, useConfig } from 'nextra-theme-docs'
 import { useRouter } from 'next/router'
+import { NavCtas } from './components/NavCtas'
 
 const SITE_DESCRIPTION =
   'Install, config, and exports for MrNewb FiveM resources.'
@@ -40,14 +41,14 @@ const config: DocsThemeConfig = {
         height={48}
         decoding="async"
       />
-      MrNewb
+      <span className="site-logo-word">MrNewb</span>
     </span>
   ),
   project: {
     link: 'https://github.com/MrNewb',
   },
-  chat: {
-    link: 'https://discord.gg/mrnewbscripts',
+  navbar: {
+    extraContent: NavCtas,
   },
   docsRepositoryBase: 'https://github.com/MrNewb/docs/tree/main',
   footer: {

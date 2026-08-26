@@ -145,6 +145,57 @@ html.dark body,
   border-bottom: 1px solid var(--mrnewb-divider);
 }
 
+.nav-ctas {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.nav-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 2.75rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  color: #fff !important;
+  text-decoration: none !important;
+  transition: background 120ms ease;
+}
+
+.nav-cta svg {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+.nav-cta-store {
+  background: var(--mrnewb-accent);
+}
+
+.nav-cta-store:hover {
+  background: #1864ab;
+}
+
+.nav-cta-discord {
+  background: #4752c4;
+}
+
+.nav-cta-discord:hover {
+  background: #3c45a5;
+}
+
+.nav-cta-label-short {
+  display: none;
+}
+
 .nextra-hamburger {
   min-width: 2.75rem;
   min-height: 2.75rem;
@@ -714,6 +765,27 @@ html[class~="dark"] .intro-place-icon-github path {
     height: 36px;
   }
 
+  .nav-cta {
+    min-width: 44px;
+    padding: 0.4rem 0.55rem;
+  }
+
+  .nav-cta svg {
+    display: none;
+  }
+
+  .nav-cta-label-full {
+    display: none;
+  }
+
+  .nav-cta-label-short {
+    display: inline;
+  }
+
+  .nextra-nav-container nav > a[href="https://github.com/MrNewb"] {
+    display: none;
+  }
+
   .provider-chart {
     min-width: 0;
   }
@@ -881,8 +953,63 @@ html[class~="dark"] .provider-check--muted {
   line-height: 1.5;
 }
 
+.falling-taco {
+  position: fixed;
+  top: 0;
+  z-index: 28;
+  width: 3.25rem;
+  height: 3.25rem;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.falling-taco svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.falling-taco.is-falling {
+  will-change: transform, opacity;
+  animation: falling-taco-drop var(--taco-duration, 6s) cubic-bezier(0.37, 0, 0.63, 1) forwards;
+}
+
+@keyframes falling-taco-drop {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, -3.5rem, 0) rotate(var(--taco-from, -16deg));
+  }
+  86% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--taco-drift, 1.5rem), calc(100vh + 3rem), 0) rotate(var(--taco-to, 28deg));
+  }
+}
+
+@media print {
+  .falling-taco {
+    display: none;
+  }
+}
+
+@media (max-width: 479px) {
+  .site-logo-word {
+    display: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .falling-taco,
+  .falling-taco.is-falling {
+    display: none;
+    animation: none;
+  }
+
   .intro-place,
+  .nav-cta,
   .nextra-content [role="tab"],
   .nextra-code button:has(.nextra-copy-icon),
   .nextra-toc a,
