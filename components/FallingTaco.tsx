@@ -9,8 +9,8 @@ export function FallingTaco() {
   const waitRef = useRef(0)
 
   useEffect(() => {
-    const taco = tacoRef.current
-    if (!taco) return
+    const tacoNode = tacoRef.current
+    if (!tacoNode) return
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     function clearWait() {
@@ -23,39 +23,45 @@ export function FallingTaco() {
     }
 
     function drop() {
+      const node = tacoRef.current
+      if (!node) return
       if (document.hidden) {
         schedule(12000, 24000)
         return
       }
-      taco.style.left = `${randomBetween(8, 86)}vw`
-      taco.style.setProperty('--taco-duration', `${randomBetween(5.2, 7.4)}s`)
-      taco.style.setProperty('--taco-from', `${randomBetween(-26, -8)}deg`)
-      taco.style.setProperty('--taco-to', `${randomBetween(16, 38)}deg`)
-      taco.style.setProperty('--taco-drift', `${randomBetween(-3.2, 3.2)}rem`)
-      taco.classList.add('is-falling')
+      node.style.left = `${randomBetween(8, 86)}vw`
+      node.style.setProperty('--taco-duration', `${randomBetween(5.2, 7.4)}s`)
+      node.style.setProperty('--taco-from', `${randomBetween(-26, -8)}deg`)
+      node.style.setProperty('--taco-to', `${randomBetween(16, 38)}deg`)
+      node.style.setProperty('--taco-drift', `${randomBetween(-3.2, 3.2)}rem`)
+      node.classList.add('is-falling')
     }
 
     function onEnd() {
-      taco.classList.remove('is-falling')
+      const node = tacoRef.current
+      if (!node) return
+      node.classList.remove('is-falling')
       schedule(42000, 95000)
     }
 
     function onVisibility() {
+      const node = tacoRef.current
+      if (!node) return
       if (document.hidden) {
-        taco.classList.remove('is-falling')
+        node.classList.remove('is-falling')
         clearWait()
         return
       }
       schedule(8000, 18000)
     }
 
-    taco.addEventListener('animationend', onEnd)
+    tacoNode.addEventListener('animationend', onEnd)
     document.addEventListener('visibilitychange', onVisibility)
     schedule(14000, 32000)
 
     return () => {
       clearWait()
-      taco.removeEventListener('animationend', onEnd)
+      tacoNode.removeEventListener('animationend', onEnd)
       document.removeEventListener('visibilitychange', onVisibility)
     }
   }, [])
