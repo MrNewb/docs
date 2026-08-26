@@ -1,0 +1,62 @@
+import { Callout, Steps } from 'nextra/components'
+
+# Installation
+
+<img src="/docs/images/yoga-banner.png" alt="MrNewbYoga banner — yoga mats on Vespucci Beach at sunset" style={{ maxWidth: "100%" }} loading="lazy" decoding="async" />
+
+<Callout type="warning">
+  Start this **after** ox_lib, your framework, your inventory, and Newb_Bridge. The bridge auto-detects running resources; if this script starts first, detection can miss them. Keep the folder named `MrNewb_Yoga`.
+</Callout>
+
+<Steps>
+### Dependencies
+
+[Newb_Bridge](/newb_bridge), ox_lib, server artifact `/server:6116` or newer plus OneSync, your framework (stress metadata), and your inventory. World mats and the shop ped use target / `AddInteraction`. oxmysql is not required.
+
+Vanilla yoga mat props in `Config.Mats` are usable immediately. Placeable items and the shop are extra.
+
+### Add items and images
+
+Required items (must match `Config.PlaceableMats`): `yoga_mat`, `yoga_mat_blue`, `yoga_mat_red`.
+
+Paste from [Item setup](/mrnewbyoga/install/inventory). Copy PNGs from `[INSTALL]/imgs/` into:
+
+| Inventory | Image folder |
+| --- | --- |
+| ox_inventory | `ox_inventory/web/images/` |
+| qb-inventory / ps-inventory | `html/images/` |
+| one_inventory | `one_inventory/web/images/` |
+
+Do **not** add `server.export` on ox_inventory items. Use is registered with `bridge.framework.registerItemUse`. Omit `consume` on the item defs. Gallery: [Item images](/mrnewbyoga/install/inventory-images).
+
+### Configure
+
+Edit `configs/config.lua`. Field tables: [MrNewbYoga](/mrnewbyoga).
+
+- `Config.Mats` — world prop hashes you can target
+- `Config.MatSpots` — optional spawned mats (shipped commented out). Uncomment `vector4` rows or add your own
+- `Config.RestoreHealth` / `Config.StressRelief` — rewards on a valid complete
+- `Config.Music.enabled` — GTA yoga audio
+- `Config.PlaceableMats` — item name → mat model
+- `Config.Placement` — `MaxDistance` (`8.0`), `MaxPerPlayer` (`3`)
+- `Config.Shop` — ped at `vec4(-1111.2534, -1662.1963, 4.3570, 127.8968)`. `Enabled = false` skips it
+- `Config.ShopItems` — shop stock
+
+Labels: `locales/en.json` (and the other locale files). HUD / extra XP: `resource/open/client/open.lua` and `resource/open/server/open.lua`.
+
+### Add to server.cfg
+
+Swap `qbx_core` / `ox_inventory` for whatever you actually run.
+
+```cfg
+ensure ox_lib
+ensure qbx_core
+ensure ox_inventory
+ensure Newb_Bridge
+ensure MrNewb_Yoga
+```
+
+### Restart the server
+
+Restart after config, locale, or item changes. Placed mats are in-memory and clear on restart. No exports, no commands, no SQL.
+</Steps>

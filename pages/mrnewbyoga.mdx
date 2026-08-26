@@ -1,0 +1,165 @@
+import { YouTubePoster } from '../components/YouTubePoster'
+
+# MrNewbYoga
+
+Yoga minigame on GTA yoga mats: line up, breathe, finish a session. Optional stress relief and a full heal on a valid complete. Built on [Newb_Bridge](/newb_bridge/getting-started).
+
+[Discord](https://discord.gg/mrnewbscripts) · [Installation](/mrnewbyoga/install) · [Item setup](/mrnewbyoga/install/inventory) · [Item images](/mrnewbyoga/install/inventory-images) · [Preview](https://www.youtube.com/watch?v=NvzLnXOVNDg)
+
+<img src="/docs/images/yoga-banner.png" alt="MrNewbYoga banner — yoga mats on Vespucci Beach at sunset" style={{ maxWidth: "100%" }} loading="lazy" decoding="async" />
+
+<YouTubePoster id="NvzLnXOVNDg" title="MrNewbYoga preview" className="resource-video" />
+
+## Requirements
+
+- [Newb_Bridge](/newb_bridge)
+- ox_lib
+- Artifact `/server:6116` or newer, OneSync
+- Framework via the bridge (player metadata for stress)
+- Inventory via the bridge (placeable mats + shop)
+- Target via the bridge (world mats, placed mats, shop ped)
+
+Keep the folder named `MrNewb_Yoga`. oxmysql is not required. Do **not** add `server.export` on ox_inventory items. Use is registered with `bridge.framework.registerItemUse`. Omit `consume` on the item defs.
+
+## Features
+
+- Target any world prop in `Config.Mats` (vanilla rolled mats)
+- Optional map mats from `Config.MatSpots` (shipped commented out)
+- Placeable inventory mats (`yoga_mat`, `yoga_mat_blue`, `yoga_mat_red`)
+- Optional shop ped that sells those mats
+- Controller or keyboard/mouse: line both sticks up with the markers, then hold and release to breathe
+- On a valid finish: optional full heal, optional stress drop, **30s** cooldown
+
+## Where you edit
+
+One file: `configs/config.lua`. Labels: `locales/en.json`.
+
+| Key | Purpose |
+| --- | --- |
+| `Config.Mats` | Prop hashes you can target anywhere in the world |
+| `Config.InteractDistance` | Target distance (`2.4`) |
+| `Config.RestoreHealth` | `true` — full heal on a valid complete. Set `false` to skip |
+| `Config.StressRelief` | `Enabled`, `Min`, `Max` — random drop from player `stress` metadata (`0`–`100`) |
+| `Config.SpawnRadius` | AddInteraction radius for `MatSpots` (`100.0`) |
+| `Config.DefaultMatModel` | Model used when a spot omits `model` (`prop_yoga_mat_01`) |
+| `Config.MatSnapToGround` | Snap spawned map mats to the ground (`true`) |
+| `Config.MatGroundOffset` | Z nudge after snap (`0.00`) |
+| `Config.MatSpots` | Optional spawned mats. Array of `vector4` (or a table with `pos` / `coords`) |
+| `Config.Music` | `{ enabled = true }` — GTA yoga audio. Set `enabled = false` to mute |
+| `Config.PhaseSuccessPtfx` | Particle on a successful pose |
+| `Config.Placement` | Player-placed mats: `MaxDistance`, `MaxPerPlayer`, `SpawnRadius` |
+| `Config.PlaceableMats` | Item name → `{ model }`. Keys must exist in your inventory |
+| `Config.Shop` | Shop ped. `Enabled = false` skips it |
+| `Config.ShopItems` | Shop stock (`name`, `price`, `count`) |
+
+### World mats vs placed mats
+
+`Config.Mats` is `bridge.target.addModel`. Any matching prop already in the world is usable — you do not need `MatSpots` for that.
+
+`Config.MatSpots` is empty by default (entries are commented). Uncomment or add `vector4` rows to spawn mats:
+
+```lua
+Config.MatSpots = {
+    vector4(-503.7655, -226.8755, 35.5515, 293.4177),
+}
+```
+
+Heading is `vector4.w`. You can instead use a table with `pos` / `coords`, plus optional `model`, `radius`, `snapToGround`, `id`, `zOffset`, `rotation`.
+
+### Placeable items
+
+```lua
+Config.PlaceableMats = {
+    yoga_mat = { model = 'prop_yoga_mat_02' },
+    yoga_mat_blue = { model = 'prop_yoga_mat_01' },
+    yoga_mat_red = { model = 'prop_yoga_mat_03' },
+}
+```
+
+GTA only ships three rolled colors: grey, blue, red. Using an item opens the bridge prop placer (`MaxDistance` `8.0`). Owner cap is `MaxPerPlayer` (`3`). Pickup is owner-only. Placed mats are in-memory and gone when the resource restarts.
+
+### Shop
+
+Shipped at Vespucci Beach. `Enabled = false` skips the ped, blip, and shop register.
+
+```lua
+Config.Shop = {
+    Enabled = true,
+    Id = 'mrnewb_yoga_shop',
+    Name = 'Yoga Supplies',
+    Coords = vec4(-1111.2534, -1662.1963, 4.3570, 127.8968),
+    PedModel = 'u_m_m_jesus_01',
+    Scenario = 'WORLD_HUMAN_YOGA',
+    Radius = 75.0,
+    InteractDistance = 2.4,
+    Blip = {
+        Enabled = true,
+        Sprite = 153,
+        Colour = 3,
+        Scale = 0.8,
+        Label = 'Yoga Supplies',
+    },
+}
+```
+
+`Config.ShopItems` is the inventory shop stock. Server open-shop distance is **10.0**.
+
+## Items
+
+Usable. Names must match `Config.PlaceableMats` keys.
+
+| Item | Label | Model |
+| --- | --- | --- |
+| `yoga_mat` | Grey Yoga Mat | `prop_yoga_mat_02` |
+| `yoga_mat_blue` | Blue Yoga Mat | `prop_yoga_mat_01` |
+| `yoga_mat_red` | Red Yoga Mat | `prop_yoga_mat_03` |
+
+Paste: [Item setup](/mrnewbyoga/install/inventory). Gallery: [Item images](/mrnewbyoga/install/inventory-images). Images ship in `[INSTALL]/imgs/`.
+
+<img src="/docs/images/yoga_mat.png" alt="yoga_mat" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/yoga_mat_blue.png" alt="yoga_mat_blue" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+<img src="/docs/images/yoga_mat_red.png" alt="yoga_mat_red" style={{ maxWidth: "4.5rem" }} loading="lazy" decoding="async" />
+
+## Session rules
+
+Not all of this is in config.
+
+- Start and finish must be within **6.0** of the mat
+- One player per mat at a time
+- A complete under **35** seconds is rejected (`too_fast`)
+- After a valid complete, that player waits **30** seconds
+- `Config.RestoreHealth` heals the ped after the server accepts the complete
+- `Config.StressRelief` subtracts a random amount from metadata `stress` (clamped `0`–`100`)
+
+## Open hooks
+
+Escrow-ignored. Edit these if you need a different HUD or reward.
+
+| File | Hook |
+| --- | --- |
+| `resource/open/client/open.lua` | `OnYogaSessionStart` / `OnYogaSessionCancel` / `OnYogaSessionEnd` — shipped hide/show for `jg-hud` |
+| `resource/open/server/open.lua` | `MrNewb_Yoga:Server:SessionComplete` — shipped `Buckshot_SkillSystem` stamina XP, then stress relief |
+
+Those extra resources are optional. If they are not started, the hooks no-op.
+
+No exports and no commands.
+
+## Layout
+
+| Path | Role |
+| --- | --- |
+| `configs/config.lua` | Mats, spots, placement, shop, music, particles |
+| `resource/client/target.lua` | World-mat `addModel` + start session |
+| `resource/client/mats.lua` | `MatSpots` spawned props |
+| `resource/client/placement.lua` | Prop placer after item use |
+| `resource/client/placedMats.lua` | Synced player mats + pickup |
+| `resource/client/shop.lua` | Shop ped and blip |
+| `resource/client/minigame.lua` | Yoga session |
+| `resource/server/session.lua` | Start / finish, occupancy, cooldown |
+| `resource/server/placedMats.lua` | Item use, place, pickup |
+| `resource/server/shop.lua` | `registerShop` / `openShop` |
+| `resource/open/client/open.lua` | Session HUD hooks |
+| `resource/open/server/open.lua` | Complete rewards |
+| `[INSTALL]/imgs/` | Item PNGs |
+
+Start order and item paste: [Installation](/mrnewbyoga/install).

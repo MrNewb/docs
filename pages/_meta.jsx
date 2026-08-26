@@ -15,6 +15,7 @@ import {
   IconRadar2,
   IconShield,
   IconPumpkinScary,
+  IconYoga,
 } from '@tabler/icons-react'
 import { sidebarTitle } from '../components/SidebarLabel'
 
@@ -34,6 +35,7 @@ export default {
   mrnewbspookyseason: sidebarTitle(IconPumpkinScary, 'SpookySeason'),
   mrnewbvehiclerentals: sidebarTitle(IconCar, 'VehicleRentals'),
   mrnewbweapontints: sidebarTitle(IconPalette, 'WeaponTints'),
+  mrnewbyoga: sidebarTitle(IconYoga, 'Yoga'),
   '-- partners': {
     type: 'separator',
   },

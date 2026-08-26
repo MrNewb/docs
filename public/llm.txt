@@ -15,7 +15,7 @@ This file is a machine-readable index plus the facts an assistant needs to answe
 - Usable items register with `bridge.framework.registerItemUse`. Do **not** add ox_inventory `server.export` except **MrNewbWeaponTints**, which is the documented exception.
 - Do **not** invent `Resource:Server:` net events or `Resource:Callback:` names. Those are internal. Public integration is exports, `resource/open/` hooks, and the events listed here.
 - Documented hook events: `Newb_Bridge:*` lifecycle / task-group / utility events, and `MrNewbNameChanger:Server:NameChanged` (`AddEventHandler` only).
-- Folder name must match the `ensure` / `exports.` name. Docs slugs are lowercase without underscores except Newb_Bridge (`/newb_bridge`). Spooky folder is `MrNewbsSpookySeason` (extra `s`); docs slug is `/mrnewbspookyseason`.
+- Folder name must match the `ensure` / `exports.` name. Docs slugs are lowercase without underscores except Newb_Bridge (`/newb_bridge`). Yoga folder is `MrNewb_Yoga` (underscore); docs slug is `/mrnewbyoga`. Spooky folder is `MrNewbsSpookySeason` (extra `s`); docs slug is `/mrnewbspookyseason`.
 - TacoLink was renamed to Newb_Bridge. Same `bridge.*` API.
 - Do not invent paid/free status, download counts, or Gitbook URLs. Retired Gitbook is not canonical. GitHub Pages host is `mrnewb.github.io`, **not** `mrnewbscripts.github.io`.
 
@@ -36,6 +36,7 @@ This file is a machine-readable index plus the facts an assistant needs to answe
 - [SpookySeason](https://mrnewb.github.io/docs/mrnewbspookyseason): Halloween scavenger event
 - [VehicleRentals](https://mrnewb.github.io/docs/mrnewbvehiclerentals): desks, paperwork, returns
 - [WeaponTints](https://mrnewb.github.io/docs/mrnewbweapontints): ox_inventory tints + serial file
+- [Yoga](https://mrnewb.github.io/docs/mrnewbyoga): yoga minigame, placeable mats, optional shop
 - [Partners](https://mrnewb.github.io/docs/partners): JG Scripts, Jim G, Mustache, Tuff, 919DESIGN (code `mrnewb` where listed)
 - [TacoLink redirect](https://mrnewb.github.io/docs/tacolink): hidden; points at Newb_Bridge install
 
@@ -307,6 +308,17 @@ No public exports. Agency table key is the location id written onto paperwork. `
 - [Server](https://mrnewb.github.io/docs/mrnewbweapontints/exports/server-exports)
 
 Items: `greentint` (tint 1) … `platinumtint` (tint 7), `newbserialfile` (`consume = 0.50`). All need `allowArmed = true`. Equipped weapon required. MK2 remap when the item name contains `MK2`. Serial locale: `WeaponTints.SerialRemoved`.
+
+## Yoga (`MrNewb_Yoga`)
+
+Keep the folder underscore. Yoga minigame on GTA mat props. Placeable items + optional shop. **No oxmysql. No public exports.** Preview: `https://www.youtube.com/watch?v=NvzLnXOVNDg`.
+
+- [Landing](https://mrnewb.github.io/docs/mrnewbyoga)
+- [Install](https://mrnewb.github.io/docs/mrnewbyoga/install)
+- [Item setup](https://mrnewb.github.io/docs/mrnewbyoga/install/inventory)
+- [Item images](https://mrnewb.github.io/docs/mrnewbyoga/install/inventory-images)
+
+Items (usable via `registerItemUse`; images in `[INSTALL]/imgs/`): `yoga_mat` → `prop_yoga_mat_02`, `yoga_mat_blue` → `prop_yoga_mat_01`, `yoga_mat_red` → `prop_yoga_mat_03`. `Config.Mats` targets world props. `Config.MatSpots` ships commented out. Shop ped default `vec4(-1111.2534, -1662.1963, 4.3570, 127.8968)`; `Config.Shop.Enabled = false` skips it. Valid complete: min **35s**, then **30s** cooldown; optional `RestoreHealth` and `StressRelief` (`stress` metadata). Open hooks: `resource/open/client/open.lua`, `resource/open/server/open.lua`.
 
 ## Partners
 

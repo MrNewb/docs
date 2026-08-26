@@ -1,0 +1,68 @@
+import { Callout, Tabs } from 'nextra/components'
+
+# Item setup
+
+Required items (must match `Config.PlaceableMats` keys):
+
+| Item | Label | Model |
+| --- | --- | --- |
+| `yoga_mat` | Grey Yoga Mat | `prop_yoga_mat_02` |
+| `yoga_mat_blue` | Blue Yoga Mat | `prop_yoga_mat_01` |
+| `yoga_mat_red` | Red Yoga Mat | `prop_yoga_mat_03` |
+
+Copy PNGs from `[INSTALL]/imgs/` into:
+
+| Inventory | Image folder |
+| --- | --- |
+| ox_inventory | `ox_inventory/web/images/` |
+| qb-inventory / ps-inventory | `html/images/` |
+| one_inventory | `one_inventory/web/images/` |
+
+OX is ox_inventory (ESX and Qbox that run ox use this tab). QB is `qb-core/shared/items.lua`. one_inventory only needs the PNGs in that folder.
+
+<Callout type="warning">
+  Do **not** add `server.export` on ox_inventory items. Use is registered with `bridge.framework.registerItemUse`. Omit `consume` on the item defs.
+</Callout>
+
+<Tabs items={['OX', 'QB']} storageKey="inventory-items">
+<Tabs.Tab>
+
+Add to `ox_inventory/data/items.lua`:
+
+```lua
+['yoga_mat'] = {
+    label = 'Grey Yoga Mat',
+    weight = 500,
+    stack = false,
+    close = true,
+    description = 'A rolled grey yoga mat. Use to lay it out on the ground.',
+},
+['yoga_mat_blue'] = {
+    label = 'Blue Yoga Mat',
+    weight = 500,
+    stack = false,
+    close = true,
+    description = 'A rolled blue yoga mat. Use to lay it out on the ground.',
+},
+['yoga_mat_red'] = {
+    label = 'Red Yoga Mat',
+    weight = 500,
+    stack = false,
+    close = true,
+    description = 'A rolled red yoga mat. Use to lay it out on the ground.',
+},
+```
+
+</Tabs.Tab>
+<Tabs.Tab>
+
+Add to your QBCore shared items (`qb-core/shared/items.lua`):
+
+```lua
+['yoga_mat'] = { name = 'yoga_mat', label = 'Grey Yoga Mat', weight = 500, type = 'item', image = 'yoga_mat.png', unique = true, useable = true, shouldClose = true, combinable = nil, description = 'A rolled grey yoga mat. Use to lay it out on the ground.' },
+['yoga_mat_blue'] = { name = 'yoga_mat_blue', label = 'Blue Yoga Mat', weight = 500, type = 'item', image = 'yoga_mat_blue.png', unique = true, useable = true, shouldClose = true, combinable = nil, description = 'A rolled blue yoga mat. Use to lay it out on the ground.' },
+['yoga_mat_red'] = { name = 'yoga_mat_red', label = 'Red Yoga Mat', weight = 500, type = 'item', image = 'yoga_mat_red.png', unique = true, useable = true, shouldClose = true, combinable = nil, description = 'A rolled red yoga mat. Use to lay it out on the ground.' },
+```
+
+</Tabs.Tab>
+</Tabs>
