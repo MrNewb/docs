@@ -18,16 +18,11 @@ Install and start these first:
 | [Newb_Bridge](/newb_bridge) | Framework, inventory, target, notify, progress, shops |
 | [ox_lib](https://github.com/overextended/ox_lib) | Locale, callbacks, skill checks, menus |
 | [oxmysql](https://github.com/overextended/oxmysql) | Hive persistence (`mrnewb_beekeeping`) |
-| Framework | ESX / QBCore / Qbox via the bridge |
-| Inventory | ox_inventory recommended; qb / ps / others via the bridge |
-| Artifact `/server:6116`+ | Required by `fxmanifest.lua` |
-| OneSync | Required by `fxmanifest.lua` |
 
 Optional:
 
 | Optional | Used for |
 | --- | --- |
-| `Badger_Discord_API` | Resolving bare numeric Discord **role** ids in `Config.Vip.VipPlayers` |
 | Minigame resources | Only if you change `Config.Minigames.HoneyExtraction` away from `'ox'` (see `resource/open/client/minigames.lua`) |
 
 ### Drop the resource in
@@ -48,7 +43,7 @@ Every item the script uses must exist in your inventory:
 
 Paste the defs from [Item setup](/mrnewbbeekeeping/install/inventory) (OX and QB tabs). A plain-text copy also ships as `[INSTALL]/ox_inventory_items.txt`.
 
-Copy PNGs from `[INSTALL]/imgs/` (not a nested `imgs/no outline/` folder) into:
+Copy PNGs from `[INSTALL]/imgs/` into:
 
 | Inventory | Image folder |
 | --- | --- |
@@ -111,7 +106,7 @@ Or list people / roles in `Config.Vip.VipPlayers`:
 Config.Vip.VipPlayers = {
     'license:66666666666666',
     'discord:6666666666666666',
-    '666666666666666666', -- Discord role id; needs Badger_Discord_API started
+    '666666666666666666', -- Discord role id
 }
 ```
 
@@ -137,8 +132,6 @@ ensure ox_inventory
 ensure Newb_Bridge
 ensure MrNewbBeeKeeping
 ```
-
-If you use `Badger_Discord_API` for VIP role ids, ensure it before this resource.
 
 ### Restart and verify
 
@@ -182,5 +175,4 @@ Drawables live under `stream/[jim-gordon]/`. Do not move or rename the YDR/YTYP 
 ## Escrow and NUI
 
 - Admin + StrainGuide UI ships prebuilt in `web/build/`. You do not need Bun to run the resource.
-- Rebuild the NUI only if you fork `web/` (`bun install` then `bun run build` inside `web/`).
 - Open hooks for clothing, rewards, and minigames stay in `resource/open/` — see [Server exports](/mrnewbbeekeeping/exports/server-exports).

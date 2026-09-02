@@ -16,7 +16,7 @@ local atCap = exports.MrNewbBeeKeeping:IsPlayerAtHiveLimit(source)
 | `GetPlayerHiveLimit(src)` | `MaxHivesPerPlayer` + bonus. Returns **`-1`** when the base cap is `0` (unlimited) |
 | `IsPlayerAtHiveLimit(src)` | `true` when owned hives are at that personal cap (`false` when unlimited) |
 
-VIP membership is `Config.IsPlayerHiveVip(src)` (default ACE `mrnewb.vip`) and/or entries in `Config.Vip.VipPlayers` (citizen id, `license:…`, `discord:…`, or a bare numeric Discord **role** id). Numeric role ids are resolved only when `Badger_Discord_API` is started.
+VIP membership is `Config.IsPlayerHiveVip(src)` (default ACE `mrnewb.vip`) and/or entries in `Config.Vip.VipPlayers` (citizen id, `license:…`, `discord:…`, or a bare numeric Discord **role** id).
 
 Do not call this resource’s internal net events or callbacks from other resources. Use the exports and open hooks below instead.
 
