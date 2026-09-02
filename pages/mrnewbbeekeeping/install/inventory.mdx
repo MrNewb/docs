@@ -2,7 +2,7 @@ import { Callout, Tabs } from 'nextra/components'
 
 # Item setup
 
-Paste the matching snippet into your items file. Copy PNGs from `[INSTALL]/imgs/` (not `imgs/no outline/`) into:
+Paste the matching snippet into your items file, then copy PNGs from `[INSTALL]/imgs/` (see [Item images](/mrnewbbeekeeping/install/inventory-images)).
 
 | Inventory | Image folder |
 | --- | --- |
@@ -10,10 +10,14 @@ Paste the matching snippet into your items file. Copy PNGs from `[INSTALL]/imgs/
 | qb-inventory / ps-inventory | `html/images/` |
 | one_inventory | `one_inventory/web/images/` |
 
-OX is ox_inventory (ESX and Qbox that run ox use this tab). QB is `qb-core/shared/items.lua`. Names match `[INSTALL]/ox_inventory_items.txt`. one_inventory only needs the PNG in that folder.
+- **OX** — `ox_inventory/data/items.lua` (ESX and Qbox that run ox use this tab). Same text ships as `[INSTALL]/ox_inventory_items.txt`.
+- **QB** — `qb-core/shared/items.lua` (or your shared items path).
+- **one_inventory** — add the item defs in that resource’s format; you still need the PNGs in its images folder.
+
+Restart the inventory resource after pasting. Item names must match config (`Config.BeeTrap.ItemName`, `Config.BeekeeperSuit.ItemName`, `Config.BeeGenetics.StrainGuideItem`, `Config.HoneyTypes`, shop stock).
 
 <Callout type="info">
-  Usable items are `beehive`, `queen_bee`, `bee_trap`, `beekeeping_guide`, and `beekeeper_suit`. Use is registered with `bridge.framework.registerItemUse`. Do **not** add `server.export` on ox_inventory items.
+  Usable items are `beehive`, `queen_bee`, `bee_trap`, `beekeeping_guide`, and `beekeeper_suit`. Use is registered with `bridge.framework.registerItemUse`. Do **not** add `server.export` on ox_inventory items. Omit `consume` unless you intentionally want the inventory to delete the item outside this resource.
 </Callout>
 
 <Tabs items={['OX', 'QB']} storageKey="inventory-items">
@@ -156,3 +160,5 @@ Add to your QBCore shared items (`qb-core/shared/items.lua`):
 </Tabs>
 
 Item names must match config. Defaults: `Config.BeeTrap.ItemName` = `bee_trap`, `Config.BeekeeperSuit.ItemName` = `beekeeper_suit`, `Config.BeeGenetics.StrainGuideItem` = `beekeeping_guide`, `Config.HoneyTypes` items listed above.
+
+Next: [Configuration](/mrnewbbeekeeping/install/configuration) · [Installation](/mrnewbbeekeeping/install).

@@ -2,6 +2,8 @@ import { Callout, Steps } from 'nextra/components'
 
 # Installation
 
+<img src="/docs/images/beekeeping-banner.png" alt="MrNewbBeeKeeping banner" style={{ maxWidth: "100%" }} loading="lazy" decoding="async" />
+
 <Callout type="warning">
   Start this **after** ox_lib, oxmysql, your framework, your inventory, and Newb_Bridge. The bridge auto-detects running resources; if this script starts first, detection can miss them. Keep the folder named `MrNewbBeeKeeping`.
 </Callout>
@@ -9,13 +11,42 @@ import { Callout, Steps } from 'nextra/components'
 <Steps>
 ### Dependencies
 
-[Newb_Bridge](/newb_bridge), ox_lib, oxmysql, and a compatible inventory. Server artifact `/server:6116` or newer, plus OneSync.
+Install and start these first:
 
-Hive props ship in `stream/` (FiveM streams that folder recursively). `fxmanifest.lua` registers `stream/jim_g_beehive_prop.ytyp`. Do not move or rename the drawables. There is no `[INSTALL]/stream/` folder. Model names for anticheats are listed below.
+| Dependency | Why |
+| --- | --- |
+| [Newb_Bridge](/newb_bridge) | Framework, inventory, target, notify, progress, shops |
+| [ox_lib](https://github.com/overextended/ox_lib) | Locale, callbacks, skill checks, menus |
+| [oxmysql](https://github.com/overextended/oxmysql) | Hive persistence (`mrnewb_beekeeping`) |
+| Framework | ESX / QBCore / Qbox via the bridge |
+| Inventory | ox_inventory recommended; qb / ps / others via the bridge |
+| Artifact `/server:6116`+ | Required by `fxmanifest.lua` |
+| OneSync | Required by `fxmanifest.lua` |
+
+Optional:
+
+| Optional | Used for |
+| --- | --- |
+| `Badger_Discord_API` | Resolving bare numeric Discord **role** ids in `Config.Vip.VipPlayers` |
+| Minigame resources | Only if you change `Config.Minigames.HoneyExtraction` away from `'ox'` (see `resource/open/client/minigames.lua`) |
+
+### Drop the resource in
+
+1. Extract so the folder is exactly `resources/.../MrNewbBeeKeeping` (not `MrNewbBeeKeeping-main` or a nested duplicate).
+2. Leave `stream/` alone. FiveM streams that folder recursively. `fxmanifest.lua` registers `stream/jim_g_beehive_prop.ytyp`. Drawables live under `stream/[jim-gordon]/`.
+3. There is **no** `[INSTALL]/stream/` folder and nothing to import into OpenIV. Model names for anticheats are at the bottom of this page.
+
+Editable after escrow: `configs/`, `locales/`, `resource/open/`, `created_strains.txt`. Everything else is protected.
 
 ### Add items and images
 
-Paste the defs from [Item setup](/mrnewbbeekeeping/install/inventory). Every item the script uses must exist: hives, queens, workers, wax, all eight honey items, bee trap, strain guide, and beekeeper suit.
+Every item the script uses must exist in your inventory:
+
+- `beehive`, `queen_bee`, `worker_bees`, `bees_wax`
+- All eight honeys: `bees_honey`, `blue_honey`, `green_honey`, `red_honey`, `amber_honey`, `lavender_honey`, `citrus_honey`, `wildflower_honey`
+- `bee_trap`, `beekeeping_guide`, `beekeeper_suit`
+
+Paste the defs from [Item setup](/mrnewbbeekeeping/install/inventory) (OX and QB tabs). A plain-text copy also ships as `[INSTALL]/ox_inventory_items.txt`.
 
 Copy PNGs from `[INSTALL]/imgs/` (not a nested `imgs/no outline/` folder) into:
 
@@ -25,29 +56,78 @@ Copy PNGs from `[INSTALL]/imgs/` (not a nested `imgs/no outline/` folder) into:
 | qb-inventory / ps-inventory | `html/images/` |
 | one_inventory | `one_inventory/web/images/` |
 
-Do **not** add `server.export` on ox_inventory items. Use is registered with `bridge.framework.registerItemUse`.
+Gallery: [Item images](/mrnewbbeekeeping/install/inventory-images).
 
-### Configure
+Do **not** add `server.export` on ox_inventory items. Do **not** add `consume` unless you intentionally want the inventory to eat the item outside this resource. Use is registered with `bridge.framework.registerItemUse` for `beehive`, `queen_bee`, `bee_trap`, `beekeeping_guide`, and `beekeeper_suit`.
 
-Edit `configs/config.lua` and `configs/sv_config.lua` first. Shop prices, hive caps, VIP, and `traitStats` are server-only.
+### Configure (required pass)
 
-| Need | File / key |
-| --- | --- |
-| Hive cap | `Config.Hives.MaxHivesPerPlayer` in `sv_config.lua` (`0` = unlimited) |
-| VIP extras | `Config.Vip` and `Config.IsPlayerHiveVip` in `sv_config.lua`. Default ACE is `mrnewb.vip`. Compatible with custom ACE perms (the kind Badger Discord API and similar resources grant). Override `IsPlayerHiveVip` for any custom check. |
-| VIP list | `Config.Vip.VipPlayers` accepts identifiers, citizen ids, or a numeric Discord role id. Role ids are only looked up when `Badger_Discord_API` is started. |
-| Admin panel | `Config.IsHiveAdmin` in `sv_config.lua` (default `bridge.framework.isAdmin`) |
-| Shop stock / sell prices | `Config.Shops.ItemsForSale`, `HoneySellPrices`, `WaxSellPrice`, `PayTo` in `sv_config.lua`. Each `Locations[].id` in `config.lua` must match an `ItemsForSale` key (shipped: `newb_beekeeper_shop`) |
-| Honey regions | `Config.ZoneTypes` in `sv_config.lua`; item names in `Config.HoneyTypes` |
-| Swarms / trap / suit | `Config.WildSwarms`, `Config.BeeTrap`, `Config.BeekeeperSuit` in `config.lua` |
+Edit these before the first live restart:
 
-The SQL table `mrnewb_beekeeping` is created on start. There is no `.sql` file to import. Columns: `id`, `location`, `owner`, `access_permissions`, `model`, `stored`, `status`, `last_accessed`. Dirty hives flush every **5 minutes**, and again on resource stop, `txAdmin:events:serverShuttingDown`, and a scheduled restart with 60 seconds left.
+1. **`configs/sv_config.lua`**
+   - `Config.IsHiveAdmin` — who can run `/HiveAdmin`
+   - `Config.Hives.MaxHivesPerPlayer` — personal cap (`0` = unlimited)
+   - `Config.Vip` — set `Enabled = true` only if you want extras; default ACE is `mrnewb.vip`
+   - `Config.Colony.MinutesPerProductionTick` — main economy dial (shipped `7`)
+   - `Config.Shops.PayTo`, sell prices, and `ItemsForSale`
+   - `Config.ZoneTypes` — honey regions (or leave the shipped map)
+2. **`configs/config.lua`**
+   - Shop `Locations` (move the ped). Each `id` must match an `ItemsForSale` key (shipped: `newb_beekeeper_shop`)
+   - `Config.WildSwarms.Locations` — swarm coords for your map
+   - Placement spacing, suit clothing drawable ids if your clothing pack differs
+3. **`configs/placement.lua`** — blacklist zones and ground hashes if players place on roads/roofs you do not want
+4. **`configs/genetics.lua`** — only if you rename strains or change breeding gates
 
-The admin NUI ships in `web/build/`. Open it with `/HiveAdmin`.
+Field-by-field reference: [Configuration](/mrnewbbeekeeping/install/configuration). Overview tables: [MrNewbBeeKeeping](/mrnewbbeekeeping).
+
+Coming from an older build? Hive SQL in `mrnewb_beekeeping` is converted automatically on start (the console will tell you, then restart the server). Config keys are not — use the v1 to v2 rename table on the [resource page](/mrnewbbeekeeping#config-migration-v1-to-v2). There are no runtime aliases.
+
+### ACE / VIP examples (optional)
+
+Admin (default already uses `bridge.framework.isAdmin`):
+
+```cfg
+# Only needed if you change Config.IsHiveAdmin to an ACE check
+add_ace group.admin mrnewb.beekeeper.admin allow
+```
+
+```lua
+-- configs/sv_config.lua
+function Config.IsHiveAdmin(src)
+    return IsPlayerAceAllowed(src, 'mrnewb.beekeeper.admin')
+end
+```
+
+VIP extras (`Config.Vip.Enabled = true`):
+
+```cfg
+add_ace group.vip mrnewb.vip allow
+add_principal identifier.license:xxxxxxxx group.vip
+```
+
+Or list people / roles in `Config.Vip.VipPlayers`:
+
+```lua
+Config.Vip.VipPlayers = {
+    'license:66666666666666',
+    'discord:6666666666666666',
+    '666666666666666666', -- Discord role id; needs Badger_Discord_API started
+}
+```
+
+VIP only adds `ExtraHives` once the player already owns `MaxHivesPerPlayer` hives. See [Exports](/mrnewbbeekeeping/exports/server-exports).
+
+### Database
+
+No `.sql` file. On start the resource creates `mrnewb_beekeeping` if it is missing.
+
+Old hive SQL from earlier MrNewbBeeKeeping versions is converted automatically if it is still present in that table. When that happens the console prints a line telling you it converted — restart the server after you see it. You do not import anything or run a migrate command.
+
+Inactive-owner wipe uses `Config.Maintenance` (default 30 days).
 
 ### Add to server.cfg
 
-Swap `qbx_core` / `ox_inventory` for whatever you actually run.
+Swap `qbx_core` / `ox_inventory` for whatever you actually run. Order matters.
 
 ```cfg
 ensure ox_lib
@@ -58,9 +138,18 @@ ensure Newb_Bridge
 ensure MrNewbBeeKeeping
 ```
 
-### Restart the server
+If you use `Badger_Discord_API` for VIP role ids, ensure it before this resource.
 
-Restart after config or item changes. Admin command: [Commands](/mrnewbbeekeeping/install/commands). VIP helpers: [Exports](/mrnewbbeekeeping/exports/server-exports).
+### Restart and verify
+
+1. Restart the server (or at least ox_inventory → Newb_Bridge → MrNewbBeeKeeping after item changes).
+2. Confirm the console has no missing-item / config validation warnings from this resource.
+3. Give yourself a `beehive`, place it on grass/dirt, open it, add a queen and workers, close it.
+4. Visit the shop ped and confirm buy + sell menus.
+5. As admin, run `/HiveAdmin` and confirm the panel opens.
+6. Optional: stand in a swarm with and without `beekeeper_suit` to confirm sting blocking.
+
+Admin command details: [Commands](/mrnewbbeekeeping/install/commands). VIP helpers: [Exports](/mrnewbbeekeeping/exports/server-exports).
 </Steps>
 
 ## Model names for anticheats
@@ -74,4 +163,24 @@ Allow these object models so they are not deleted as unauthorized props:
 | `jim_g_beehive_prop_3` | Open hive |
 | `jim_g_beehive_smoker_prop_4` | Smoker (handheld) |
 
-Drawables live under `stream/[jim-gordon]/`.
+Drawables live under `stream/[jim-gordon]/`. Do not move or rename the YDR/YTYP files.
+
+## Common setup mistakes
+
+| Symptom | Check |
+| --- | --- |
+| Items do nothing when used | Missing item defs, or resource started before Newb_Bridge / inventory |
+| “Invalid minigame” notify | `Config.Minigames.HoneyExtraction` value not handled in `open/client/minigames.lua` |
+| Shop has no stock / wrong ped | `Locations[].id` does not match an `ItemsForSale` key |
+| Cannot place hive | Ground hash not in `placement.lua`, inside a blacklist zone, or too close to another hive |
+| Hives vanish after restart | oxmysql not started, or DB user cannot create/write `mrnewb_beekeeping` |
+| Props deleted by anticheat | Whitelist the four `jim_g_beehive_*` models above |
+| `/HiveAdmin` denied | `Config.IsHiveAdmin` / framework admin group |
+| VIP extras never apply | `Config.Vip.Enabled` still `false`, or player not yet at base `MaxHivesPerPlayer` |
+| No honey ticking | Hive left **open**, no queen/workers, or stores already at max |
+
+## Escrow and NUI
+
+- Admin + StrainGuide UI ships prebuilt in `web/build/`. You do not need Bun to run the resource.
+- Rebuild the NUI only if you fork `web/` (`bun install` then `bun run build` inside `web/`).
+- Open hooks for clothing, rewards, and minigames stay in `resource/open/` — see [Server exports](/mrnewbbeekeeping/exports/server-exports).

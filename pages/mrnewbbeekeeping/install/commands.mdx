@@ -8,7 +8,17 @@ import { Callout } from 'nextra/components'
 | `/reloadhives` | in-game | Client-only hive resync. Registered only when `Config.General.Debug` is `true` |
 
 <Callout type="info">
-  Delete, map blips, grant queen, strain builder, and owner wipe live in the admin panel — not as separate chat commands.
+  Delete, map blips, grant queen, strain builder, shared access edits, and owner / stale wipe live in the admin panel — not as separate chat commands.
 </Callout>
 
-There is no `migrate_beekeeping` console command in 2.0.0. The `mrnewb_beekeeping` table is created on start.
+## Admin panel (`/HiveAdmin`)
+
+| Section | What staff can do |
+| --- | --- |
+| Hive Manager | Browse hives, open detail, waypoint / teleport, delete, edit shared access |
+| Map Blips | Toggle staff map blips for hives |
+| Maintenance | Preview / wipe stale or ownerless colonies (`Config.Maintenance`) |
+| Strain Grant | Issue queens with a chosen strain to a player |
+| Strain Builder | Draft a trait + stats block; save appends to `created_strains.txt` and copies for paste into `genetics.lua` / `sv_config.lua` |
+
+The NUI ships in `web/build/`. Hive SQL from older MrNewbBeeKeeping versions is converted automatically on start — there is no migrate command. Restart the server if the console says it converted.

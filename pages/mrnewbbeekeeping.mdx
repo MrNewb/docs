@@ -2,22 +2,13 @@ import { YouTubePoster } from '../components/YouTubePoster'
 
 # MrNewbBeeKeeping
 
-Player-owned beekeeping: place hives, manage queens and workers, harvest regional honey, sell at the shop, and catch wild swarms.
+Player-owned beekeeping: place hives, manage queens and workers, harvest regional honey, sell at the shop, and catch wild swarms. Built on [Newb_Bridge](/newb_bridge).
 
-[Tebex](https://mrnewbscripts.tebex.io/) · [Discord](https://discord.gg/mrnewbscripts) · [Installation](/mrnewbbeekeeping/install) · [Commands](/mrnewbbeekeeping/install/commands) · [Exports](/mrnewbbeekeeping/exports/server-exports) · [Preview](https://www.youtube.com/watch?v=vlsbrSD9l0M)
+[Tebex](https://mrnewbscripts.tebex.io/) · [Discord](https://discord.gg/mrnewbscripts) · [Installation](/mrnewbbeekeeping/install) · [Item setup](/mrnewbbeekeeping/install/inventory) · [Commands](/mrnewbbeekeeping/install/commands) · [Exports](/mrnewbbeekeeping/exports/server-exports) · [Preview](https://www.youtube.com/watch?v=vlsbrSD9l0M)
+
+<img src="/docs/images/beekeeping-banner.png" alt="MrNewbBeeKeeping banner" style={{ maxWidth: "100%" }} loading="lazy" decoding="async" />
 
 <YouTubePoster id="vlsbrSD9l0M" title="MrNewbBeeKeeping preview" className="resource-video" />
-
-## Features
-
-- Hive placement and ownership — personal cap, optional VIP extras, owner or allowlist access
-- Production loop — workers produce honey and wax; queen health and genetics affect output. An **open** hive does not tick
-- Seven regional honey types (blue, green, red, amber, lavender, citrus, wildflower) plus default wild honey
-- Queen genetics — trait strains, zone modifiers, breeding cells, in-game strain guide
-- Wild swarms — particles, sting damage, trap catches, optional respawn
-- Beekeeper suit — blocks swarm stings while worn
-- Beekeeper shop — buy supplies, sell honey and wax (`PayTo` is `bank` or `cash`)
-- Admin NUI — hive list and access, map blips, delete, owner/stale wipe, grant queens, strain builder (`/HiveAdmin`)
 
 ## Requirements
 
@@ -25,35 +16,155 @@ Player-owned beekeeping: place hives, manage queens and workers, harvest regiona
 - ox_lib, oxmysql
 - Artifact `/server:6116` or newer, OneSync
 - Compatible inventory (ox_inventory recommended)
-- Hive props ship in `stream/` (YTYP is registered in `fxmanifest.lua`)
+- Hive props ship in `stream/` (`jim_g_beehive_prop.ytyp` is registered in `fxmanifest.lua`)
 
-## Config files
+Keep the folder named `MrNewbBeeKeeping`. Most Lua is escrowed; `configs/`, `locales/`, and `resource/open/` stay editable. Do **not** add `server.export` on ox_inventory items — use is registered with `bridge.framework.registerItemUse`.
+
+## Features
+
+- Place and own hives with a personal cap, optional VIP extras, and owner or allowlist access
+- Production loop — workers make honey and wax; queen health and genetics change output. An **open** hive does not tick
+- Seven regional honeys (blue, green, red, amber, lavender, citrus, wildflower) plus default wild honey
+- Queen genetics — trait strains, zone modifiers, breeding cells, in-game strain guide
+- Wild swarms — particles, sting damage, trap catches, optional respawn
+- Beekeeper suit — blocks swarm stings while worn
+- Beekeeper shop — buy supplies, sell honey and wax (`PayTo` is `bank` or `cash`)
+- Admin NUI (`/HiveAdmin`) — hive list and access, map blips, delete, owner/stale wipe, grant queens, strain builder
+
+## Player loop
+
+1. Buy a `beehive`, workers, and a queen from the shop (or catch workers / a rare queen from a wild swarm with a `bee_trap`)
+2. Use the hive item to place it on whitelisted ground outside blacklist zones
+3. Open the colony, install the queen, add workers — production only runs while the hive is **closed**
+4. Extract honey (minigame) and wax when stores fill; sell at the shop
+5. Optional: raise a daughter queen from a breeding cell, smoke the hive, wear the suit near swarms, read the strain guide
+
+Staff open `/HiveAdmin` for inventory, map blips, maintenance wipes, strain grants, and the strain builder (writes to `created_strains.txt`).
+
+## Where you edit
 
 | File | What it does |
 | --- | --- |
-| `configs/config.lua` | Client-visible settings: hives, minigames, placement, swarms, trap, suit, honey types, shops |
-| `configs/genetics.lua` | Strain labels and breeding gates |
-| `configs/placement.lua` | Blacklist zones and placeable ground hashes |
-| `configs/sv_config.lua` | Admin/VIP, hive cap, colony rates, shop prices, zones |
-| `resource/open/client/custom.lua` | Client hooks (suit, skip sting) |
-| `resource/open/server/custom.lua` | Server hooks (queen trait, honey reward, trap catch) |
-| `resource/open/client/minigames.lua` | Honey extraction minigames |
+| `configs/config.lua` | Client-visible: hives, minigames, placement, swarms, trap, suit, honey types, shops, props, particles |
+| `configs/genetics.lua` | Strain labels, breeding gates, `StrainGuideItem`, default trait |
+| `configs/placement.lua` | Blacklist polygons and placeable ground material hashes |
+| `configs/sv_config.lua` | Admin/VIP, hive cap, colony rates, shop prices, honey zone polygons, `traitStats` |
+| `resource/open/client/custom.lua` | Suit clothing hooks, minigame fail / prop attach skips |
+| `resource/open/server/custom.lua` | Queen trait roll, honey reward item, trap catch hook |
+| `resource/open/client/minigames.lua` | Honey extraction minigame backends |
+| `locales/*.json` | Player and admin copy (shipped multilanguage) |
+| `[INSTALL]/imgs/` | Inventory PNGs |
+| `[INSTALL]/ox_inventory_items.txt` | Paste-ready ox_inventory item defs |
 
-Shop location ids must match an `ItemsForSale` key (shipped: `newb_beekeeper_shop`). Prices and caps belong in `sv_config.lua`. Restart after config or item changes.
+Shop location `id` values in `config.lua` must match an `ItemsForSale` key in `sv_config.lua` (shipped: `newb_beekeeper_shop`). Prices, caps, VIP, and trait multipliers stay server-only. Restart after config or item changes.
 
-Start order and items: [Installation](/mrnewbbeekeeping/install).
+### `configs/config.lua` (highlights)
+
+| Key | Purpose |
+| --- | --- |
+| `Config.General.Debug` | Extra console logging; also registers `/reloadhives` |
+| `Config.Hives.OnlyOwnerCanOpen` / `OnlyAllowlistedCanOpen` | Who may open and manage a colony |
+| `Config.Hives.ShowBlipsForYourHives` | Own-hive map blips |
+| `Config.Hives.ClosedModel` / `OpenModel` | Streamed hive drawables |
+| `Config.Hives.HiveVisibleDistance` | Prop draw distance (bridge max ~175) |
+| `Config.Minigames.HoneyExtraction` | Minigame id (`ox` shipped; others in `open/client/minigames.lua`) |
+| `Config.Placement.*` | Place distance, progress length, min spacing between hives |
+| `Config.WildSwarms.*` | Spawn mode, locations, sting, blips, respawn |
+| `Config.BeeTrap.*` | Trap item, catch timing, queen chance, worker rewards |
+| `Config.BeekeeperSuit.*` | Suit item, clothing components, `RemoveItemWhenWorn` |
+| `Config.HoneyTypes` | Default honey item, per-zone variants, overlap priority |
+| `Config.Shops.Locations` | Ped shops (`id` must match `ItemsForSale`) |
+
+### `configs/sv_config.lua` (highlights)
+
+| Key | Purpose |
+| --- | --- |
+| `Config.IsHiveAdmin(src)` | Who can open `/HiveAdmin` (default `bridge.framework.isAdmin`) |
+| `Config.IsPlayerHiveVip(src)` | VIP check (default ACE `mrnewb.vip`) |
+| `Config.Hives.MaxHivesPerPlayer` | Personal cap (`0` = unlimited) |
+| `Config.Vip` | `Enabled`, `ExtraHives`, `VipPlayers` list |
+| `Config.Maintenance` | Wipe hives for inactive owners |
+| `Config.Colony.MinutesPerProductionTick` | Main economy dial (lower = faster) |
+| `Config.Colony.MaxHoneyPerHive` / `MaxWaxPerHive` / `MaxWorkerBeesPerHive` | Storage caps; full honey stalls production |
+| `Config.Shops.PayTo` | `'bank'` or `'cash'` for sales |
+| `Config.Shops.WaxSellPrice` / `HoneySellPrices` | Sell payouts |
+| `Config.Shops.ItemsForSale` | Buy stock per shop id |
+| `Config.ZoneTypes` | Honey region polygons (z ignored) |
+| `traitStats` (local table) | Strain multipliers folded onto `Config.BeeGenetics.Traits` |
+
+### Genetics
+
+`configs/genetics.lua` holds player-facing labels and breeding requirements. Yields, rarity, roll zones, and `manualOnly` live in the `traitStats` block at the bottom of `sv_config.lua` so clients cannot read them. Every trait id needs an entry in **both** places. The admin Strain Builder appends matching blocks to `created_strains.txt` for you to paste.
+
+## Items
+
+Every name below must exist in your inventory. Paste: [Item setup](/mrnewbbeekeeping/install/inventory). Images: [Item images](/mrnewbbeekeeping/install/inventory-images).
+
+| Item | Role | Usable |
+| --- | --- | --- |
+| `beehive` | Place a hive | yes |
+| `queen_bee` | Inspect genetics / install in a hive | yes |
+| `worker_bees` | Colony workforce | no |
+| `bees_wax` | Harvest / sell | no |
+| `bees_honey` | Default wild honey | no |
+| `blue_honey` / `green_honey` / `red_honey` / `amber_honey` / `lavender_honey` / `citrus_honey` / `wildflower_honey` | Regional honeys | no |
+| `bee_trap` | Catch from a wild swarm | yes |
+| `beekeeping_guide` | Open the strain guide NUI | yes |
+| `beekeeper_suit` | Toggle suit (blocks swarm stings) | yes |
+
+## Persistence
+
+The SQL table `mrnewb_beekeeping` is created on start — there is no `.sql` file to import.
+
+Coming from an older MrNewbBeeKeeping? Hive rows in that table are converted automatically on start if they are still in the old format. The server console prints when it happens; restart the server after you see that message. If the data is already current, nothing extra runs.
+
+Config keys are not converted. Use the rename table below if you still have a v1 config.
+
+## Config migration (v1 to v2)
+
+Breaking renames. There are **no** runtime aliases — update your configs if you are coming from an older build.
+
+| Old | New |
+| --- | --- |
+| `Config.Utility` | `Config.General` |
+| `Config.HiveMaintenanceSettings` | `Config.Maintenance` (now in `sv_config.lua`) |
+| `Config.PlayerHiveSettings` | `Config.Hives` |
+| `Config.VipHiveLimits` | `Config.Vip` |
+| `Config.HoneySettings` / `WaxSettings` / `WorkerSettings` / `HiveGameplaySettings` | `Config.Colony` |
+| `Config.HivePlacementSettings` | `Config.Placement` |
+| `Config.BeeSwarms` | `Config.WildSwarms` |
+| `Config.HoneyVariants` / `HoneyZonePriority` | `Config.HoneyTypes` |
+| `Config.ShopSettings` | `Config.Shops` |
+| `configs/sv_economy.lua` / `configs/sv_zones.lua` | Merged into `configs/sv_config.lua` |
+
+Hive models are `Config.Hives.ClosedModel` / `OpenModel` and `Config.Props` (not a separate `BeeKeepingModels` table).
 
 ## Exports
 
-| Export | What it does |
+| Export | Returns |
 | --- | --- |
-| `IsPlayerHiveVip(src)` | Whether VIP extras apply for that player |
-| `GetPlayerHiveBonusHives(src)` | Extra hive slots from VIP (`0` if not VIP) |
-| `GetPlayerHiveLimit(src)` | Personal cap (`MaxHivesPerPlayer` + bonus). `0` = unlimited |
-| `IsPlayerAtHiveLimit(src)` | Whether the player is at that cap |
+| `IsPlayerHiveVip(src)` | Whether VIP extras apply (requires `Vip.Enabled`, and the player at the base cap) |
+| `GetPlayerHiveBonusHives(src)` | Extra slots, or `0` |
+| `GetPlayerHiveLimit(src)` | Personal cap. **`-1`** when `MaxHivesPerPlayer` is `0` (unlimited) |
+| `IsPlayerAtHiveLimit(src)` | Whether owned hives are at that personal cap |
 
 ```lua
 exports.MrNewbBeeKeeping:GetPlayerHiveLimit(source)
 ```
 
-Details: [Server exports](/mrnewbbeekeeping/exports/server-exports).
+Details and open hooks: [Server exports](/mrnewbbeekeeping/exports/server-exports).
+
+## Anticheat models
+
+Allow these object models so they are not deleted as unauthorized props:
+
+| Model | Used as |
+| --- | --- |
+| `jim_g_beehive_prop_1` | Honeycomb (handheld) |
+| `jim_g_beehive_prop_2` | Closed hive |
+| `jim_g_beehive_prop_3` | Open hive |
+| `jim_g_beehive_smoker_prop_4` | Smoker (handheld) |
+
+Drawables live under `stream/[jim-gordon]/`. Do not move or rename them.
+
+Start order, ACE examples, and verification: [Installation](/mrnewbbeekeeping/install).

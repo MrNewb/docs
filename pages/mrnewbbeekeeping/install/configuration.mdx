@@ -1,0 +1,212 @@
+import { Callout } from 'nextra/components'
+
+# Configuration
+
+Edit the files under `configs/` in the resource. Do not copy them into this page — the shipped Lua is the source of truth. Restart `MrNewbBeeKeeping` (and the inventory if you changed item names) after edits. Overview tables also live on [MrNewbBeeKeeping](/mrnewbbeekeeping).
+
+<Callout type="info">
+  Prices, hive caps, VIP, zone polygons, and `traitStats` belong in `configs/sv_config.lua` so clients cannot read them. Client-visible behaviour stays in `configs/config.lua`.
+</Callout>
+
+## Files
+
+| File | What you change |
+| --- | --- |
+| `configs/sv_config.lua` | Admin/VIP, hive cap, save mode, colony rates, shop prices/stock, honey zone polygons, `traitStats` |
+| `configs/config.lua` | Hives, minigames, placement, swarms, trap, suit, honey types, shop locations, handheld props, particles |
+| `configs/genetics.lua` | Strain labels, breeding gates, `StrainGuideItem`, default trait |
+| `configs/placement.lua` | Blacklist polygons and placeable ground material hashes |
+
+Shop location `id` values in `config.lua` must match an `ItemsForSale` key in `sv_config.lua` (shipped: `newb_beekeeper_shop`).
+
+## `configs/sv_config.lua`
+
+### Admin and VIP
+
+| Key | Purpose |
+| --- | --- |
+| `Config.IsHiveAdmin(src)` | Who can open `/HiveAdmin`. Shipped: `bridge.framework.isAdmin` |
+| `Config.IsPlayerHiveVip(src)` | VIP membership check. Shipped: `false` until you uncomment ACE or write your own |
+| `Config.Hives.MaxHivesPerPlayer` | Personal cap (`0` = unlimited) |
+| `Config.Vip.Enabled` | Must be `true` for extra slots to apply |
+| `Config.Vip.ExtraHives` | Extra slots on top of the base cap |
+| `Config.Vip.VipPlayers` | Identifiers, citizen ids, `discord:…`, or a bare Discord **role** id |
+
+VIP extras only apply when `Vip.Enabled` is `true` **and** the player already owns `MaxHivesPerPlayer` hives. Role ids need `Badger_Discord_API` started. ACE examples: [Installation](/mrnewbbeekeeping/install).
+
+### Maintenance and saving
+
+| Key | Purpose |
+| --- | --- |
+| `Config.Maintenance.Enabled` | Wipe hives whose owners have been offline too long |
+| `Config.Maintenance.InactiveDaysBeforeWipe` | Days offline before wipe |
+| `Config.SavingMethod.Mode` | `'shutdown'` (write on stop/restart) or `'timed'` (also periodic) |
+| `Config.SavingMethod.SaveIntervalMinutes` | Interval for `'timed'` mode |
+
+### Colony economy
+
+| Key | Purpose |
+| --- | --- |
+| `Config.Colony.MinutesPerProductionTick` | Main dial. Lower = faster honey |
+| `Config.Colony.MaxHoneyPerHive` / `MaxWaxPerHive` / `MaxWorkerBeesPerHive` | Storage caps. Full honey stalls production |
+| `Config.Colony.ChanceToLoseWorkers` | Per-tick chance (`0` = off) |
+| `Config.Colony.MostWorkersLostAtOnce` | Cap on workers lost in one tick |
+| `Config.BeeGenetics.MinHealthLostPerTick` / `MaxHealthLostPerTick` | Queen health drain per tick |
+| `Config.BeeGenetics.QueenBreeding.MinProgressPerTick` / `MaxProgressPerTick` | Breeding cell progress per tick |
+| `Config.BeeGenetics.QueenBreeding.ChanceToInheritMothersTrait` | Chance the daughter keeps the mother’s strain |
+
+An **open** hive does not tick. Breeding enable / worker / honey / wax costs are in `configs/genetics.lua`.
+
+### Shop money and stock
+
+| Key | Purpose |
+| --- | --- |
+| `Config.Shops.PayTo` | `'bank'` or `'cash'` |
+| `Config.Shops.WaxSellPrice` | Sell payout for wax |
+| `Config.Shops.HoneySellPrices` | Sell payouts keyed by honey item name |
+| `Config.Shops.ItemsForSale` | Buy stock per shop id |
+
+Every `ItemsForSale` key must match a `Locations[].id` in `configs/config.lua`.
+
+### Honey zones
+
+`Config.ZoneTypes` is a table of named polygons (`blue`, `red`, `green`, …). Each entry is a list of `vec(x, y, z)` — **z is ignored**. Overlap priority is `Config.HoneyTypes.zonePriority` in `config.lua`. Outside every polygon, hives use `Config.HoneyTypes.default`.
+
+### Strain stats (`traitStats`)
+
+At the bottom of `sv_config.lua`, the local `traitStats` table is folded onto matching ids in `Config.BeeGenetics.Traits`. Fields default to `1.0` if omitted.
+
+| Field | Meaning |
+| --- | --- |
+| `honeyMultiplier` / `waxMultiplier` | Production multipliers |
+| `queenDeathMultiplier` | Scales health lost per tick |
+| `queenBreedMultiplier` | Scales breeding cell progress |
+| `zoneModifiers` | Per honey-zone multipliers (`none` = outside regions) |
+| `rollZones` | Where this strain can roll from wild / shop queens |
+| `weight` | Relative roll weight (`0` = never) |
+| `manualOnly` | Admin-grant only; never rolls in the wild |
+
+Every id needs a label block in `configs/genetics.lua`. The admin Strain Builder writes both blocks into `created_strains.txt`.
+
+## `configs/config.lua`
+
+### Hive access and props
+
+| Key | Purpose |
+| --- | --- |
+| `Config.General.Debug` | Extra console logging |
+| `Config.Hives.OnlyOwnerCanOpen` / `OnlyAllowlistedCanOpen` | Who may open and manage a colony |
+| `Config.Hives.ShowBlipsForYourHives` | Own-hive map blips (`BlipSprite` / `BlipColor`) |
+| `Config.Hives.ClosedModel` / `OpenModel` | Streamed hive drawables |
+| `Config.Hives.HiveVisibleDistance` | Prop draw distance (bridge max ~175) |
+
+Personal ownership cap is **not** here — it is `Config.Hives.MaxHivesPerPlayer` in `sv_config.lua`.
+
+### Minigames
+
+`Config.Minigames.HoneyExtraction` is the skill-check id. Shipped default is `'slide'`. Other backends in `resource/open/client/minigames.lua`: `ox`, `none`, `bagus`, `ps-ui`, `bl-progress`, `bl-keyspam`, `bl-circle`, `bl-printlock`, `t3_lockpick`, `bit-unlock`, `xmmx`, `rainmadlockpick`, `rainmadaction`, `rainmadquick`, `rainmadmash`, `rainmadangled`. Add your own branch there if needed.
+
+### Placement
+
+| Key | Purpose |
+| --- | --- |
+| `Config.Placement.MaxDistance` | How far from the player a hive can be placed |
+| `Config.Placement.TimeToPlaceMs` | Place progress length |
+| `Config.Placement.MinDistanceBetweenHives` | Spacing between hive centres (`0` = off) |
+| `Config.Placement.PreviewRemoveLeadMs` | Hide the ghost this many ms before the bar finishes |
+| `Config.Placement.FlipHeading` | Spin the hive 180 from the gizmo |
+
+Ground materials and blacklist polygons are in `configs/placement.lua`.
+
+### Wild swarms
+
+| Key | Purpose |
+| --- | --- |
+| `Config.WildSwarms.Enabled` | Master switch |
+| `Config.WildSwarms.SpawnMode` | `'stationary'` (every location), `'randomized'` (subset of `Locations`), or `'off'` |
+| `Config.WildSwarms.ActiveCount` | Live count range for `'randomized'` only |
+| `Config.WildSwarms.MaxCatchesPerSwarm` / `MaxCatchesPerPlayer` | Catch limits (`0` = unlimited) |
+| `Config.WildSwarms.RespawnMinutes` | Number or `{ min, max }`. `0` = gone until restart |
+| `Config.WildSwarms.Sting` | Damage, interval, animation, camera shake |
+| `Config.WildSwarms.Blip` | Optional sprite / radius blip |
+| `Config.WildSwarms.Locations` | `{ coords, radius, stingRadius }` |
+
+`randomized` picks from `Locations` — it never rolls random world coords.
+
+### Bee trap and suit
+
+| Key | Purpose |
+| --- | --- |
+| `Config.BeeTrap.Enabled` / `ItemName` | Trap item |
+| `Config.BeeTrap.TimeToCatchMs` / `MaxDistanceFromSwarm` | Catch timing and range |
+| `Config.BeeTrap.ChanceToCatchQueen` | Queen chance; otherwise workers |
+| `Config.BeeTrap.QueenRewardItem` / `WorkerRewardItem` | Reward items |
+| `Config.BeeTrap.MinWorkersCaught` / `MaxWorkersCaught` | Worker count range |
+| `Config.BeeTrap.RemoveTrapAfterUse` | Consume the trap on a catch |
+| `Config.BeekeeperSuit.Enabled` / `ItemName` | Suit item |
+| `Config.BeekeeperSuit.PreventsStings` | Blocks swarm stings while worn |
+| `Config.BeekeeperSuit.RemoveItemWhenWorn` | `true` = item removed while worn; unequip via radial (Z) or death |
+| `Config.BeekeeperSuit.TimeToDressMs` | Dress / undress progress |
+| `Config.BeekeeperSuit.RemoveOnDeath` | Strip the suit on death |
+| `Config.BeekeeperSuit.Male` / `Female` | Clothing drawable ids |
+| `Config.BeekeeperSuit.Hat` / `Glasses` | Optional extras (`enabled = false` shipped) |
+
+Adjust drawable ids if your server uses a custom clothing pack. For illenium-appearance / custom outfit APIs, return `true` from `ApplyBeekeeperSuit` / `RestoreBeekeeperSuit` in `resource/open/client/custom.lua`.
+
+### Honey types and shops
+
+| Key | Purpose |
+| --- | --- |
+| `Config.HoneyTypes.zonePriority` | Overlap order (first listed wins) |
+| `Config.HoneyTypes.default` | Honey item outside every polygon |
+| `Config.HoneyTypes.variants` | Per-zone honey item + menu color |
+| `Config.Shops.BuyEnabled` / `SellEnabled` | Shop menus |
+| `Config.Shops.UseContextMenu` | Buy via context menu instead of a runtime inventory shop |
+| `Config.Shops.PedSpawnDistance` | How far away shop peds appear |
+| `Config.Shops.Locations` | Ped shops (`id` must match `ItemsForSale`) |
+
+Every `variants.*.item` and `default.item` must exist in inventory and (if sellable) in `HoneySellPrices`.
+
+### Props and particles
+
+Handheld smoker / honeycomb attach points are `Config.Props`. Swarm and smoker FX are `Config.Particles`. Leave these unless you are swapping models or effects.
+
+## `configs/genetics.lua`
+
+| Key | Purpose |
+| --- | --- |
+| `Config.BeeGenetics.Enabled` | Master switch |
+| `Config.BeeGenetics.StrainGuideItem` | Item that opens the strain guide |
+| `Config.BeeGenetics.DefaultTrait` | Fallback strain id |
+| `Config.BeeGenetics.QueenMaxHealth` / `QueenDiesAtHealth` | Queen health range |
+| `Config.BeeGenetics.QueenBreeding` | Enable, worker/health gates, honey/wax cost per tick |
+| `Config.BeeGenetics.Traits` | `{ label, description }` per strain id |
+
+Labels and breeding gates are safe to ship to clients. Do **not** put multipliers here — put them in `traitStats` in `sv_config.lua`.
+
+## `configs/placement.lua`
+
+- `Config.BlackListZones` — named polygons where placement is refused (military base, airport, MRPD, Legion, Pillbox shipped)
+- `Config.WhiteListedGroundHashes` — material hashes that accept a hive. Anything not listed is refused
+
+Hash reference: [DurtyFree material list](https://gist.github.com/DurtyFree/b37463ea9bfd3089fab696f554509977).
+
+## Locales
+
+Copy lives in `locales/*.json` (English plus many translations). ox_lib locale is initialized once by the resource. Change strings there; do not hardcode player-facing copy in open hooks unless you mean to.
+
+## Open hooks
+
+Editable under `resource/open/`. Full signatures: [Server exports](/mrnewbbeekeeping/exports/server-exports).
+
+| File | Typical use |
+| --- | --- |
+| `open/server/custom.lua` | Force a queen trait, change honey item on extract, post-trap rewards |
+| `open/client/custom.lua` | Custom suit clothing, skip sting on failed minigame, skip handheld props |
+| `open/client/minigames.lua` | Wire a different skill-check resource |
+
+## After you change config
+
+1. Restart `MrNewbBeeKeeping` (item name changes also need an inventory restart).
+2. Watch the server console for config validation warnings.
+3. Re-test place → stock → close → wait one production tick → extract → sell.

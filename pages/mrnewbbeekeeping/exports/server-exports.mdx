@@ -1,6 +1,6 @@
 # Server exports
 
-VIP extras only apply when `Config.Vip.Enabled` is `true` in `configs/sv_config.lua`. `IsPlayerHiveVip` is also `false` until the player is at the base `MaxHivesPerPlayer` cap.
+VIP extras only apply when `Config.Vip.Enabled` is `true` in `configs/sv_config.lua`. `IsPlayerHiveVip` is also `false` until the player owns at least `MaxHivesPerPlayer` hives (the base cap). Unlimited base (`MaxHivesPerPlayer = 0`) means VIP extras never apply.
 
 ```lua
 local vip = exports.MrNewbBeeKeeping:IsPlayerHiveVip(source)
@@ -11,16 +11,18 @@ local atCap = exports.MrNewbBeeKeeping:IsPlayerAtHiveLimit(source)
 
 | Export | Returns |
 | --- | --- |
-| `IsPlayerHiveVip(src)` | `true` if VIP extras apply |
+| `IsPlayerHiveVip(src)` | `true` if VIP extras apply right now |
 | `GetPlayerHiveBonusHives(src)` | Extra slots (`Config.Vip.ExtraHives`), or `0` |
-| `GetPlayerHiveLimit(src)` | `MaxHivesPerPlayer` + bonus. `0` means unlimited |
-| `IsPlayerAtHiveLimit(src)` | `true` when owned hives are at that personal cap |
+| `GetPlayerHiveLimit(src)` | `MaxHivesPerPlayer` + bonus. Returns **`-1`** when the base cap is `0` (unlimited) |
+| `IsPlayerAtHiveLimit(src)` | `true` when owned hives are at that personal cap (`false` when unlimited) |
 
-VIP membership is `Config.IsPlayerHiveVip(src)` (default ACE `mrnewb.vip`) and/or entries in `Config.Vip.VipPlayers` (citizen id, `license:…`, `discord:…`, or a bare numeric Discord **role** id). Numeric role ids are resolved only when `Badger_Discord_API` is started (`GetDiscordRoles`).
+VIP membership is `Config.IsPlayerHiveVip(src)` (default ACE `mrnewb.vip`) and/or entries in `Config.Vip.VipPlayers` (citizen id, `license:…`, `discord:…`, or a bare numeric Discord **role** id). Numeric role ids are resolved only when `Badger_Discord_API` is started.
 
-Net events and `lib.callback` names under `MrNewbBeeKeeping:*` are internal (hive sync, shop, admin NUI, item use). Do not call them from other resources.
+Do not call this resource’s internal net events or callbacks from other resources. Use the exports and open hooks below instead.
 
-Editable hooks live in `resource/open/`:
+## Open hooks
+
+Editable under `resource/open/` (escrow-ignored).
 
 | Function | File | Role |
 | --- | --- | --- |
@@ -29,3 +31,5 @@ Editable hooks live in `resource/open/`:
 | `OnTrapCatch(src, swarmId, context)` | `open/server/custom.lua` | After a successful catch. `context` is `{ rewardCount, gotQueen, settings }` |
 | `ApplyBeekeeperSuit(ped)` / `RestoreBeekeeperSuit(ped, outfit)` | `open/client/custom.lua` | Custom clothing (return `true` to skip built-in) |
 | `OnMinigameFailed()` / `OnAttachHoneycomb()` / `OnAttachHiveSmoker()` | `open/client/custom.lua` | Return `true` to skip the built-in behavior |
+
+Honey extraction minigame backends live in `resource/open/client/minigames.lua` (`Config.Minigames.HoneyExtraction`).
