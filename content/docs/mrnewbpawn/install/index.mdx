@@ -24,8 +24,6 @@ These are **not** usable items. Paste names from [Item setup](/mrnewbpawn/instal
 
 Shipped names: `metalscrap`, `iron`, `steel`, `copper`, `aluminum`, `plastic`, `glass`, `rubber`, `radio`, `phone`, `laptop`, `rolex`, `goldchain`, `diamond_ring`, `sapphire_ring`, `emerald_necklace`, `ruby_ring`, `diamond_necklace`, `gold`, `diamond`. Icons: [Item images](/mrnewbpawn/install/inventory-images).
 
-Do **not** add `server.export`. Do **not** mark them usable.
-
 ### Configure [step]
 
 Edit `configs/config.lua`:
@@ -37,7 +35,7 @@ Edit `configs/config.lua`:
 - Foundries (`Config.FoundryLocations`, shipped: `Foundry`, `Foundry2`): target **box zones** via `Zone` (`coords`, `size`, `rotation`). Client uses `bridge.target.addBoxZone`. Server only checks distance from `Zone.coords` (within **10.0**). Optional `Blip`, optional `lerpProp` (`lerpSpeed`, `waypoints`)
 - Recipes (`Config.MeltableItems`, shipped: `metalscrap`, `diamond_ring`, `goldchain`, `rolex`): optional `prop` (omitted → `prop_cs_cardbox_01`), `rewards = { { itemName, count } }`. Server rejects a melt batch above **50**.
 
-Labels: `locales/en.json` (and the other locale files).
+Labels: `locales/en.json`.
 
 ### Add to server.cfg [step]
 
@@ -53,4 +51,4 @@ ensure MrNewbPawn
 
 ### Restart the server [step]
 
-Restart after config, locale, or item changes. Sold stock is in-memory per shop and clears on restart. No exports, no commands, no SQL.
+Restart after config, locale, or item changes. Sold stock is in-memory per shop and clears on restart.

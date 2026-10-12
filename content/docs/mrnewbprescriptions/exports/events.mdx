@@ -27,7 +27,7 @@ These stay readable after escrow, so you can edit them.
 
 | File | What it is for |
 | --- | --- |
-| `resource/open/server/medication_hooks.lua` | `CanUseMedication`, `OnMedicationConsumed`, `OnMedicationTreat`. Only run when `Config.MedicationHooks.enabled = true` |
+| `resource/open/server/medication_hooks.lua` | `CanUseMedication`, `OnMedicationConsumed`, `OnMedicationTreat`. Only run when Medication hooks is turned on in the panel |
 | `resource/open/server/utility.lua` | `CreateLog(data)`. Connect your logger here |
 | `resource/open/server/addiction_relief.lua` | Lowers the addiction score from other scripts' events |
 | `resource/open/server/custom_effects.lua` and `resource/open/client/custom_effects.lua` | Custom effect ids, labels, and handlers |
@@ -38,7 +38,7 @@ These stay readable after escrow, so you can edit them.
 
 ### Block a medication under a condition
 
-With `Config.MedicationHooks.enabled = true`, in `medication_hooks.lua`:
+With Medication hooks turned on in the panel, in `medication_hooks.lua`:
 
 ```lua
 function CanUseMedication(src, payload)
@@ -48,4 +48,4 @@ end
 
 ### Build your own insurance
 
-Set `Config.Insurance.provider = 'custom'`, then fill in `ExternalInsuranceStatus`, `ExternalInsuranceCopay`, and `ExternalInsuranceSummary` in `insurance_custom.lua`. Copy `insurance_minsurance.lua` as a starting point if that is easier.
+Set the insurance provider to `custom` in the panel, then fill in `ExternalInsuranceStatus`, `ExternalInsuranceCopay`, and `ExternalInsuranceSummary` in `insurance_custom.lua`. Copy `insurance_minsurance.lua` as a starting point if that is easier.

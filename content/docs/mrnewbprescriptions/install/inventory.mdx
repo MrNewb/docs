@@ -13,7 +13,7 @@ Everything ships ready for ox_inventory. Open `[INSTALL]/ox_inventory/items.lua`
 | one_inventory | `one_inventory/web/images/` |
 
 <Callout type="warning">
-  Do **not** add `server.export` to these items, and do not set `consume = 0`. Use is registered through Newb_Bridge. Pictures in the bottling bench and pharmacy tablet are found by item name (`<item>.png`), so keep the file names as they are.
+  Pictures in the bottling bench and pharmacy tablet are found by item name (`<item>.png`), so keep the file names as they are.
 </Callout>
 
 On start the console prints a line for every config item your inventory is missing.
@@ -33,16 +33,7 @@ On start the console prints a line for every config item your inventory is missi
 | `shotglass`, `envious_cough_syrup`, `coughsyrup_shot`, `envious_shot` | Optional | Envious shots. Also needs the `sprunk` item |
 | `boxofaspirin`, `boxofpseudoephedrine`, `bandage` | Optional | Shoplifting loot. Skip `bandage` if your framework already has one |
 
-Item names that the script looks up are set in config, so you can rename them:
-
-```lua
-Config.UsableItems = {
-    PrescriptionPad = 'prescriptionpad',
-    Prescription = 'medicalprescription',
-    MedicalRecord = 'medicalrecord',
-    BlankPaper = 'blankpaper',
-}
-```
+The names the script looks up (pad, paper, record, blank paper) are set on the Item names page of the setup panel, so you can rename them there.
 
 ## The core three
 
@@ -95,7 +86,7 @@ Repeat this shape for every item in `[INSTALL]/ox_inventory/items.lua`, using th
 ## Adding your own medication
 
 1. Create the item in your inventory with an image named `<item>.png`
-2. Add an entry with the **same name** on the meds page, or in `configs/prescriptions.lua`, or call `RegisterPrescription` from another resource
+2. Add an entry with the **same name** on the meds page, or call `RegisterPrescription` from another resource
 3. Restart the inventory and this resource
 
 Full walkthrough with effects: [Medications and effects](/mrnewbprescriptions/effects).

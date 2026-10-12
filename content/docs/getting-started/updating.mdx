@@ -1,39 +1,41 @@
 ---
 title: "Updating"
-description: "Swap in a new version without leaving the old folder sitting there."
+description: "Replace a script with a newer version cleanly, without leftover files from the old one."
 icon: "IconRefresh"
 ---
 
-Don't paste the new files on top of the old folder. Anything the update removed or renamed gets left behind, and that's what throws the error.
+Never paste new files over the old folder. Whatever the update removed or renamed stays behind, and that leftover is what usually breaks.
 
-### Read what changed [step]
+<Callout type="warning">
+  If the notes mention SQL or new config keys, deal with those before you start the server.
+</Callout>
 
-Look at the notes for the version you're putting in. If they mention SQL or a new config key, do that before you start the server.
+## Before you touch anything
 
-### Back the folder up [step]
+- Read what changed in the version you're installing. Updates are usually announced in the Discord. Paid assets also get a short summary on the portal.
+- Copy the current resource out of `resources`. Back up the database too when the update has SQL.
+- Hold on to that backup until the new version works in game.
 
-Copy the current resource out of `resources` before you delete anything. If the update has SQL, back the database up too. Leave that copy alone until you've tried the new one in game.
+<Callout>
+  Worried you missed a changelog? You don't have to watch for them. Once an update is posted, the version checker warns you in the console on startup if your copy is out of date.
+</Callout>
 
-### Download it again [step]
+## Swap the folder
 
-Grab the new zip from the same place you got it the first time. [Tebex](https://mrnewbscripts.tebex.io/) if you paid, [GitHub](https://github.com/MrNewb) if it's free. Open the zip and take the resource folder, not the outer bundle.
+1. Download the new zip from where you bought or found it ([Tebex](https://mrnewbscripts.tebex.io/) or [GitHub](https://github.com/MrNewb)) and pull the resource folder out of it.
+2. Stop the server.
+3. Delete the old folder, then put the new one in `resources` under the same name.
 
-### Take the old folder out [step]
+Search `resources` once to be sure only one copy exists, and that it isn't nested inside a folder of the same name.
 
-Stop the server. Delete the old resource folder. Don't merge the new files into it.
+## Bring your changes over
 
-### Put the new one in [step]
+| What you changed | What to do |
+| --- | --- |
+| Config values | Copy them onto the new config. Don't overwrite the new file, since updates add keys your old one lacks |
+| Locale or `resource/open/` edits | Re-apply them on the new files |
+| Database | Run the SQL from the notes if there is any |
 
-Drop the new folder into `resources`. The name still has to match what the docs say.
+## Check it
 
-If you changed config, copy those settings onto the new files. Don't replace the new config with your old one. New keys get added in updates, and your old file won't have them.
-
-If you edited something under `resource/open/` or a locale, put those edits back on the new files. That's how you keep the fix that shipped in the update.
-
-### One copy only [step]
-
-Search `resources` for the script name. There should be one folder. It also can't sit inside another folder with the same name. `resources/MrNewbPawn/MrNewbPawn` is the wrong shape.
-
-### Restart and try it [step]
-
-Start the server. Read the console, then try the script in game before you throw the backup away.
+Start the server, read the console, and try the script in game. Delete the backup after that.

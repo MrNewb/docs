@@ -212,24 +212,3 @@ Replicated, **read-only** snapshots. Do not write these from another resource.
 | `plateHelmet` | `{ equipped, name, condition, max }` or `{ equipped = false }` |
 
 `plates[slot]` is `{ item, condition, max, material }` or `false` for an empty slot.
-
-## Layout
-
-| Path | Role |
-| --- | --- |
-| `resource/shared/vest_helpers.lua` | Migration, plate condition, serial |
-| `resource/server/inventory_capability.lua` | Metadata-inventory boot check |
-| `resource/server/permissions.lua` | Optional `Jobs` gate |
-| `resource/server/equip_and_remove_vest.lua` | Equip/remove, usable carriers |
-| `resource/server/sync_vest_state.lua` | Condition + `plateCarrier` bag |
-| `resource/server/repair_plates.lua` | Insert / remove / field repair |
-| `resource/server/helmet.lua` | Helmet metadata + `plateHelmet` bag |
-| `resource/server/damage.lua` | Hit classification |
-| `resource/server/stations.lua` | Repair / salvage callbacks |
-| `resource/server/ox_inventory.lua` | Optional drag-insert hook |
-| `resource/server/selfcheck.lua` | Optional boot asserts (`RunSelfChecks`) |
-| `resource/client/appearance.lua` | Component 9 / prop 0 |
-| `resource/client/vest.lua` | Equip visuals, `/removevest` + keybind, client vest exports |
-| `resource/client/helmet.lua` | Helmet events, `/removehelmet`, client helmet / HUD exports |
-| `resource/client/inspect_vest_menu.lua` | Slot inspection |
-| `resource/client/stations.lua` | Armor-bench interactions |

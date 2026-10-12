@@ -1,18 +1,16 @@
 ---
 title: "Configuration"
-description: "Vehicle Keys settings live in /vehiclekeyssetup. There is no config file."
+description: "Vehicle Keys settings live in /vehiclekeyssetup."
 icon: "IconSettings"
 ---
 
-There is no `configs/` folder. Factory defaults ship in `resource/shared/seed/` (`config.lua`, `locksmith_job.lua`, and a few JSON files). First boot copies them into `MrNewb__Settings`. After that the saved copy wins, and `/vehiclekeyssetup` pushes changes to connected players without a restart.
-
-Editing the seed files later does nothing on an existing install.
+Run `/vehiclekeyssetup` as an admin. Changes are saved and pushed to connected players without a restart.
 
 A few files stay editable because they hold code. A change there needs a resource restart:
 
 | File | What you edit |
 | --- | --- |
-| `resource/open/shared/hooks.lua` | `Config.ValidationChecks` (return `false` to block lock, hotwire, search, lockpick, or engine start) and `Config.KeyFobButtons` |
+| `resource/open/shared/hooks.lua` | Validation checks (return `false` to block lock, hotwire, search, lockpick, or engine start) and the key fob buttons |
 | `resource/open/shared/minigames.lua` | Third-party minigame wiring |
 | `resource/open/server/open_hooks.lua` | `LogVehicleKeysAction(src, action, data)` |
 | `resource/open/server/dispatch.lua` | Police alert |
@@ -83,4 +81,4 @@ The player job has a bench, register, stash, and computer. The bench burns one `
 
 `CompatibilityEvents` chooses which foreign events and legacy exports answer. Garage entries switch on when that garage resource is running. `provide` lines in `fxmanifest.lua` let `exports['qbx_vehiclekeys']:GiveKeys(...)` resolve here. Only `provide 'qbx_vehiclekeys'` is active in the shipped manifest.
 
-`MrNewbVehicleKeys:Client:*` and `MrNewbVehicleKeys:Server:*` are internal. Do not build on them. Use the [exports](/mrnewbvehiclekeys/exports/server-exports).
+`MrNewbVehicleKeys:Client:*` and `MrNewbVehicleKeys:Server:*` are internal. Do not build on them.

@@ -1,24 +1,24 @@
 ---
 title: "Configuration"
-description: "Recycling settings. Seed files apply until the first /recyclingsetup save."
+description: "Recycling is set up in the /recyclingsetup panel."
 icon: "IconSettings"
 ---
 
-`configs/config.lua` and `configs/recycler.lua` are the starting values. After the first save in `/recyclingsetup`, `MrNewb__Settings` is what the server uses. Reset in the panel loads the files again.
+Run `/recyclingsetup` as an admin. **Save** applies to every player right away, and **Reset** goes back to the defaults.
 
 The first time the panel opens, a short guide checks where the machines stand, whether every item you want recycled has a recipe, and how players reach a machine. The target eye is the recommended prompt.
 
-## Seed values
+## Defaults
 
 | Setting | Default | Meaning |
 | --- | --- | --- |
-| `Config.RecyclerInteractDistance` | `2.5` | How close to use a recycler |
-| `Config.RecyclerInputSlots` / `Config.RecyclerOutputSlots` | `6` / `6` | Default slot counts |
-| `Config.RecyclerRadius` | `120.0` | How close a player must be before the recycler appears |
-| `Config.RecyclerTypes` | `basic`, `industrial`, `advanced` | `efficiencyMin`, `efficiencyMax`, `durationScale` |
-| `Config.RecyclerAudio` | sound bank | Sound, soundset, hearing range |
-| `Config.Recyclers` | seed spots | `id`, `name`, `type`, `model`, `coords`, `heading` |
-| `Config.RecyclerRecipes` | seed recipes | `secondsPerItem` plus output rows `{ item, weight, min, max }` or `{ item, weight, amount }` |
+| Interact distance | `2.5` | How close to use a recycler |
+| Input / output slots | `6` / `6` | Default slot counts |
+| Load radius | `120.0` | How close a player must be before the recycler appears |
+| Recycler types | `basic`, `industrial`, `advanced` | Efficiency range and speed |
+| Audio | sound bank | Sound, soundset, hearing range |
+| Stations | starter spots | Name, type, model, and where it sits |
+| Recipes | starter recipes | Seconds per item, plus weighted outputs with a min and max or a fixed amount |
 
 The distance at which a recycler can be opened is fixed at `4.0`. Prompt style, interact distance, murder mode, models, and debug are set in the panel.
 
@@ -52,4 +52,4 @@ Players use the target, text prompt, or help text, load input slots, turn it on,
 
 Off by default. When it is on, a player can carry another player to a recycler and insert them. The server decides range, duration, damage, tick, cooldown, and the loot table (item, amount, chance, rolls). Leave it off unless your server rules allow it.
 
-`bzzz_prop_recycler_a` is an optional compatibility prop. It is not shipped. If another resource streams it, the panel offers it. If it is not detected, saved recyclers that used it are skipped and the shipped props still work.
+Two recycler props ship with the resource: a Rust-inspired one and a semi-industrial, steampunk-style one. You don't need anything else. It is also ready for an extra third-party recycler prop. If another resource streams one, the panel offers it, and if it isn't running the shipped props keep working.

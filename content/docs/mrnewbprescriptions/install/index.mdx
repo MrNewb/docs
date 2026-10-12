@@ -20,8 +20,6 @@ Player-run pharmacies need a real job in your framework. Add it now, then come b
 
 Paste the items from [Item setup](/mrnewbprescriptions/install/inventory) and copy the PNGs from `[INSTALL]/imgs/` into your inventory images folder. Icons: [Item images](/mrnewbprescriptions/install/inventory-images).
 
-Do **not** add `server.export` on these items, and do not set `consume = 0`. Use is registered through Newb_Bridge.
-
 ### Add to server.cfg [step]
 
 Swap in whatever framework and inventory you run.
@@ -63,12 +61,11 @@ Commands: [Commands](/mrnewbprescriptions/install/commands). Walkthrough of the 
 
 | Symptom | Check |
 | --- | --- |
-| Doctor gets an "invalid job" notice | Their job is not in `Config.MedicalJobs`, or they are under the grade floor |
+| Doctor gets an "invalid job" notice | Their job is not listed under Medical jobs in the panel, or they are under the grade floor |
 | Pharmacy tablet or register does nothing | The staff member is not clocked in, or `Job.jobName` does not match your framework job |
 | NPC pharmacist menu is empty | The patient needs a valid, unexpired, unrevoked paper. See [Troubleshooting](/mrnewbprescriptions/faq) |
 | Paper does nothing when used | It was spawned without metadata. Real papers come from the pad |
 | Bottling cannot find ingredients | Ingredients must be in the pharmacy **stock room**, not in someone's pockets |
-| Config edits are ignored | Settings saved in `/prescriptionssetup` win. Edit there, or press Reset |
 | Raw keys like `Ui.Insurance.Failed` on screen | Your locale file is missing keys. Copy the new ones from `locales/en.json` |
 | Blank screen after an update | Replace `web/build/` **and** `locales/en.json` together, then restart the resource |
 | Shot glass props deleted | Allow the models on [Anticheat models](/mrnewbprescriptions/anticheat) |

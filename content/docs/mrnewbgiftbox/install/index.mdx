@@ -24,8 +24,6 @@ Paste from [Item setup](/mrnewbgiftbox/install/inventory). Copy `giftbox.png` fr
 | qb-inventory / ps-inventory | `html/images/` |
 | one_inventory | `one_inventory/web/images/` |
 
-Do **not** add `server.export` on ox_inventory items. Use is registered with `bridge.framework.registerItemUse`. Omit `consume` on the item defs.
-
 ### Configure [step]
 
 Edit `configs/config.lua` (server-only). `always = true` always grants. `weight` is a relative ox_lib selector weight (not `0`-`1`). One weighted extra is rolled per open. `account` is optional (`accountType` of `cash` / `bank` / `money`, `amount`, plus `always` or `weight`).
@@ -44,4 +42,4 @@ ensure MrNewbGiftBox
 
 ### Restart the server [step]
 
-Restart after config or item changes. Exports: [Server exports](/mrnewbgiftbox/exports/server-exports).
+Restart after config or item changes.

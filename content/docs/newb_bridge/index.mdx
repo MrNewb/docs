@@ -4,8 +4,6 @@ description: "Most of my scripts import this. You call bridge.* and it talks to 
 icon: "IconPlugConnected"
 ---
 
-Most of my scripts import this. You call `bridge.*` and it talks to the framework, inventory, and target you already got running.
-
 <Callout>
   I'm still filling this in. Pages are gonna move around.
 </Callout>
@@ -21,13 +19,6 @@ ensure Newb_Bridge
 ensure MrNewb_YourScript
 ```
 
-The folder name must stay `Newb_Bridge`. Import in each script’s `fxmanifest.lua`:
+Use the [latest release](https://github.com/MrNewb/Newb_Bridge/releases/latest), not the source zip from the main page (the UI isn't built there). Keep the folder named `Newb_Bridge`.
 
-```lua
-shared_scripts {
-    '@ox_lib/init.lua',
-    '@Newb_Bridge/import.lua',
-}
-```
-
-Leave providers on `"auto"` unless you need to pin one. Dispatch defaults to `"internal"`. Details: [Configuration](/newb_bridge/configuration), [Modules](/newb_bridge/modules).
+Leave providers on `"auto"` unless you need to pin one. Dispatch defaults to `"internal"`. Details: [Configuration](/newb_bridge/configuration), [Modules](/newb_bridge/developers/modules). Writing your own resource? See [For Developers](/newb_bridge/developers).

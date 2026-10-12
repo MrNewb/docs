@@ -38,7 +38,7 @@ Call them as `exports.MrNewbPrescriptions:Name(...)` from a server script. `src`
 | `GetInsuranceStatus(src)` | boolean | Whether they have active coverage |
 | `GetInsuranceCard(src)` | table or `nil` | Data for the insurance card view |
 | `ReturnInsuredRate(src, amount)` | number | What the patient pays after their copay. Returns `amount` unchanged when uninsured |
-| `PurchaseInsurance(src, tier)` | boolean | Buys or switches plan. `tier` is a key of `Config.Insurance.Tiers`. Charges full price, or only the difference on an upgrade. Notifies the player and returns `false` on failure |
+| `PurchaseInsurance(src, tier)` | boolean | Buys or switches plan. `tier` is a plan key from the Plans page. Charges full price, or only the difference on an upgrade. Notifies the player and returns `false` on failure |
 | `CancelInsurance(src)` | boolean | Ends coverage |
 
 ## Addiction and overdose

@@ -1,0 +1,34 @@
+---
+title: "For Developers"
+description: "Writing your own resource against the bridge, or moving one over from community_bridge."
+icon: "IconCode"
+---
+
+You only need this section if you're writing code against Newb_Bridge. Running the scripts needs nothing past [Installation](/newb_bridge/getting-started) and [Configuration](/newb_bridge/configuration).
+
+## Import the bridge
+
+Each resource that calls `bridge.*` pulls it in from its own `fxmanifest.lua`:
+
+```lua
+shared_scripts {
+    '@ox_lib/init.lua',
+    '@Newb_Bridge/import.lua',
+    -- your shared scripts
+}
+
+dependencies {
+    'ox_lib',
+    'Newb_Bridge',
+}
+```
+
+That gives your resource the global `bridge` table and the resolved `Config`. A module is loaded the first time you touch it (`bridge.inventory`, `bridge.menu`, and so on), while the host preloads every configured provider when it starts. Your resource has to start **after** Newb_Bridge, since `import.lua` errors when the bridge isn't running.
+
+## Where to go next
+
+- [Modules](/newb_bridge/developers/modules) — everything under `bridge.*`
+- [Utilities](/newb_bridge/developers/utilities) — extra exports that sit outside the modules
+- [Events](/newb_bridge/developers/events) — player load and unload hooks
+- [Resource layout](/newb_bridge/developers/resource-layout) — how to list your scripts in `fxmanifest.lua`
+- [Migrating from community_bridge](/newb_bridge/developers/migrating) — call-by-call rewrite guide

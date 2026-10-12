@@ -38,9 +38,7 @@ Names are letters only (`A-Z`). No spaces, hyphens, or apostrophes.
 bridge.inventory.addItem(src, 'namechangevoucher', 1)
 ```
 
-Item use registers at start. Don't add `server.export` or double-register the voucher. Leave `consume` off the item defs.
-
-## Open hook
+Item use registers at start. ## Open hook
 
 Override `OpenUpdatePlayerName(src, firstName, lastName)` in `resource/open/server/update.lua` for custom identity stacks. Return `true` when the live name actually updated.
 

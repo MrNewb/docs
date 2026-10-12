@@ -16,10 +16,6 @@ Copy `giftbox.png` from `[INSTALL]/` into:
 
 OX is ox_inventory (ESX and Qbox that run ox use this tab). QB is `qb-core/shared/items.lua`. one_inventory only needs the PNG in that folder. You can point extra boxes at the same `giftbox.png`.
 
-<Callout type="warning">
-  Do **not** add `server.export` on ox_inventory items. Use is registered with `bridge.framework.registerItemUse`. Omit `consume` on the item defs.
-</Callout>
-
 <Tabs items={['OX', 'QB']} storageKey="inventory-items">
 <Tab>
 

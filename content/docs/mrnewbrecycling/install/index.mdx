@@ -30,8 +30,6 @@ Start the server once. `MrNewb__Settings` is created on its own. Nothing to impo
 
 There are no custom items to paste. Seed recipes expect `phone`, `radio`, `lockpick`, `plastic`, `metalscrap`, and `copper` to already exist. Murder mode (off by default) can hand out `phone`, `radio`, `goldchain`, `rolex`, and `diamond_ring`.
 
-`configs/config.lua` and `configs/recycler.lua` are the starting values for a fresh install. Once someone saves in the panel, the database copy is what runs. Edit those files before the first start, or use Reset in the panel to load them again.
-
 Join as an admin and run `/recyclingsetup`. The page list is on [Configuration](/mrnewbrecycling/install/configuration).
 
 ### Check it [step]
@@ -49,5 +47,3 @@ Commands: [Commands](/mrnewbrecycling/install/commands). Models: [Anticheat mode
 | “That cannot be recycled” | The item needs a recipe, and that recycler’s type has to accept it |
 | Blank pictures in the panel | That item has no image in your inventory |
 | Panel will not open | You have to be an admin (framework admin or `group.admin`). Run it in game, not from the server console |
-| Edits to `configs/recycler.lua` do nothing | The saved setup took over. Reset in the panel reloads the config files |
-| `bzzz_prop_recycler_a` is missing | That model is optional and not shipped. It only shows up if another resource streams it |

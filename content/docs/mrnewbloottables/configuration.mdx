@@ -55,6 +55,6 @@ Each job **must** have `low_tier`, `mid_tier`, and `high_tier`. Each range is ro
 
 Shipped jobs: `taxi`, `bus`, `trucker`, `tow`, `garbage`, `mechanic`, `vineyard`, `hotdog`, `reporter`.
 
-The export tier names are `low`, `mid`, and `high` — not `low_tier`. Signatures: [Exports](/mrnewbloottables/exports).
+The export tier names are `low`, `mid`, and `high` — not `low_tier`.
 
 Missing job or unknown tier returns `0`. Client `GetJobPayout` uses the same arguments and caches the server's rolled values. The min/max ranges stay on the server — the client only receives the rolled amounts for that job.

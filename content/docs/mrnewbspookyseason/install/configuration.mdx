@@ -70,26 +70,3 @@ Usable `pumpkin_basket` / `rotten_casket` consume the item after a 5s progress b
 | | `id_card` | Grave / rotten casket loot (register it if your inventory does not already have it) |
 
 Paste: [Item setup](/mrnewbspookyseason/install/inventory). Icons: [Item images](/mrnewbspookyseason/install/inventory-images).
-
-Do **not** add `server.export` on ox_inventory items. Use is registered with `bridge.framework.registerItemUse`.
-
-## Layout
-
-| Path | Role |
-| --- | --- |
-| `configs/config.lua` | Shops, decorations, weather / blip toggles |
-| `configs/sv_config.lua` | Loot tables and scavenger locations (server) |
-| `resource/client/decorations.lua` | Seasonal props |
-| `resource/client/pumpkins.lua` | Pumpkin targets |
-| `resource/client/graves.lua` | Grave targets |
-| `resource/client/ghosthunt.lua` | Ghost hunts + pengu_digiscanner |
-| `resource/client/trickortreat.lua` | Door knocks |
-| `resource/client/shops.lua` | Token shop + Halloween weather |
-| `resource/client/usables.lua` | Progress bar callback for crate items |
-| `resource/open/client/weather.lua` | `OpenSpookyToggleWeatherSync` |
-| `resource/server/rewards.lua` | Loot roll + grant |
-| `resource/server/shops.lua` | Token purchases |
-| `resource/server/usables.lua` | `pumpkin_basket` / `rotten_casket` use |
-| `[INSTALL]/images/` | Item PNGs |
-
-No public exports. Labels: `locales/en.json`.

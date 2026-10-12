@@ -8,8 +8,8 @@ First step for almost anything: check the server console on start. Missing items
 
 ## The paper does not open or print
 
-- The item names must match `Config.UsableItems` and exist in your inventory. Look for "item not found" lines at start
-- The doctor's job must be in `Config.MedicalJobs`, at or above the grade floor. Otherwise they get an "invalid job" notice
+- The item names must exist in your inventory and match the ones on the Item names page of the setup panel. Look for "item not found" lines at start
+- The doctor's job must be listed under Medical jobs in the panel, at or above the grade floor. Otherwise they get an "invalid job" notice
 - A `medicalprescription` spawned from an admin menu has no metadata and does nothing. Real papers come from the pad
 - Printing a `medicalrecord` from the tablet needs the item and room in the inventory, plus the pharmacy job at the tablet's grade
 - The `/prescription` command only exists when `useItem = false` or `allowCommandWithItem = true`
@@ -65,10 +65,6 @@ Copy every PNG from `[INSTALL]/imgs/` into your inventory images folder and keep
 ## Medications do not heal with my ambulance job
 
 Med heals load automatically from `resource/open/bridge/ambulancejobs/` when that job is running. For insurance on hospital bills and clearing overdoses on revive, follow [Ambulance jobs](/mrnewbprescriptions/ambulance-jobs).
-
-## My config changes are ignored
-
-Settings saved in `/prescriptionssetup` override `configs/*.lua`. Change the value there, or press Reset to return to the files.
 
 ## Support
 

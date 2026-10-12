@@ -54,16 +54,3 @@ Duplicate a shipped tint in `ox_inventory/data/items.lua`, change the name, `lab
 | `WeaponTints.HasBeenApplied` | Tint applied (`item.label`, `weapon.label`) |
 | `WeaponTints.SerialRemoved` | Written into `metadata.serial` |
 | `WeaponTints.SerialRemovedSuccess` | Serial file succeeded (`weapon.label`) |
-
-## Layout
-
-| Path | Role |
-| --- | --- |
-| `fxmanifest.lua` | Depends on ox_lib, ox_inventory, Newb_Bridge |
-| `resource/server/weapon_items.lua` | `setweapontint` and `newbserialfile` exports |
-| `locales/*.json` | Equipped / applied / serial strings |
-| `[INSTALL]/images/` | Item PNGs (`armytint`, `goldtint`, `greentint`, `lspdtint`, `orangetint`, `pinktint`, `platinumtint`, `newbserialfile`) |
-
-On start the resource runs Newb_Bridge `VersionCheck` (`MrNewb/patchnotes`).
-
-Paste: [Item setup](/mrnewbweapontints/install/inventory). Hook signatures: [Exports](/mrnewbweapontints/exports).

@@ -1,43 +1,39 @@
 ---
 title: "FAQ"
-description: "Where the download is, which frameworks, and why Newb Bridge exists."
+description: "Frameworks, what you can edit, why Newb Bridge exists, and where to ask for help."
 icon: "IconHelp"
 ---
 
 <Accordions type="single">
-  <Accordion title="Where do I download it?">
-    Paid scripts are on [Tebex](https://mrnewbscripts.tebex.io/). Free ones are on [GitHub](https://github.com/MrNewb). The walkthrough is [Download](/getting-started/download).
+  <Accordion title="How do I get a script running?">
+    Start at [Download](/getting-started/download). It covers the artifact, where the files live, and the restart. After that, open the script on the left and go through Requirements, then Installation. Most of them want ox_lib and Newb_Bridge already running.
   </Accordion>
 
-  <Accordion title="How do I install it?">
-    Pick the script on the left. Read Requirements, then Installation. Most of them want ox_lib and Newb_Bridge already running before they start.
+  <Accordion title="Which frameworks do you support?">
+    ESX, QBCore, and Qbox. [Newb_Bridge](/newb_bridge) handles whichever one you run. If a script needs more (oxmysql, a phone), its Requirements page says so.
   </Accordion>
 
-  <Accordion title="Which frameworks?">
-    ESX, QBCore, and Qbox. [Newb_Bridge](/newb_bridge) talks to whichever one you already run. A script's Requirements page says if it needs something extra, like oxmysql or a phone.
-  </Accordion>
-
-  <Accordion title="Why'd you move to Newb Bridge?">
+  <Accordion title="Why Newb Bridge instead of community_bridge?">
     Lining up goals with other folks is hard. I tried. It just wouldn't work.
 
-    [Newb_Bridge](/newb_bridge) uses a lot less memory than community_bridge did, and it don't haul around a bunch of pieces that ain't useful for what these scripts do. If you're coming off community_bridge, the rewrite is [here](/newb_bridge/migrating).
+    [Newb_Bridge](/newb_bridge) uses a lot less memory than community_bridge did, and it don't haul around pieces these scripts never touch. Coming off community_bridge? The rewrite is [here](/newb_bridge/developers/migrating).
 
-    If ox_lib ever puts a bridge in the v2 modules they're working on, that would make everybody's life easier. I'll move to it when that ships. Until then, this is the one I run.
+    If ox_lib ships a bridge in its v2 modules, that would make everybody's life easier, and I'll move to it then. Until that happens, this is what I run.
   </Accordion>
 
-  <Accordion title="Can I read the source?">
-    The free scripts on GitHub are there to read. Paid ones like BeeKeeping keep most of the Lua locked. `configs/`, `locales/`, and `resource/open/` stay yours to edit. Some scripts don't have a `configs/` folder at all. Those keep their settings in the in-game setup panel.
+  <Accordion title="Can I read or edit the source?">
+    Free scripts on GitHub are open, so read all you want. Paid ones like BeeKeeping lock most of the Lua. `configs/`, `locales/`, and `resource/open/` stay yours to change. A few scripts have no `configs/` folder, and those keep their settings in the in-game setup panel.
   </Accordion>
 
-  <Accordion title="Do I rename the folder?">
-    No. Leave the name the docs give you. `import.lua` and escrow both look that name up.
+  <Accordion title="Can I rename the folder?">
+    No. `import.lua` and escrow both look the resource up by the name in the docs.
   </Accordion>
 
-  <Accordion title="It says Keymaster or escrow">
-    That's [Escrow](/getting-started/escrow). A live `ensure` after you drop the files in is the usual cause. Restart the server.
+  <Accordion title="I'm getting a Keymaster error">
+    Nine times out of ten the server was never fully restarted. See [Keymaster errors](/getting-started/download#keymaster-errors).
   </Accordion>
 
-  <Accordion title="I need a person">
-    [Discord](https://discord.gg/mrnewbscripts). Install questions and weird errors both belong there.
+  <Accordion title="Still stuck">
+    Ask on [Discord](https://discord.gg/mrnewbscripts). Install questions and odd errors both belong there.
   </Accordion>
 </Accordions>

@@ -14,13 +14,7 @@ The edits on this page are for the extras:
 
 Start `MrNewbPrescriptions` after your framework, inventory, and ambulance job. In every snippet below the `GetResourceState` check keeps your job working if Prescriptions is not running.
 
-Also check your config on this side:
-
-```lua
-Config.MedicalJobs = { ambulance = { minimumGrade = 0 } }
-Config.Dispatch = { jobs = { 'police' }, overdoseJobs = { 'ambulance' } }
-Config.Addiction.treatments = { hospitalTreatment = 15 }
-```
+Also check the setup panel on this side: add your ambulance job under Medical jobs, list it under the overdose dispatch jobs, and set the hospital treatment amount on the Habits page.
 
 ## qb-ambulancejob
 
@@ -120,7 +114,7 @@ Check-in and respawn beds both go through this function, so one edit covers both
 
 ```lua
 if GetResourceState('MrNewbPrescriptions') == 'started' then
-    exports.MrNewbPrescriptions:ReducePlayerAddiction(src, 15) -- match Config.Addiction.treatments.hospitalTreatment
+    exports.MrNewbPrescriptions:ReducePlayerAddiction(src, 15) -- match the hospital treatment amount in the panel
 end
 ```
 
@@ -159,16 +153,3 @@ end)
 ```
 
 Do not duplicate the addiction relief listener unless you deleted the stock file.
-
-## Handy calls
-
-| Call | Use |
-| --- | --- |
-| `ReturnInsuredRate(src, amount)` | What the patient pays after their copay |
-| `GetInsuranceStatus(src)` | Whether they have coverage |
-| `ReverseOverdose(medicSrc, patientSrc)` | Clear an overdose, with the Narkhan score reduction |
-| `ReducePlayerAddiction(src, amount)` | Hospital relief |
-| `GetPatientMedicationHistory(src)` | A bedside chart |
-| `WritePrescription({ ... })` | A discharge paper |
-
-All of them are in the [server exports](/mrnewbprescriptions/exports/server-exports).

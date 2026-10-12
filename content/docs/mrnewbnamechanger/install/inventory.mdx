@@ -22,10 +22,6 @@ Copy PNGs from `[INSTALL]/images/` into:
 
 OX is ox_inventory (ESX and Qbox that run ox use this tab). QB is `qb-core/shared/items.lua`. one_inventory only needs the PNGs in that folder.
 
-<Callout type="warning">
-  Do **not** add `server.export` on ox_inventory items. Use is registered with `bridge.framework.registerItemUse`. Omit `consume` on the item defs.
-</Callout>
-
 <Tabs items={['OX', 'QB']} storageKey="inventory-items">
 <Tab>
 

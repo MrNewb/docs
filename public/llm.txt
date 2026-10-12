@@ -12,7 +12,6 @@ This file is a machine-readable index plus the facts an assistant needs to answe
 ## How to answer from this site
 
 - Most MrNewb scripts import `@Newb_Bridge/import.lua` (global `bridge`) and start **after** `ox_lib`, the framework, inventory/target, and `Newb_Bridge`.
-- Usable items register with `bridge.framework.registerItemUse`. Do **not** add ox_inventory `server.export` except **MrNewbWeaponTints**, which is the documented exception.
 - Do **not** invent `Resource:Server:` net events or `Resource:Callback:` names. Those are internal. Public integration is exports, `resource/open/` hooks, and the events listed here.
 - Documented hook events: `Newb_Bridge:*` lifecycle / task-group / utility events, and `MrNewbNameChanger:Server:NameChanged` (`AddEventHandler` only).
 - Folder name must match the `ensure` / `exports.` name. Docs slugs are lowercase without underscores except Newb_Bridge (`/newb_bridge`). Spooky folder is `MrNewbsSpookySeason` (extra `s`); docs slug is `/mrnewbspookyseason`.
@@ -53,11 +52,11 @@ Resource folder: `Newb_Bridge`. Do not rename. Required: ox_lib, oxmysql, and th
 - [Installation](https://mrnewb.github.io/docs/newb_bridge/getting-started): start **after** framework / inventory / target; scripts that import the bridge start **after** Newb_Bridge
 - [Configuration](https://mrnewb.github.io/docs/newb_bridge/configuration): `settings/bridge_resources.lua`
 - [Supported](https://mrnewb.github.io/docs/newb_bridge/supported): provider tables (auto / manual / fallback)
-- [Resource layout](https://mrnewb.github.io/docs/newb_bridge/resource-layout)
-- [Modules](https://mrnewb.github.io/docs/newb_bridge/modules)
-- [Utilities](https://mrnewb.github.io/docs/newb_bridge/utilities): `exports.Newb_Bridge`
-- [Events](https://mrnewb.github.io/docs/newb_bridge/events)
-- [Migrating](https://mrnewb.github.io/docs/newb_bridge/migrating): community_bridge → Newb_Bridge
+- [Resource layout](https://mrnewb.github.io/docs/newb_bridge/developers/resource-layout)
+- [Modules](https://mrnewb.github.io/docs/newb_bridge/developers/modules)
+- [Utilities](https://mrnewb.github.io/docs/newb_bridge/developers/utilities): `exports.Newb_Bridge`
+- [Events](https://mrnewb.github.io/docs/newb_bridge/developers/events)
+- [Migrating](https://mrnewb.github.io/docs/newb_bridge/developers/migrating): community_bridge → Newb_Bridge
 
 ### Import and start order
 
@@ -87,21 +86,21 @@ LuaLS types: `Newb_Bridge/types/types.lua`. Server notify is `bridge.notificatio
 
 Each module has a landing page plus nested Client and Server pages.
 
-- [Framework](https://mrnewb.github.io/docs/newb_bridge/modules/framework): [client](https://mrnewb.github.io/docs/newb_bridge/modules/framework/client) · [server](https://mrnewb.github.io/docs/newb_bridge/modules/framework/server) — jobs, money, identifiers, `registerItemUse`
-- [Inventory](https://mrnewb.github.io/docs/newb_bridge/modules/inventory): [client](https://mrnewb.github.io/docs/newb_bridge/modules/inventory/client) · [server](https://mrnewb.github.io/docs/newb_bridge/modules/inventory/server) — `addItem(src, item, count, metadata, slot)`
-- [Notifications](https://mrnewb.github.io/docs/newb_bridge/modules/notifications): [client](https://mrnewb.github.io/docs/newb_bridge/modules/notifications/client) · [server](https://mrnewb.github.io/docs/newb_bridge/modules/notifications/server)
-- [Menu](https://mrnewb.github.io/docs/newb_bridge/modules/menu): [client](https://mrnewb.github.io/docs/newb_bridge/modules/menu/client) · [server](https://mrnewb.github.io/docs/newb_bridge/modules/menu/server)
-- [Inputs](https://mrnewb.github.io/docs/newb_bridge/modules/inputs): [client](https://mrnewb.github.io/docs/newb_bridge/modules/inputs/client) · [server](https://mrnewb.github.io/docs/newb_bridge/modules/inputs/server)
-- [Progress bar](https://mrnewb.github.io/docs/newb_bridge/modules/progressbar): [client](https://mrnewb.github.io/docs/newb_bridge/modules/progressbar/client) · [server](https://mrnewb.github.io/docs/newb_bridge/modules/progressbar/server)
-- [Text UI](https://mrnewb.github.io/docs/newb_bridge/modules/textui): [client](https://mrnewb.github.io/docs/newb_bridge/modules/textui/client) · [server](https://mrnewb.github.io/docs/newb_bridge/modules/textui/server)
-- [Target](https://mrnewb.github.io/docs/newb_bridge/modules/target): [client](https://mrnewb.github.io/docs/newb_bridge/modules/target/client) · [server](https://mrnewb.github.io/docs/newb_bridge/modules/target/server)
-- [Vehicle keys](https://mrnewb.github.io/docs/newb_bridge/modules/vehiclekeys): [client](https://mrnewb.github.io/docs/newb_bridge/modules/vehiclekeys/client) · [server](https://mrnewb.github.io/docs/newb_bridge/modules/vehiclekeys/server)
-- [Vehicle fuel](https://mrnewb.github.io/docs/newb_bridge/modules/vehiclefuel): [client](https://mrnewb.github.io/docs/newb_bridge/modules/vehiclefuel/client) · [server](https://mrnewb.github.io/docs/newb_bridge/modules/vehiclefuel/server)
-- [Boss menu](https://mrnewb.github.io/docs/newb_bridge/modules/bossmenu): [client](https://mrnewb.github.io/docs/newb_bridge/modules/bossmenu/client) · [server](https://mrnewb.github.io/docs/newb_bridge/modules/bossmenu/server)
-- [Dispatch](https://mrnewb.github.io/docs/newb_bridge/modules/dispatch): [client](https://mrnewb.github.io/docs/newb_bridge/modules/dispatch/client) · [server](https://mrnewb.github.io/docs/newb_bridge/modules/dispatch/server)
-- [Dialogue](https://mrnewb.github.io/docs/newb_bridge/modules/dialogue): [client](https://mrnewb.github.io/docs/newb_bridge/modules/dialogue/client) · [server](https://mrnewb.github.io/docs/newb_bridge/modules/dialogue/server)
-- [Task groups](https://mrnewb.github.io/docs/newb_bridge/modules/taskgroups): [client](https://mrnewb.github.io/docs/newb_bridge/modules/taskgroups/client) · [server](https://mrnewb.github.io/docs/newb_bridge/modules/taskgroups/server)
-- [Task HUD](https://mrnewb.github.io/docs/newb_bridge/modules/task): [client](https://mrnewb.github.io/docs/newb_bridge/modules/task/client) · [server](https://mrnewb.github.io/docs/newb_bridge/modules/task/server) — WIP
+- [Framework](https://mrnewb.github.io/docs/newb_bridge/developers/modules/framework): [client](https://mrnewb.github.io/docs/newb_bridge/developers/modules/framework/client) · [server](https://mrnewb.github.io/docs/newb_bridge/developers/modules/framework/server) — jobs, money, identifiers, `registerItemUse`
+- [Inventory](https://mrnewb.github.io/docs/newb_bridge/developers/modules/inventory): [client](https://mrnewb.github.io/docs/newb_bridge/developers/modules/inventory/client) · [server](https://mrnewb.github.io/docs/newb_bridge/developers/modules/inventory/server) — `addItem(src, item, count, metadata, slot)`
+- [Notifications](https://mrnewb.github.io/docs/newb_bridge/developers/modules/notifications): [client](https://mrnewb.github.io/docs/newb_bridge/developers/modules/notifications/client) · [server](https://mrnewb.github.io/docs/newb_bridge/developers/modules/notifications/server)
+- [Menu](https://mrnewb.github.io/docs/newb_bridge/developers/modules/menu): [client](https://mrnewb.github.io/docs/newb_bridge/developers/modules/menu/client) · [server](https://mrnewb.github.io/docs/newb_bridge/developers/modules/menu/server)
+- [Inputs](https://mrnewb.github.io/docs/newb_bridge/developers/modules/inputs): [client](https://mrnewb.github.io/docs/newb_bridge/developers/modules/inputs/client) · [server](https://mrnewb.github.io/docs/newb_bridge/developers/modules/inputs/server)
+- [Progress bar](https://mrnewb.github.io/docs/newb_bridge/developers/modules/progressbar): [client](https://mrnewb.github.io/docs/newb_bridge/developers/modules/progressbar/client) · [server](https://mrnewb.github.io/docs/newb_bridge/developers/modules/progressbar/server)
+- [Text UI](https://mrnewb.github.io/docs/newb_bridge/developers/modules/textui): [client](https://mrnewb.github.io/docs/newb_bridge/developers/modules/textui/client) · [server](https://mrnewb.github.io/docs/newb_bridge/developers/modules/textui/server)
+- [Target](https://mrnewb.github.io/docs/newb_bridge/developers/modules/target): [client](https://mrnewb.github.io/docs/newb_bridge/developers/modules/target/client) · [server](https://mrnewb.github.io/docs/newb_bridge/developers/modules/target/server)
+- [Vehicle keys](https://mrnewb.github.io/docs/newb_bridge/developers/modules/vehiclekeys): [client](https://mrnewb.github.io/docs/newb_bridge/developers/modules/vehiclekeys/client) · [server](https://mrnewb.github.io/docs/newb_bridge/developers/modules/vehiclekeys/server)
+- [Vehicle fuel](https://mrnewb.github.io/docs/newb_bridge/developers/modules/vehiclefuel): [client](https://mrnewb.github.io/docs/newb_bridge/developers/modules/vehiclefuel/client) · [server](https://mrnewb.github.io/docs/newb_bridge/developers/modules/vehiclefuel/server)
+- [Boss menu](https://mrnewb.github.io/docs/newb_bridge/developers/modules/bossmenu): [client](https://mrnewb.github.io/docs/newb_bridge/developers/modules/bossmenu/client) · [server](https://mrnewb.github.io/docs/newb_bridge/developers/modules/bossmenu/server)
+- [Dispatch](https://mrnewb.github.io/docs/newb_bridge/developers/modules/dispatch): [client](https://mrnewb.github.io/docs/newb_bridge/developers/modules/dispatch/client) · [server](https://mrnewb.github.io/docs/newb_bridge/developers/modules/dispatch/server)
+- [Dialogue](https://mrnewb.github.io/docs/newb_bridge/developers/modules/dialogue): [client](https://mrnewb.github.io/docs/newb_bridge/developers/modules/dialogue/client) · [server](https://mrnewb.github.io/docs/newb_bridge/developers/modules/dialogue/server)
+- [Task groups](https://mrnewb.github.io/docs/newb_bridge/developers/modules/taskgroups): [client](https://mrnewb.github.io/docs/newb_bridge/developers/modules/taskgroups/client) · [server](https://mrnewb.github.io/docs/newb_bridge/developers/modules/taskgroups/server)
+- [Task HUD](https://mrnewb.github.io/docs/newb_bridge/developers/modules/task): [client](https://mrnewb.github.io/docs/newb_bridge/developers/modules/task/client) · [server](https://mrnewb.github.io/docs/newb_bridge/developers/modules/task/server) — WIP
 
 ### exports.Newb_Bridge
 
@@ -141,7 +140,7 @@ Do not re-register `Newb_Bridge:client:notify` if you already call `bridge.notif
 
 ## BeeKeeping (`MrNewbBeeKeeping`)
 
-Place hives, queens/workers, regional honey, honey separator, shop, wild swarms. Needs Newb_Bridge, ox_lib, oxmysql, inventory. No `configs/` folder. Settings are `/hivesetup` saved to `MrNewb__Settings`. An **open** hive does not tick. 18 items. Props in `stream/` (`mrnewb_beekeeping.ytyp`).
+Place hives, queens/workers, regional honey, honey separator, shop, wild swarms. Needs Newb_Bridge, ox_lib, oxmysql, inventory. Settings are in the `/hivesetup` panel. An **open** hive does not tick. 18 items. Props in `stream/` (`mrnewb_beekeeping.ytyp`).
 
 - [Landing](https://mrnewb.github.io/docs/mrnewbbeekeeping)
 - [Install](https://mrnewb.github.io/docs/mrnewbbeekeeping/install)
@@ -187,7 +186,7 @@ Pocket pet. Usable `digital_pet` (metadata). Newb_Bridge, ox_lib. No oxmysql. No
 
 ## VehicleKeys (`MrNewbVehicleKeys`)
 
-Vehicle keys, locks, hotwiring, lockpicking, key fob, locksmith, tracker. Newb_Bridge, ox_lib, oxmysql. No config file. `/vehiclekeyssetup` edits `MrNewb__Settings` (seeded from `resource/shared/seed/` on first boot). Shipped `provide 'qbx_vehiclekeys'`. Item keys by default. ox keyring needs `consume = 0` and ox_inventory started first.
+Vehicle keys, locks, hotwiring, lockpicking, key fob, locksmith, tracker. Newb_Bridge, ox_lib, oxmysql. Settings are in the `/vehiclekeyssetup` panel. Shipped `provide 'qbx_vehiclekeys'`. Item keys by default.
 
 - [Landing](https://mrnewb.github.io/docs/mrnewbvehiclekeys)
 - [Install](https://mrnewb.github.io/docs/mrnewbvehiclekeys/install)
@@ -202,14 +201,14 @@ Do not build on `MrNewbVehicleKeys:Client:*` / `:Server:*`. Compatibility events
 
 ## Recycling (`MrNewb_Recycling`)
 
-Scrap recyclers. Newb_Bridge, ox_lib, oxmysql. No custom items. `/recyclingsetup` (admin or `group.admin`). Seed files `configs/config.lua` and `configs/recycler.lua` until the first panel save, then `MrNewb__Settings`. Open distance is fixed at 4.0. Murder mode is off by default.
+Scrap recyclers. Newb_Bridge, ox_lib, oxmysql. No custom items. `/recyclingsetup` (admin or `group.admin`). Settings are in the panel. Open distance is fixed at 4.0. Murder mode is off by default.
 
 - [Landing](https://mrnewb.github.io/docs/mrnewbrecycling)
 - [Install](https://mrnewb.github.io/docs/mrnewbrecycling/install)
 - [Commands](https://mrnewb.github.io/docs/mrnewbrecycling/install/commands): `/recyclingsetup`, `/staffdebug` (Debug on)
 - [Configuration](https://mrnewb.github.io/docs/mrnewbrecycling/install/configuration)
 - [Exports](https://mrnewb.github.io/docs/mrnewbrecycling/exports): client `SetRecyclerRunning(entity, running)`. `GlobalState.recyclingRunning`
-- [Anticheat models](https://mrnewb.github.io/docs/mrnewbrecycling/anticheat): `mrnewb_recycler`, `mrnewb_recycler_post`, `mrnewb_recycler_rotor_a`, `mrnewb_recycler_rotor_b`. Archetype `stream/mrnewb_recycler.ytyp`. `bzzz_prop_recycler_a` is not shipped.
+- [Anticheat models](https://mrnewb.github.io/docs/mrnewbrecycling/anticheat): `mrnewb_recycler`, `mrnewb_recycler_post`, `mrnewb_recycler_rotor_a`, `mrnewb_recycler_rotor_b`. Archetype `stream/mrnewb_recycler.ytyp`.
 
 ## Prescriptions (`MrNewbPrescriptions`)
 
@@ -270,7 +269,7 @@ Fires after voucher, filled certificate, clerk, or `ChangePlayerName`. Local ser
 
 ## Organics (`MrNewbOrganics`)
 
-Picking + farmers market. One config: `configs/config.lua`. **No public exports.** Bank payouts. Items must exist for every `rewardItem.item` and market `shopItems` key.
+Picking + farmers market. One config: `configs/config.lua`. Bank payouts. Items must exist for every `rewardItem.item` and market `shopItems` key.
 
 - [Landing](https://mrnewb.github.io/docs/mrnewborganics)
 - [Install](https://mrnewb.github.io/docs/mrnewborganics/install)
@@ -342,7 +341,7 @@ No public exports. Agency table key is the location id written onto paperwork. `
 
 ## WeaponTints (`MrNewbWeaponTints`)
 
-**Exception:** ox_inventory `server.export` is required. ox_inventory only — no QB item tab. Folder name must stay `MrNewbWeaponTints`. No config file. No commands. Exports exist for ox_inventory, not as a public API for other resources.
+ox_inventory only — no QB item tab. Folder name must stay `MrNewbWeaponTints`. No config file. No commands. Exports exist for ox_inventory, not as a public API for other resources.
 
 - [Landing](https://mrnewb.github.io/docs/mrnewbweapontints)
 - [Install](https://mrnewb.github.io/docs/mrnewbweapontints/install)

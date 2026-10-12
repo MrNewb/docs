@@ -152,18 +152,6 @@ Not usable. Skip names you already have; copy PNGs if you want this art.
 
 Paste: [Item setup](/mrnewbpawn/install/inventory). Icons: [Item images](/mrnewbpawn/install/inventory-images).
 
-## Layout
-
-| Path | Role |
-| --- | --- |
-| `configs/config.lua` | Shops, markup, foundry boxes, recipes |
-| `resource/client/shops.lua` | Peds, blips, sell / buy menus |
-| `resource/client/foundry.lua` | Target box zones, melt menu, lerp prop |
-| `resource/client/debug.lua` | Debug rebuild on resource start |
-| `resource/server/shops.lua` | Sell / buy; distance **6.0** from shop `position` |
-| `resource/server/foundry.lua` | Smelt; distance **10.0** from `Zone.coords` |
-| `[INSTALL]/images/` | Item PNGs |
-
 ## Player flows
 
 **Sell** — target the ped, pick an `itemlist` row, choose a count (max **100**), 3s progress + handoff anim, cash payout. Server requires within **6.0** of `position`.
@@ -172,4 +160,3 @@ Paste: [Item setup](/mrnewbpawn/install/inventory). Icons: [Item images](/mrnewb
 
 **Smelt** — target the foundry **box zone**, pick a recipe, choose a count (max 50), progress, input removed and rewards added (counts × batch). Server requires within **10.0** of `Zone.coords`.
 
-No exports and no commands.

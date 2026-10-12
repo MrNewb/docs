@@ -1,14 +1,10 @@
 ---
 title: "Configuration"
-description: "Prescriptions is set up in /prescriptionssetup. The config files are the factory defaults."
+description: "Prescriptions is set up in the /prescriptionssetup panel."
 icon: "IconSettings"
 ---
 
 Run `/prescriptionssetup` as an admin. A short guide plays the first time. **Save** writes everything to the database and applies it live for every player. **Reset** goes back to the defaults.
-
-<Callout type="warning">
-  Once an admin saves in the panel, those settings live in the database (`MrNewb__Settings`) and win over `configs/*.lua`. Pick one place to edit. If you change the file and nothing happens, that is why.
-</Callout>
 
 ## The panel
 
@@ -24,9 +20,9 @@ Stations are placed with an on-screen tool. Stand where you want the point and c
 
 ## Two kinds of pharmacy
 
-**Player-run** (has a `Job` block). Staff clock in, bottle at the bench, ring customers up at the register, and order stock from the tablet. Sales go into the job's society account.
+**Player-run** (has a job set). Staff clock in, bottle at the bench, ring customers up at the register, and order stock from the tablet. Sales go into the job's society account.
 
-**NPC** (no `Job` block). A pharmacist ped fills a script when the patient brings the paper. The ped steps aside while real staff are on duty, which you can switch off. Sales are split equally between the jobs in `NonPlayerPharmacyPayoutJobs`.
+**NPC** (no job set). A pharmacist ped fills a script when the patient brings the paper. The ped steps aside while real staff are on duty, which you can switch off. Sales are split equally between the jobs set as NPC payout jobs.
 
 You need to be clocked in to use the register, run supplies, or press the panic button. Bottling only needs the job and a spot at the bench.
 
@@ -38,21 +34,21 @@ Grouped the way you will think about them.
 
 | Setting | Plain English |
 | --- | --- |
-| `UsableItems` | The item names the script listens for: pad, paper, record, blank paper |
-| `PrescriptionPad` | Whether using the pad opens the form, and the optional `/prescription` command |
-| `PrescriptionPaper` | Expiry in days (180), refills, days of supply per fill, partial fills, and the clinic header lines |
-| `DoctorRecords.maxPerDoctor` | How many scripts each doctor keeps in their history. Oldest are dropped past this |
-| `MedicalJobs` | Which jobs can write scripts, and from what grade |
+| Item names | The item names the script listens for: pad, paper, record, blank paper |
+| Prescription pad | Whether using the pad opens the form, and the optional `/prescription` command |
+| Prescription paper | Expiry in days (180), refills, days of supply per fill, partial fills, and the clinic header lines |
+| Doctor history | How many scripts each doctor keeps in their history. Oldest are dropped past this |
+| Medical jobs | Which jobs can write scripts, and from what grade |
 
 ### Money
 
 | Setting | Plain English |
 | --- | --- |
-| `PharmacyEconomy` | Which account the patient is charged from, whether the sale goes into the society, an optional employee tip percent, and a hard cap on any single bill |
-| `SupplyOrder` | The price per item on a supply run (default 50), and the max units per order (30). Add `prices` for specific items |
-| `Insurance` | On or off, the provider, the card item, renewal days, and the plans |
+| Pharmacy economy | Which account the patient is charged from, whether the sale goes into the society, an optional employee tip percent, and a hard cap on any single bill |
+| Supply orders | The price per item on a supply run (default 50), and the max units per order (30). You can also set prices for specific items |
+| Insurance | On or off, the provider, the card item, renewal days, and the plans |
 
-**Insurance providers.** `builtin` keeps everything in this resource. `m-insurance` hands it to the m-Insurance resource through a bridge file. `custom` is a file you fill in yourself. Both live in `resource/open/bridge/insurance/`. Insurance only lowers a bill when a **medication** is picked at the register. A general charge is full price.
+**Insurance providers.** `builtin` keeps everything in this resource. `m-insurance` hands it to the m-Insurance resource through a bridge file. `custom` is a file you fill in yourself. Insurance only lowers a bill when a **medication** is picked at the register. A general charge is full price.
 
 The default plans:
 
@@ -66,18 +62,18 @@ The default plans:
 
 | Setting | Plain English |
 | --- | --- |
-| `Shoplifting` | Master switch, how long a shelf stays empty (2 hours), the per-player cooldown, odds of getting something, odds of police being called, and the loot pool. Each pharmacy can override any of it |
-| `Forgery` | The underground desk. Allow altering real scripts, allow blank fakes, how convincing a fake can get (capped at 70%), the chance a blank forge fails, and whether NPC pharmacies accept unverified fakes |
+| Shoplifting | Master switch, how long a shelf stays empty (2 hours), the per-player cooldown, odds of getting something, odds of police being called, and the loot pool. Each pharmacy can override any of it |
+| Forgery | The underground desk. Allow altering real scripts, allow blank fakes, how convincing a fake can get (capped at 70%), the chance a blank forge fails, and whether NPC pharmacies accept unverified fakes |
 
 ### Medicine and habits
 
 | Setting | Plain English |
 | --- | --- |
-| `Effects` | How the overdose plays out, and the strength and dose ranges when bottling |
-| `Addiction` | Everything about getting hooked: see below |
-| `Envious` | The cough syrup shot: item names, sips, how long the high lasts, and what happens when you overdo it |
-| `Bottling` | How many pills in the minigame, the animations, and the seal step |
-| `PatientHistory` | The `/mymedication` chart and the sharing distance and timeouts |
+| Effects | How the overdose plays out, and the strength and dose ranges when bottling |
+| Addiction | Everything about getting hooked: see below |
+| Envious shots | The cough syrup shot: item names, sips, how long the high lasts, and what happens when you overdo it |
+| Bottling | How many pills in the minigame, the animations, and the seal step |
+| Patient history | The `/mymedication` chart and the sharing distance and timeouts |
 
 ### Addiction in a nutshell
 
@@ -85,49 +81,37 @@ Each tracked use adds to a 0 to 100 score. Cross the "addicted" line (25 by defa
 
 Use too much too fast and they overdose. By default that is four tracked uses inside three minutes. The overdose plays out in stages, with hallucinations in the late ones. Another player can bring them back with Narkhan spray, and hospital treatment and yoga also knock the score down.
 
-Every medication in your catalog is tracked automatically. You can skip one (`pillboxpatch = false`) or give it its own thresholds, and add street drugs like `oxy` or `cokebaggy`. Other scripts can read `Player(src).state.ndrugaddiction`.
+Every medication in your catalog is tracked automatically. You can skip one or give it its own thresholds, and add street drugs like `oxy` or `cokebaggy`. Other scripts can read `Player(src).state.ndrugaddiction`.
 
 ### Behaviour
 
 | Setting | Plain English |
 | --- | --- |
-| `Utility.Prompt` | How players interact: `target`, `drawtext`, or `helptext` |
-| `Utility.Debug` | Extra console spam. Leave it off. With it on, the duty check is skipped |
-| `Test*Command` flags | Test commands. All off for a live server. See [Commands](/mrnewbprescriptions/install/commands) |
-| `PharmacyNpc` | Hide the NPC pharmacist while staff are on duty |
-| `MedicationHooks` | Run the stubs in `resource/open/server/medication_hooks.lua` |
+| Prompt style | How players interact: `target`, `drawtext`, or `helptext` |
+| Debug | Extra console spam. Leave it off. With it on, the duty check is skipped |
+| Test commands | Test commands. All off for a live server. See [Commands](/mrnewbprescriptions/install/commands) |
+| NPC pharmacist | Hide the NPC pharmacist while staff are on duty |
+| Medication hooks | Run the stubs in `resource/open/server/medication_hooks.lua` |
 
 ## Adding a pharmacy
 
-Pharmacy layouts are files in `configs/pharmacies/`. Each one only loads when its MLO resource is running (`kiiya_pillbox` for `kiyaa.lua`, `moreo_pharmacy` for `moreos.lua`).
+Open the **Shops** page and add one.
 
-To add one:
+1. Set its location and the ped
+2. Give it a job to make it player-run, or leave the job empty for an NPC store
+3. Place the stations: clock-in, register, bottling bench, boss menu, and panic button
+4. Add shoplifting zones for any shelves you want players to be able to search
 
-1. Copy an existing file and change the id and coordinates
-2. Remove the `GetResourceState` line if your MLO has a different resource name
-3. Add a `Job` block to make it player-run, or leave it out for an NPC store
-4. Add `Shoplifting` zones for the shelves you want players to be able to search
-
-The ped's `radius` is how far away it spawns, not how close you have to be to use it.
+The ped's radius is how far away it spawns, not how close you have to be to use it.
 
 ## Medications
 
-The catalog is `configs/prescriptions.lua`, or the **The meds** page in the panel. Each medication has a name, the number of uses per bottle, the most doses a script can be written for, a price, an icon, an effect, a duration, and a recipe made of stock-room ingredients. Adding your own is covered in [Medications and effects](/mrnewbprescriptions/effects).
+The catalog lives on the **The meds** page. Each medication has a name, the number of uses per bottle, the most doses a script can be written for, a price, an icon, an effect, a duration, and a recipe made of stock-room ingredients. Adding your own is covered in [Medications and effects](/mrnewbprescriptions/effects).
 
 ## Supply runs
 
-Stops are in `configs/job_pickups.lua`. Each is a set of crate props at a location. It is server-only, so players never see the coordinates. The sample stops are the Elysian Island docks, a NOOSE yard, the Cypress Flats yard, and Humane Labs. Move them anywhere you like.
+Stops are on the **Supply stops** page. Each is a set of crate props at a location. They stay on the server, so players never see the coordinates. The sample stops are the Elysian Island docks, a NOOSE yard, the Cypress Flats yard, and Humane Labs. Move them anywhere you like.
 
 ## Languages
 
 Text lives in `locales/en.json` and loads through ox_lib. For another language, copy `en.json` to `<code>.json`, translate the values, keep **every** key, and set `setr ox:locale "<code>"` in `server.cfg`. A missing key shows up as raw text on screen. The web panels use the `Ui.*` keys.
-
-## Files
-
-| File | Where | Purpose |
-| --- | --- | --- |
-| `configs/config.lua` | shared | Everything above except the catalog and stores |
-| `configs/prescriptions.lua` | shared | The medication catalog |
-| `configs/pharmacies/*.lua` | shared | One file per store |
-| `configs/job_pickups.lua` | server only | Supply-run stops |
-| `resource/open/` | both | Hooks you can edit in place: logging, custom effects, insurance and banking bridges, ambulance bridges |

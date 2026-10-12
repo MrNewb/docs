@@ -1,12 +1,12 @@
 ---
 title: "Configuration"
-description: "DigitalPets settings live in /digitalpetssetup. configs/config.lua is only the factory seed."
+description: "DigitalPets settings live in /digitalpetssetup."
 icon: "IconSettings"
 ---
 
 Run `/digitalpetssetup` as an admin. That panel is where you tune everything, and **Save** applies it to every player straight away.
 
-`configs/config.lua` is just the starting copy. The first time the server boots, those values are copied into the database (`MrNewb__Settings`). After that the saved copy wins, so editing the file on a server that has already saved does nothing. Use **Reset** in the panel if you want the file's values back.
+Use **Reset** in the panel if you want the defaults back.
 
 ## The panel
 
@@ -68,7 +68,7 @@ Players have no commands. They just use the item.
 
 ## Giving pets from other scripts
 
-There are no exports. A pet is just an item, so add it the way you would add any other.
+A pet is just an item, so add it the way you would add any other.
 
 ```lua
 -- inventory agnostic, through Newb_Bridge
@@ -81,16 +81,3 @@ exports.ox_inventory:AddItem(source, 'digital_pet', 1)
 It arrives as an egg and hatches after `HatchMinutes`. You can sell it in any shop script, hand it out as a job reward, or drop it in loot like a normal item.
 
 Events and callbacks that start with `MrNewbDigitalPets:` are the UI talking to the server. Do not build on them.
-
-## Layout
-
-| Path | Role |
-| --- | --- |
-| `configs/config.lua` | Factory seed for the settings |
-| `resource/server/` | Item use, pet actions, saving, and the setup panel backend |
-| `resource/client/` | The toy, the handheld prop, pedometer, outings, and the setup panel |
-| `resource/shared/` | Species, foods, drinks, shop, fortunes, and pet state |
-| `locales/en.json` | Notification text |
-| `stream/` | Handheld prop. Leave it in the resource |
-| `web/build/` | The built UI. Do not point `ui_page` at `web/src` |
-| `[INSTALL]/` | Item paste files and the icon |

@@ -34,14 +34,14 @@ If you rename the job, say to `moreos`, change it in your framework **and** on e
 
 | Setting | What it gates |
 | --- | --- |
-| `Config.MedicalJobs` | Who can use the prescription pad. `ambulance = { minimumGrade = 0 }`, or `ambulance = true` for any grade |
-| `Config.Permissions.pharmacy` | Clocking in, the register, supply runs, and bottling |
-| `Config.Permissions.pharmacyPanel` | The pharmacy tablet: search, print, flag, revoke |
-| `Config.Dispatch.jobs` | Who gets pinged for the panic button, forged sheets, and shoplifting |
-| `Config.Dispatch.overdoseJobs` | Who gets pinged for overdoses. `false` keeps them quiet |
+| Medical jobs | Who can use the prescription pad. `ambulance = { minimumGrade = 0 }`, or `ambulance = true` for any grade |
+| Pharmacy permission | Clocking in, the register, supply runs, and bottling |
+| Pharmacy tablet permission | The pharmacy tablet: search, print, flag, revoke |
+| Dispatch jobs | Who gets pinged for the panic button, forged sheets, and shoplifting |
+| Overdose dispatch jobs | Who gets pinged for overdoses. `false` keeps them quiet |
 
 Each permission is a minimum grade, with `0` as the lowest. Admin access to `/prescriptionssetup` comes from the framework admin check in Newb_Bridge.
 
 ## No player pharmacy?
 
-Leave the `Job` block out. That pharmacy becomes an NPC pharmacist who fills scripts when patients bring the paper. Sales are split between the jobs in `NonPlayerPharmacyPayoutJobs`, equally.
+Leave the job empty on the Shops page. That pharmacy becomes an NPC pharmacist who fills scripts when patients bring the paper. Sales are split between the NPC payout jobs, equally.

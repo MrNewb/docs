@@ -2,9 +2,8 @@
   "title": "Getting Started",
   "icon": "IconFlag",
   "pages": [
+    "faq",
     "download",
-    "updating",
-    "escrow",
-    "faq"
+    "updating"
   ]
 }

@@ -1,0 +1,116 @@
+---
+title: "Client"
+description: "Inventory (client). Local player reads. Add/remove, stashes, shops, and hooks live on server. Shared types: Inventory."
+---
+
+# Inventory (client)
+
+Local player reads. Add/remove, stashes, shops, and hooks live on [server](/newb_bridge/developers/modules/inventory/server). Shared types: [Inventory](/newb_bridge/developers/modules/inventory).
+
+## `Items(itemName?)`
+
+```lua
+Items(itemName)
+```
+
+| Param | Type | Description |
+| ----- | ---- | ----------- |
+| `itemName` | `string?` | Omit for all item definitions keyed by name |
+
+| **Returns** | one [ItemDefinition](/newb_bridge/developers/modules/inventory#itemdefinition), or the full list keyed by name |
+
+### Usage Example
+
+```lua
+local water = bridge.inventory.Items('water')
+local allItems = bridge.inventory.Items()
+```
+
+## `hasItem(item, count?, metadata?)`
+
+```lua
+if bridge.inventory.hasItem('lockpick', 1) then end
+```
+
+| Param | Type | Default |
+| ----- | ---- | ------- |
+| `item` | `string` | — |
+| `count` | `number?` | `1` |
+| `metadata` | `table?` | — |
+
+| **Returns** | `boolean` |
+
+## `getImagePath(itemName)`
+
+```lua
+local icon = bridge.inventory.getImagePath('water')
+```
+
+| Param | Type |
+| ----- | ---- |
+| `itemName` | `string` |
+
+| **Returns** | `string` — NUI icon path |
+
+## `getItemInfo(itemName)`
+
+```lua
+getItemInfo(itemName)
+```
+
+| Param | Type |
+| ----- | ---- |
+| `itemName` | `string` |
+
+| **Returns** | [BridgeItemInfo](/newb_bridge/developers/modules/inventory#bridgeiteminfo) — ox-shaped definition plus a resolved `image` path |
+
+### Usage Example
+
+```lua
+local info = bridge.inventory.getItemInfo('water')
+print(info.label, info.image, info.weight)
+```
+
+## `getItemCount(item, metadata?)`
+
+```lua
+local count = bridge.inventory.getItemCount('water')
+```
+
+| Param | Type |
+| ----- | ---- |
+| `item` | `string` |
+| `metadata` | `table?` |
+
+| **Returns** | `number` |
+
+## `getInventoryItems()`
+
+```lua
+local items = bridge.inventory.getInventoryItems()
+```
+
+| **Returns** | occupied slots — slot-keyed map on ox / m-Inventory / one_inventory; sorted array on other adapters. Iterate with `pairs`. |
+
+## Examples
+
+```lua
+-- Show craft option only when player has materials
+if bridge.inventory.hasItem('steel', 2) and bridge.inventory.hasItem('plastic', 1) then
+    options[#options + 1] = {
+        title = 'Craft plate carrier',
+        onSelect = function()
+            TriggerServerEvent('myresource:craftPlateCarrier')
+        end,
+    }
+end
+
+-- Menu icon from bridge image path
+local icon = bridge.inventory.getImagePath('bandage')
+
+-- Iterate local inventory (ox-shaped slots). Use pairs: ox keys by slot number.
+local items = bridge.inventory.getInventoryItems()
+for _, slot in pairs(items) do
+    print(slot.slot, slot.name, slot.count, json.encode(slot.metadata))
+end
+```

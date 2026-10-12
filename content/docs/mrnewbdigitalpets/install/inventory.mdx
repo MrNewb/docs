@@ -1,10 +1,10 @@
 ---
 title: "Item setup"
-description: "Items for DigitalPets. One item. The name must match Config.Item (digital_pet)."
+description: "Items for DigitalPets. One item. The item name is digital_pet."
 icon: "IconPackage"
 ---
 
-One item. The name must match `Config.Item` (`digital_pet`).
+One item, `digital_pet`.
 
 | Item | Label |
 | --- | --- |
@@ -19,10 +19,6 @@ Copy `digital_pet.png` from `[INSTALL]/imgs/` into:
 | one_inventory | `one_inventory/web/images/` |
 
 OX is ox_inventory (ESX and Qbox that run ox use this tab). QB is `qb-core/shared/items.lua`. one_inventory only needs the PNG in that folder.
-
-<Callout type="warning">
-  Do **not** add `server.export` on ox_inventory items. Use is registered with `bridge.framework.registerItemUse`. Omit `consume`. `stack` / `unique` must stay off stacking — each Digital Pet has its own metadata.
-</Callout>
 
 <Tabs items={['OX', 'QB']} storageKey="inventory-items">
 <Tab>
