@@ -46,13 +46,13 @@ Provider names and check order: [Supported](/newb_bridge/supported).
 
 ## Locales
 
-Not a `Config` key. Set the ox_lib convar in `server.cfg`:
+Newb_Bridge reads the locale ox_lib is already using, so there's nothing to set per script and no locale option of its own. Set `ox:locale` once in `server.cfg` and every resource that uses the bridge follows it:
 
 ```cfg
 setr ox:locale en
 ```
 
-Shipped files live in `locales/`. Missing codes fall back to `en`. Full list: [Supported](/newb_bridge/supported#locales).
+Missing codes fall back to `en`. Full list: [Supported](/newb_bridge/supported#locales).
 
 ## Configuration examples
 
@@ -67,18 +67,3 @@ Config.Framework = "qbx_core"
 Config.Target = "ox_target"
 Config.Notifications = "ox_lib"
 ```
-
-### Debug which providers loaded
-
-```lua
--- Server or client after bridge import
-print('Framework:', Config.Framework, Config.Providers.framework)
-print('Inventory:', Config.Inventory, Config.Providers.inventory)
-print(bridge.framework.getResourceName(), bridge.inventory.getResourceName())
-```
-
-The host also prints a one-time `detected scripts:` block to the server console on start.
-
-## IDE support
-
-Full LuaLS types live in `Newb_Bridge/types/types.lua`. Point your language server at the bridge resource for autocomplete on `bridge.*`.

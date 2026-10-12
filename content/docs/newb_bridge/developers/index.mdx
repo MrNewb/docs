@@ -25,6 +25,21 @@ dependencies {
 
 That gives your resource the global `bridge` table and the resolved `Config`. A module is loaded the first time you touch it (`bridge.inventory`, `bridge.menu`, and so on), while the host preloads every configured provider when it starts. Your resource has to start **after** Newb_Bridge, since `import.lua` errors when the bridge isn't running.
 
+## Debug which providers loaded
+
+```lua
+-- Server or client after bridge import
+print('Framework:', Config.Framework, Config.Providers.framework)
+print('Inventory:', Config.Inventory, Config.Providers.inventory)
+print(bridge.framework.getResourceName(), bridge.inventory.getResourceName())
+```
+
+The host also prints a one-time `detected scripts:` block to the server console on start.
+
+## IDE support
+
+Full LuaLS types live in `Newb_Bridge/types/types.lua`. Point your language server at the bridge resource for autocomplete on `bridge.*`.
+
 ## Where to go next
 
 - [Modules](/newb_bridge/developers/modules) — everything under `bridge.*`
