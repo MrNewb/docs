@@ -1,0 +1,33 @@
+---
+title: "Phones"
+description: "Phone scripts PhoneTracker can talk to, and how each one finds a number."
+icon: "IconDeviceMobile"
+---
+
+On start, the script walks this adapter table and keeps the **first** name whose `GetResourceState` is `started`:
+
+| Resource name | How it resolves a number |
+| --- | --- |
+| `gksphone` | Loop online players; `exports['gksphone']:GetPhoneBySource(playerId)` |
+| `lb-phone` | `exports['lb-phone']:GetSourceFromNumber(phoneNumber)` |
+| `NPWD` | Loop online players; `exports.npwd.getPlayerData({ source }).phoneNumber` |
+| `okokPhone` | Loop online players; `exports.okokPhone:getPhoneNumberFromSource(playerId)` |
+| `qs-smartphone` | Loop online players; `exports['qs-base']:GetPlayerPhone(playerId)` |
+| `qb-phone` | `OpenFindSourceByCharPhone(phoneNumber)` |
+| `qs-smartphone-pro` | Loop online players; `exports['qs-smartphone-pro']:GetPhoneNumberFromIdentifier(identifier, false)` |
+| `roadphone` | `exports['roadphone']:getPlayerFromPhone(phoneNumber)` → `.source` |
+| `yseries` | Loop online players; `exports.yseries:GetPhoneNumberBySourceId(playerId)` |
+
+Adapters live in `resource/server/tracker.lua`. There are no other phone names in the tree.
+
+## `OpenFindSourceByCharPhone`
+
+Used only by the `qb-phone` adapter. Phone lives on `charinfo`, not a phone-resource export.
+
+Override `OpenFindSourceByCharPhone` in `resource/open/server/phone_lookup.lua` if your stack stores numbers somewhere else.
+
+Shipped logic:
+
+1. Framework `qbx_core` — `exports.qbx_core:GetPlayer(playerId).PlayerData.charinfo.phone`
+2. Framework `qb-core` — `QBCore.Functions.GetPlayer(playerId).PlayerData.charinfo.phone`
+3. Anything else — `false`

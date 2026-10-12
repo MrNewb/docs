@@ -1,0 +1,9 @@
+{
+  "title": "WeaponTints",
+  "icon": "IconPalette",
+  "pages": [
+    "requirements",
+    "install",
+    "exports"
+  ]
+}

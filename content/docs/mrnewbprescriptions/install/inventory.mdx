@@ -1,0 +1,101 @@
+---
+title: "Item setup"
+description: "Items for Prescriptions. Paste the ox_inventory file, copy the PNGs, and restart."
+icon: "IconPackage"
+---
+
+Everything ships ready for ox_inventory. Open `[INSTALL]/ox_inventory/items.lua`, paste the whole thing into `ox_inventory/data/items.lua`, copy the PNGs, then restart the inventory and this resource.
+
+| Inventory | Image folder |
+| --- | --- |
+| ox_inventory | `ox_inventory/web/images/` |
+| qb-inventory / ps-inventory | `html/images/` |
+| one_inventory | `one_inventory/web/images/` |
+
+<Callout type="warning">
+  Do **not** add `server.export` to these items, and do not set `consume = 0`. Use is registered through Newb_Bridge. Pictures in the bottling bench and pharmacy tablet are found by item name (`<item>.png`), so keep the file names as they are.
+</Callout>
+
+On start the console prints a line for every config item your inventory is missing.
+
+## What you need
+
+| Item | Needed? | What it is |
+| --- | --- | --- |
+| `prescriptionpad` | **Yes** | Doctors write scripts with it |
+| `medicalprescription` | **Yes** | The signed paper patients carry to the pharmacy |
+| `medicalrecord` | **Yes** | A printed dispense record |
+| `emptybottle`, `pillbinder`, `humaneextract`, `redwoodleaf`, `gingeroot`, `chiliadchili`, `sprunksyrup`, `meteoritepowder` | **Yes** for the stock catalog | Recipe ingredients, and what supply runs deliver |
+| `pillboxpatch`, `redwoodrelief`, `stretchyum`, `chiliadburn`, `mollis`, `zombix`, `willies`, `spacecadet`, `mazenap`, `humaneorbit`, `upnatom`, `vinewoodglow`, `altruistcrystal` | **Yes** for the stock catalog | One item per medication |
+| `insurancecard` | Optional | Handed out when someone buys a plan |
+| `blankpaper` | Optional | Used at the forgery desk for blank fakes |
+| `narkhan` | Optional | Nasal spray that brings someone back from an overdose |
+| `shotglass`, `envious_cough_syrup`, `coughsyrup_shot`, `envious_shot` | Optional | Envious shots. Also needs the `sprunk` item |
+| `boxofaspirin`, `boxofpseudoephedrine`, `bandage` | Optional | Shoplifting loot. Skip `bandage` if your framework already has one |
+
+Item names that the script looks up are set in config, so you can rename them:
+
+```lua
+Config.UsableItems = {
+    PrescriptionPad = 'prescriptionpad',
+    Prescription = 'medicalprescription',
+    MedicalRecord = 'medicalrecord',
+    BlankPaper = 'blankpaper',
+}
+```
+
+## The core three
+
+These are the items that matter most. The full file has all the rest.
+
+<Tabs items={['OX', 'QB']} storageKey="inventory-items">
+<Tab>
+
+```lua
+['prescriptionpad'] = {
+    label = 'Prescription pad',
+    weight = 100,
+    stack = false,
+    close = true,
+    description = 'Doctor prescription pad. Use to write a new prescription.',
+    client = { image = 'prescriptionpad.png' },
+},
+
+['medicalprescription'] = {
+    label = 'Medical prescription',
+    weight = 50,
+    stack = false,
+    close = true,
+    description = 'Signed prescription paper. Pharmacists redeem at the mixing station.',
+    client = { image = 'medicalprescription.png' },
+},
+
+['medicalrecord'] = {
+    label = 'Medical record',
+    weight = 50,
+    stack = false,
+    close = true,
+    description = 'Printed pharmacy medical record. Use to view dispense details.',
+    client = { image = 'medicalrecord.png' },
+},
+```
+
+</Tab>
+<Tab>
+
+Repeat this shape for every item in `[INSTALL]/ox_inventory/items.lua`, using the same names, labels, and weights.
+
+```lua
+['prescriptionpad'] = { name = 'prescriptionpad', label = 'Prescription pad', weight = 100, type = 'item', image = 'prescriptionpad.png', unique = true, useable = true, shouldClose = true, description = 'Doctor prescription pad. Use to write a new prescription.' },
+```
+
+</Tab>
+</Tabs>
+
+## Adding your own medication
+
+1. Create the item in your inventory with an image named `<item>.png`
+2. Add an entry with the **same name** on the meds page, or in `configs/prescriptions.lua`, or call `RegisterPrescription` from another resource
+3. Restart the inventory and this resource
+
+Full walkthrough with effects: [Medications and effects](/mrnewbprescriptions/effects).

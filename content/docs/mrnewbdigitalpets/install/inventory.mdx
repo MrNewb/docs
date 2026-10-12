@@ -1,0 +1,52 @@
+---
+title: "Item setup"
+description: "Items for DigitalPets. One item. The name must match Config.Item (digital_pet)."
+icon: "IconPackage"
+---
+
+One item. The name must match `Config.Item` (`digital_pet`).
+
+| Item | Label |
+| --- | --- |
+| `digital_pet` | Digital Pet |
+
+Copy `digital_pet.png` from `[INSTALL]/imgs/` into:
+
+| Inventory | Image folder |
+| --- | --- |
+| ox_inventory | `ox_inventory/web/images/` |
+| qb-inventory / ps-inventory | `html/images/` |
+| one_inventory | `one_inventory/web/images/` |
+
+OX is ox_inventory (ESX and Qbox that run ox use this tab). QB is `qb-core/shared/items.lua`. one_inventory only needs the PNG in that folder.
+
+<Callout type="warning">
+  Do **not** add `server.export` on ox_inventory items. Use is registered with `bridge.framework.registerItemUse`. Omit `consume`. `stack` / `unique` must stay off stacking — each Digital Pet has its own metadata.
+</Callout>
+
+<Tabs items={['OX', 'QB']} storageKey="inventory-items">
+<Tab>
+
+Add to `ox_inventory/data/items.lua`:
+
+```lua
+['digital_pet'] = {
+    label = 'Digital Pet',
+    weight = 500,
+    stack = false,
+    close = true,
+    description = 'A pocket digital pet. Use it to open the Digital Pets toy.',
+},
+```
+
+</Tab>
+<Tab>
+
+Add to your QBCore shared items (`qb-core/shared/items.lua`):
+
+```lua
+['digital_pet'] = { name = 'digital_pet', label = 'Digital Pet', weight = 500, type = 'item', image = 'digital_pet.png', unique = true, useable = true, shouldClose = true, description = 'A pocket digital pet. Use it to open the Digital Pets toy.' },
+```
+
+</Tab>
+</Tabs>

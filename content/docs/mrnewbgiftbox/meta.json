@@ -1,0 +1,9 @@
+{
+  "title": "GiftBox",
+  "icon": "IconGift",
+  "pages": [
+    "requirements",
+    "install",
+    "exports"
+  ]
+}

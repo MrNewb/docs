@@ -1,0 +1,10 @@
+{
+  "title": "BeeKeeping",
+  "icon": "IconHexagon",
+  "pages": [
+    "requirements",
+    "install",
+    "anticheat",
+    "exports"
+  ]
+}

@@ -1,0 +1,51 @@
+---
+title: "Events and hooks"
+description: "Events other scripts can listen to, and the files you can edit in place."
+icon: "IconPlugConnected"
+---
+
+## Server events
+
+Listen with `AddEventHandler`. These are local server events, not network events.
+
+| Event | Arguments | Fired when |
+| --- | --- | --- |
+| `MrNewbPrescriptions:MedicationConsumed` | `src, payload` | A dose is taken. `payload` has `itemName`, `drugKey`, `metadata`, `medicaldata`, and `slot` |
+| `MrNewbPrescriptions:MedicationTreatment` | `src, targetSrc, treatmentType, context` | `TriggerMedicationTreatment` is called. Ambulance bridges use this to heal or revive |
+
+```lua
+AddEventHandler('MrNewbPrescriptions:MedicationConsumed', function(src, payload)
+    print(src, payload.drugKey, payload.metadata.uses)
+end)
+```
+
+Anything else that starts with `MrNewbPrescriptions:` is internal. Do not build on it.
+
+## Open files
+
+These stay readable after escrow, so you can edit them.
+
+| File | What it is for |
+| --- | --- |
+| `resource/open/server/medication_hooks.lua` | `CanUseMedication`, `OnMedicationConsumed`, `OnMedicationTreat`. Only run when `Config.MedicationHooks.enabled = true` |
+| `resource/open/server/utility.lua` | `CreateLog(data)`. Connect your logger here |
+| `resource/open/server/addiction_relief.lua` | Lowers the addiction score from other scripts' events |
+| `resource/open/server/custom_effects.lua` and `resource/open/client/custom_effects.lua` | Custom effect ids, labels, and handlers |
+| `resource/open/client/medication_history.lua` and `resource/open/client/forgery.lua` | Gate functions that can block the chart, sharing, the forgery entrance, or the forge desk |
+| `resource/open/bridge/insurance/` | Insurance provider: `builtin`, `m-insurance`, or `custom` |
+| `resource/open/bridge/banking/society_banking.lua` | Society account adapters for pharmacy payouts |
+| `resource/open/bridge/ambulancejobs/` | Ambulance job adapters |
+
+### Block a medication under a condition
+
+With `Config.MedicationHooks.enabled = true`, in `medication_hooks.lua`:
+
+```lua
+function CanUseMedication(src, payload)
+    return not Player(src).state.isCuffed
+end
+```
+
+### Build your own insurance
+
+Set `Config.Insurance.provider = 'custom'`, then fill in `ExternalInsuranceStatus`, `ExternalInsuranceCopay`, and `ExternalInsuranceSummary` in `insurance_custom.lua`. Copy `insurance_minsurance.lua` as a starting point if that is easier.

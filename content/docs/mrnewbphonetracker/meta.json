@@ -1,0 +1,9 @@
+{
+  "title": "PhoneTracker",
+  "icon": "IconRadar2",
+  "pages": [
+    "requirements",
+    "install",
+    "compatibility"
+  ]
+}

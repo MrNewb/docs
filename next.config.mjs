@@ -1,38 +1,22 @@
-import nextra from 'nextra'
+import { createMDX } from 'fumadocs-mdx/next'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-const withNextra = nextra({
-  theme: 'nextra-theme-docs',
-  themeConfig: './theme.config.tsx',
-  latex: false,
-  readingTime: false,
-  defaultShowCopyCode: true,
-  // Lua-heavy pages: skip code block text from FlexSearch to cut ~200KB client payload
-  search: { codeblocks: false },
-})
+const withMDX = createMDX()
+const root = path.dirname(fileURLToPath(import.meta.url))
 
-export default withNextra({
+/** @type {import('next').NextConfig} */
+const config = {
   output: 'export',
+  basePath: '/docs',
   poweredByHeader: false,
-  compress: true,
+  reactStrictMode: true,
   images: {
     unoptimized: true,
   },
-  basePath: '/docs',
-  // Keep compiled routes around so clicking Installation again is not another 5s wait.
-  onDemandEntries: {
-    maxInactiveAge: 60 * 60 * 1000,
-    pagesBufferLength: 40,
+  turbopack: {
+    root,
   },
-  // basePath already prefixes assets; assetPrefix here doubled dev paths and caused blank pages
-  async redirects() {
-    // Dev convenience: localhost:3000 → localhost:3000/docs
-    return [
-      {
-        source: '/',
-        destination: '/docs',
-        permanent: false,
-        basePath: false,
-      },
-    ]
-  },
-})
+}
+
+export default withMDX(config)

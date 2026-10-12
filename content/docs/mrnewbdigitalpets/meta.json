@@ -1,0 +1,9 @@
+{
+  "title": "DigitalPets",
+  "icon": "IconEgg",
+  "pages": [
+    "requirements",
+    "install",
+    "anticheat"
+  ]
+}

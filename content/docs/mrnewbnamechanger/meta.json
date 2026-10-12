@@ -1,0 +1,9 @@
+{
+  "title": "NameChanger",
+  "icon": "IconId",
+  "pages": [
+    "requirements",
+    "install",
+    "exports"
+  ]
+}

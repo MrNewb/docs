@@ -1,0 +1,8 @@
+{
+  "title": "SpookySeason",
+  "icon": "IconPumpkinScary",
+  "pages": [
+    "requirements",
+    "install"
+  ]
+}

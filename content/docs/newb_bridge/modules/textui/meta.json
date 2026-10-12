@@ -1,0 +1,8 @@
+{
+  "title": "Text UI",
+  "icon": "IconMessage",
+  "pages": [
+    "client",
+    "server"
+  ]
+}

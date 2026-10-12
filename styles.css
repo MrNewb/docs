@@ -1,6 +1,3 @@
-@tailwind components;
-@tailwind utilities;
-
 :root {
   --font-inter: Inter, ui-sans-serif, system-ui, sans-serif;
   --mrnewb-ink: #3c3c43;
@@ -486,6 +483,33 @@ html[class~="dark"] .nextra-content main ol > li::marker {
   color: #fff !important;
 }
 
+.fd-steps {
+  counter-reset: step;
+  position: relative;
+  margin: 1.25rem 0 1.25rem 1rem;
+  padding-inline-start: 1.75rem;
+  border-inline-start: 1px solid var(--color-fd-border);
+}
+
+.fd-step::before {
+  content: counter(step);
+  counter-increment: step;
+  position: absolute;
+  z-index: 1;
+  inset-inline-start: -1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1;
+  background: var(--color-fd-secondary);
+  color: var(--color-fd-secondary-foreground);
+}
+
 .nextra-content main img {
   max-width: 100%;
   height: auto;
@@ -504,28 +528,31 @@ html[class~="dark"] .nextra-content main ol > li::marker {
 }
 
 .partner-card {
-  display: grid;
-  grid-template-rows: 5.5rem auto 1fr auto auto;
-  justify-items: center;
-  align-content: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
   gap: 0.65rem;
   min-width: 0;
   height: 100%;
   padding: 1.5rem 1.15rem 1.25rem;
+  overflow: hidden;
   background: var(--mrnewb-card);
   border-radius: 8px;
 }
 
 .partner-logo,
-.nextra-content main img.partner-logo {
+.nextra-content main img.partner-logo,
+.prose img.partner-logo {
+  display: block;
   width: 5.5rem;
   height: 5.5rem;
   max-width: 5.5rem;
   max-height: 5.5rem;
+  margin: 0;
   object-fit: contain;
   object-position: center;
-  flex-shrink: 0;
+  flex: 0 0 5.5rem;
   border-radius: 8px;
 }
 
@@ -534,12 +561,19 @@ html[class~="dark"] .nextra-content main ol > li::marker {
   background: url("/docs/images/partners/jg-scripts.webp") center / contain no-repeat;
 }
 
+.partner-logo.partner-logo-jim,
+.prose img.partner-logo.partner-logo-jim {
+  transform: scale(1.72);
+  transform-origin: center;
+}
+
 html.dark .partner-logo-jg,
 html[class~="dark"] .partner-logo-jg {
   background-image: url("/docs/images/partners/jg-scripts-white.webp");
 }
 
 .partner-name {
+  width: 100%;
   font-weight: 700;
   font-size: 1.1rem;
   letter-spacing: -0.02em;
@@ -551,6 +585,7 @@ html[class~="dark"] .partner-logo-jg {
 .partner-copy,
 .partner-code,
 .partner-links {
+  width: 100%;
   margin: 0;
   max-width: none !important;
 }
@@ -571,6 +606,7 @@ html[class~="dark"] .partner-logo-jg {
 
 .partner-links {
   display: flex;
+  justify-content: center;
   gap: 0.35rem;
   margin-top: 0;
 }
@@ -1020,4 +1056,107 @@ html[class~="dark"] .provider-check--muted {
   .nextra-copy-icon {
     animation: none;
   }
+}
+
+.brand-link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.28em;
+}
+
+.brand-icon {
+  width: 0.95em;
+  height: 0.95em;
+  flex: none;
+  align-self: center;
+}
+
+.brand-icon-tebex {
+  width: auto;
+  height: 1em;
+}
+
+.item-thumb {
+  width: 4.25rem;
+  height: 4.25rem;
+  min-width: 4.25rem;
+  max-width: none;
+  object-fit: contain;
+  display: block;
+}
+
+td:has(> .item-thumb) {
+  width: 4.75rem;
+  min-width: 4.75rem;
+  vertical-align: middle;
+  padding-right: 0.5rem;
+}
+
+.start-here {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0 1.5rem;
+}
+
+.start-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.9rem 1rem;
+  border-radius: 8px;
+  background: var(--mrnewb-card, #141517);
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+.start-card:hover {
+  background: var(--mrnewb-card-hover, #1a1b1e);
+}
+
+.start-card-title {
+  font-weight: 700;
+}
+
+.start-card-copy {
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--mrnewb-muted, #909296);
+}
+
+.link-embed {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.75rem 0 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 8px;
+  background: var(--mrnewb-card, #141517);
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+.link-embed:hover {
+  background: var(--mrnewb-card-hover, #1a1b1e);
+}
+
+.link-embed-copy {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.link-embed-title {
+  font-weight: 700;
+}
+
+.link-embed-host {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--mrnewb-muted, #909296);
+}
+
+.link-embed-arrow {
+  flex: none;
 }

@@ -1,0 +1,14 @@
+{
+  "title": "Prescriptions",
+  "icon": "IconPill",
+  "pages": [
+    "requirements",
+    "install",
+    "guide",
+    "effects",
+    "ambulance-jobs",
+    "faq",
+    "anticheat",
+    "exports"
+  ]
+}

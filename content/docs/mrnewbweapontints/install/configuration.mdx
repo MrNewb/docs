@@ -1,0 +1,69 @@
+---
+title: "Configuration"
+description: "Tint items, the MK2 remap, and locales for WeaponTints."
+icon: "IconSettings"
+---
+
+## Items
+
+| | Item | Label | Export | Extra |
+| --- | --- | --- | --- | --- |
+| <img className="item-thumb" src="/docs/images/greentint.webp" alt="" /> | `greentint` | Green Weapon Tint | `MrNewbWeaponTints.setweapontint` | `server.tint = 1` |
+| <img className="item-thumb" src="/docs/images/goldtint.webp" alt="" /> | `goldtint` | Gold Weapon Tint | `MrNewbWeaponTints.setweapontint` | `server.tint = 2` |
+| <img className="item-thumb" src="/docs/images/pinktint.webp" alt="" /> | `pinktint` | Pink Weapon Tint | `MrNewbWeaponTints.setweapontint` | `server.tint = 3` |
+| <img className="item-thumb" src="/docs/images/armytint.webp" alt="" /> | `armytint` | Army Weapon Tint | `MrNewbWeaponTints.setweapontint` | `server.tint = 4` |
+| <img className="item-thumb" src="/docs/images/lspdtint.webp" alt="" /> | `lspdtint` | LSPD Weapon Tint | `MrNewbWeaponTints.setweapontint` | `server.tint = 5` |
+| <img className="item-thumb" src="/docs/images/orangetint.webp" alt="" /> | `orangetint` | Orange Weapon Tint | `MrNewbWeaponTints.setweapontint` | `server.tint = 6` |
+| <img className="item-thumb" src="/docs/images/platinumtint.webp" alt="" /> | `platinumtint` | Platinum Weapon Tint | `MrNewbWeaponTints.setweapontint` | `server.tint = 7` |
+| <img className="item-thumb" src="/docs/images/newbserialfile.webp" alt="" /> | `newbserialfile` | Heavy File | `MrNewbWeaponTints.newbserialfile` | `consume = 0.50` |
+
+The equipped weapon is required (`ox_inventory:GetCurrentWeapon`). `usingItem` returns `false` with no weapon in hand (item is not consumed) and `true` when a weapon is equipped. `usedItem` writes metadata, notifies, and disarms so the next draw shows the new tint or serial.
+
+`allowArmed = true` is required on every item. Without it, ox_inventory blocks use while a weapon is out. Tint items omit `consume`. `newbserialfile` sets `consume = 0.50` (two uses).
+
+Green is a dark military green, not neon. Custom weapon streams that replace tint palettes can hide or clash with these indices.
+
+Tint items set `metadata.tint` and `metadata.weapontint` (the item label) on the **weapon slot**. The serial file sets `metadata.serial` to the locale string `WeaponTints.SerialRemoved` (`The serial number has been filed off` in `locales/en.json`). ox_inventory applies `metadata.tint` when the weapon is drawn. `weapontint` is display-only.
+
+MK2 weapons remap the vanilla tint id through a built-in table in `resource/server/weapon_items.lua`. A weapon is treated as MK2 when its item name contains `MK2` (case-insensitive):
+
+| `server.tint` | MK2 index |
+| --- | --- |
+| 0 | 0 |
+| 1 | 18 |
+| 2 | 23 |
+| 3 | 13 |
+| 4 | 8 |
+| 5 | 22 |
+| 6 | 15 |
+| 7 | 24 |
+
+Unknown ids pass through unchanged. There is no tint `0` item. Custom MK2 weapons must include `MK2` in the item name or they get vanilla tint ids.
+
+## Adding a tint
+
+Duplicate a shipped tint in `ox_inventory/data/items.lua`, change the name, `label`, and `server.tint` (`1`–`7`). Keep `server.export = 'MrNewbWeaponTints.setweapontint'`. Copy a PNG whose filename matches the item name. Extra items only pick a different built-in GTA index — you cannot add a visual the game does not already ship.
+
+## Locales
+
+`locales/*.json`, loaded with `lib.locale()`. ox_lib picks the client language. Edit `locales/en.json` (or add a file) and restart.
+
+| Key | When |
+| --- | --- |
+| `WeaponTints.NotEquipped` | Use with no current weapon |
+| `WeaponTints.HasBeenApplied` | Tint applied (`item.label`, `weapon.label`) |
+| `WeaponTints.SerialRemoved` | Written into `metadata.serial` |
+| `WeaponTints.SerialRemovedSuccess` | Serial file succeeded (`weapon.label`) |
+
+## Layout
+
+| Path | Role |
+| --- | --- |
+| `fxmanifest.lua` | Depends on ox_lib, ox_inventory, Newb_Bridge |
+| `resource/server/weapon_items.lua` | `setweapontint` and `newbserialfile` exports |
+| `locales/*.json` | Equipped / applied / serial strings |
+| `[INSTALL]/images/` | Item PNGs (`armytint`, `goldtint`, `greentint`, `lspdtint`, `orangetint`, `pinktint`, `platinumtint`, `newbserialfile`) |
+
+On start the resource runs Newb_Bridge `VersionCheck` (`MrNewb/patchnotes`).
+
+Paste: [Item setup](/mrnewbweapontints/install/inventory). Hook signatures: [Exports](/mrnewbweapontints/exports).

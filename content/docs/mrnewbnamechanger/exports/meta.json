@@ -1,0 +1,8 @@
+{
+  "title": "Exports",
+  "icon": "IconCode",
+  "pages": [
+    "server-exports",
+    "server-events"
+  ]
+}

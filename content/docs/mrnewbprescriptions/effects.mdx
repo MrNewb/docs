@@ -1,0 +1,127 @@
+---
+title: "Medications and effects"
+description: "The stock medications, every premade effect, and how to add your own."
+icon: "IconFlask"
+---
+
+Every medication is an inventory item with an entry in the catalog. The catalog says what it costs, how many doses it has, what effect it plays, and what it takes to bottle it.
+
+## The stock catalog
+
+| Medication | Effect | Lasts | Price |
+| --- | --- | --- | --- |
+| Pillbox Patch Kit | `clearinjuries` | 30s | 500 |
+| Redwood Relief 10 MG | `smokey` | 25s | 600 |
+| Stretchyum 100 MG | `gingey` | 120s | 400 |
+| Chiliad Burn 50 MG | `fire` | 35s | 350 |
+| Mollis 50 MG | `armor` | 30s | 500 |
+| Zombix 250 MG | `drunk` | 15s | 500 |
+| Willie's Butt Drain | `smokey` | 10s | 500 |
+| Space Cadet 100 MG | `orbit` | 20s | 750 |
+| Maze Nap 10 MG | `sedating` | 40s | 300 |
+| Humane Orbitals 150 MG | `orbit` | 25s | 650 |
+| Up-n-Atom Tabs 20 MG | `wired` | 45s | 550 |
+| Vinewood Glow 80 MG | `euphoria` | 60s | 480 |
+| Altruist Crystal 5 MG | `wired` | 30s | 700 |
+
+Each bottle has 3 uses. Recipes are stock-room ingredients: an empty bottle plus a mix of pill binder, Humane Labs extract, Redwood leaf, ginger root, Chiliad chili, Sprunk syrup, and meteorite powder. All of it is delivered on supply runs.
+
+## What a catalog entry looks like
+
+```lua
+mollis = {
+    name = 'Mollis 50 MG',
+    uses = 3,                  -- doses per bottle
+    maxPrescriptionDoses = 50, -- most a doctor can write for
+    price = 500,               -- list price
+    icon = 'fa-solid fa-shield-halved',
+    effect = 'armor',          -- premade or custom effect id
+    duration = 30,             -- seconds
+    strength = 50,             -- only matters for armor and health
+    recipe = {
+        { item = 'emptybottle', count = 1 },
+        { item = 'pillbinder', count = 2 },
+        { item = 'humaneextract', count = 1 },
+    },
+},
+```
+
+`strength` only changes the `armor` and `health` effects. Everything else ignores it.
+
+## Premade effects
+
+Set `effect` to any of these. Display names live in `locales/en.json` under `Effects.Labels`.
+
+| Id | Name | Id | Name |
+| --- | --- | --- | --- |
+| `arepain` | Lay-Flatium | `mellow` | Maze Bank Naptime |
+| `smokey` | Trevor Lung Treat | `wired` | Up-n-Atom Wired |
+| `lsd` | Barry Vision Blend | `euphoria` | Vinewood Glow |
+| `fireworks` | Patriot Popper Pack | `balding` | Lester Hair Solution |
+| `stamina` | EgoChaser I.V. | `brighteyed` | Headlight Headache |
+| `armor` | Mollis Body Armor | `caloriedense` | Cluckin Bell Bulk-Up |
+| `health` | Band-Aid Bonanza | `electrifying` | Shock Jock Juice |
+| `gingey` | Stretchyosis | `glowie` | RadAway Lite |
+| `clearinjuries` | Ouch Be Gone | `paranoia` | They All Know |
+| `clearbleeds` | Bleed Be Gone | `refreshing` | Sprunk Splashback |
+| `drunk` | Pißwasser Hangover | `sedating` | Maze Nap Sedate |
+| `orbit` | Space Cadetioum | `seizure` | Shake N Bake |
+| `birdseye` | Blaine County Drone Cam | `shrinking` | Ant-Man Aspirin |
+| `fire` | Hotbox Hazard | `slippery` | Banana Peel Boost |
+| `squeeker` | Rat Pack Ruckus | `thirdpersonsyndrome` | Camera Crew Catastrophe |
+| `upsidedown` | Topsy Turvy RX | | |
+
+Pharmacists can pick any premade or custom effect when bottling.
+
+## Add your own medication
+
+### The simple path, in this resource
+
+1. Create the item in your inventory, with an image named after it
+2. Add an entry with the **same name** in the panel's meds page, or `configs/prescriptions.lua`
+3. Restart the inventory and this resource
+
+### A custom effect
+
+1. Write the effect in `resource/open/client/custom_effects.lua`:
+
+```lua
+RegisterCustomEffect('myglow', 'Neon Glow', function(durationSec, strength)
+    -- your visuals here
+end)
+```
+
+2. Register the same id and label in `resource/open/server/custom_effects.lua`, so bottling lists it:
+
+```lua
+RegisterCustomEffect('myglow', 'Neon Glow')
+```
+
+3. Set `effect = 'myglow'` on a medication
+
+Do not reuse a premade id, or `stop` and `overdose`. Once any custom effect exists, the bottling picker splits into **Premade** and **Custom** lists.
+
+### From another resource
+
+You can register both at runtime with no restart. Put these in a **shared** script so they run on the client and the server, and start MrNewbPrescriptions first.
+
+```lua
+exports.MrNewbPrescriptions:RegisterEffect('myglow', 'Neon Glow', function(durationSec, strength)
+    -- client only; the server keeps the label for the bottling list
+end)
+
+exports.MrNewbPrescriptions:RegisterPrescription('glowtabs', {
+    name = 'Glow Tabs',
+    uses = 3,
+    maxPrescriptionDoses = 50,
+    price = 400,
+    icon = 'fa-solid fa-flask',
+    effect = 'myglow',
+    duration = 20,
+    recipe = { { item = 'emptybottle', count = 1 } },
+})
+```
+
+The `glowtabs` item still has to exist in your inventory. You can skip `RegisterEffect` and set `effect = 'smokey'` or any premade id.
+
+`RegisterPrescription` only adds a catalog entry. To hand a player the actual medication, see `CreatePrescription` in the [server exports](/mrnewbprescriptions/exports/server-exports).

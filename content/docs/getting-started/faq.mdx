@@ -1,0 +1,43 @@
+---
+title: "FAQ"
+description: "Where the download is, which frameworks, and why Newb Bridge exists."
+icon: "IconHelp"
+---
+
+<Accordions type="single">
+  <Accordion title="Where do I download it?">
+    Paid scripts are on [Tebex](https://mrnewbscripts.tebex.io/). Free ones are on [GitHub](https://github.com/MrNewb). The walkthrough is [Download](/getting-started/download).
+  </Accordion>
+
+  <Accordion title="How do I install it?">
+    Pick the script on the left. Read Requirements, then Installation. Most of them want ox_lib and Newb_Bridge already running before they start.
+  </Accordion>
+
+  <Accordion title="Which frameworks?">
+    ESX, QBCore, and Qbox. [Newb_Bridge](/newb_bridge) talks to whichever one you already run. A script's Requirements page says if it needs something extra, like oxmysql or a phone.
+  </Accordion>
+
+  <Accordion title="Why'd you move to Newb Bridge?">
+    Lining up goals with other folks is hard. I tried. It just wouldn't work.
+
+    [Newb_Bridge](/newb_bridge) uses a lot less memory than community_bridge did, and it don't haul around a bunch of pieces that ain't useful for what these scripts do. If you're coming off community_bridge, the rewrite is [here](/newb_bridge/migrating).
+
+    If ox_lib ever puts a bridge in the v2 modules they're working on, that would make everybody's life easier. I'll move to it when that ships. Until then, this is the one I run.
+  </Accordion>
+
+  <Accordion title="Can I read the source?">
+    The free scripts on GitHub are there to read. Paid ones like BeeKeeping keep most of the Lua locked. `configs/`, `locales/`, and `resource/open/` stay yours to edit. Some scripts don't have a `configs/` folder at all. Those keep their settings in the in-game setup panel.
+  </Accordion>
+
+  <Accordion title="Do I rename the folder?">
+    No. Leave the name the docs give you. `import.lua` and escrow both look that name up.
+  </Accordion>
+
+  <Accordion title="It says Keymaster or escrow">
+    That's [Escrow](/getting-started/escrow). A live `ensure` after you drop the files in is the usual cause. Restart the server.
+  </Accordion>
+
+  <Accordion title="I need a person">
+    [Discord](https://discord.gg/mrnewbscripts). Install questions and weird errors both belong there.
+  </Accordion>
+</Accordions>

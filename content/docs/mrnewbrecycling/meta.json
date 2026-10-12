@@ -1,0 +1,10 @@
+{
+  "title": "Recycling",
+  "icon": "IconRecycle",
+  "pages": [
+    "requirements",
+    "install",
+    "anticheat",
+    "exports"
+  ]
+}

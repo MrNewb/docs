@@ -1,0 +1,8 @@
+{
+  "title": "Task HUD",
+  "icon": "IconLayoutDashboard",
+  "pages": [
+    "client",
+    "server"
+  ]
+}

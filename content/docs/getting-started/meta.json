@@ -1,0 +1,10 @@
+{
+  "title": "Getting Started",
+  "icon": "IconFlag",
+  "pages": [
+    "download",
+    "updating",
+    "escrow",
+    "faq"
+  ]
+}

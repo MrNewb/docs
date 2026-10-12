@@ -1,0 +1,8 @@
+{
+  "title": "Vehicle fuel",
+  "icon": "IconGasStation",
+  "pages": [
+    "client",
+    "server"
+  ]
+}

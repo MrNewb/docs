@@ -6,6 +6,7 @@ node_modules/
 # Build
 .next/
 out/
+.source/
 build/
 dist/
 
@@ -47,3 +48,9 @@ DESIGN.md
 .cursor/
 .claude/
 AGENTS.md
+CLAUDE.md
+.cursorrules
+.cursorignore
+
+# Editor workspaces
+*.code-workspace

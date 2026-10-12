@@ -1,0 +1,20 @@
+{
+  "title": "Migrating",
+  "icon": "IconArrowsExchange",
+  "pages": [
+    "framework",
+    "inventory",
+    "notifications",
+    "textui",
+    "menu",
+    "inputs",
+    "progressbar",
+    "target",
+    "vehiclekeys",
+    "vehiclefuel",
+    "bossmenu",
+    "dispatch",
+    "dialogue",
+    "utilities"
+  ]
+}

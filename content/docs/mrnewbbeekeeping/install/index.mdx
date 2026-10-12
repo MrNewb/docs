@@ -1,0 +1,63 @@
+---
+title: "Installation"
+description: "How to install BeeKeeping. Start this after ox_lib, oxmysql, your inventory, and Newb_Bridge."
+icon: "IconDownload"
+---
+
+<Callout type="warning">
+  Start this **after** ox_lib, oxmysql, your inventory, and Newb_Bridge. The bridge looks at what’s already running. If this script starts first, it can miss them. Keep the folder named `MrNewbBeeKeeping`.
+</Callout>
+
+### Dependencies [step]
+
+[Newb_Bridge](/newb_bridge), [ox_lib](https://github.com/overextended/ox_lib), [oxmysql](https://github.com/overextended/oxmysql), [Server artifact and OneSync](/getting-started/download#check-your-artifact), and your inventory. Badger_Discord_API is optional, and only for Discord-role VIP slots.
+
+Props and the panel ship with the resource (`stream/`, `web/build/`). Nothing to import into OpenIV. Model names: [Anticheat models](/mrnewbbeekeeping/anticheat).
+
+### Add the items and images [step]
+
+Eighteen items. Paste from [Item setup](/mrnewbbeekeeping/install/inventory). The same ox text ships as `[INSTALL]/ox_inventory_items.txt`.
+
+Copy every PNG from `[INSTALL]/imgs/` into your inventory images folder. Icons: [Item images](/mrnewbbeekeeping/install/inventory-images).
+
+Do **not** add `server.export` on ox_inventory items. Use is registered with `bridge.framework.registerItemUse`. Mark these useable: both hive items, `bee_trap`, `queen_bee`, `beekeeper_suit`, `beekeeping_guide`, `honey_separator`.
+
+### Add to server.cfg [step]
+
+Swap `qbx_core` / `ox_inventory` for whatever you actually run.
+
+```cfg
+ensure ox_lib
+ensure oxmysql
+ensure qbx_core
+ensure ox_inventory
+ensure Newb_Bridge
+ensure MrNewbBeeKeeping
+```
+
+### First start [step]
+
+Start the server once. Tables are created on their own (`mrnewb_beekeeping` and the separator / trap tables). There is no SQL file. Older hive rows are converted automatically — restart once if the console says it converted.
+
+There is no config file to edit. Join as staff and run `/hivesetup`. The panel walkthrough and the page list are on [Configuration](/mrnewbbeekeeping/install/configuration).
+
+### Restart and check [step]
+
+Restart the inventory, then this resource, after you paste items. Give yourself a hive, place it, add a queen and workers, and close it. Open `/hivesetup` and confirm the panel loads.
+
+Commands: [Commands](/mrnewbbeekeeping/install/commands). Limits: [Server exports](/mrnewbbeekeeping/exports/server-exports).
+
+## Common setup mistakes
+
+| Symptom | Check |
+| --- | --- |
+| Items do nothing when used | Missing item defs, or this resource started before Newb_Bridge / the inventory |
+| Hive is not producing | It is open, workers are zero, the queen is dead, or honey / wax are already full |
+| Honey slide will not finish | It completes at 2 percent of cells left, or at 120 seconds. Set the minigame to `none` or `ox` on the Hives page to skip it |
+| Shop is empty or will not sell | Location id does not match a stock list. If the inventory cannot register a runtime shop, turn on the context menu on the Shops page |
+| Cannot place a hive | Personal cap, too close to another hive, blocked zone, bad ground, or too far from the spot |
+| Hives vanished | Saving mode is `shutdown` and the server crashed, or Maintenance wiped inactive owners |
+| Props deleted by anticheat | Allow the models on [Anticheat models](/mrnewbbeekeeping/anticheat) |
+| `/hivesetup` says no permission | `Config.IsHiveAdmin` in `resource/open/server/custom.lua` |
+| Panel edits to old files do nothing | There is no `configs/` folder. The database copy wins after the first save |
+| Blank item pictures in the panel | Those PNGs are not in the inventory image folder |

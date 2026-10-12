@@ -1,0 +1,53 @@
+---
+title: "Installation"
+description: "How to install Recycling. Start this after ox_lib, oxmysql, your inventory, and Newb_Bridge."
+icon: "IconDownload"
+---
+
+<Callout type="warning">
+  Start this **after** ox_lib, oxmysql, your inventory, and Newb_Bridge. Keep the folder named `MrNewb_Recycling`.
+</Callout>
+
+### Dependencies [step]
+
+[Newb_Bridge](/newb_bridge), [ox_lib](https://github.com/overextended/ox_lib), [oxmysql](https://github.com/overextended/oxmysql), and [Server artifact and OneSync](/getting-started/download#check-your-artifact).
+
+### Add to server.cfg [step]
+
+```cfg
+ensure ox_lib
+ensure oxmysql
+ensure Newb_Bridge
+ensure ox_inventory
+ensure MrNewb_Recycling
+```
+
+Swap `ox_inventory` for the inventory you actually run.
+
+### First start [step]
+
+Start the server once. `MrNewb__Settings` is created on its own. Nothing to import.
+
+There are no custom items to paste. Seed recipes expect `phone`, `radio`, `lockpick`, `plastic`, `metalscrap`, and `copper` to already exist. Murder mode (off by default) can hand out `phone`, `radio`, `goldchain`, `rolex`, and `diamond_ring`.
+
+`configs/config.lua` and `configs/recycler.lua` are the starting values for a fresh install. Once someone saves in the panel, the database copy is what runs. Edit those files before the first start, or use Reset in the panel to load them again.
+
+Join as an admin and run `/recyclingsetup`. The page list is on [Configuration](/mrnewbrecycling/install/configuration).
+
+### Check it [step]
+
+Stand inside a station’s load radius (default 120 m) and open it. Load an item that has a recipe, turn it on, wait, and collect the output.
+
+Commands: [Commands](/mrnewbrecycling/install/commands). Models: [Anticheat models](/mrnewbrecycling/anticheat).
+
+## Common setup mistakes
+
+| Symptom | Check |
+| --- | --- |
+| The recycler does not appear | It is placed, you are inside its load radius, and Newb_Bridge is started |
+| The prop is invisible | `stream/` is intact and the resource is started. Restart the game client |
+| “That cannot be recycled” | The item needs a recipe, and that recycler’s type has to accept it |
+| Blank pictures in the panel | That item has no image in your inventory |
+| Panel will not open | You have to be an admin (framework admin or `group.admin`). Run it in game, not from the server console |
+| Edits to `configs/recycler.lua` do nothing | The saved setup took over. Reset in the panel reloads the config files |
+| `bzzz_prop_recycler_a` is missing | That model is optional and not shipped. It only shows up if another resource streams it |

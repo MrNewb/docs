@@ -15,7 +15,7 @@ This file is a machine-readable index plus the facts an assistant needs to answe
 - Usable items register with `bridge.framework.registerItemUse`. Do **not** add ox_inventory `server.export` except **MrNewbWeaponTints**, which is the documented exception.
 - Do **not** invent `Resource:Server:` net events or `Resource:Callback:` names. Those are internal. Public integration is exports, `resource/open/` hooks, and the events listed here.
 - Documented hook events: `Newb_Bridge:*` lifecycle / task-group / utility events, and `MrNewbNameChanger:Server:NameChanged` (`AddEventHandler` only).
-- Folder name must match the `ensure` / `exports.` name. Docs slugs are lowercase without underscores except Newb_Bridge (`/newb_bridge`). Yoga folder is `MrNewb_Yoga` (underscore); docs slug is `/mrnewbyoga`. Spooky folder is `MrNewbsSpookySeason` (extra `s`); docs slug is `/mrnewbspookyseason`.
+- Folder name must match the `ensure` / `exports.` name. Docs slugs are lowercase without underscores except Newb_Bridge (`/newb_bridge`). Spooky folder is `MrNewbsSpookySeason` (extra `s`); docs slug is `/mrnewbspookyseason`.
 - TacoLink was renamed to Newb_Bridge. Same `bridge.*` API.
 - Do not invent paid/free status, download counts, or Gitbook URLs. Retired Gitbook is not canonical. GitHub Pages host is `mrnewb.github.io`, **not** `mrnewbscripts.github.io`.
 
@@ -26,6 +26,8 @@ This file is a machine-readable index plus the facts an assistant needs to answe
 - [BeeKeeping](https://mrnewb.github.io/docs/mrnewbbeekeeping): player hives, queens, honey
 - [CityHall](https://mrnewb.github.io/docs/mrnewbcityhall): ID desk, walk-up jobs, applications
 - [CustomPlates](https://mrnewb.github.io/docs/mrnewbcustomplates): usable plate overlay
+- [DigitalPets](https://mrnewb.github.io/docs/mrnewbdigitalpets): pocket pet handheld
+- [Prescriptions](https://mrnewb.github.io/docs/mrnewbprescriptions): prescription system; shotglass models on the anticheat page
 - [GiftBox](https://mrnewb.github.io/docs/mrnewbgiftbox): configurable unwrap boxes
 - [LootTables](https://mrnewb.github.io/docs/mrnewbloottables): weighted loot + job payouts
 - [NameChanger](https://mrnewb.github.io/docs/mrnewbnamechanger): vouchers, marriage certs, clerk
@@ -33,18 +35,19 @@ This file is a machine-readable index plus the facts an assistant needs to answe
 - [Pawn](https://mrnewb.github.io/docs/mrnewbpawn): pawn shops + foundry smelt
 - [PhoneTracker](https://mrnewb.github.io/docs/mrnewbphonetracker): job-gated phone ping
 - [PlateCarriers](https://mrnewb.github.io/docs/mrnewbplatecarriers): metadata vests / plates / helmets
+- [Recycling](https://mrnewb.github.io/docs/mrnewbrecycling): scrap recyclers, `/recyclingsetup`
 - [SpookySeason](https://mrnewb.github.io/docs/mrnewbspookyseason): Halloween scavenger event
 - [VehicleRentals](https://mrnewb.github.io/docs/mrnewbvehiclerentals): desks, paperwork, returns
+- [VehicleKeys](https://mrnewb.github.io/docs/mrnewbvehiclekeys): keys, locks, fob, locksmith, `/vehiclekeyssetup`
 - [WeaponTints](https://mrnewb.github.io/docs/mrnewbweapontints): ox_inventory tints + serial file
-- [Yoga](https://mrnewb.github.io/docs/mrnewbyoga): yoga minigame, placeable mats, optional shop
-- [Partners](https://mrnewb.github.io/docs/partners): JG Scripts, Jim G, Mustache, Tuff, 919DESIGN (code `mrnewb` where listed)
+- [Partners](https://mrnewb.github.io/docs/partners): JG Scripts, Jim G, Mustache, Tuff, 919DESIGN, Dynyx Scripts (code `mrnewb` where listed)
 - [TacoLink redirect](https://mrnewb.github.io/docs/tacolink): hidden; points at Newb_Bridge install
 
-Typical nested pages under a resource: `/install`, `/install/inventory`, `/install/inventory-images`, `/install/commands`, `/install/framework`, `/exports`, `/exports/server-exports`, `/exports/client-exports`, `/exports/server-events`. Not every resource has every child.
+Typical nested pages under a resource: `/install`, `/install/configuration`, `/install/inventory`, `/install/inventory-images`, `/install/commands`, `/exports`, `/exports/server-exports`, `/exports/client-exports`, `/exports/server-events`, `/anticheat`. Not every resource has every child. Anticheat model lists: BeeKeeping, DigitalPets, VehicleKeys, Prescriptions.
 
 ## Newb_Bridge
 
-Resource folder: `Newb_Bridge`. Do not rename. Required: ox_lib, oxmysql (for `getOwnedVehicles`). Artifact `/server:6116`+, OneSync, lua54.
+Resource folder: `Newb_Bridge`. Do not rename. Required: ox_lib, oxmysql, and the framework / inventory / target you already run. Artifact `/server:6116`+, OneSync.
 
 - [Landing](https://mrnewb.github.io/docs/newb_bridge)
 - [Installation](https://mrnewb.github.io/docs/newb_bridge/getting-started): start **after** framework / inventory / target; scripts that import the bridge start **after** Newb_Bridge
@@ -138,20 +141,21 @@ Do not re-register `Newb_Bridge:client:notify` if you already call `bridge.notif
 
 ## BeeKeeping (`MrNewbBeeKeeping`)
 
-Place hives, queens/workers, regional honey, shop, wild swarms, admin NUI. Needs Newb_Bridge, ox_lib, oxmysql, inventory. Hive props in `stream/`.
+Place hives, queens/workers, regional honey, honey separator, shop, wild swarms. Needs Newb_Bridge, ox_lib, oxmysql, inventory. No `configs/` folder. Settings are `/hivesetup` saved to `MrNewb__Settings`. An **open** hive does not tick. 18 items. Props in `stream/` (`mrnewb_beekeeping.ytyp`).
 
 - [Landing](https://mrnewb.github.io/docs/mrnewbbeekeeping)
 - [Install](https://mrnewb.github.io/docs/mrnewbbeekeeping/install)
-- [Commands](https://mrnewb.github.io/docs/mrnewbbeekeeping/install/commands): `/HiveAdmin [hiveId]`; `/reloadhives` only when `Config.General.Debug`
+- [Commands](https://mrnewb.github.io/docs/mrnewbbeekeeping/install/commands): `/hivesetup [hiveId]`; `/staffdebug` and `/reloadhives` only when Debug is on in the panel
+- [Configuration](https://mrnewb.github.io/docs/mrnewbbeekeeping/install/configuration)
+- [Anticheat models](https://mrnewb.github.io/docs/mrnewbbeekeeping/anticheat): standard hives `jim_g_beehive_prop_2` / `_3`, rustic `mrnewb_hive_closed` / `mrnewb_hive_open`, trap, honeycomb, separator crank and motor
 - [Item setup](https://mrnewb.github.io/docs/mrnewbbeekeeping/install/inventory)
 - [Item images](https://mrnewb.github.io/docs/mrnewbbeekeeping/install/inventory-images)
 - [Server exports](https://mrnewb.github.io/docs/mrnewbbeekeeping/exports/server-exports)
+- [Client exports](https://mrnewb.github.io/docs/mrnewbbeekeeping/exports/client-exports): separator prop helpers
 
-Config: `configs/config.lua` (client-visible), `configs/genetics.lua`, `configs/placement.lua`, `configs/sv_config.lua` (caps, VIP, shop prices). Shop ids must match an `ItemsForSale` key (shipped `newb_beekeeper_shop`). An **open** hive does not tick.
+Exports: `IsPlayerHiveVip(src)`, `GetPlayerHiveBonusHives(src)`, `GetPlayerHiveLimit(src)` (`-1` = unlimited), `IsPlayerAtHiveLimit(src)`. VIP is false until the player is at the base cap, and never applies when the base cap is `0`.
 
-Exports: `IsPlayerHiveVip(src)`, `GetPlayerHiveBonusHives(src)`, `GetPlayerHiveLimit(src)` (`0` = unlimited), `IsPlayerAtHiveLimit(src)`. VIP extras only when `Config.Vip.Enabled`.
-
-Open hooks: `RollQueenTrait`, `ResolveHoneyRewardItem`, `OnTrapCatch` (`open/server/custom.lua`); suit / minigame hooks (`open/client/custom.lua`). No public net events.
+Open hooks: `RollQueenTrait`, `ResolveHoneyRewardItem`, `OnTrapCatch`, `Config.IsHiveAdmin` (`open/server/custom.lua`); suit / minigame hooks (`open/client/custom.lua`). Public client event: `MrNewbBeeKeeping:Client:OpenStrainGuide`. SQL: `mrnewb_beekeeping`, separator tables, `mrnewb_beekeeping_traps`. No SQL file to import.
 
 ## CityHall (`MrNewbCityHall`)
 
@@ -168,11 +172,51 @@ Usable `customizableplate`. Overlay NUI (not ox_lib dialog), alphanumeric, max 8
 
 - [Landing](https://mrnewb.github.io/docs/mrnewbcustomplates)
 - [Install](https://mrnewb.github.io/docs/mrnewbcustomplates/install)
-- [Framework SQL](https://mrnewb.github.io/docs/mrnewbcustomplates/install/framework)
 - [Item setup](https://mrnewb.github.io/docs/mrnewbcustomplates/install/inventory)
 - [Item images](https://mrnewb.github.io/docs/mrnewbcustomplates/install/inventory-images)
 
 Item: `customizableplate`. Optional `EnableOxExclusive` blocks giving the item to another player. If `jg-mechanic` is started, calls `vehiclePlateUpdated(oldPlate, newPlate)` after success.
+
+## DigitalPets (`MrNewb_DigitalPets`)
+
+Pocket pet. Usable `digital_pet` (metadata). Newb_Bridge, ox_lib. No oxmysql. No exports. Handheld while the toy is open is `mrnewb_takosu`. Older `jim_g_digital_pets_1` through `_12` still ship in `stream/` and can still be requested from pet state.
+
+- [Landing](https://mrnewb.github.io/docs/mrnewbdigitalpets)
+- [Install](https://mrnewb.github.io/docs/mrnewbdigitalpets/install)
+- [Anticheat models](https://mrnewb.github.io/docs/mrnewbdigitalpets/anticheat)
+
+## VehicleKeys (`MrNewbVehicleKeys`)
+
+Vehicle keys, locks, hotwiring, lockpicking, key fob, locksmith, tracker. Newb_Bridge, ox_lib, oxmysql. No config file. `/vehiclekeyssetup` edits `MrNewb__Settings` (seeded from `resource/shared/seed/` on first boot). Shipped `provide 'qbx_vehiclekeys'`. Item keys by default. ox keyring needs `consume = 0` and ox_inventory started first.
+
+- [Landing](https://mrnewb.github.io/docs/mrnewbvehiclekeys)
+- [Install](https://mrnewb.github.io/docs/mrnewbvehiclekeys/install)
+- [Commands](https://mrnewb.github.io/docs/mrnewbvehiclekeys/install/commands): `/vehiclekeyssetup`, `/vehiclekeyadmin`, `/admingivekeys`, `/removekeys`, `/listkeys`, `/revokekeys`, `/devmode`. `/car` and `/dv` only when Admin Commands is on
+- [Configuration](https://mrnewb.github.io/docs/mrnewbvehiclekeys/install/configuration)
+- [Item setup](https://mrnewb.github.io/docs/mrnewbvehiclekeys/install/inventory)
+- [Server exports](https://mrnewb.github.io/docs/mrnewbvehiclekeys/exports/server-exports): `GiveKeys`, `GiveKeysByPlate`, `RemoveKeysByPlate`, `HasKeys`, `SetTempKeyForJob`, lock state
+- [Client exports](https://mrnewb.github.io/docs/mrnewbvehiclekeys/exports/client-exports)
+- [Anticheat models](https://mrnewb.github.io/docs/mrnewbvehiclekeys/anticheat): `mrnewb_keylocker_body`, `mrnewb_keylocker_door`, `mrnewb_keylocker_closed`, `mrnewb_keylocker_open_empty`, and the five key models. Archetype `stream/mrnewb_keylocker.ytyp`. Vanilla `p_car_keys_01` is not one of them.
+
+Do not build on `MrNewbVehicleKeys:Client:*` / `:Server:*`. Compatibility events answer qb-vehiclekeys / qbx when that toggle is on.
+
+## Recycling (`MrNewb_Recycling`)
+
+Scrap recyclers. Newb_Bridge, ox_lib, oxmysql. No custom items. `/recyclingsetup` (admin or `group.admin`). Seed files `configs/config.lua` and `configs/recycler.lua` until the first panel save, then `MrNewb__Settings`. Open distance is fixed at 4.0. Murder mode is off by default.
+
+- [Landing](https://mrnewb.github.io/docs/mrnewbrecycling)
+- [Install](https://mrnewb.github.io/docs/mrnewbrecycling/install)
+- [Commands](https://mrnewb.github.io/docs/mrnewbrecycling/install/commands): `/recyclingsetup`, `/staffdebug` (Debug on)
+- [Configuration](https://mrnewb.github.io/docs/mrnewbrecycling/install/configuration)
+- [Exports](https://mrnewb.github.io/docs/mrnewbrecycling/exports): client `SetRecyclerRunning(entity, running)`. `GlobalState.recyclingRunning`
+- [Anticheat models](https://mrnewb.github.io/docs/mrnewbrecycling/anticheat): `mrnewb_recycler`, `mrnewb_recycler_post`, `mrnewb_recycler_rotor_a`, `mrnewb_recycler_rotor_b`. Archetype `stream/mrnewb_recycler.ytyp`. `bzzz_prop_recycler_a` is not shipped.
+
+## Prescriptions (`MrNewbPrescriptions`)
+
+Prescription system. This docs section only lists the custom shotglass models used by the envious pour / mix / drink props.
+
+- [Landing](https://mrnewb.github.io/docs/mrnewbprescriptions)
+- [Anticheat models](https://mrnewb.github.io/docs/mrnewbprescriptions/anticheat): `mrnewb_shotglass_empty`, `mrnewb_shotglass_brown`, `mrnewb_shotglass_purple`. Archetype `stream/mrnewb_shotglasses.ytyp`.
 
 ## GiftBox (`MrNewbGiftBox`)
 
@@ -309,20 +353,9 @@ No public exports. Agency table key is the location id written onto paperwork. `
 
 Items: `greentint` (tint 1) … `platinumtint` (tint 7), `newbserialfile` (`consume = 0.50`). All need `allowArmed = true`. Equipped weapon required. MK2 remap when the item name contains `MK2`. Serial locale: `WeaponTints.SerialRemoved`.
 
-## Yoga (`MrNewb_Yoga`)
-
-Keep the folder underscore. Yoga minigame on GTA mat props. Placeable items + optional shop. **No oxmysql. No public exports.** Preview: `https://www.youtube.com/watch?v=NvzLnXOVNDg`.
-
-- [Landing](https://mrnewb.github.io/docs/mrnewbyoga)
-- [Install](https://mrnewb.github.io/docs/mrnewbyoga/install)
-- [Item setup](https://mrnewb.github.io/docs/mrnewbyoga/install/inventory)
-- [Item images](https://mrnewb.github.io/docs/mrnewbyoga/install/inventory-images)
-
-Items (usable via `registerItemUse`; images in `[INSTALL]/imgs/`): `yoga_mat` → `prop_yoga_mat_02`, `yoga_mat_blue` → `prop_yoga_mat_01`, `yoga_mat_red` → `prop_yoga_mat_03`. `Config.Mats` targets world props. `Config.MatSpots` ships commented out. Shop ped default `vec4(-1111.2534, -1662.1963, 4.3570, 127.8968)`; `Config.Shop.Enabled = false` skips it. Valid complete: min **35s**, then **30s** cooldown; optional `RestoreHealth` and `StressRelief` (`stress` metadata). Open hooks: `resource/open/client/open.lua`, `resource/open/server/open.lua`.
-
 ## Partners
 
-[Partners](https://mrnewb.github.io/docs/partners). Creator code `mrnewb` (10% off) where listed: JG Scripts, Jim G, 919DESIGN. Mustache Scripts and Tuff Scripts have store/GitHub + Discord, no code on the page.
+[Partners](https://mrnewb.github.io/docs/partners). Creator code `mrnewb` (10% off) where listed: JG Scripts, Jim G, 919DESIGN, Dynyx Scripts. Mustache Scripts and Tuff Scripts have store/GitHub + Discord, no code on the page. Dynyx store https://www.dynyxscripts.com/ Discord https://discord.gg/uebRatWJDa.
 
 ## Optional
 

@@ -1,0 +1,38 @@
+---
+title: "Configuration"
+description: "Plate config and the apply flow for CustomPlates."
+icon: "IconSettings"
+---
+
+| | Item |
+| --- | --- |
+| <img className="item-thumb" src="/docs/images/customizableplate.webp" alt="" /> | `customizableplate` |
+
+Icon: [Item images](/mrnewbcustomplates/install/inventory-images).
+
+## Config files
+
+`configs/config.lua`:
+
+| Key | Default | Purpose |
+| --- | --- | --- |
+| `PlateItemName` | `'customizableplate'` | Usable item. Inventory name must match. |
+| `EnableOxExclusive` | `false` | When `true` and ox_inventory is started, a `swapItems` hook blocks player-to-player transfers. Slot moves in your own inventory still work. |
+| `ProgressBarEnabled` | `true` | Walks to the rear bumper, then a 5s cancellable apply progress. |
+| `FilteredWords` | `'badword'`, `'fuck'`, `'asshole'` | Case-insensitive substring rejects. Keep entries long enough that they cannot swallow an innocent plate (`ass` would also block `CLASS`). |
+| `Settings.MinCharacters` | `8` | Minimum plate length. |
+| `Settings.MaxCharacters` | `8` | Maximum plate length. GTA plates are 8 characters; anything higher is clamped. |
+
+Labels: `locales/en.json`. Do **not** add `server.export` on the ox_inventory item. Use is registered with `bridge.framework.registerItemUse`. Omit `consume` on the item def.
+
+## Player flow
+
+Use the item. Wrong vehicle (inside it, nothing nearby, not networked) notifies and never opens the overlay.
+
+The NUI is a license-plate overlay, not an ox_lib dialog. It must ack `plateReady` within 2s or you get `UiUnavailable` and mouse is returned. Escape or click outside cancels (same path as the cancel button). Submit stays disabled until min length.
+
+On a valid plate the ped walks to the rear bumper. If `ProgressBarEnabled`, a 5s cancellable mechanic progress runs (`mini@repair` / `fixing_a_ped`). The server then re-checks plate text, distance, ownership, uniqueness, and that the item is still in inventory. Same plate as the vehicle already has is rejected. The item is removed first and given back if the write fails or throws.
+
+If `jg-mechanic` is started, the resource calls `vehiclePlateUpdated(oldPlate, newPlate)` after a successful apply.
+
+Inventory icons by [Decay Studios](https://discord.gg/yDXZwZPjdN).

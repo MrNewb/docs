@@ -1,0 +1,64 @@
+---
+title: "Installation"
+description: "How to install Newb_Bridge. Start Newb_Bridge after ox_lib, your framework, inventory, target, and any other resource it bridges."
+icon: "IconDownload"
+---
+
+<Callout type="warning">
+  Start Newb_Bridge **after** ox_lib, your **framework**, **inventory**, **target**, and anything else it has to talk to. If those come up later, it can miss them and you’ll get the wrong provider, or none. **Don’t** start Newb_Bridge before the framework. Scripts that import `@Newb_Bridge/import.lua` have to start **after** the bridge. `import.lua` errors if the bridge ain’t running.
+</Callout>
+
+### Requirements [step]
+
+[ox_lib](https://github.com/overextended/ox_lib), [oxmysql](https://github.com/overextended/oxmysql), and the framework / inventory / target you already run. Providers default to `"auto"` except `Config.Dispatch`, which defaults to `"internal"`.
+
+### Add the resource [step]
+
+Drop the folder in `resources` and leave the name **`Newb_Bridge`**. Don’t rename it. `import.lua` looks for that name.
+
+### Add to server.cfg [step]
+
+```cfg
+ensure ox_lib
+ensure oxmysql
+ensure qbx_core          # or qb-core / es_extended
+ensure ox_inventory      # your inventory
+ensure ox_target         # optional; any other bridged resource too
+ensure Newb_Bridge
+
+# scripts that use bridge.*
+ensure your_script
+```
+
+### Configure [step]
+
+Leave providers on `"auto"` in `settings/bridge_resources.lua`, or pin them. On start, the server console prints which provider each module resolved to. Details: [Configuration](/newb_bridge/configuration).
+
+### Import [step]
+
+Add the bridge import to each resource `fxmanifest.lua`:
+
+```lua
+shared_scripts {
+    '@ox_lib/init.lua',
+    '@Newb_Bridge/import.lua',
+    -- your shared scripts
+}
+
+dependencies {
+    'ox_lib',
+    'Newb_Bridge',
+}
+```
+
+This exposes the global `bridge` table and the resolved `Config`. Modules are **lazy-loaded** the first time you access them (`bridge.inventory`, `bridge.menu`, etc.). The host preloads every configured provider at startup.
+
+## Next steps
+
+- [Configuration](/newb_bridge/configuration): force or auto-detect providers
+- [Supported](/newb_bridge/supported): framework, inventory, and other provider tables
+- [Resource layout](/newb_bridge/resource-layout): fxmanifest pattern and player lifecycle
+- [Modules](/newb_bridge/modules): full API reference (params, returns, examples)
+- [Utilities](/newb_bridge/utilities): world interactions, prop placement, dialogue
+- [Events](/newb_bridge/events): player load/unload
+- [Migrating](/newb_bridge/migrating): community_bridge → Newb_Bridge

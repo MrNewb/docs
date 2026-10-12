@@ -1,0 +1,50 @@
+---
+title: "Configuration"
+description: "Gift box keys and reward fields for GiftBox."
+icon: "IconSettings"
+---
+
+| | Item | File |
+| --- | --- | --- |
+| <img className="item-thumb" src="/docs/images/giftbox.webp" alt="" /> | `starter_box` / `gang_kit` | `giftbox.png` |
+
+Icon: [Item images](/mrnewbgiftbox/install/inventory-images).
+
+## Config files
+
+`configs/config.lua` is loaded as a **server script** only. Loot tables stay off the client. Every key under `Config.GiftBoxes` is registered with `bridge.framework.registerItemUse` at start. Add a matching inventory item for each key. Reward `item` names (`water`, `phone`, `sandwich`, …) must already exist in your inventory.
+
+`always = true` always grants that entry. Entries with `weight` (any number `> 0`) are pooled into ox_lib's `lib.selector` and **one** extra is rolled per open. Weights are relative: `50` is two and a half times as likely as `20`. Same idea as LootTables. If an entry has neither `always` nor `weight`, it is skipped.
+
+```lua
+Config.GiftBoxes = {
+    ['starter_box'] = {
+        items = {
+            { item = 'water', count = 2, metadata = { description = 'Everyone who ever drank this has died.' }, always = true },
+            { item = 'phone', count = 1, always = true },
+            { item = 'sandwich', count = 1, weight = 20 },
+            { item = 'bandage', count = 3, weight = 50 },
+        },
+        account = { accountType = 'bank', amount = 500, always = true },
+    },
+    ['gang_kit'] = {
+        items = {
+            { item = 'weapon_pistol', count = 1, metadata = { serie = 'Scratched', serial = 'Scratched' }, always = true },
+        },
+    },
+}
+```
+
+| Field | Default | Purpose |
+| --- | --- | --- |
+| `items[].item` | — | Inventory item to grant |
+| `items[].count` | — | Amount |
+| `items[].metadata` | optional | Passed to `bridge.inventory.addItem` |
+| `items[].always` | optional | `true` always grants |
+| `items[].weight` | optional | Relative selector weight (`> 0`) |
+| `account.accountType` | `'bank'` | `cash`, `bank`, or `money` |
+| `account.amount` | — | Money granted (must be `>= 1`) |
+| `account.always` | optional | `true` always grants money |
+| `account.weight` | optional | Puts the money reward in the same weighted pool as items |
+
+Shipped keys: `starter_box`, `gang_kit`. Add your own keys and matching items. Giving a box from another script: [Exports](/mrnewbgiftbox/exports/server-exports).

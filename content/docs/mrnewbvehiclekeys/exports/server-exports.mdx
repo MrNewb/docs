@@ -1,0 +1,85 @@
+---
+title: "Server exports"
+description: "Server exports for Vehicle Keys. Call them as exports.MrNewbVehicleKeys:Name(...)."
+icon: "IconServer"
+---
+
+Call them as `exports.MrNewbVehicleKeys:Name(...)`. They return `false` (or an empty table / `0` for lists and counts) if the key system is not ready yet. Wait until the resource is `started`. `plate` is trimmed for you. `netid` is a vehicle network id.
+
+## Giving and removing
+
+| Export | Params | Returns |
+| --- | --- | --- |
+| `GiveKeys` | `src, netid, autoKeyring?` | boolean. `autoKeyring = true` puts it on their keyring |
+| `GiveKeysByPlate` / `AddKeysByPlate` | `src, plate, autoKeyring?` | boolean. Use when the vehicle is not spawned |
+| `GiveKeysCustom` | `src, netid, plate, keyType, keyoptions, autoStart, spawnLocked, addToKeyring` | boolean |
+| `RemoveKeys` | `src, netid, includeKeyring?` | boolean |
+| `RemoveKeysByPlate` | `src, plate, includeKeyring?` | boolean |
+| `TransferKey` | `src, targetSrc, plate` | boolean |
+| `DuplicateKey` | `src, targetSrc, plate` | boolean. Target gets a copy, original stays |
+| `UpdateKey` | `src, oldPlate, newPlate` | boolean. Re-plates one player’s key |
+| `MigratePlate` | `oldPlate, newPlate` | boolean. Moves the saved key profile. Item keys only. Does not touch held keys |
+| `GrantRental` | `src, plate, modelName, netid, rentalLocation?` | boolean. Keys plus `rental_paperwork` |
+| `RemoveRental` | `src, plate, netid` | boolean |
+
+`keyType` is `smart`, `luxury`, `basic`, `boat`, or `motorcycle` (`classic`, `display`, and `bike` are aliases). `keyoptions` is a list of fob module ids.
+
+```lua
+exports.MrNewbVehicleKeys:GiveKeys(src, NetworkGetNetworkIdFromEntity(veh))
+exports.MrNewbVehicleKeys:GiveKeysByPlate(src, plate)
+exports.MrNewbVehicleKeys:RemoveKeysByPlate(src, plate, true)
+exports.MrNewbVehicleKeys:GiveKeysCustom(src, netid, plate, 'smart', {}, true, false, true)
+```
+
+## Checking
+
+| Export | Params | Returns |
+| --- | --- | --- |
+| `HasKeys` / `HaveKeys` | `src, netid` | boolean |
+| `HasKeysByPlate` | `src, plate` | boolean |
+| `GetPlayerKeys` / `GetVehicleKeyList` | `src` | table of held keys |
+| `CanAccessVehicle` | `src, netid, plate?` | boolean. Key, temp key, or shared job access |
+| `VerifyOwnership` | `src, plate` | boolean |
+| `GetVehicleInfo` | `plate` | table or nil |
+| `GetLockProfile` | `plate` | table or false. Item keys only |
+| `IsItemBasedMode` / `KeyType` | none | boolean. `true` when keys are items |
+| `IsInsertModeEnabled` | none | boolean |
+| `GetKeySystem` | none | The live key system object. For deep integrations only |
+| `HasPhoneKey` / `GetPhoneKeys` | `src, plate` / `src` | companion phone app |
+
+## Vehicle state
+
+| Export | Params | Returns |
+| --- | --- | --- |
+| `SetVehicleLock` | `netid, lockStatus` | boolean. `1` unlocked, `2` locked |
+| `RemoteLock` | `src, plate, lockStatus` | boolean. As if that player used the fob |
+| `DisableLockpickingVehicle` | `netid, status` | boolean. `true` makes it lockpick-proof |
+| `IsKeyInIgnition` | `netid` | boolean |
+| `SetKeyInIgnition` | `netid, inserted, metadata?` | boolean |
+| `SearchForKeys` | `src, netId` | boolean |
+
+## Temporary keys
+
+A temp key works without an item. `durationMs = nil` means it does not expire.
+
+| Export | Params | Returns |
+| --- | --- | --- |
+| `SetTempKey` | `src, plate, durationMs?` | boolean |
+| `RemoveTempKey` | `src, plate` | boolean |
+| `SetTempKeyForPlayers` | `players, plate, durationMs?` | count |
+| `RemoveTempKeyForPlayers` | `players, plate` | count |
+| `SetTempKeyForJob` | `jobName, plate, durationMs?` | count |
+| `RemoveTempKeyForJob` | `jobName, plate` | count |
+| `HasTempKey` | `src, plate` | boolean |
+
+```lua
+exports.MrNewbVehicleKeys:SetTempKeyForJob('mechanic', plate, 30 * 60 * 1000)
+```
+
+## Events other scripts already fire
+
+When `CompatibilityEvents` for that resource is on, these keep working: `qb-vehiclekeys:server:AcquireVehicleKeys`, `:GiveVehicleKeys`, `:RemoveVehicleKeys`, the client `AcquireVehicleKeys` / `AddKeys` / `RemoveKeys`, `vehiclekeys:client:SetOwner`, and the garage store events that take the key back (`qb-garages`, `esx_garage`, qbx park). Boosting, AdvancedParking, ak47 car dealer, and jobs_creator garage events are handled when that resource is present.
+
+For your own server scripts, use the exports. They are not gated on the sender standing next to the car.
+
+`MrNewbVehicleKeys:Server:*` and `MrNewbVehicleKeys:Client:*` are internal. Client exports: [Client exports](/mrnewbvehiclekeys/exports/client-exports).

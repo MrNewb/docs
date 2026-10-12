@@ -1,0 +1,72 @@
+---
+title: "Item setup"
+description: "Items for Vehicle Keys. Paste the matching file, then copy the PNGs."
+icon: "IconPackage"
+---
+
+Paste the matching file, then copy every PNG from `[INSTALL GUIDE]/images/` into your inventory images folder ([Item images](/mrnewbvehiclekeys/install/inventory-images)).
+
+| Inventory | Paste into | Images |
+| --- | --- | --- |
+| ox_inventory | `ox_inventory/data/items.lua` from `[INSTALL GUIDE]/ox_inventory_items.txt` | `ox_inventory/web/images/` |
+| qb-core | `qb-core/shared/items.lua` from `[INSTALL GUIDE]/qb-core_items.txt` | `qb-inventory/html/images/` |
+
+Names have to stay as they are unless you also change them in `/vehiclekeyssetup`. If you rename `blank_key` in the items file and forget the locksmith shop, the shop stops selling it.
+
+Players do not craft `vehiclekeys`. Garages, the locksmith, and admin commands hand them out. The script fills in the plate when it gives the key.
+
+| Item | What it is |
+| --- | --- |
+| `vehiclekeys` | A key for one vehicle |
+| `keyring` | Holds several keys. On ox_inventory set `consume = 0` so using it opens the ring |
+| `lockpick` | Opens a locked door. Does not start the car |
+| `advancedlockpick` | Same idea, for cars that need the better pick |
+| `hotwire_kit` | Only used if hotwiring requires an item |
+| `rental_paperwork` | The paper that comes with a rental |
+| `aftermarket_locks` | Owner uses this to change the lock so old keys stop working |
+| `blank_key` | Uncut blank. Locksmiths burn one when they cut a key |
+| `keyfob_scanner` | Sniffs a nearby fob and clones it onto a blank |
+| `ping_transmitter` | Stick this on a car with the target option |
+| `ping_receiver` | Use it to ping cars you have a tracker on |
+
+On ox_inventory, `vehiclekeys` has two buttons. Throw Keys drops that key as a prop anyone can pick up. You have to be in a vehicle. Destroy Key deletes that one key. Spare copies you still have keep working. Thrown keys despawn after 30 minutes.
+
+```lua
+['vehiclekeys'] = {
+    label = 'Vehicle Keys',
+    weight = 50,
+    stack = false,
+    close = true,
+    description = 'Keys for a vehicle',
+    client = { image = 'vehiclekeys.png' },
+    buttons = {
+        {
+            label = 'Throw Keys',
+            action = function(slot)
+                exports.MrNewbVehicleKeys:ThrowKeys(slot)
+            end,
+        },
+        {
+            label = 'Destroy Key',
+            action = function(slot)
+                exports.MrNewbVehicleKeys:DestroyKey(slot)
+            end,
+        },
+    },
+},
+```
+
+Do **not** add `server.export` on these items. Use is registered by the resource. The full ox and QB lists are the two text files in `[INSTALL GUIDE]`.
+
+A held key looks like this:
+
+```lua
+{
+    plate = 'ABC1234',
+    modelName = 'adder',
+    keyType = 'smart', -- smart, luxury, basic, boat, motorcycle
+    keyoptions = {},
+}
+```
+
+`lockid` is set when aftermarket locks are on. `hacked` is set on scanner clones.

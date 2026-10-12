@@ -1,0 +1,21 @@
+{
+  "title": "Modules",
+  "icon": "IconPuzzle",
+  "pages": [
+    "framework",
+    "inventory",
+    "notifications",
+    "menu",
+    "inputs",
+    "progressbar",
+    "textui",
+    "target",
+    "vehiclekeys",
+    "vehiclefuel",
+    "bossmenu",
+    "dispatch",
+    "dialogue",
+    "taskgroups",
+    "task"
+  ]
+}

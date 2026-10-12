@@ -1,0 +1,174 @@
+---
+title: "Ambulance jobs"
+description: "Connect Prescriptions to your ambulance job for insured hospital bills and overdose clearing."
+icon: "IconAmbulance"
+---
+
+Medication heals already work on their own. When your ambulance job is running, Prescriptions loads the matching bridge from `resource/open/bridge/ambulancejobs/` and hooks `clearinjuries`, `clearbleeds`, `health`, and `revive` into it.
+
+The edits on this page are for the extras:
+
+- **Insured hospital bills.** Patients with coverage pay their copay instead of the full price
+- **Clearing overdoses on revive.** An EMS revive wipes the overdose effects
+- **Addiction relief.** A paid hospital stay knocks the score down (15 by default)
+
+Start `MrNewbPrescriptions` after your framework, inventory, and ambulance job. In every snippet below the `GetResourceState` check keeps your job working if Prescriptions is not running.
+
+Also check your config on this side:
+
+```lua
+Config.MedicalJobs = { ambulance = { minimumGrade = 0 } }
+Config.Dispatch = { jobs = { 'police' }, overdoseJobs = { 'ambulance' } }
+Config.Addiction.treatments = { hospitalTreatment = 15 }
+```
+
+## qb-ambulancejob
+
+Edit `qb-ambulancejob/server/main.lua`.
+
+**Insured bed bill.** Stock charges `Config.BillCost` in `hospital:server:SendToBed` and in several branches of `hospital:server:RespawnAtHospital`. Change **every** copy. Replace the three stock lines with:
+
+```lua
+local charge = Config.BillCost
+if GetResourceState('MrNewbPrescriptions') == 'started' then
+    charge = exports.MrNewbPrescriptions:ReturnInsuredRate(src, Config.BillCost)
+end
+if charge > 0 then
+    Player.RemoveMoney('bank', charge, 'respawned-at-hospital')
+    exports['qb-banking']:AddMoney('ambulance', charge, 'Player treatment')
+end
+TriggerClientEvent('hospital:client:SendBillEmail', src, charge, Config.Locations['hospital'][hospitalIndex]['name'])
+```
+
+Jail-bed branches that call `SendBillEmail` without the hospital name should pass `charge` only, same as stock.
+
+**Clear overdose on revive.** In `hospital:server:RevivePlayer`, right after each `TriggerClientEvent('hospital:client:Revive', Patient.PlayerData.source)`:
+
+```lua
+if GetResourceState('MrNewbPrescriptions') == 'started' then
+    exports.MrNewbPrescriptions:ReverseOverdose(src, Patient.PlayerData.source)
+end
+```
+
+## esx_ambulancejob
+
+Edit `esx_ambulancejob/server/main.lua`.
+
+**Insured early-respawn fine.** Only applies when `Config.EarlyRespawnFine` is on. Replace the `esx_ambulancejob:payFine` handler's charge with the insured rate:
+
+```lua
+RegisterNetEvent('esx_ambulancejob:payFine')
+AddEventHandler('esx_ambulancejob:payFine', function()
+    local src = source
+    local xPlayer = ESX.GetPlayerFromId(src)
+    local fineAmount = Config.EarlyRespawnFineAmount
+    local charge = fineAmount
+
+    if GetResourceState('MrNewbPrescriptions') == 'started' then
+        charge = exports.MrNewbPrescriptions:ReturnInsuredRate(src, fineAmount)
+    end
+
+    xPlayer.showNotification(TranslateCap('respawn_bleedout_fine_msg', ESX.Math.GroupDigits(charge)))
+    if charge > 0 then
+        xPlayer.removeAccountMoney('bank', charge, "Respawn Fine")
+    end
+end)
+```
+
+Update `esx_ambulancejob:checkBalance` the same way, so an insured player is not blocked when the full fine is more than their bank balance but the copay is not:
+
+```lua
+local needed = Config.EarlyRespawnFineAmount
+if GetResourceState('MrNewbPrescriptions') == 'started' then
+    needed = exports.MrNewbPrescriptions:ReturnInsuredRate(source, Config.EarlyRespawnFineAmount)
+end
+cb(bankBalance >= needed)
+```
+
+**Clear overdose on revive.** After each successful `xTarget.triggerEvent('esx_ambulancejob:revive')`, in both the reward and no-reward branches:
+
+```lua
+if GetResourceState('MrNewbPrescriptions') == 'started' then
+    exports.MrNewbPrescriptions:ReverseOverdose(source, playerId)
+end
+```
+
+## qbx_ambulancejob and qbx_medical
+
+Med heals are bridged through `qbx_medical`. The edits below go in **qbx_ambulancejob**.
+
+**Insured bed bill.** In `server/hospital.lua`, replace `billPlayer`:
+
+```lua
+local function billPlayer(src)
+    local player = exports.qbx_core:GetPlayer(src)
+    local charge = sharedConfig.checkInCost
+    if GetResourceState('MrNewbPrescriptions') == 'started' then
+        charge = exports.MrNewbPrescriptions:ReturnInsuredRate(src, sharedConfig.checkInCost)
+    end
+    if charge > 0 then
+        player.Functions.RemoveMoney('bank', charge, 'respawned-at-hospital')
+        config.depositSociety('ambulance', charge)
+    end
+    TriggerClientEvent('hospital:client:SendBillEmail', src, charge)
+end
+```
+
+Check-in and respawn beds both go through this function, so one edit covers both.
+
+**Addiction relief.** At the end of the `qbx_ambulancejob:server:playerEnteredBed` handler, after billing:
+
+```lua
+if GetResourceState('MrNewbPrescriptions') == 'started' then
+    exports.MrNewbPrescriptions:ReducePlayerAddiction(src, 15) -- match Config.Addiction.treatments.hospitalTreatment
+end
+```
+
+**Clear overdose on revive.** Wherever you call `exports.qbx_medical:Revive(targetSrc)` from EMS, add this right after:
+
+```lua
+if GetResourceState('MrNewbPrescriptions') == 'started' then
+    exports.MrNewbPrescriptions:ReverseOverdose(src, targetSrc)
+end
+```
+
+Wrapping the `Revive` call is the reliable way. Some builds also fire a `qbx_medical:server:playerRevived` event, but check yours before relying on it.
+
+## wasabi_ambulance_v2
+
+Wasabi's pricing runs inside escrow, so there is nothing to patch in their files. Death, revive, and facility listeners are already included in `wasabi_ambulance_listeners.lua`:
+
+- Overdose effects are cleared on revive and on death
+- A facility heal reduces the addiction score by `hospitalTreatment`
+
+For **insured bills**, Wasabi charges the patient first. Refund the insurance share afterward, in a server script of your own:
+
+```lua
+AddEventHandler('wasabi_ambulance:Server:Listeners:OnFacilityHeal', function(src, facilityId, facilityName, cost)
+    src = tonumber(src)
+    cost = math.floor(tonumber(cost) or 0)
+    if not src or cost <= 0 then return end
+    if GetResourceState('MrNewbPrescriptions') ~= 'started' then return end
+
+    local charge = exports.MrNewbPrescriptions:ReturnInsuredRate(src, cost)
+    local refund = cost - charge
+    if refund <= 0 then return end
+
+    bridge.framework.addMoney(src, 'bank', refund)
+end)
+```
+
+Do not duplicate the addiction relief listener unless you deleted the stock file.
+
+## Handy calls
+
+| Call | Use |
+| --- | --- |
+| `ReturnInsuredRate(src, amount)` | What the patient pays after their copay |
+| `GetInsuranceStatus(src)` | Whether they have coverage |
+| `ReverseOverdose(medicSrc, patientSrc)` | Clear an overdose, with the Narkhan score reduction |
+| `ReducePlayerAddiction(src, amount)` | Hospital relief |
+| `GetPatientMedicationHistory(src)` | A bedside chart |
+| `WritePrescription({ ... })` | A discharge paper |
+
+All of them are in the [server exports](/mrnewbprescriptions/exports/server-exports).

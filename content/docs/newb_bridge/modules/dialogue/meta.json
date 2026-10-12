@@ -1,0 +1,8 @@
+{
+  "title": "Dialogue",
+  "icon": "IconMessages",
+  "pages": [
+    "client",
+    "server"
+  ]
+}

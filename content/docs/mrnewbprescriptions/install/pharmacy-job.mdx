@@ -1,0 +1,47 @@
+---
+title: "Pharmacy job"
+description: "Add the pharmacy job to QBCore, Qbox, or ESX and point each pharmacy at it."
+icon: "IconBriefcase"
+---
+
+A pharmacy with a `Job` block is **player-run**. Its job name has to match a real job in your framework. The sample name is `pharmacy`. Never leave a placeholder like `police` in there.
+
+Merge the file for your framework, restart the framework core, then restart this resource. The files live in `[INSTALL]/jobs/`.
+
+| Framework | File | Where it goes |
+| --- | --- | --- |
+| Qbox | `qbx_core.lua` | Merge into `qbx_core/shared/jobs.lua` |
+| QBCore | `qb-core.lua` | Merge into `qb-core/shared/jobs.lua` |
+| ESX Legacy | `esx.sql` | Run once against your database |
+
+The sample job has four grades: Clerk, Pharmacist, Senior Pharmacist, and Manager. The manager grade is the boss, with bank access, so the boss menu works without extra setup.
+
+## Point the pharmacy at it
+
+In `/prescriptionssetup`, open **Shops**, pick the pharmacy, and set the job name. If you edit the file instead, it looks like this:
+
+```lua
+Job = {
+    enabled = true,
+    jobName = 'pharmacy', -- must match the framework job
+    minimumGrade = 0,
+}
+```
+
+If you rename the job, say to `moreos`, change it in your framework **and** on every pharmacy that uses it.
+
+## Who can do what
+
+| Setting | What it gates |
+| --- | --- |
+| `Config.MedicalJobs` | Who can use the prescription pad. `ambulance = { minimumGrade = 0 }`, or `ambulance = true` for any grade |
+| `Config.Permissions.pharmacy` | Clocking in, the register, supply runs, and bottling |
+| `Config.Permissions.pharmacyPanel` | The pharmacy tablet: search, print, flag, revoke |
+| `Config.Dispatch.jobs` | Who gets pinged for the panic button, forged sheets, and shoplifting |
+| `Config.Dispatch.overdoseJobs` | Who gets pinged for overdoses. `false` keeps them quiet |
+
+Each permission is a minimum grade, with `0` as the lowest. Admin access to `/prescriptionssetup` comes from the framework admin check in Newb_Bridge.
+
+## No player pharmacy?
+
+Leave the `Job` block out. That pharmacy becomes an NPC pharmacist who fills scripts when patients bring the paper. Sales are split between the jobs in `NonPlayerPharmacyPayoutJobs`, equally.

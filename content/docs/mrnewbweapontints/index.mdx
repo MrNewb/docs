@@ -1,0 +1,21 @@
+---
+title: "MrNewbWeaponTints"
+description: "Tint items for ox_inventory, and a heavy file that takes the serial off a gun. Runs on Newb_Bridge."
+icon: "IconPalette"
+---
+
+Tint items for ox_inventory, and a heavy file that takes the serial off a gun. Runs on [Newb_Bridge](/newb_bridge/getting-started).
+
+These are the odd ones out. They **do** use ox_inventory `server.export`. ox_inventory only. There ain’t a QB tab.
+
+[GitHub](https://github.com/MrNewb/MrNewbWeaponTints) · [Discord](https://discord.gg/mrnewbscripts) · [Configuration](/mrnewbweapontints/install/configuration) · [Exports](/mrnewbweapontints/exports)
+
+## Features
+
+- Seven vanilla weapon tints as usable items (`greentint` … `platinumtint`)
+- `newbserialfile` writes a filed-off serial onto the equipped weapon
+- MK2 weapons remap `server.tint` through a built-in index table
+- ox_inventory metadata (`tint`, `weapontint`, `serial`) — no SQL, no config file
+- Strings in `locales/*.json` (ox_lib)
+
+Item table and MK2 remap: [Configuration](/mrnewbweapontints/install/configuration). Paste: [Item setup](/mrnewbweapontints/install/inventory). Icons: [Item images](/mrnewbweapontints/install/inventory-images). Hook signatures: [Exports](/mrnewbweapontints/exports).

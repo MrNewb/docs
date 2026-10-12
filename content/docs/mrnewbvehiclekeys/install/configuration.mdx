@@ -1,0 +1,86 @@
+---
+title: "Configuration"
+description: "Vehicle Keys settings live in /vehiclekeyssetup. There is no config file."
+icon: "IconSettings"
+---
+
+There is no `configs/` folder. Factory defaults ship in `resource/shared/seed/` (`config.lua`, `locksmith_job.lua`, and a few JSON files). First boot copies them into `MrNewb__Settings`. After that the saved copy wins, and `/vehiclekeyssetup` pushes changes to connected players without a restart.
+
+Editing the seed files later does nothing on an existing install.
+
+A few files stay editable because they hold code. A change there needs a resource restart:
+
+| File | What you edit |
+| --- | --- |
+| `resource/open/shared/hooks.lua` | `Config.ValidationChecks` (return `false` to block lock, hotwire, search, lockpick, or engine start) and `Config.KeyFobButtons` |
+| `resource/open/shared/minigames.lua` | Third-party minigame wiring |
+| `resource/open/server/open_hooks.lua` | `LogVehicleKeysAction(src, action, data)` |
+| `resource/open/server/dispatch.lua` | Police alert |
+| `resource/open/client/integrations.lua` | Lockpick item integration |
+
+## What to set first
+
+| Setting | Default | What it does |
+| --- | --- | --- |
+| `InventoryKeys.Enabled` | on | On = keys are inventory items. Off = virtual keys, opened with F2. Switch this before launch |
+| `InventoryKeys.OxInventory.ContainerKeyring` | on, 10 slots | Keyring is a real ox_inventory container. Off = the old menu keyring |
+| `InventoryKeys.EnableAftermarketLocks` | on | Owners can change a lock so old keys stop working |
+| `Driving.InsertMode.Enabled` | off | Key has to go in the ignition (I) before the engine starts. Turns off give-key-if-running and hotwire-gives-a-key while it is on |
+| `Driving.EngineToggleEnabled` | on, unless a known HUD runs | Engine key. Starts off when jg-hud, ps-hud, qb-hud, or qbx_hud is running |
+| `ProximityLocking` | on | Auto lock and unlock as the owner walks away or back |
+| `LockVehicleRange` / `KeyFobLockRange` | 15 / 150 m | L key, and the on-screen fob |
+| `Hotwire` | on, 3 attempts | `Item.Required` makes `hotwire_kit` mandatory |
+| `Lockpicks` | on | Opens a locked door. Does not start the car |
+| `SearchForKeys` | on | Search a car for left-in keys |
+| `Carjacking` | on | Pulls the driver out at weapon point |
+| `Dispatch` | on | Alerts for hotwire, lockpick, and hijacking. Chances are 0–100 |
+| `LocksmithNPC` | on | Walk-up ped. Hides while a player locksmith is online |
+| `LocksmithJob` | on | Player locksmith. Factory job name is `police` so you can test. Set the real job on each location |
+| `KeyJobStorages` | 2 police lockers | Cabinets where a job hangs spare keys |
+| `AdminCommands` | off | Turns on `/car` and `/dv` |
+| `CompatibilityEvents` | qb and qbx on | Which foreign key events this resource answers |
+| `DebugMode` | off | Verbose logging and the debug commands |
+
+## Per-vehicle rules
+
+Each field falls back one tier at a time:
+
+```text
+plates -> models -> classes -> types -> default
+```
+
+An entry only names the fields it changes. Chances are `0.0` to `1.0` (dispatch alert chances are `0` to `100`).
+
+| Field | Meaning |
+| --- | --- |
+| `neverNeedsKey` | Never needs or receives a key |
+| `cannotBeStolen` | Blocks hotwire, carjack, search, and lockpick |
+| `cannotBeLockpicked` | Blocks lockpicking only |
+| `needsAdvancedLockpick` | Normal lockpick blocked |
+| `cannotBeCarjacked` | Blocks carjacking only |
+| `chanceLockedWhenParked` | Chance an empty unowned vehicle is locked |
+| `chanceLockedWhenNpcDriving` | Chance an NPC-driven vehicle is locked |
+| `chanceSearchFindsKeys` | Chance a search turns up the keys |
+| `chanceLockpickBreaks` / `chanceAdvancedLockpickBreaks` | Chance that pick breaks |
+| `hotwireDifficulty` / `lockpickDifficulty` / `advancedLockpickDifficulty` / `keyCuttingDifficulty` | `'easy'`, `'medium'`, `'hard'`, or `false` to block it |
+| `frontTrunkDoorIndex` | Rear-engine cars whose trunk is at the front |
+
+`plates` is exact plate text. `models` is a hash or spawn name. `types` is `automobile`, `bike`, `boat`, `heli`, `plane`, `submarine`, `trailer`, `train`. Pedal bikes report as `bike`, so list those by model. Server-enforced fields have to live on `models`, `types`, `plates`, or on a class that also has a `models` list. The server warns at start if a class is missing that list, or a chance is outside `0.0`–`1.0`.
+
+## Shared job vehicles
+
+Employees share keys to that job’s vehicles. `requireOnDuty` counts only while clocked in. `enableAutolock` locks the car behind the last driver. Prefer `models` and `plates`. A `classes` entry only matches on the server when that class also has a `models` list.
+
+## Locksmith and tracker
+
+The walk-up ped sells spare keys, fob upgrades, and the items under its price list. The entry key has to be the real item name.
+
+The player job has a bench, register, stash, and computer. The bench burns one `blank_key` per cut when that is required. Item-key mode has to be on for the bench and the `keyfob_scanner`. The scanner sniffs a nearby fob and clones it onto a blank. Key lockers are stored in SQL. Renaming a location key creates a new empty locker.
+
+`ping_transmitter` sticks on a car from the target option. `ping_receiver` pings a blurred blip. Tracker state is in memory, so it clears on a server restart, and the ping only works while that vehicle is spawned.
+
+## Compatibility
+
+`CompatibilityEvents` chooses which foreign events and legacy exports answer. Garage entries switch on when that garage resource is running. `provide` lines in `fxmanifest.lua` let `exports['qbx_vehiclekeys']:GiveKeys(...)` resolve here. Only `provide 'qbx_vehiclekeys'` is active in the shipped manifest.
+
+`MrNewbVehicleKeys:Client:*` and `MrNewbVehicleKeys:Server:*` are internal. Do not build on them. Use the [exports](/mrnewbvehiclekeys/exports/server-exports).

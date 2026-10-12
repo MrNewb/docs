@@ -1,0 +1,9 @@
+{
+  "title": "CityHall",
+  "icon": "IconBuildingCommunity",
+  "pages": [
+    "requirements",
+    "install",
+    "configuration"
+  ]
+}

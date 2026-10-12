@@ -1,0 +1,12 @@
+@import "tailwindcss";
+@import "fumadocs-ui/css/vitepress.css";
+@import "fumadocs-ui/css/preset.css";
+@import "../styles.css";
+
+:root {
+  --color-fd-primary: #1971c2;
+}
+
+.dark {
+  --color-fd-primary: #228be6;
+}

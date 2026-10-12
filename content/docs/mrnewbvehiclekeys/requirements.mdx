@@ -1,0 +1,16 @@
+---
+title: "Requirements"
+description: "What you need running before Vehicle Keys starts."
+icon: "IconChecklist"
+---
+
+- [Newb_Bridge](/newb_bridge)
+- ox_lib, oxmysql
+- [Server artifact and OneSync](/getting-started/download#check-your-artifact)
+- An inventory Newb_Bridge already supports. Start ox_inventory **before** this resource if you use it, or the keyring falls back to the old style and the console will say so
+
+The NUI ships in `web/build/`. You do not need Node or bun unless you edit the UI.
+
+`fxmanifest.lua` provides `qbx_vehiclekeys` by default. If the real qbx_vehiclekeys (or another resource providing that name) is also started, remove that resource or delete the `provide` line. The other provide lines (`qb-vehiclekeys`, `qs-vehiclekeys`, `Renewed-Vehiclekeys`, `wasabi_carlock`, `mk_vehiclekeys`, `tgiann-hotwire`) are commented out.
+
+Keep the folder named `MrNewbVehicleKeys`. Key locker props ship in `stream/` (`stream/mrnewb_keylocker.ytyp`).

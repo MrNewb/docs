@@ -1,0 +1,11 @@
+{
+  "title": "Installation",
+  "icon": "IconDownload",
+  "pages": [
+    "pharmacy-job",
+    "configuration",
+    "commands",
+    "inventory",
+    "inventory-images"
+  ]
+}

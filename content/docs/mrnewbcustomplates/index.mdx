@@ -1,0 +1,27 @@
+---
+title: "MrNewbCustomPlates"
+description: "A usable plate item. They type the plate on the overlay, junk characters get stripped, and it goes on a nearby car they own. Runs on Newb_Bridge."
+icon: "IconLicense"
+---
+
+A usable `customizableplate` item. They type the plate on the overlay, junk characters get stripped, and it goes on a nearby car they own. Runs on [Newb_Bridge](/newb_bridge/getting-started).
+
+[GitHub](https://github.com/MrNewb/MrNewbCustomPlates) · [Discord](https://discord.gg/mrnewbscripts) · [Configuration](/mrnewbcustomplates/install/configuration) · [Preview](https://www.youtube.com/watch?v=fGq9QBig3j4)
+
+<YouTubePoster id="fGq9QBig3j4" title="MrNewbCustomPlates preview" className="resource-video" />
+
+## Features
+
+- License-plate NUI with min/max length from config (max is clamped to 8)
+- Letters and numbers only — non-alphanumeric characters are stripped as you type, then uppercased
+- Banned-word and length rejects stay on the overlay (no close-then-notify)
+- Substring filter against `FilteredWords`, checked on client and server
+- Must be outside the vehicle, within `10.0` of a networked vehicle they own (server allows `12.0`)
+- Identifier-scoped ownership lookup plus unique-plate check, then an index-friendly SQL write
+- Optional 5s apply progress (mechanic anim at the rear bumper)
+- Vehicle-key swap through `bridge.vehiclekeys`
+- Optional ox_inventory hook that blocks **giving** the plate item to another player (not moving it in your own inventory)
+
+Config and the apply flow: [Configuration](/mrnewbcustomplates/install/configuration). Item paste: [Item setup](/mrnewbcustomplates/install/inventory). Icon: [Item images](/mrnewbcustomplates/install/inventory-images).
+
+Inventory icons by [Decay Studios](https://discord.gg/yDXZwZPjdN).

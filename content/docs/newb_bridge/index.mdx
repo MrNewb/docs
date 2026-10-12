@@ -1,0 +1,33 @@
+---
+title: "Newb_Bridge"
+description: "Most of my scripts import this. You call bridge.* and it talks to the framework, inventory, and target you already got running."
+icon: "IconPlugConnected"
+---
+
+Most of my scripts import this. You call `bridge.*` and it talks to the framework, inventory, and target you already got running.
+
+<Callout>
+  I'm still filling this in. Pages are gonna move around.
+</Callout>
+
+[GitHub](https://github.com/MrNewb/Newb_Bridge) · [Supported](/newb_bridge/supported)
+
+## Start order
+
+```cfg
+ensure ox_lib
+ensure oxmysql
+ensure Newb_Bridge
+ensure MrNewb_YourScript
+```
+
+The folder name must stay `Newb_Bridge`. Import in each script’s `fxmanifest.lua`:
+
+```lua
+shared_scripts {
+    '@ox_lib/init.lua',
+    '@Newb_Bridge/import.lua',
+}
+```
+
+Leave providers on `"auto"` unless you need to pin one. Dispatch defaults to `"internal"`. Details: [Configuration](/newb_bridge/configuration), [Modules](/newb_bridge/modules).

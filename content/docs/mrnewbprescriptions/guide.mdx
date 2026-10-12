@@ -1,0 +1,87 @@
+---
+title: "How it plays"
+description: "The prescription loop from the doctor's pad to the pharmacy counter, plus the shady side. Good for training staff."
+icon: "IconStethoscope"
+---
+
+A quick tour of what players actually do. Hand this page to new staff.
+
+## The normal path
+
+### 1. The doctor writes a script
+
+A doctor uses the **prescription pad**. They pick a nearby patient, choose a medication, set how many doses, add a note, and sign. The patient gets a `medicalprescription` paper with an Rx number, the clinic letterhead, and an expiry date (180 days by default).
+
+Only jobs listed in `Config.MedicalJobs` can do this, at or above their grade floor. Doctors keep a history of what they have written, up to 100 scripts each.
+
+### 2. The patient goes to a pharmacy
+
+There are two ways to get filled.
+
+**Player-run pharmacy.** A pharmacist who is clocked in opens the **bottling bench**, picks the paper, and plays a short drag-and-drop minigame to drop pills into the bottle. Then they seal and label it. The ingredients come out of the pharmacy's stock room, so someone has to keep it stocked.
+
+**NPC pharmacist.** If nobody is working, a pharmacist ped fills the script when the patient brings the paper. The ped steps aside as soon as real staff clock in.
+
+### 3. The patient pays
+
+At a player-run counter, the pharmacist uses the **cash register**, picks a nearby customer, adds the medication, and previews the charge. If the customer has insurance, the discount shows right there. The customer sees an approval prompt and has 30 seconds to accept.
+
+A charge can fail if the customer takes too long, cannot afford it, or already has a bill pending. The pharmacist sees an alert, so they know to try again.
+
+### 4. Keeping stock
+
+The pharmacy tablet places a supply order. The society pays for it, and a staff member drives the delivery to the crates and loads up. Prices and limits are in `SupplyOrder`.
+
+### 5. The pharmacy tablet
+
+Beyond orders, the tablet lets staff:
+
+- Search dispense history and doctor records
+- Print a `medicalrecord` for a patient
+- Flag a prescription
+- Revoke a prescription so it can no longer be filled
+
+## Insurance
+
+Patients visit the insurance agent ped to buy, switch, or cancel a plan. They get an insurance card item. Switching or cancelling asks them to confirm, and a failed purchase shows on screen instead of closing silently.
+
+Coverage lowers the patient's share at the register when a medication is on the ticket. Plans lapse after a long period of no use. Hospitals can bill insured patients the discounted rate too, see [Ambulance jobs](/mrnewbprescriptions/ambulance-jobs).
+
+## Taking medication
+
+Using a medication runs its effect for the set duration. Some heal, some give armor, some are just strange: a smoky lung, a floating camera, a Pißwasser hangover. Every effect is listed on [Medications and effects](/mrnewbprescriptions/effects).
+
+Take it too often and it catches up with you.
+
+- **Addiction.** Repeated use raises a hidden score. Once hooked, a player gets cravings, sweating, shaky hands, and drains hunger and thirst faster. Wait it out and it slowly fades, or speed it up with yoga or a hospital visit
+- **Withdrawal.** Hooked and no recent use means withdrawal kicks in
+- **Overdose.** Too many doses too fast, four inside three minutes by default, starts an overdose that gets worse in stages. Dispatch can notify ambulance. Another player can use **Narkhan** spray to reverse it, and a revive clears it too
+
+## The shady side
+
+### Forgery
+
+An underground desk lets players tamper with paper. They can **alter** a real script, changing the name or drug, or **forge a blank** from scratch with a pad and blank paper. They refine the result with a few skill checks. A forged paper can never look better than 70% convincing.
+
+At a player counter, staff can **verify** a paper at the register. At an NPC counter, unverified fakes are turned away and dispatch is pinged, unless you have set `npcAcceptForged`. A failed blank forge destroys the pad and the paper.
+
+### Shoplifting
+
+Players can rummage the shelves of a pharmacy for over-the-counter items like aspirin, pseudoephedrine, bandages, and cough syrup. It takes a progress bar and does not always work, and police may get a ping. After a successful search the shelf stays empty for two hours. Pharmacy staff cannot rob their own shelves.
+
+### Envious shots
+
+A shot glass used with Envious cough syrup in the bag pours a shot. That shot used with Sprunk in the bag mixes an **Envious shot**, which has five sips. A sip gives a five minute buzz with armor and health. Sip while it is still working and they throw up and lose health. Keep going and it kills them. Finishing a run of sips in one session starts the addiction.
+
+## Quick staff reference
+
+| Task | Who | Where |
+| --- | --- | --- |
+| Write a script | Doctor | Prescription pad |
+| Bottle a script | Pharmacist (job and grade; no clock-in needed) | Bottling bench |
+| Ring up a customer | Pharmacist, clocked in | Cash register |
+| Order stock | Pharmacist, clocked in | Pharmacy tablet |
+| Clock in or out | Pharmacy staff | Clock point |
+| Panic button | Pharmacy staff, clocked in | Panic point |
+| Boss menu | Boss grade | Management location |
+| Buy insurance | Anyone | Insurance agent |

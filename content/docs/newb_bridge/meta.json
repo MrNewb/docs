@@ -1,0 +1,14 @@
+{
+  "title": "Newb_Bridge",
+  "icon": "IconPlugConnected",
+  "pages": [
+    "getting-started",
+    "configuration",
+    "supported",
+    "resource-layout",
+    "modules",
+    "utilities",
+    "events",
+    "migrating"
+  ]
+}

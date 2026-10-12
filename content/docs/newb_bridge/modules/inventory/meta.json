@@ -1,0 +1,8 @@
+{
+  "title": "Inventory",
+  "icon": "IconPackage",
+  "pages": [
+    "client",
+    "server"
+  ]
+}

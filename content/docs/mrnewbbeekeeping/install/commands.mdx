@@ -1,0 +1,35 @@
+---
+title: "Commands"
+description: "Commands for BeeKeeping. Hive tools live in /hivesetup, not as separate chat commands."
+icon: "IconTerminal2"
+---
+
+| Command | Where | What it does |
+| --- | --- | --- |
+| `/hivesetup [hiveId]` | in-game | Opens the setup panel and the hive manager. Optional hive id preselects that hive. Gated by `Config.IsHiveAdmin` in `resource/open/server/custom.lua` |
+| `/staffdebug` | in-game | Copies bridge and version info to the clipboard. Only answers when Debug is on in the panel |
+| `/reloadhives` | in-game | Client hive resync. Registered only when Debug is on |
+
+<Callout type="info">
+  Delete, map blips, grant queen, strain builder, shared access, and owner / stale wipe live in `/hivesetup`. They are not separate chat commands.
+</Callout>
+
+## Staff tools (`/hivesetup`)
+
+| Section | What staff can do |
+| --- | --- |
+| Hive manager | Search hives, open detail (owner, colony, queen, access), waypoint / teleport, delete, add or remove shared access |
+| Map blips | Toggle blips for every hive on your map |
+| Maintenance | Preview and remove stale hives, or everything one owner placed |
+| Grant a queen | Give a player a queen of a chosen strain |
+| Strain builder | Define a strain. Saved strains stay in the database and apply live |
+
+Who counts as staff is this function (change it if you want an ACE check instead):
+
+```lua
+function Config.IsHiveAdmin(src)
+    return bridge.framework.isAdmin(src)
+end
+```
+
+The NUI ships in `web/build/`. Hive SQL from older MrNewbBeeKeeping versions is converted on start. Restart once if the console says it converted. There is no migrate command.

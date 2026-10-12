@@ -1,0 +1,85 @@
+---
+title: "Server exports"
+description: "Server exports for Prescriptions. src is a player server id."
+icon: "IconServer"
+---
+
+Call them as `exports.MrNewbPrescriptions:Name(...)` from a server script. `src` is a player server id.
+
+## Prescriptions
+
+| Export | Returns | Notes |
+| --- | --- | --- |
+| `CreatePrescription(src, { uses = n }, drugKey)` | boolean | Gives `src` a ready-to-use medication item. `GivePlayerMedication` is the same function. `drugKey` must exist in the catalog |
+| `WritePrescription(props)` | Rx number or `nil` | Writes a paper script into the doctor record, pharmacy history, and the writer's inventory. See below |
+| `LookupPrescriptionByRx(rxNumber)` | row or `nil` | The doctor record for that Rx number |
+| `RevokePrescription(rxNumber, revokedBy)` | boolean | Revokes it so it can no longer be filled |
+| `SearchDoctorRecords(term, { flaggedOnly = false })` | table[] | Matches patient, doctor, medication, Rx, and note |
+| `SearchPharmacyAudit(jobName, term, limit)` | table[] | Audit events for a pharmacy. `limit` is 1 to 100, default 50 |
+| `GetPatientMedicationHistory(src)` | table | Bottles on hand, unfilled scripts, and doctor history |
+| `RegisterPrescription(id, prescription)` | boolean | Adds a catalog medication at runtime. `name` is required. See [Medications and effects](/mrnewbprescriptions/effects) |
+| `RegisterEffect(id, label, handler?)` | | Adds a custom effect label. See [Medications and effects](/mrnewbprescriptions/effects) |
+
+`WritePrescription` takes `src`, `drugKey`, `targetSrc`, `doses`, and `note`, and optionally `patientName`, `dob`, `patientIdentifier`, `refillsAllowed`, `expiresAt`, `time`, `gender`, and `rxNumber`. With `targetSrc`, the patient name, date of birth, and identifier are filled in from that player. It returns `nil` if the doses are out of range, the name or date of birth is empty, or the paper cannot be carried.
+
+## Pharmacy stock
+
+| Export | Returns | Notes |
+| --- | --- | --- |
+| `GetPharmacyStock(jobName)` | `{ [item] = count }` | The job's stock room |
+| `AddPharmacyStock(jobName, item, count)` | `true, newCount` | Adds stock |
+| `ConsumePharmacyStock(jobName, itemOrDrug, count)` | boolean | Removes stock. Pass a medication key to remove its whole recipe |
+
+## Insurance
+
+| Export | Returns | Notes |
+| --- | --- | --- |
+| `GetInsurance(src)` | row or `false` | The active coverage row |
+| `GetInsuranceStatus(src)` | boolean | Whether they have active coverage |
+| `GetInsuranceCard(src)` | table or `nil` | Data for the insurance card view |
+| `ReturnInsuredRate(src, amount)` | number | What the patient pays after their copay. Returns `amount` unchanged when uninsured |
+| `PurchaseInsurance(src, tier)` | boolean | Buys or switches plan. `tier` is a key of `Config.Insurance.Tiers`. Charges full price, or only the difference on an upgrade. Notifies the player and returns `false` on failure |
+| `CancelInsurance(src)` | boolean | Ends coverage |
+
+## Addiction and overdose
+
+| Export | Returns | Notes |
+| --- | --- | --- |
+| `GetPlayerAddiction(src, item?)` | table | A snapshot, optionally for one item. Empty when untracked |
+| `ReducePlayerAddiction(src, amount, item?)` | boolean | Lowers the score. `false` when addiction is disabled |
+| `GetPlayerOverdoseState(src)` | `{ overdosing, withdrawing }` | Two booleans |
+| `ReverseOverdose(src, targetSrc?)` | boolean | Clears an overdose on `targetSrc` (or `src`) and applies the Narkhan score reduction |
+| `TriggerMedicationTreatment(src, targetSrc, treatmentType, context)` | boolean | Fires `MrNewbPrescriptions:MedicationTreatment` so ambulance bridges can heal or revive. `treatmentType` is an effect id such as `clearinjuries`, `clearbleeds`, `health`, or `revive` |
+
+Other scripts can also read `Player(src).state.ndrugaddiction`.
+
+## Examples
+
+```lua
+-- charge a patient their insured price
+local pay = exports.MrNewbPrescriptions:ReturnInsuredRate(source, 500)
+
+-- write a prescription for a nearby patient
+local rx = exports.MrNewbPrescriptions:WritePrescription({
+    src = doctorSrc,
+    targetSrc = patientSrc,
+    drugKey = 'mollis',
+    doses = 3,
+    note = 'One tablet daily.',
+})
+if not rx then print('could not write prescription') end
+
+-- revoke one
+exports.MrNewbPrescriptions:RevokePrescription('1234567890', 'Dr. Smith')
+
+-- stock a pharmacy from another script
+exports.MrNewbPrescriptions:AddPharmacyStock('pharmacy', 'emptybottle', 20)
+
+-- bring someone back
+local state = exports.MrNewbPrescriptions:GetPlayerOverdoseState(source)
+if state.overdosing then
+    exports.MrNewbPrescriptions:ReverseOverdose(source)
+end
+```
+
+Client exports: [Client exports](/mrnewbprescriptions/exports/client-exports). Events and hooks: [Events and hooks](/mrnewbprescriptions/exports/events).

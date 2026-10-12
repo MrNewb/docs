@@ -59,6 +59,8 @@ const groups: Record<string, ProviderGroup> = {
       auto('core_focus'),
       auto('qb-target'),
       auto('sleepless_interact'),
+      auto('interact'),
+      auto('bl_sprites'),
     ],
   },
   'vehicle-keys': {

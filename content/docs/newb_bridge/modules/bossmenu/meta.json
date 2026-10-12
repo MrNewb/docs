@@ -1,0 +1,8 @@
+{
+  "title": "Boss menu",
+  "icon": "IconBriefcase",
+  "pages": [
+    "client",
+    "server"
+  ]
+}

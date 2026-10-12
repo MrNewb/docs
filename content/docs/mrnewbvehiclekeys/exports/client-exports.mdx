@@ -1,0 +1,47 @@
+---
+title: "Client exports"
+description: "Client exports for Vehicle Keys. vehicle is an entity handle."
+icon: "IconDeviceDesktop"
+---
+
+`vehicle` is an entity handle. Call them as `exports.MrNewbVehicleKeys:Name(...)`.
+
+| Export | Params | Returns |
+| --- | --- | --- |
+| `HasVehicleKeys` / `HasKeys` / `HaveKeys` | `vehicle` | boolean. Includes shared job access and temp keys |
+| `HasKeysByPlate` | `plate` | boolean |
+| `GiveKeys` / `RemoveKeys` | `vehicle` | boolean. Local player only |
+| `GiveKeysByPlate` / `RemoveKeysByPlate` | `plate` | boolean |
+| `GiveKeysCustom` | `vehicle, plate, keyType, keyoptions, autoStart, spawnLocked, addToKeyring` | boolean |
+| `GetPlayerKeyList` | none | table |
+| `GetVehicleState` | none | boolean. Keys for the vehicle you are in, or the nearest one |
+| `CanDriveVehicle` / `CheckVehicleAccess` | `vehicle` | boolean |
+| `DoesVehicleRequireKey` | `vehicle` | boolean |
+| `IsSharedJobVehicle` / `CheckForJobVehicle` | `vehicle` | boolean |
+| `ToggleLock` | `vehicle, targetLockStatus?` | boolean. `1` unlock, `2` lock, nil toggles |
+| `ToggleEngine` | `vehicle, forceState?` | boolean. `true` on, `false` off, nil toggles |
+| `IsVehicleHotwired` / `CheckIfHotwired` / `GetHotWiredStatus` | `vehicle` | boolean |
+| `IsKeyInIgnition` | `vehicle` | boolean |
+| `InsertKeyIntoIgnition` / `RemoveKeyFromIgnition` | `vehicle?` | boolean. Defaults to the current vehicle |
+| `SetGlobalKeyBypass` / `GetGlobalKeyBypass` | `value` / none | none / boolean. Same switch as `/devmode` |
+| `SetTempKeyByPlate` | `plate, durationMs?` | boolean |
+| `HasTempKey` / `RemoveTempKeyByPlate` | `plate` | boolean |
+| `SetVehicleLockpickImmuneEntity` | `vehicle, immune` | boolean |
+| `SetVehicleLockpickImmunePlate` | `plate, immune` | boolean |
+| `SetVehicleHotwireImmune` | `vehicle, immune` | boolean |
+| `OpenKeyFob` | `plate, buttons` | boolean |
+| `StartVehicleAlarm`, `ToggleTrunk`, `ToggleRemoteStart`, `DanceMode`, `SelfParkVehicle`, `SummonVehicle`, `ToggleAutoPilot` | `vehicle` | boolean |
+| `IsItemBasedMode` / `IsInsertModeEnabled` | none | boolean |
+| `GetKeySystem` | none | The live key system object. For deep integrations only |
+| `ThrowKeys` / `DestroyKey` | `slot` | ox_inventory button actions. Not for general scripting |
+
+`SetTempKey`, `GetTempKey`, and `ToggleTempKey` are old names for the global bypass. Use `SetGlobalKeyBypass`.
+
+Fob button ids in `resource/open/shared/hooks.lua`: `REMOTE_START`, `OPEN_DOORS`, `ROOF_TOGGLE`, `SELFPARK_VEHICLE`, `SUMMON_VEHICLE`, `AUTO_PILOT`, `DANCE_MODE`, `PROXIMITY_TOGGLE`, `EMERGENCY_LIGHTS`.
+
+```lua
+exports.MrNewbVehicleKeys:GiveKeys(vehicle)
+exports.MrNewbVehicleKeys:ToggleLock(vehicle, 2)
+```
+
+Server exports: [Server exports](/mrnewbvehiclekeys/exports/server-exports).

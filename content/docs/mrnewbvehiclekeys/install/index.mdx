@@ -1,0 +1,77 @@
+---
+title: "Installation"
+description: "How to install Vehicle Keys. Start this after ox_lib, oxmysql, your inventory, and Newb_Bridge."
+icon: "IconDownload"
+---
+
+<Callout type="warning">
+  Start this **after** ox_lib, oxmysql, your inventory, and Newb_Bridge. If ox_inventory starts later, the keyring falls back to the old style. Keep the folder named `MrNewbVehicleKeys`.
+</Callout>
+
+### Dependencies [step]
+
+[Newb_Bridge](/newb_bridge), [ox_lib](https://github.com/overextended/ox_lib), [oxmysql](https://github.com/overextended/oxmysql), and [Server artifact and OneSync](/getting-started/download#check-your-artifact). You do not edit the framework for this.
+
+Check the `provide 'qbx_vehiclekeys'` line before the first start. Details: [Requirements](/mrnewbvehiclekeys/requirements).
+
+### Add the items and images [step]
+
+Paste from [Item setup](/mrnewbvehiclekeys/install/inventory). The same text ships as `[INSTALL GUIDE]/ox_inventory_items.txt` and `[INSTALL GUIDE]/qb-core_items.txt`.
+
+Copy every PNG from `[INSTALL GUIDE]/images/` into your inventory images folder.
+
+- ox_inventory: `ox_inventory/web/images/`
+- qb-inventory: `qb-inventory/html/images/`
+
+`hotwire_kit` is optional until you turn on “require an item to hotwire”. Leave the item in anyway. On ox_inventory the keyring item needs `consume = 0`. The script sets the slot count.
+
+### Add to server.cfg [step]
+
+Skip the ox_inventory line if you are not using it.
+
+```cfg
+ensure ox_lib
+ensure oxmysql
+ensure Newb_Bridge
+ensure ox_inventory
+ensure MrNewbVehicleKeys
+```
+
+### First start [step]
+
+Start the server once. SQL tables are created on their own, including `MrNewb__Settings`. There is no SQL file to import, and no config file to edit.
+
+Join as an admin and run `/vehiclekeyssetup`. What to change first: [Configuration](/mrnewbvehiclekeys/install/configuration).
+
+### Restart and check [step]
+
+Restart the inventory, then this resource, after you paste items. Give yourself a key, lock a car with **L**, and open the fob.
+
+Commands: [Commands](/mrnewbvehiclekeys/install/commands). Give and take keys from other scripts: [Server exports](/mrnewbvehiclekeys/exports/server-exports). Locker models: [Anticheat models](/mrnewbvehiclekeys/anticheat).
+
+## Keys players press
+
+Players can rebind these under MrNewbVehicleKeys in FiveM’s settings.
+
+| Key | What it does |
+| --- | --- |
+| L | Lock or unlock the closest car you have a key for, about 15 meters. The on-screen fob reaches further |
+| Y | Toggle the engine. Stays off if jg-hud, ps-hud, qb-hud, or qbx_hud already handles the engine |
+| F2 | Open the key list. On ox_inventory you open the keyring item instead |
+| E | Hotwire, driver seat only, when you do not have a key |
+| H | Search the car for keys, driver seat only |
+| I / O | Put the key in the ignition, or take it back out, when insert mode is on |
+| F11 | Change the auto-pilot mode while it is running |
+
+Walking up to your own car locks and unlocks it. Players can turn that off from the fob or with `/newb_proximitylocks`.
+
+## Common setup mistakes
+
+| Symptom | Check |
+| --- | --- |
+| Keyring is the old menu | ox_inventory started after this resource, or container keyring is off in the setup menu |
+| Two `/car` commands | `AdminCommands` is on and qbx_core still registers its own `/car` and `/dv`. Turn one of them off |
+| `provide` conflict on start | Another resource also provides `qbx_vehiclekeys` |
+| Shop will not sell a renamed item | The locksmith price entry key has to be the real item name |
+| Seed file edits do nothing | The database copy wins after the first boot. Use `/vehiclekeyssetup` |
+| Locker props deleted | Allow the models on [Anticheat models](/mrnewbvehiclekeys/anticheat) |

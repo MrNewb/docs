@@ -1,0 +1,31 @@
+---
+title: "Configuration"
+description: "Tracker config and the use flow for PhoneTracker."
+icon: "IconSettings"
+---
+
+## Where you edit
+
+`configs/config.lua`:
+
+| Key | Purpose |
+| --- | --- |
+| `Config.RequiredJob` | Who may use the item. Map of job name → minimum grade (`police = 0` allows any rank). Array form `{ 'police', 'sheriff' }` and a single string `'police'` also work. Multiple jobs are OR. |
+| `Config.TrackerItem` | Usable item (`tracker`) |
+| `Config.PingCooldown` | Seconds between pings **per player**, server-enforced. Shipped `10`. `0` disables. The timer starts before lookup, so miss spam is blocked too. |
+| `Config.Utility.Debug` | Console logs. Shipped `false` |
+
+| | Item |
+| --- | --- |
+| <img className="item-thumb" src="/docs/images/tracker.webp" alt="" /> | `tracker` |
+
+qb-phone / charinfo lookups: `resource/open/server/phone_lookup.lua`. Labels: `locales/en.json` (`Device`, `Restricted`, `Dispatch`).
+
+## Using the tracker
+
+Use the item. Wrong job or missing item notifies and never opens the device.
+
+The NUI is a handheld GPS overlay (not an ox_lib dialog). Digits only, max 10. Dial or Enter submits. Escape closes.
+
+- **Hit** — device closes, waypoint + timed blip (sprite 161, 100 seconds).
+- **Miss / empty / cooldown / no item** — device stays open and shows the miss line on the glass.

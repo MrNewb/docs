@@ -1,0 +1,75 @@
+---
+title: "Troubleshooting"
+description: "Fixes for the usual Prescriptions problems."
+icon: "IconHelp"
+---
+
+First step for almost anything: check the server console on start. Missing items, bad job names, and failed bridges all show up there.
+
+## The paper does not open or print
+
+- The item names must match `Config.UsableItems` and exist in your inventory. Look for "item not found" lines at start
+- The doctor's job must be in `Config.MedicalJobs`, at or above the grade floor. Otherwise they get an "invalid job" notice
+- A `medicalprescription` spawned from an admin menu has no metadata and does nothing. Real papers come from the pad
+- Printing a `medicalrecord` from the tablet needs the item and room in the inventory, plus the pharmacy job at the tablet's grade
+- The `/prescription` command only exists when `useItem = false` or `allowCommandWithItem = true`
+
+## The pharmacy menu is empty
+
+- The NPC menu lists only papers you are carrying for a medication that exists. Bring a valid, unexpired, unrevoked `medicalprescription`
+- That medication has to be in the catalog. Check the spelling, and that a runtime-registered one was registered before use
+- "Pharmacy staff are on duty" means someone is clocked in, so the NPC steps aside. Use the counter, or turn off `HideWhenJobStaffOnline`
+- An unverified forged paper is rejected at NPC counters unless `Forgery.npcAcceptForged` is on
+- Stand within a few meters of the ped
+
+## Insurance is not charging or not discounting
+
+- `Insurance.enabled` must be on
+- The register applies a copay only when a **medication** is on the ticket. A general charge is full price
+- With `builtin`, the customer needs active coverage. It ends after `MaxInactiveDays`
+- With `m-insurance` or `custom`, make sure that resource is running and the bridge file is the one you chose
+- Buying a plan fails if the player cannot afford it, and you will see a failure alert
+- To send plan money to a society, set `Insurance.societyJob` (builtin only)
+
+## The register says the charge did not go through
+
+The customer has to approve within 30 seconds, only one bill can be pending per customer, they need enough in the chosen account, and the amount cannot be over `maxBillAmount` or the medication's list price. The pharmacist sees an alert, so check the amount and try again.
+
+## The time clock does nothing
+
+- Stand at the clock point, within about 6 meters, with the pharmacy job at or above the grade floor
+- The pharmacy's `Job.jobName` has to match the framework job
+- The register, supply runs, and panic button all need a clock-in. Only `Debug = true` skips that, and you should not leave it on
+
+## Bottling does not work
+
+- You need the pharmacy job at the right grade and to be at the bench
+- Ingredients must be in the pharmacy **stock room**, not just in your pockets. Order them with a supply run
+- Make sure another resource's menu is not holding NUI focus. Close it and retry
+
+## A blank screen, or old screens, after an update
+
+1. Confirm `web/build/index.html` and `web/build/assets/` both exist
+2. Replace the whole `web/build` folder and `locales/en.json` together. New screens read `Ui.*` keys that older locale files do not have
+3. `restart MrNewbPrescriptions`. If it is still stale, restart the server or clear the FiveM cache
+4. If you build the UI yourself: `cd web`, `bun install`, `bun run build`
+
+## Raw text like `Ui.Insurance.Failed` shows on screen
+
+Your locale file is missing keys. Copy the new ones from `locales/en.json`, and check that `setr ox:locale` matches the file you edited.
+
+## Pictures are missing in the inventory or on the bench
+
+Copy every PNG from `[INSTALL]/imgs/` into your inventory images folder and keep the names. Each custom medication needs `<itemname>.png`. Restart the inventory after copying.
+
+## Medications do not heal with my ambulance job
+
+Med heals load automatically from `resource/open/bridge/ambulancejobs/` when that job is running. For insurance on hospital bills and clearing overdoses on revive, follow [Ambulance jobs](/mrnewbprescriptions/ambulance-jobs).
+
+## My config changes are ignored
+
+Settings saved in `/prescriptionssetup` override `configs/*.lua`. Change the value there, or press Reset to return to the files.
+
+## Support
+
+Include your framework, inventory, ambulance job, and any console errors from this resource on start. If `Debug` is on, `/staffdebug` copies the provider report to your clipboard.

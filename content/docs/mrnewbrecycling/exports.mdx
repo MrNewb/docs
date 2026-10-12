@@ -1,0 +1,31 @@
+---
+title: "Exports"
+description: "The client rotor export and the state bags other scripts can read."
+icon: "IconCode"
+---
+
+## Client
+
+`SetRecyclerRunning` forces the spinning-rotor visual on a `mrnewb_recycler_post` entity. It does not start the machine or change what it produces. `nil` returns it to the server-driven state. It returns `false` if the entity does not exist or is a different model.
+
+```lua
+local ok = exports.MrNewb_Recycling:SetRecyclerRunning(entity, true)
+exports.MrNewb_Recycling:SetRecyclerRunning(entity, nil)
+```
+
+## State
+
+| Name | Meaning |
+| --- | --- |
+| `GlobalState.recyclingRunning` | Table keyed by recycler id. A running recycler maps to its finish time (Unix seconds). Idle recyclers are absent |
+| `Player(src).state.recyclerCarrying` | Set on the player carrying someone (murder mode) |
+| `Player(src).state.recyclerInserted` | Set on the player being carried or inserted (murder mode) |
+
+```lua
+local running = GlobalState.recyclingRunning or {}
+if running['my_recycler_id'] then
+    print(running['my_recycler_id'])
+end
+```
+
+`MrNewb_Recycling:Server:*`, `MrNewb_Recycling:Client:*`, and `MrNewb_Recycling:Callback:*` are internal. Do not call them from other scripts.

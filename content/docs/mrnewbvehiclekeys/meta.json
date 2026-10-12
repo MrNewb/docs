@@ -1,0 +1,10 @@
+{
+  "title": "VehicleKeys",
+  "icon": "IconKey",
+  "pages": [
+    "requirements",
+    "install",
+    "anticheat",
+    "exports"
+  ]
+}

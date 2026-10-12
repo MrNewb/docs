@@ -1,0 +1,14 @@
+---
+title: "Requirements"
+description: "What you need running before this script starts."
+icon: "IconChecklist"
+---
+
+- [Newb_Bridge](/newb_bridge)
+- ox_lib
+- oxmysql
+- Compatible inventory (ox_inventory recommended)
+- ESX, QBCore, or Qbox for the name write (`OpenUpdatePlayerName`)
+- Target via the bridge when `Config.RecordsClerk.Enabled` (ships `false`)
+
+No SQL to import. QB/Qbox save `charinfo` through the framework. ESX updates `users.firstname` / `users.lastname` in place. The write compares `bridge.framework.getResourceName()` to `qb-core`, `qbx_core`, or `es_extended`, not `bridge.frameworks`.

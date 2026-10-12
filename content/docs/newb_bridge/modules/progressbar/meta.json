@@ -1,0 +1,8 @@
+{
+  "title": "Progress bar",
+  "icon": "IconLoader",
+  "pages": [
+    "client",
+    "server"
+  ]
+}

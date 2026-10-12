@@ -1,0 +1,25 @@
+---
+title: "Client exports"
+description: "Client exports for Prescriptions."
+icon: "IconDeviceDesktop"
+---
+
+Call them as `exports.MrNewbPrescriptions:Name(...)` from a client script.
+
+| Export | Returns | Notes |
+| --- | --- | --- |
+| `RegisterPrescription(id, prescription)` | boolean | Same as the server one, for the local catalog |
+| `RegisterEffect(id, label, handler?)` | | Registers the effect handler locally |
+| `RunEffect(name, durationSec, strength)` | | Plays an effect id on the local player |
+| `StartOverdose()` / `StopOverdose()` | | Starts or ends the overdose sequence locally |
+| `DrugTaken()` | | Counts one dose toward the local overdose threshold |
+| `GetPedAddictionState(ped)` | boolean or `nil` | `true` when that player ped is overdosing. `nil` for non-players |
+
+```lua
+exports.MrNewbPrescriptions:RunEffect('smokey', 20, 1)
+local overdosing = exports.MrNewbPrescriptions:GetPedAddictionState(PlayerPedId())
+```
+
+`RegisterPrescription` and `RegisterEffect` need to run on both sides. Put them in a shared script so you only make the call once. Details: [Medications and effects](/mrnewbprescriptions/effects).
+
+Server exports: [Server exports](/mrnewbprescriptions/exports/server-exports).

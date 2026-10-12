@@ -1,0 +1,8 @@
+{
+  "title": "VehicleRentals",
+  "icon": "IconCar",
+  "pages": [
+    "requirements",
+    "install"
+  ]
+}

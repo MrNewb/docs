@@ -1,0 +1,8 @@
+{
+  "title": "CustomPlates",
+  "icon": "IconLicense",
+  "pages": [
+    "requirements",
+    "install"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "title": "Installation",
+  "icon": "IconDownload",
+  "pages": [
+    "commands",
+    "configuration"
+  ]
+}

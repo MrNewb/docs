@@ -1,0 +1,55 @@
+---
+title: "Configuration"
+description: "Recycling settings. Seed files apply until the first /recyclingsetup save."
+icon: "IconSettings"
+---
+
+`configs/config.lua` and `configs/recycler.lua` are the starting values. After the first save in `/recyclingsetup`, `MrNewb__Settings` is what the server uses. Reset in the panel loads the files again.
+
+The first time the panel opens, a short guide checks where the machines stand, whether every item you want recycled has a recipe, and how players reach a machine. The target eye is the recommended prompt.
+
+## Seed values
+
+| Setting | Default | Meaning |
+| --- | --- | --- |
+| `Config.RecyclerInteractDistance` | `2.5` | How close to use a recycler |
+| `Config.RecyclerInputSlots` / `Config.RecyclerOutputSlots` | `6` / `6` | Default slot counts |
+| `Config.RecyclerRadius` | `120.0` | How close a player must be before the recycler appears |
+| `Config.RecyclerTypes` | `basic`, `industrial`, `advanced` | `efficiencyMin`, `efficiencyMax`, `durationScale` |
+| `Config.RecyclerAudio` | sound bank | Sound, soundset, hearing range |
+| `Config.Recyclers` | seed spots | `id`, `name`, `type`, `model`, `coords`, `heading` |
+| `Config.RecyclerRecipes` | seed recipes | `secondsPerItem` plus output rows `{ item, weight, min, max }` or `{ item, weight, amount }` |
+
+The distance at which a recycler can be opened is fixed at `4.0`. Prompt style, interact distance, murder mode, models, and debug are set in the panel.
+
+## Pages
+
+- **Stations** — add and manage placed recyclers
+- **Recycler types** — efficiency, speed, colours, per-type item lists
+- **Recipes** — what each item breaks into
+- **Machine access / sound / models** — prompt style, distances, slots, load radius, sound, model library
+- **Murder mode / loot** — optional, off by default
+- **Debug** — extra output for support
+
+## Adding a station
+
+1. Stations, then Add a recycler. The name is prefilled from the street you are on.
+2. Choose a kind: Prop, Ped, or Box zone.
+3. Pick a model, or type a custom model name. Box zones have no model.
+4. Place in world (or draw the zone). The panel steps aside, then comes back.
+5. Choose its type. Move with gizmo if you need to. Teleport here takes you to one that is already placed.
+6. Save. A removed recycler hands its contents back to the players who loaded them.
+
+Each station also has its own interact distance, load radius, input slots, and output slots.
+
+## Recipes and how players use it
+
+Pick an item, set seconds per item, and add output rows with a weight and min/max amounts. Scale by condition makes worn items give less. A recipe can be limited to certain types, and a type can have its own outputs. Efficiency scales the amounts. The speed multiplier scales the time.
+
+Players use the target, text prompt, or help text, load input slots, turn it on, wait, then collect. Only the player who loaded an item can take it back out. One player can use a machine at a time.
+
+## Murder mode
+
+Off by default. When it is on, a player can carry another player to a recycler and insert them. The server decides range, duration, damage, tick, cooldown, and the loot table (item, amount, chance, rolls). Leave it off unless your server rules allow it.
+
+`bzzz_prop_recycler_a` is an optional compatibility prop. It is not shipped. If another resource streams it, the panel offers it. If it is not detected, saved recyclers that used it are skipped and the shipped props still work.

@@ -1,0 +1,95 @@
+---
+title: "Configuration"
+description: "Shops, loot tables, and the file map for SpookySeason."
+icon: "IconSettings"
+---
+
+## Config files
+
+### Client-visible — `configs/config.lua`
+
+| Key | Purpose |
+| --- | --- |
+| `Config.WeatherFeature` | `true` forces Halloween weather near shops (pauses qb-weathersync / cd_easytime / Renewed-Weathersync via `OpenSpookyToggleWeatherSync`) |
+| `Config.TrickOrTreatBlips` | `true` draws trick-or-treat blips |
+| `Config.Shops` | Token shops. Shipped `SpookyShop` |
+| `Config.Decorations` | Prop list (`position` `vector4`, `model`) |
+
+Shop entry:
+
+```lua
+SpookyShop = {
+    position = vector4(-1726.4633, -192.4515, 58.8, 270.3187),
+    model = `m24_1_prop_m41_ghost_dom_01a`,
+    inventory = {
+        pumpkin_basket = 25,
+        rotten_casket = 50,
+    },
+},
+```
+
+`inventory` is item name → **event_token** cost. If `pengu_digiscanner` is started, the shop also adds `WEAPON_DIGISCANNER` (ox_inventory) or `weapon_digiscanner` (otherwise) at **15** tokens.
+
+Override weather pause/resume in `resource/open/client/weather.lua` (`OpenSpookyToggleWeatherSync`).
+
+### Server-only — `configs/sv_config.lua`
+
+Do not load this on the client. Loot tables and scavenger coords stay here.
+
+| Key | Purpose |
+| --- | --- |
+| `Config.LootTypes` | Named pools: `pumpkin`, `grave`, `trickOrTreat`, `pumpkin_basket`, `rotten_casket` |
+| `Config.Pumpkins` | Search spots (`position`, `model`, `lootTable`) |
+| `Config.Graves` | Dig spots (`position`, `lootTable`) |
+| `Config.GhostHunts` | Ghost peds (`position`, `model`). Needs pengu_digiscanner |
+| `Config.TrickOrTreat` | Door knocks (`targetPoint`, `model`, `pedSpawn`, `lootTable`) |
+
+Loot row:
+
+| Field | Purpose |
+| --- | --- |
+| `rewardType` | `'item'` or `'cash'` |
+| `name` | Inventory item when `rewardType` is `'item'` |
+| `count` | Fixed amount. If omitted, rolls `min`–`max` |
+| `min` / `max` | Range used when `count` is omitted |
+| `metadata` | Optional item metadata |
+
+`cash` pays `bridge.framework.addMoney(src, 'cash', count, 'spooky_season')`. Each interaction rolls **one** row from that pool (`math.random`).
+
+Usable `pumpkin_basket` / `rotten_casket` consume the item after a 5s progress bar, then roll `pumpkin_basket` / `rotten_casket`.
+
+## Items
+
+| | Item | Role |
+| --- | --- | --- |
+| <img className="item-thumb" src="/docs/images/event_token.webp" alt="" /> | `event_token` | Shop currency. Also granted from some loot rows |
+| <img className="item-thumb" src="/docs/images/candy_corn.webp" alt="" /> | `candy_corn` | Loot |
+| <img className="item-thumb" src="/docs/images/chocolate_bar.webp" alt="" /> | `chocolate_bar` | Loot |
+| <img className="item-thumb" src="/docs/images/pumpkin_basket.webp" alt="" /> | `pumpkin_basket` | Shop + usable loot crate |
+| <img className="item-thumb" src="/docs/images/rotten_casket.webp" alt="" /> | `rotten_casket` | Shop + usable loot crate |
+| | `id_card` | Grave / rotten casket loot (register it if your inventory does not already have it) |
+
+Paste: [Item setup](/mrnewbspookyseason/install/inventory). Icons: [Item images](/mrnewbspookyseason/install/inventory-images).
+
+Do **not** add `server.export` on ox_inventory items. Use is registered with `bridge.framework.registerItemUse`.
+
+## Layout
+
+| Path | Role |
+| --- | --- |
+| `configs/config.lua` | Shops, decorations, weather / blip toggles |
+| `configs/sv_config.lua` | Loot tables and scavenger locations (server) |
+| `resource/client/decorations.lua` | Seasonal props |
+| `resource/client/pumpkins.lua` | Pumpkin targets |
+| `resource/client/graves.lua` | Grave targets |
+| `resource/client/ghosthunt.lua` | Ghost hunts + pengu_digiscanner |
+| `resource/client/trickortreat.lua` | Door knocks |
+| `resource/client/shops.lua` | Token shop + Halloween weather |
+| `resource/client/usables.lua` | Progress bar callback for crate items |
+| `resource/open/client/weather.lua` | `OpenSpookyToggleWeatherSync` |
+| `resource/server/rewards.lua` | Loot roll + grant |
+| `resource/server/shops.lua` | Token purchases |
+| `resource/server/usables.lua` | `pumpkin_basket` / `rotten_casket` use |
+| `[INSTALL]/images/` | Item PNGs |
+
+No public exports. Labels: `locales/en.json`.

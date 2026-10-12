@@ -1,0 +1,60 @@
+---
+title: "Installation"
+description: "How to install DigitalPets. Start it after ox_lib, oxmysql, your inventory, and Newb_Bridge."
+icon: "IconDownload"
+---
+
+<Callout type="warning">
+  Start this **after** ox_lib, oxmysql, your framework, your inventory, and Newb_Bridge. The bridge looks at what is already running, so if this script starts first it can miss them. Keep the folder named `MrNewb_DigitalPets` and do not delete `stream/`.
+</Callout>
+
+### Dependencies [step]
+
+[Newb_Bridge](/newb_bridge), [ox_lib](https://github.com/overextended/ox_lib), [oxmysql](https://github.com/overextended/oxmysql), and [Server artifact and OneSync](/getting-started/download#check-your-artifact). There is no SQL file to import.
+
+### Add the item and image [step]
+
+There is one item, `digital_pet`, and it must not stack. Paste it from [Item setup](/mrnewbdigitalpets/install/inventory), then copy `digital_pet.png` into your inventory's image folder.
+
+| Inventory | Image folder |
+| --- | --- |
+| ox_inventory | `ox_inventory/web/images/` |
+| qb-inventory / ps-inventory | `html/images/` |
+| one_inventory | `one_inventory/web/images/` |
+
+More on icons: [Item images](/mrnewbdigitalpets/install/inventory-images).
+
+### Add to server.cfg [step]
+
+Swap `qbx_core` and `ox_inventory` for whatever you actually run.
+
+```cfg
+ensure ox_lib
+ensure oxmysql
+ensure qbx_core
+ensure ox_inventory
+ensure Newb_Bridge
+ensure MrNewb_DigitalPets
+```
+
+### First start [step]
+
+Start the server. The settings table is created on its own, and the handheld prop streams from `stream/` automatically.
+
+Join as an admin and run `/digitalpetssetup`. The defaults are fine to launch with. Walk through the Overview page once so you know what is there. What each page does: [Configuration](/mrnewbdigitalpets/install/configuration).
+
+### Try it [step]
+
+Give yourself the item, use it, and wait for the egg to hatch (15 minutes by default). Shorten the hatch time on the Life page while you test. If you want a quick look at every species, `/givealldigitalpets` hands out one hatched pet of each.
+
+## Common setup mistakes
+
+| Symptom | Check |
+| --- | --- |
+| Using the item does nothing | Newb_Bridge started after this resource, the item name does not match, or the item stacks |
+| Item has no picture | `digital_pet.png` is not in your inventory's image folder |
+| I renamed the item and it broke | Change the name in the inventory **and** in the panel's General page, save, then restart the resource |
+| Blank screen after an update | `web/build/` did not upload fully. Replace the whole folder, restart the resource, and clear the FiveM cache if needed |
+| No handheld in hand | `stream/` is missing, or an anticheat is deleting the model. See [Anticheat models](/mrnewbdigitalpets/anticheat) |
+| Edits to `configs/config.lua` do nothing | The saved panel settings win. Change it in `/digitalpetssetup`, or press Reset there to reload the file |
+| Outings or spots never trigger | Capture the position with the panel's position button and keep the radius generous |

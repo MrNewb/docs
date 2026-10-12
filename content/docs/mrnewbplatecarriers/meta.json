@@ -1,0 +1,9 @@
+{
+  "title": "PlateCarriers",
+  "icon": "IconShield",
+  "pages": [
+    "requirements",
+    "install",
+    "exports"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "title": "Vehicle keys",
+  "icon": "IconKey",
+  "pages": [
+    "client",
+    "server"
+  ]
+}

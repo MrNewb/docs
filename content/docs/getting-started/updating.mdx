@@ -1,0 +1,39 @@
+---
+title: "Updating"
+description: "Swap in a new version without leaving the old folder sitting there."
+icon: "IconRefresh"
+---
+
+Don't paste the new files on top of the old folder. Anything the update removed or renamed gets left behind, and that's what throws the error.
+
+### Read what changed [step]
+
+Look at the notes for the version you're putting in. If they mention SQL or a new config key, do that before you start the server.
+
+### Back the folder up [step]
+
+Copy the current resource out of `resources` before you delete anything. If the update has SQL, back the database up too. Leave that copy alone until you've tried the new one in game.
+
+### Download it again [step]
+
+Grab the new zip from the same place you got it the first time. [Tebex](https://mrnewbscripts.tebex.io/) if you paid, [GitHub](https://github.com/MrNewb) if it's free. Open the zip and take the resource folder, not the outer bundle.
+
+### Take the old folder out [step]
+
+Stop the server. Delete the old resource folder. Don't merge the new files into it.
+
+### Put the new one in [step]
+
+Drop the new folder into `resources`. The name still has to match what the docs say.
+
+If you changed config, copy those settings onto the new files. Don't replace the new config with your old one. New keys get added in updates, and your old file won't have them.
+
+If you edited something under `resource/open/` or a locale, put those edits back on the new files. That's how you keep the fix that shipped in the update.
+
+### One copy only [step]
+
+Search `resources` for the script name. There should be one folder. It also can't sit inside another folder with the same name. `resources/MrNewbPawn/MrNewbPawn` is the wrong shape.
+
+### Restart and try it [step]
+
+Start the server. Read the console, then try the script in game before you throw the backup away.

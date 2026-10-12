@@ -1,0 +1,15 @@
+---
+title: "Requirements"
+description: "What you need running before this script starts."
+icon: "IconChecklist"
+---
+
+- [Newb_Bridge](/newb_bridge)
+- ox_lib
+- oxmysql
+- [Server artifact and OneSync](/getting-started/download#check-your-artifact)
+- Compatible inventory (ox_inventory recommended)
+- ESX, QBCore, or Qbox — other cores get a framework-unsupported notify and **do not** consume the item
+- Vehicle keys via Newb_Bridge (auto-detect). The script calls `bridge.vehiclekeys.remove` then `bridge.vehiclekeys.give` so key metadata follows the new plate. [MrNewbVehicleKeys](https://github.com/MrNewb/MrNewbVehicleKeysV2) is the usual pairing.
+
+There is no SQL file to import. The resource updates the framework vehicle table in place. No exports and no commands.

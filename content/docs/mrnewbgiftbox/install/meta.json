@@ -1,0 +1,9 @@
+{
+  "title": "Installation",
+  "icon": "IconDownload",
+  "pages": [
+    "configuration",
+    "inventory",
+    "inventory-images"
+  ]
+}

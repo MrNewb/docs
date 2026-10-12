@@ -1,0 +1,8 @@
+{
+  "title": "Task groups",
+  "icon": "IconUsersGroup",
+  "pages": [
+    "client",
+    "server"
+  ]
+}

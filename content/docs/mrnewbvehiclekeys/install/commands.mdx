@@ -1,0 +1,43 @@
+---
+title: "Commands"
+description: "Chat commands for Vehicle Keys. Most settings live in /vehiclekeyssetup."
+icon: "IconTerminal2"
+---
+
+## Anyone
+
+| Command | What it does |
+| --- | --- |
+| `/clearoldkeys` | Deletes keys for cars that are not spawned. Keys for cars that are out stay. 30 second cooldown. Only when keys are real items |
+| `/anchor` | Drops or raises the anchor on a nearby boat, jetski, or sub. Within 8 meters, slower than 10 mph. Works from the shore |
+| `/newb_proximitylocks` | Turns your own walk-up auto lock on or off. Same toggle as the fob |
+| `/givekeys` | Only when keys are virtual. Shares the closest car you have a key for with the nearest player. You need to be within 10 meters of that car. Five second cooldown |
+| `/throwkeys` | Tosses a key on the ground. Not registered on ox_inventory — use the Throw Keys button on the item, or the F2 list on virtual keys. On other inventories, sit in the car first |
+
+## Admins
+
+These use the admin check from the bridge.
+
+| Command | What it does |
+| --- | --- |
+| `/vehiclekeyssetup` | Setup menu. Items, keybinds, hotwire, lockpicking, the locksmith, and the rest. The seed files are only the starting copy |
+| `/vehiclekeyadmin` | Give or take keys, see what someone is holding, and place parking spots for self-park |
+| `/admingivekeys [id] [plate]` | Gives that player a key. Example: `/admingivekeys 4 ABC123` |
+| `/removekeys [id] [plate]` | Takes that plate’s key off that player |
+| `/listkeys [id]` | Prints the plates they are holding to the server console |
+| `/revokekeys [plate]` | Takes that plate’s key off every player who is online |
+| `/devmode` | Drive and lock without a key. Run it again to turn it off. Client only, for testing |
+| `/car [model] [plate] [keep]` | Spawns you into that model and gives you the key. Plate is optional. Pass anything other than `false` or `0` as the third argument to keep the car you are already in |
+| `/dv [radius]` | Deletes the car you are in and takes your key. On foot, deletes cars around you. `/dv 10` is 10 meters. Default on foot is 5 |
+
+`/car` and `/dv` stay off until Admin Commands is on in `/vehiclekeyssetup`. If qbx_core still has its own `/car` and `/dv`, turn those off or the one that starts last is the one that answers.
+
+## Debug
+
+Leave Debug Mode off on a live server. Turn it on in the setup menu and restart the resource for the server half of these.
+
+| Command | What it does |
+| --- | --- |
+| `/whatsloaded` | Which framework, inventory, notification, and target the bridge picked, and whether item keys and ox key mode are on. F8 is always available. The server console half only prints with Debug Mode on |
+| `/debugkeys` | Reloads the client as if you just joined. Every install |
+| `/debuglistkeys [id]` | Full key data for that player in the server console. Debug Mode only |

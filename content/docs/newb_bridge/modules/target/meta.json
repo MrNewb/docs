@@ -1,0 +1,8 @@
+{
+  "title": "Target",
+  "icon": "IconFocus2",
+  "pages": [
+    "client",
+    "server"
+  ]
+}

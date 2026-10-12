@@ -1,0 +1,10 @@
+{
+  "title": "LootTables",
+  "icon": "IconDice",
+  "pages": [
+    "requirements",
+    "install",
+    "configuration",
+    "exports"
+  ]
+}

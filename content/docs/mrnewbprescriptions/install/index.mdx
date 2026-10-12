@@ -1,0 +1,74 @@
+---
+title: "Installation"
+description: "How to install Prescriptions. Start it after ox_lib, oxmysql, your framework, your inventory, and Newb_Bridge."
+icon: "IconDownload"
+---
+
+<Callout type="warning">
+  Start this **after** ox_lib, oxmysql, your framework, your inventory, Newb_Bridge, and your ambulance job (if you use one). Keep the folder named `MrNewbPrescriptions`.
+</Callout>
+
+### Dependencies [step]
+
+[Newb_Bridge](/newb_bridge), [ox_lib](https://github.com/overextended/ox_lib), [oxmysql](https://github.com/overextended/oxmysql), and [Server artifact and OneSync](/getting-started/download#check-your-artifact). Details: [Requirements](/mrnewbprescriptions/requirements).
+
+### Add the pharmacy job [step]
+
+Player-run pharmacies need a real job in your framework. Add it now, then come back. Takes two minutes: [Pharmacy job](/mrnewbprescriptions/install/pharmacy-job).
+
+### Add the items and images [step]
+
+Paste the items from [Item setup](/mrnewbprescriptions/install/inventory) and copy the PNGs from `[INSTALL]/imgs/` into your inventory images folder. Icons: [Item images](/mrnewbprescriptions/install/inventory-images).
+
+Do **not** add `server.export` on these items, and do not set `consume = 0`. Use is registered through Newb_Bridge.
+
+### Add to server.cfg [step]
+
+Swap in whatever framework and inventory you run.
+
+```cfg
+ensure ox_lib
+ensure oxmysql
+ensure qbx_core
+ensure ox_inventory
+ensure Newb_Bridge
+ensure qbx_medical       # your ambulance job, optional
+ensure MrNewbPrescriptions
+```
+
+### First start [step]
+
+Start the server once. The tables are created for you: pharmacy stock, the audit log, doctor records, addiction, insurance, and the settings table `MrNewb__Settings`. There is no SQL file to import.
+
+Watch the console. Every config item missing from your inventory gets a line. Fix those before you go live.
+
+### Set it up in game [step]
+
+Join as an admin and run `/prescriptionssetup`. A short guide plays the first time. Point each pharmacy at your job, place the stations, and check the medication list. What every page does: [Configuration](/mrnewbprescriptions/install/configuration).
+
+### Check it works [step]
+
+Run through this once before you open up:
+
+- [ ] The resource starts with no red errors, and no "item not found" lines
+- [ ] `/prescriptionssetup` opens for an admin
+- [ ] A doctor can write a script and the paper opens when used
+- [ ] Staff can clock in, bottle a script, and ring up a customer
+- [ ] The customer sees the approval prompt and can accept it
+- [ ] `Debug` and every `Test*` command are off
+
+Commands: [Commands](/mrnewbprescriptions/install/commands). Walkthrough of the player flow: [How it plays](/mrnewbprescriptions/guide).
+
+## Common setup mistakes
+
+| Symptom | Check |
+| --- | --- |
+| Doctor gets an "invalid job" notice | Their job is not in `Config.MedicalJobs`, or they are under the grade floor |
+| Pharmacy tablet or register does nothing | The staff member is not clocked in, or `Job.jobName` does not match your framework job |
+| NPC pharmacist menu is empty | The patient needs a valid, unexpired, unrevoked paper. See [Troubleshooting](/mrnewbprescriptions/faq) |
+| Paper does nothing when used | It was spawned without metadata. Real papers come from the pad |
+| Bottling cannot find ingredients | Ingredients must be in the pharmacy **stock room**, not in someone's pockets |
+| Config edits are ignored | Settings saved in `/prescriptionssetup` win. Edit there, or press Reset |
+| Raw keys like `Ui.Insurance.Failed` on screen | Your locale file is missing keys. Copy the new ones from `locales/en.json` |
+| Blank screen after an update | Replace `web/build/` **and** `locales/en.json` together, then restart the resource |
+| Shot glass props deleted | Allow the models on [Anticheat models](/mrnewbprescriptions/anticheat) |

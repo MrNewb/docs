@@ -1,0 +1,37 @@
+---
+title: "Server exports"
+description: "Server exports for BeeKeeping. VIP extras only apply when VIP is on in the setup panel."
+icon: "IconServer"
+---
+
+VIP extras only apply when VIP is enabled in `/hivesetup`. `IsPlayerHiveVip` stays `false` until the player already owns the base hive cap. An unlimited base (`0`) means VIP extras never apply.
+
+```lua
+local vip = exports.MrNewbBeeKeeping:IsPlayerHiveVip(source)
+local bonus = exports.MrNewbBeeKeeping:GetPlayerHiveBonusHives(source)
+local limit = exports.MrNewbBeeKeeping:GetPlayerHiveLimit(source)
+local atCap = exports.MrNewbBeeKeeping:IsPlayerAtHiveLimit(source)
+```
+
+| Export | Returns |
+| --- | --- |
+| `IsPlayerHiveVip(src)` | `true` when VIP extras apply right now. `false` when VIP is off, or the player is still under the base cap |
+| `GetPlayerHiveBonusHives(src)` | Extra slots, or `0` |
+| `GetPlayerHiveLimit(src)` | Base cap plus bonus. Returns **`-1`** when the base cap is `0` (unlimited) |
+| `IsPlayerAtHiveLimit(src)` | `true` when owned hives are at that personal cap. `false` when unlimited |
+
+VIP membership comes from the identifier list, ACE groups, Discord roles, or `Config.IsPlayerHiveVip(src)` in `resource/open/server/custom.lua`.
+
+```lua
+if exports.MrNewbBeeKeeping:IsPlayerAtHiveLimit(src) then
+    return
+end
+```
+
+Do not call this resource’s internal net events from other resources. The one client event meant for other scripts is `MrNewbBeeKeeping:Client:OpenStrainGuide` (opens the strain guide).
+
+```lua
+TriggerClientEvent('MrNewbBeeKeeping:Client:OpenStrainGuide', src)
+```
+
+Open hooks are listed on [Configuration](/mrnewbbeekeeping/install/configuration). Separator prop helpers are [Client exports](/mrnewbbeekeeping/exports/client-exports).
