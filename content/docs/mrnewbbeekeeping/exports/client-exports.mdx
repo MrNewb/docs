@@ -4,12 +4,12 @@ description: "Client exports that spawn and drive the honey separator prop."
 icon: "IconDeviceDesktop"
 ---
 
-Cosmetic helpers for the separator prop and its basket. Positions are world coordinates. `style` is `'crank'` or `'motor'`.
+Cosmetic helpers for the crank separator prop and its basket. Positions are world coordinates.
 
 | Export | Params | Returns |
 | --- | --- | --- |
-| `CreateHoneySeparator` | `coords, heading, animated, rpm, id, withFrames, style` | `id, shell, rotor`, or `nil` and an error |
-| `AttachHoneySeparatorBasket` | `shell, rpm, id, withFrames` | `id, shell, rotor`, or `nil` and an error |
+| `CreateHoneySeparator` | `coords, heading, animated, rpm, id, withFrames` | `id, shell, rotor, crank`, or `nil` and an error |
+| `AttachHoneySeparatorBasket` | `shell, rpm, id, withFrames` | `id, shell, rotor, crank`, or `nil` and an error |
 | `SetHoneySeparatorSpeed` | `id, rpm` | `boolean` |
 | `StopHoneySeparator` | `id` | `boolean` |
 | `SetHoneySeparatorAngle` | `id, angle` | `boolean` |
@@ -17,7 +17,7 @@ Cosmetic helpers for the separator prop and its basket. Positions are world coor
 | `RemoveHoneySeparator` | `id` | `boolean` |
 
 ```lua
-local id = exports.MrNewbBeeKeeping:CreateHoneySeparator(vec3(0.0, 0.0, 70.0), 90.0, true, 120, 'my_sep', true, 'crank')
+local id = exports.MrNewbBeeKeeping:CreateHoneySeparator(vec3(0.0, 0.0, 70.0), 90.0, true, 120, 'my_sep', true)
 exports.MrNewbBeeKeeping:StopHoneySeparator(id)
 exports.MrNewbBeeKeeping:RemoveHoneySeparator(id)
 ```

@@ -19,7 +19,7 @@ Paste the matching snippet into your items file, then copy PNGs from `[INSTALL]/
 Restart the inventory resource after pasting. Item names have to match the setup panel. If you rename one there, register that name instead.
 
 <Callout type="info">
-  Usable items are `beehive`, `beehive_rustic`, `honey_separator`, `queen_bee`, `bee_trap`, `beekeeping_guide`, and `beekeeper_suit`.
+  Usable items are `beehive`, `beehive_rustic`, `queen_bee`, `bee_trap`, `beekeeping_guide`, and `beekeeper_suit`. Honeycomb is not usable and does not stack. Each frame keeps its own honey amount.
 </Callout>
 
 <Tabs items={['OX', 'QB']} storageKey="inventory-items">
@@ -45,16 +45,9 @@ Add to `ox_inventory/data/items.lua`:
 ["honeycomb"] = {
 	label = "Honeycomb",
 	weight = 50,
-	stack = true,
-	close = true,
-	description = "A filled honeycomb frame from a hive. Spin it in a honey separator for jars.",
-},
-["honey_separator"] = {
-	label = "Honey Separator",
-	weight = 5000,
 	stack = false,
 	close = true,
-	description = "A crank honey extractor. Place it to spin comb frames into jars. Can be picked back up.",
+	description = "A filled honeycomb frame from a hive. Spin it in a honey separator for jars.",
 },
 ["queen_bee"] = {
 	label = "Queen Bee",
@@ -138,7 +131,7 @@ Add to `ox_inventory/data/items.lua`:
 	weight = 500,
 	stack = true,
 	close = true,
-	description = "Use near a wild bee swarm to catch worker bees. May rarely catch a queen.",
+	description = "Set it down inside a wild bee swarm and leave it. Come back later to collect the worker bees. May also hold a queen.",
 },
 ["beekeeping_guide"] = {
 	label = "Beekeeper's Strain Guide",
@@ -164,8 +157,7 @@ Add to your QBCore shared items (`qb-core/shared/items.lua`):
 ```lua
 ['beehive'] = { name = 'beehive', label = 'Beehive', weight = 2000, type = 'item', image = 'beehive.png', unique = true, useable = true, shouldClose = true, combinable = nil, description = 'A portable beehive. Use to place a hive in the world.' },
 ['beehive_rustic'] = { name = 'beehive_rustic', label = 'Rustic Beehive', weight = 2000, type = 'item', image = 'beehive_rustic.png', unique = true, useable = true, shouldClose = true, combinable = nil, description = 'An alternate hive shell. Same colony gameplay, different look.' },
-['honeycomb'] = { name = 'honeycomb', label = 'Honeycomb', weight = 50, type = 'item', image = 'honeycomb.png', unique = false, useable = false, shouldClose = true, combinable = nil, description = 'A filled honeycomb frame from a hive. Spin it in a honey separator for jars.' },
-['honey_separator'] = { name = 'honey_separator', label = 'Honey Separator', weight = 5000, type = 'item', image = 'honey_separator.png', unique = true, useable = true, shouldClose = true, combinable = nil, description = 'A crank honey extractor. Place it to spin comb frames into jars. Can be picked back up.' },
+['honeycomb'] = { name = 'honeycomb', label = 'Honeycomb', weight = 50, type = 'item', image = 'honeycomb.png', unique = true, useable = false, shouldClose = true, combinable = nil, description = 'A filled honeycomb frame from a hive. Spin it in a honey separator for jars.' },
 ['queen_bee'] = { name = 'queen_bee', label = 'Queen Bee', weight = 10, type = 'item', image = 'queen_bee.png', unique = false, useable = true, shouldClose = true, combinable = nil, description = 'A queen bee. Use to inspect genetics, or install in a hive to start production.' },
 ['worker_bees'] = { name = 'worker_bees', label = 'Worker Bees', weight = 10, type = 'item', image = 'worker_bees.png', unique = false, useable = false, shouldClose = true, combinable = nil, description = 'Worker bees for your hive. Required for honey and wax production.' },
 ['bees_wax'] = { name = 'bees_wax', label = 'Bees Wax', weight = 1, type = 'item', image = 'bees_wax.png', unique = false, useable = false, shouldClose = true, combinable = nil, description = 'Beeswax harvested from a hive. Can be sold to the beekeeper.' },
@@ -177,7 +169,7 @@ Add to your QBCore shared items (`qb-core/shared/items.lua`):
 ['lavender_honey'] = { name = 'lavender_honey', label = 'Lavender Ridge Honey', weight = 1, type = 'item', image = 'lavender_honey.png', unique = false, useable = false, shouldClose = true, combinable = nil, description = 'Lavender ridge-region honey with a soft floral aroma.' },
 ['citrus_honey'] = { name = 'citrus_honey', label = 'Coastal Citrus Honey', weight = 1, type = 'item', image = 'citrus_honey.png', unique = false, useable = false, shouldClose = true, combinable = nil, description = 'Coastal citrus-region honey with bright, zesty notes.' },
 ['wildflower_honey'] = { name = 'wildflower_honey', label = 'Wildflower Meadow Honey', weight = 1, type = 'item', image = 'wildflower_honey.png', unique = false, useable = false, shouldClose = true, combinable = nil, description = 'Wildflower meadow-region honey with mixed floral tones.' },
-['bee_trap'] = { name = 'bee_trap', label = 'Bee Trap', weight = 500, type = 'item', image = 'bee_trap.png', unique = false, useable = true, shouldClose = true, combinable = nil, description = 'Use near a wild bee swarm to catch worker bees. May rarely catch a queen.' },
+['bee_trap'] = { name = 'bee_trap', label = 'Bee Trap', weight = 500, type = 'item', image = 'bee_trap.png', unique = false, useable = true, shouldClose = true, combinable = nil, description = 'Set it down inside a wild bee swarm and leave it. Come back later to collect the worker bees. May also hold a queen.' },
 ['beekeeping_guide'] = { name = 'beekeeping_guide', label = "Beekeeper's Strain Guide", weight = 250, type = 'item', image = 'beekeeping_guide.png', unique = true, useable = true, shouldClose = true, combinable = nil, description = 'A field guide to queen strains and regional honey production. Use to read.' },
 ['beekeeper_suit'] = { name = 'beekeeper_suit', label = 'Beekeeper Suit', weight = 1500, type = 'item', image = 'beekeeper_suit.png', unique = true, useable = true, shouldClose = true, combinable = nil, description = 'A full veil and coveralls. Use to put it on or take it off. Wild bees cannot sting you while it is on.' },
 ```
@@ -185,6 +177,6 @@ Add to your QBCore shared items (`qb-core/shared/items.lua`):
 </Tab>
 </Tabs>
 
-Item names are set in `/hivesetup`. Shipped names are the eighteen above. If you rename one in the panel, register that name and add a matching image.
+Item names are set in `/hivesetup`. Shipped names are the seventeen above. The separator is a world prop, not an item. If you rename one in the panel, register that name and add a matching image.
 
 Next: [Configuration](/mrnewbbeekeeping/install/configuration) · [Installation](/mrnewbbeekeeping/install).
