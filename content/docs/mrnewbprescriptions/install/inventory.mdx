@@ -4,7 +4,7 @@ description: "Items for Prescriptions. Paste the ox_inventory file, copy the PNG
 icon: "IconPackage"
 ---
 
-Everything ships ready for ox_inventory. Open `[INSTALL]/ox_inventory/items.lua`, paste the whole thing into `ox_inventory/data/items.lua`, copy the PNGs, then restart the inventory and this resource.
+Everything ships ready for ox_inventory. Open `[INSTALL]/ox_inventory/items.txt`, paste the whole thing into `ox_inventory/data/items.lua`, copy the PNGs, then restart the inventory and this resource.
 
 | Inventory | Image folder |
 | --- | --- |
@@ -74,7 +74,7 @@ These are the items that matter most. The full file has all the rest.
 </Tab>
 <Tab>
 
-Repeat this shape for every item in `[INSTALL]/ox_inventory/items.lua`, using the same names, labels, and weights.
+Repeat this shape for every item in `[INSTALL]/ox_inventory/items.txt`, using the same names, labels, and weights.
 
 ```lua
 ['prescriptionpad'] = { name = 'prescriptionpad', label = 'Prescription pad', weight = 100, type = 'item', image = 'prescriptionpad.png', unique = true, useable = true, shouldClose = true, description = 'Doctor prescription pad. Use to write a new prescription.' },

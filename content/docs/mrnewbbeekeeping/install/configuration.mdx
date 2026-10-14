@@ -17,7 +17,7 @@ The first time the panel opens, a short guide walks Access, Swarms, Shops, Honey
 | Wild swarms | `stationary`, `randomized`, or `off`. Locations, stings, respawn, catch limits, who can see them |
 | Shops | Keeper stands (ped, prop, or box), stock and prices, honey and wax sell prices, `PayTo` (`bank` or `cash`), context menu fallback |
 | Honey zones | Map polygons per region, and priority when regions overlap. Outside every region the hive makes default honey |
-| Separator | On or off, world spots staff place, combs per batch, crank turns. Players cannot place or pick one up |
+| Separator | On or off, world spots staff place (each named for its street, with a teleport button), an optional map blip on every spot (on by default), combs per batch, crank turns. Players cannot place or pick one up |
 | Production | Minutes per tick, max honey / wax / workers, worker loss chance |
 | Saving and cleanup | `shutdown` or `timed` saving, inactive hive wipe days |
 | VIP hives | Extra slots. VIP from an identifier list, ACE groups, Discord roles, or the hook |
@@ -32,7 +32,7 @@ Zone and location editing uses the built-in map in the panel. Place the points, 
 1. Use a hive item. Ground has to be allowed, and the spot has to sit outside blocked zones, far enough from the next hive, and under the personal cap.
 2. Add workers and a queen. Production ticks only while the hive is **closed**, the queen is alive, workers are above zero, and honey / wax are not already full.
 3. Open the hive to extract. The slide minigame clears cells until 2 percent or fewer remain, or times out at 120 seconds. Fail or timeout stings unless `OnMinigameFailed` returns true.
-4. Honey type follows the region the hive sits in. With the separator on, the hive gives `honeycomb`. Load frames and spin them for jars.
+4. Honey type follows the region the hive sits in. With the separator on, the hive gives `honeycomb`. At a separator the player drags the frames from a tray onto the drum, then holds the crank handle and circles the mouse to spin it. The same view carries on to the faucet, where they move a jar under the stream until it is full, one jar for each 20 honey.
 5. Wild swarms sting unless the suit is on. Place a `bee_trap` in the sting zone, wait, then collect. A queen is about a 10 percent catch by default.
 6. Sell honey and wax at the shop. Shop location ids have to match a stock list entry.
 
@@ -63,9 +63,11 @@ Honey minigame backends live in `resource/open/client/minigames.lua`.
 No file to import. On start the resource creates and migrates:
 
 - `mrnewb_beekeeping`
-- `mrnewb_beekeeping_separators`
 - `mrnewb_beekeeping_separator_state`
 - `mrnewb_beekeeping_traps`
+- `MrNewb__Settings` (shared by all MrNewb resources; holds the saved panel settings and custom strains)
+
+Separators have no table of their own. Their spots are saved with the panel settings, and `mrnewb_beekeeping_separator_state` only holds what is currently in a drum. A `mrnewb_beekeeping_separators` table left over from an older version is unused and safe to drop.
 
 Older hive rows in `mrnewb_beekeeping` are converted automatically. Restart once if the console says it converted.
 
