@@ -10,6 +10,47 @@ Paste the matching file, then copy every PNG from `[INSTALL]/images/` into your 
 | --- | --- | --- |
 | ox_inventory | `ox_inventory/data/items.lua` from `[INSTALL]/ox_inventory_items.txt` | `ox_inventory/web/images/` |
 | qb-core | `qb-core/shared/items.lua` from `[INSTALL]/qb-core_items.txt` | `qb-inventory/html/images/` |
+| one_inventory | Item import from `[INSTALL]/ox_inventory_items.txt`, see [one_inventory](#one_inventory) | `one_inventory/web/images/` |
+
+## one_inventory
+
+one_inventory keeps item definitions in its own database, not in a file you edit. You load them once with its item import, from an ox_inventory-format items file. That is `[INSTALL]/ox_inventory_items.txt`.
+
+1. Create a folder `resources/ox_inventory_old/` and **do not** `ensure` it. It only exists so the importer can read it. Put two files in it:
+
+   `ox_inventory_old/fxmanifest.lua`
+
+   ```lua
+   fx_version 'cerulean'
+   game 'gta5'
+   ```
+
+   `ox_inventory_old/data/items.lua`
+
+   ```lua
+   return {
+       -- paste the items here
+   }
+   ```
+
+2. Paste the whole contents of `[INSTALL]/ox_inventory_items.txt` between the braces. If you run other Newb scripts, paste their items into the same file.
+3. Copy the PNGs from `[INSTALL]/images/` into `one_inventory/web/images/`.
+4. Give your admins the one_inventory admin permission in `server.cfg`, then restart:
+
+   ```cfg
+   add_ace group.admin one_inventory.admin allow
+   ```
+
+5. In game, run `/inventory:manage`, open **Migration**, and run **Import definitions**. Pick the ox_inventory source (it should show a **Files** badge), keep the item category selected, and confirm. The summary shows how many items were imported.
+6. Restart `one_inventory`, then `MrNewbVehicleKeys`. Delete the `ox_inventory_old` folder.
+
+<Callout type="info">
+  Coming from ox_inventory? Rename your old `ox_inventory` folder to `ox_inventory_old`, add the entries to its `data/items.lua`, and run the same import. It brings your other items over at the same time.
+</Callout>
+
+<Callout type="warning">
+  **Required:** set `Config.Inventory = "one_inventory"` in `Newb_Bridge/settings/bridge_resources.lua`. one_inventory provides itself as `ox_inventory` and is not fully compatible with its image paths, so on `"auto"` item images do not load. See [Newb_Bridge configuration](/newb_bridge/configuration).
+</Callout>
 
 Names have to stay as they are unless you also change them in `/vehiclekeyssetup`. If you rename `blank_key` in the items file and forget the locksmith shop, the shop stops selling it.
 

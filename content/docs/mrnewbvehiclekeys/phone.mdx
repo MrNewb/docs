@@ -1,0 +1,48 @@
+---
+title: "Phone app"
+description: "MrNewbVehicleKeysPhone: a Keys app for LB Phone."
+icon: "IconDeviceMobile"
+---
+
+MrNewbVehicleKeysPhone adds a **Keys** app to [LB Phone](https://lbphone.com). Players see the keys they hold and use their vehicle from the phone. It only calls MrNewbVehicleKeys exports and callbacks and does not change that resource.
+
+## Install
+
+Start it after `ox_lib`, `lb-phone` and `MrNewbVehicleKeys`:
+
+```cfg
+ensure ox_lib
+ensure lb-phone
+ensure MrNewbVehicleKeys
+ensure MrNewbVehicleKeysPhone
+```
+
+Restarting MrNewbVehicleKeys stops this resource too, so start it again afterwards. The app registers itself in LB Phone. There is nothing to set up in game.
+
+## What it does
+
+| Action | How |
+| --- | --- |
+| Lock / unlock | Same path as the in-world fob: animation, lights, lock sound and notification. Tries once more if the first request is refused. Works from range through the server when the car is not nearby |
+| Trunk, alarm, dance, self-park, summon, auto-pilot | Matching MrNewbVehicleKeys exports. Which buttons show depends on the key type. Smart keys show their fob modules, basic keys get lock, unlock and trunk |
+| Toggle engine | Starts or stops based on the engine's real state. Hidden when ignition (insert) mode is on |
+| Locate | Marks the vehicle on the map |
+| Scan / eject | Scans a key onto the phone or takes it off |
+
+The app keeps its lock and engine state up to date while it is open.
+
+Remote engine toggles share a 2 second cooldown, so a second tap inside that window is refused.
+
+## Settings
+
+`configs/config.lua` holds the resource names (`KeysResource`, `PhoneResource`), `NearbyDistance` (60 m) and `ScanKeys`.
+
+## Rebuilding the UI
+
+Only needed if you change the UI source:
+
+```bash
+cd MrNewbVehicleKeysPhone/phone
+bun install
+bun run build
+```

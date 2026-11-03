@@ -4,14 +4,6 @@ description: "Chat commands for Prescriptions. Most setup lives in /prescription
 icon: "IconTerminal2"
 ---
 
-## Everyone
-
-| Command | What it does |
-| --- | --- |
-| `/mymedication` | Opens your chart: bottles you have, scripts not yet filled, and your doctor history. Needs `PatientHistory` enabled with `useCommand` on |
-
-Players can share their chart with someone standing close. The other person gets a prompt and has 30 seconds to accept.
-
 ## Doctors
 
 | Command | What it does |
@@ -36,9 +28,6 @@ Each one is off until you turn its switch on in the panel's Extras page, and all
 | `/testprescription` | `TestPrescriptionCommand` | Opens a sample prescription paper |
 | `/testdoctorcreate` | `TestDoctorCreateCommand` | Opens the doctor write pad |
 | `/testbottling` | `TestBottlingCommand` | Opens the bottling minigame |
-| `/checkaddiction` | `TestAddictionCommand` | Shows your addiction status |
-| `/testaddiction [item]` | `TestAddictionCommand` | Forces one addiction use. Defaults to `oxy` |
-| `/testmedshare` | `TestMedShareCommand` | Previews the share confirmation prompt |
 
 <Callout type="warning">
   With `Debug = true`, the clocked-in check on billing, supply runs, and the panic button is skipped. Do not leave it on.

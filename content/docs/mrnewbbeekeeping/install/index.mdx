@@ -10,7 +10,7 @@ icon: "IconDownload"
 
 ### Dependencies [step]
 
-[Newb_Bridge](/newb_bridge), [ox_lib](https://github.com/overextended/ox_lib), [oxmysql](https://github.com/overextended/oxmysql), [Server artifact and OneSync](/getting-started/download#check-your-artifact), and your inventory. Badger_Discord_API is optional, and only for Discord-role VIP slots.
+[Newb_Bridge](/newb_bridge), [ox_lib](https://github.com/overextended/ox_lib), [oxmysql](https://github.com/overextended/oxmysql), [Server artifact and OneSync](/getting-started/download#check-your-artifact), and an [inventory the bridge supports](/newb_bridge/supported#inventory), including `one_inventory`. Badger_Discord_API is optional, and only for Discord-role VIP slots.
 
 Model names: [Anticheat models](/mrnewbbeekeeping/anticheat).
 
@@ -37,11 +37,11 @@ ensure MrNewbBeeKeeping
 
 Start the server once. Tables are created on their own (`mrnewb_beekeeping` and the separator / trap tables). There is no SQL file. Older hive rows are converted automatically — restart once if the console says it converted.
 
-Join as staff and run `/hivesetup`. The panel walkthrough and the page list are on [Configuration](/mrnewbbeekeeping/install/configuration).
+Join as staff and run `/beekeepingsetup`. The panel walkthrough and the page list are on [Configuration](/mrnewbbeekeeping/install/configuration).
 
 ### Restart and check [step]
 
-Restart the inventory, then this resource, after you paste items. Give yourself a hive, place it, add a queen and workers, and close it. Open `/hivesetup` and confirm the panel loads.
+Restart the inventory, then this resource, after you paste items. Give yourself a hive, place it, add a queen and workers, and close it. Open `/beekeepingsetup` and confirm the panel loads.
 
 Commands: [Commands](/mrnewbbeekeeping/install/commands).
 
@@ -56,5 +56,5 @@ Commands: [Commands](/mrnewbbeekeeping/install/commands).
 | Cannot place a hive | Personal cap, too close to another hive, blocked zone, bad ground, or too far from the spot |
 | Hives vanished | Saving mode is `shutdown` and the server crashed, or Maintenance wiped inactive owners |
 | Props deleted by anticheat | Allow the models on [Anticheat models](/mrnewbbeekeeping/anticheat) |
-| `/hivesetup` says no permission | `Config.IsHiveAdmin` in `resource/open/server/custom.lua` |
+| `/beekeepingsetup` says no permission | `Config.IsHiveAdmin` in `resource/open/server/custom.lua` |
 | Blank item pictures in the panel | Those PNGs are not in the inventory image folder |

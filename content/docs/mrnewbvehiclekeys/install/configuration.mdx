@@ -6,6 +6,10 @@ icon: "IconSettings"
 
 Run `/vehiclekeyssetup` as an admin. Changes are saved and pushed to connected players without a restart.
 
+The setup menu has these pages: Overview, Manage (vehicles, players, vehicle locks, key creator, parking), Keys, Locking, Break-in, Jobs, Locksmith, Police and General. Use the search box at the top to find any single setting. Every setting shows its limits, marks a changed value, and has a reset to default. Save applies everything at once and shows how many changes are waiting.
+
+Coming from another key script? **General** has a picker for the script you are replacing. This resource then answers the calls that script used to receive, so nothing else needs editing. Keys held inside the old script are not copied, so give players their keys again from **Manage**.
+
 A few files stay editable because they hold code. A change there needs a resource restart:
 
 | File | What you edit |
@@ -20,8 +24,11 @@ A few files stay editable because they hold code. A change there needs a resourc
 
 | Setting | Default | What it does |
 | --- | --- | --- |
-| `InventoryKeys.Enabled` | on | On = keys are inventory items. Off = virtual keys, opened with F2. Switch this before launch |
-| `InventoryKeys.OxInventory.ContainerKeyring` | on, 10 slots | Keyring is a real ox_inventory container. Off = the old menu keyring |
+| `InventoryKeys.Enabled` | on | On = keys are inventory items. Off = virtual keys, kept as a list and opened from the keyring UI. Switch this before launch |
+| `InventoryKeys.OxInventory.ContainerKeyring` | on, 10 slots | Keyring is a real ox_inventory container. Off = the keyring item, managed from the keyring context menu |
+| `InventoryKeys.KeyringUI` | off | The keyring becomes a menu that saves keys. See [Keyring UI](#keyring-ui) |
+| `InventoryKeys.KeyringUIOpenWith` | both | How the keyring UI opens: `both`, `item` or `command` |
+| `KeyringSharing` | on, 10 m | Owners share a car from the keyring UI and can take it back. `MaxPerVehicle` 0 = no limit |
 | `InventoryKeys.EnableAftermarketLocks` | on | Owners can change a lock so old keys stop working |
 | `Driving.InsertMode.Enabled` | off | Key has to go in the ignition (I) before the engine starts. Turns off give-key-if-running and hotwire-gives-a-key while it is on |
 | `Driving.EngineToggleEnabled` | on, unless a known HUD runs | Engine key. Starts off when jg-hud, ps-hud, qb-hud, or qbx_hud is running |
@@ -38,6 +45,30 @@ A few files stay editable because they hold code. A change there needs a resourc
 | `AdminCommands` | off | Turns on `/car` and `/dv` |
 | `CompatibilityEvents` | qb and qbx on | Which foreign key events this resource answers |
 | `DebugMode` | off | Verbose logging and the debug commands |
+
+## Keyring UI
+
+With `InventoryKeys.KeyringUI` on, the keyring is a menu that saves keys on the player instead of an item or container. Players browse their keys, see time left on loaned keys, share a car with a nearby player and take it back. Sharing a key gives the other player a saved virtual key straight away. It stays on their keyring after they relog until the owner takes it back.
+
+`KeyringUIOpenWith` picks how it opens:
+
+| Value | Opens with |
+| --- | --- |
+| `both` | The keyring item, the keybind and `/keyring` |
+| `item` | Only using the keyring item |
+| `command` | Only the keybind and `/keyring`. Use this on servers without an item keyring |
+
+The default keybind is `.` (PERIOD). F2 belongs to ox_inventory, so it is not used. Set `Keybinds.OpenKeyRing` to an empty value to leave it unbound and keep `/keyring` only. Each key in the keybind list can also be switched off in `/vehiclekeyssetup`. Players can still rebind it in FiveM settings, and a player's own binding is never overwritten by your default.
+
+## Logging
+
+Key events (grants, shares, locksmith work, admin actions) go to the console in debug mode, fire the `MrNewbVehicleKeys:Log` event, and post to a Discord webhook when this convar is set in `server.cfg`:
+
+```cfg
+set mrnewbvehiclekeys_webhook "https://discord.com/api/webhooks/..."
+```
+
+Each log row carries who, to whom, which plate and where. Messages are queued to stay inside Discord's rate limit.
 
 ## Per-vehicle rules
 
@@ -76,6 +107,10 @@ The walk-up ped sells spare keys, fob upgrades, and the items under its price li
 The player job has a bench, register, stash, and computer. The bench burns one `blank_key` per cut when that is required. Item-key mode has to be on for the bench and the `keyfob_scanner`. The scanner sniffs a nearby fob and clones it onto a blank. Key lockers are stored in SQL. Renaming a location key creates a new empty locker.
 
 `ping_transmitter` sticks on a car from the target option. `ping_receiver` pings a blurred blip. Tracker state is in memory, so it clears on a server restart, and the ping only works while that vehicle is spawned.
+
+### The scanner device
+
+Using the `keyfob_scanner` item puts the "Pooper 9" in the player's hand and opens its screen. The screen can be driven with the mouse (the pad and back button, or clicking rows) or the keyboard: arrow keys move, Enter selects, Backspace steps back one screen and Escape closes it. The Sub-GHz screen re-reads the signal every second or so while it is open, so the bars follow the player. Its Settings page has a sound toggle, remembered per player on their own computer.
 
 ## Compatibility
 

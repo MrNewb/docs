@@ -1,10 +1,10 @@
 ---
 title: "Configuration"
-description: "BeeKeeping settings live in /hivesetup."
+description: "BeeKeeping settings live in /beekeepingsetup."
 icon: "IconSettings"
 ---
 
-Staff change settings with `/hivesetup`. A save applies immediately. No restart.
+Staff change settings with `/beekeepingsetup`. A save applies immediately. No restart.
 
 The first time the panel opens, a short guide walks Access, Swarms, Shops, Honey, Bee trap, Suit, Genetics, Saving, VIP, and Logs. You can leave it and use the full page list whenever you want.
 
@@ -46,7 +46,7 @@ These stay editable. They hold code, not the panel data. A change here needs a r
 
 | Function | File | Role |
 | --- | --- | --- |
-| `Config.IsHiveAdmin(src)` | `open/server/custom.lua` | Who can open `/hivesetup` |
+| `Config.IsHiveAdmin(src)` | `open/server/custom.lua` | Who can open `/beekeepingsetup` |
 | `Config.IsPlayerHiveVip(src)` | `open/server/custom.lua` | Return true to grant VIP slots |
 | `SendBeeLog(src, action, message)` | `open/server/custom.lua` | Used when the log provider is `custom` |
 | `RollQueenTrait(src, zone)` | `open/server/custom.lua` | Return a trait id, or `''` for the default roll |

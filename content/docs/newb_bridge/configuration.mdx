@@ -13,17 +13,17 @@ Config.Debug = false
 Config.VersionCheck = true
 
 Config.Framework = "auto"       -- qbx_core, qb-core, es_extended
-Config.Inventory = "auto"       -- see Supported
-Config.Target = "auto"          -- ox_target, tgiann-target, core_focus, qb-target, sleepless_interact, interact, bl_sprites
-Config.VehicleKeys = "auto"     -- MrNewbVehicleKeys, qbx_vehiclekeys, ...
-Config.VehicleFuel = "auto"     -- ox_fuel, LegacyFuel, cdn-fuel, ... (fallback: internal)
+Config.Inventory = "auto"       -- ox_inventory, wasabi_inventory, m-Inventory, one_inventory, jaksam_inventory, tgiann-inventory, codem-inventory, core_inventory, origen_inventory, qs-inventory, qb-inventory
+Config.Target = "auto"          -- ox_target, tgiann-target, core_focus, qb-target, sleepless_interact
+Config.VehicleKeys = "auto"     -- MrNewbVehicleKeys, qbx_vehiclekeys, cd_garage, mVehicle, okokGarage, qb-vehiclekeys, vehicles_keys, wasabi_carlock, Renewed-Vehiclekeys, mk_vehiclekeys, ak47_vehiclekeys, 0r-vehiclekeys
+Config.VehicleFuel = "auto"     -- ox_fuel, rcore_fuel, okokGasStation, LegacyFuel, cdn-fuel, lc_fuel, qb-fuel, Renewed-Fuel, ps-fuel, qs-fuelstations, ti_fuel, internal
 Config.Menu = "auto"            -- ox_lib, lation_ui, qb-menu
-Config.Notifications = "auto"   -- ox_lib, okokNotify, lation_ui, ...
+Config.Notifications = "auto"   -- ox_lib, vms_notifyv2, codem-notification, brutal_notify, fl-notify, mythic_notify, okokNotify, pnotify, solaire_notify, t-notify, lation_ui, wasabi_notify, zsx_uiv2, internal
 Config.Inputs = "auto"          -- ox_lib, lation_ui
 Config.TextUI = "auto"          -- ox_lib, lation_ui, okokTextUI, cd_drawtextui, jg-textui, lab-TextUI, zsx_uiv2
 Config.ProgressBar = "auto"     -- ox_lib, lation_ui, wasabi_uikit, progressbar, zsx_uiv2
-Config.BossMenu = "auto"        -- qbx_management, qb-management, esx_society, ...
-Config.Dispatch = "internal"    -- or "auto" / a named provider
+Config.BossMenu = "auto"        -- qbx_management, qb-management, esx_society, vms_bossmenu, tk_bosstablet, okokBossMenu, codem-bossmenu, zat-bossmenu, m-BossMenu
+Config.Dispatch = "internal"    -- or "auto": ps-dispatch, cd_dispatch, tk_dispatch, rcore_dispatch, lb-tablet, origen_police, core_dispatch, kartik-mdt, codem-dispatch, wasabi_mdt, redutzu-mdt
 
 Config.TaskGroups = {
     DefaultMaxPlayers = 8,
@@ -35,6 +35,17 @@ Config.TaskGroups = {
     MaxNameLength = 32,
 }
 ```
+
+<Callout type="warning">
+  **Using one_inventory? You must set `Config.Inventory = "one_inventory"`.** Do not leave it on `"auto"`. one_inventory provides itself as `ox_inventory`, so auto-detect treats it as ox_inventory and builds ox_inventory image paths (`nui://ox_inventory/web/images/...`). one_inventory is not fully compatible with those paths, so item images do not load, and shops can fail to open. Pinning it makes the bridge use the one_inventory module and `one_inventory/web/images/`.
+
+  ```lua
+  -- Newb_Bridge/settings/bridge_resources.lua
+  Config.Inventory = "one_inventory"
+  ```
+
+  Restart Newb_Bridge and every script that uses it after changing this.
+</Callout>
 
 ## Auto-detection
 

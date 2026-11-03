@@ -14,9 +14,49 @@ Paste the matching snippet into your items file, then copy PNGs from `[INSTALL]/
 
 - **OX** — `ox_inventory/data/items.lua` (ESX and Qbox that run ox use this tab). Same text ships as `[INSTALL]/ox_inventory_items.txt`.
 - **QB** — `qb-core/shared/items.lua` (or your shared items path).
-- **one_inventory** — add the item defs in that resource’s format; you still need the PNGs in its images folder.
+- **one_inventory** — import the items with one_inventory's item import. See [one_inventory](#one_inventory) below. The PNGs go in `one_inventory/web/images/`.
 
 Restart the inventory resource after pasting. Item names have to match the setup panel. If you rename one there, register that name instead.
+
+## one_inventory
+
+one_inventory keeps item definitions in its own database, not in a file you edit. You load them once with its item import, from an ox_inventory-format items file. That is the same text as the OX tab below.
+
+1. Create a folder `resources/ox_inventory_old/` and **do not** `ensure` it. It only exists so the importer can read it. Put two files in it:
+
+   `ox_inventory_old/fxmanifest.lua`
+
+   ```lua
+   fx_version 'cerulean'
+   game 'gta5'
+   ```
+
+   `ox_inventory_old/data/items.lua`
+
+   ```lua
+   return {
+       -- paste the items here
+   }
+   ```
+
+2. Paste the item entries between the braces. Use the Lua from the **OX** tab below, or the block from `[INSTALL]/ox_inventory_items.txt` that starts at `["beehive"] = {`. Skip the plain-text notes at the top of that file. If you run other Newb scripts, paste their items into the same file.
+3. Copy the PNGs from `[INSTALL]/imgs/` into `one_inventory/web/images/`.
+4. Give your admins the one_inventory admin permission in `server.cfg`, then restart:
+
+   ```cfg
+   add_ace group.admin one_inventory.admin allow
+   ```
+
+5. In game, run `/inventory:manage`, open **Migration**, and run **Import definitions**. Pick the ox_inventory source (it should show a **Files** badge), keep the item category selected, and confirm. The summary shows how many items were imported.
+6. Restart `one_inventory`, then `MrNewbBeeKeeping`. Delete the `ox_inventory_old` folder.
+
+<Callout type="info">
+  Coming from ox_inventory? Rename your old `ox_inventory` folder to `ox_inventory_old`, add the entries to its `data/items.lua`, and run the same import. It brings your other items over at the same time.
+</Callout>
+
+<Callout type="warning">
+  **Required:** set `Config.Inventory = "one_inventory"` in `Newb_Bridge/settings/bridge_resources.lua`. one_inventory provides itself as `ox_inventory` and is not fully compatible with its image paths, so on `"auto"` item images do not load and the shop can fail to open. See [Newb_Bridge configuration](/newb_bridge/configuration).
+</Callout>
 
 <Callout type="info">
   Usable items are `beehive`, `beehive_rustic`, `queen_bee`, `bee_trap`, `beekeeping_guide`, and `beekeeper_suit`. Honeycomb is not usable and does not stack. Each frame keeps its own honey amount.
@@ -177,6 +217,6 @@ Add to your QBCore shared items (`qb-core/shared/items.lua`):
 </Tab>
 </Tabs>
 
-Item names are set in `/hivesetup`. Shipped names are the seventeen above. The separator is a world prop, not an item. If you rename one in the panel, register that name and add a matching image.
+Item names are set in `/beekeepingsetup`. Shipped names are the seventeen above. The separator is a world prop, not an item. If you rename one in the panel, register that name and add a matching image.
 
 Next: [Configuration](/mrnewbbeekeeping/install/configuration) · [Installation](/mrnewbbeekeeping/install).

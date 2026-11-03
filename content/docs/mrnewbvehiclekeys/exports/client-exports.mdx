@@ -18,7 +18,7 @@ icon: "IconDeviceDesktop"
 | `CanDriveVehicle` / `CheckVehicleAccess` | `vehicle` | boolean |
 | `DoesVehicleRequireKey` | `vehicle` | boolean |
 | `IsSharedJobVehicle` / `CheckForJobVehicle` | `vehicle` | boolean |
-| `ToggleLock` | `vehicle, targetLockStatus?` | boolean. `1` unlock, `2` lock, nil toggles |
+| `ToggleLock` | `vehicle, targetLockStatus?, useKeyfobEffects?` | boolean. `1` unlock, `2` lock, nil toggles. Pass `true` as the third argument for the fob animation, lights and lock sound |
 | `ToggleEngine` | `vehicle, forceState?` | boolean. `true` on, `false` off, nil toggles |
 | `IsVehicleHotwired` / `CheckIfHotwired` / `GetHotWiredStatus` | `vehicle` | boolean |
 | `IsKeyInIgnition` | `vehicle` | boolean |
@@ -30,7 +30,7 @@ icon: "IconDeviceDesktop"
 | `SetVehicleLockpickImmunePlate` | `plate, immune` | boolean |
 | `SetVehicleHotwireImmune` | `vehicle, immune` | boolean |
 | `OpenKeyFob` | `plate, buttons` | boolean |
-| `StartVehicleAlarm`, `ToggleTrunk`, `ToggleRemoteStart`, `DanceMode`, `SelfParkVehicle`, `SummonVehicle`, `ToggleAutoPilot` | `vehicle` | boolean |
+| `StartVehicleAlarm`, `ToggleTrunk`, `ToggleRemoteStart` (starts or stops from the real engine state), `DanceMode`, `SelfParkVehicle`, `SummonVehicle`, `ToggleAutoPilot` | `vehicle` | boolean |
 | `IsItemBasedMode` / `IsInsertModeEnabled` | none | boolean |
 | `GetKeySystem` | none | The live key system object. For deep integrations only |
 | `ThrowKeys` / `DestroyKey` | `slot` | ox_inventory button actions. Not for general scripting |
@@ -42,6 +42,7 @@ Fob button ids in `resource/open/shared/hooks.lua`: `REMOTE_START`, `OPEN_DOORS`
 ```lua
 exports.MrNewbVehicleKeys:GiveKeys(vehicle)
 exports.MrNewbVehicleKeys:ToggleLock(vehicle, 2)
+exports.MrNewbVehicleKeys:ToggleLock(vehicle, 2, true) -- with fob effects
 ```
 
 Server exports: [Server exports](/mrnewbvehiclekeys/exports/server-exports).

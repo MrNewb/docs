@@ -26,7 +26,7 @@ This file is a machine-readable index plus the facts an assistant needs to answe
 - [CityHall](https://mrnewb.github.io/docs/mrnewbcityhall): ID desk, walk-up jobs, applications
 - [CustomPlates](https://mrnewb.github.io/docs/mrnewbcustomplates): usable plate overlay
 - [DigitalPets](https://mrnewb.github.io/docs/mrnewbdigitalpets): pocket pet handheld
-- [Prescriptions](https://mrnewb.github.io/docs/mrnewbprescriptions): prescription system; shotglass models on the anticheat page
+- [Prescriptions](https://mrnewb.github.io/docs/mrnewbprescriptions): prescription system
 - [GiftBox](https://mrnewb.github.io/docs/mrnewbgiftbox): configurable unwrap boxes
 - [LootTables](https://mrnewb.github.io/docs/mrnewbloottables): weighted loot + job payouts
 - [NameChanger](https://mrnewb.github.io/docs/mrnewbnamechanger): vouchers, marriage certs, clerk
@@ -212,10 +212,9 @@ Scrap recyclers. Newb_Bridge, ox_lib, oxmysql. No custom items. `/recyclingsetup
 
 ## Prescriptions (`MrNewbPrescriptions`)
 
-Prescription system. This docs section only lists the custom shotglass models used by the envious pour / mix / drink props.
+Prescription system: doctor pad, player and NPC pharmacies, bottling, insurance, forgery, shoplifting and medication overdoses. Set up in game with `/prescriptionssetup`.
 
 - [Landing](https://mrnewb.github.io/docs/mrnewbprescriptions)
-- [Anticheat models](https://mrnewb.github.io/docs/mrnewbprescriptions/anticheat): `mrnewb_shotglass_empty`, `mrnewb_shotglass_brown`, `mrnewb_shotglass_purple`. Archetype `stream/mrnewb_shotglasses.ytyp`.
 
 ## GiftBox (`MrNewbGiftBox`)
 

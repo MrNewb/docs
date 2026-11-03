@@ -11,8 +11,9 @@ icon: "IconTerminal2"
 | `/clearoldkeys` | Deletes keys for cars that are not spawned. Keys for cars that are out stay. 30 second cooldown. Only when keys are real items |
 | `/anchor` | Drops or raises the anchor on a nearby boat, jetski, or sub. Within 8 meters, slower than 10 mph. Works from the shore |
 | `/newb_proximitylocks` | Turns your own walk-up auto lock on or off. Same toggle as the fob |
+| `/keyring` | Opens the keyring UI. Only when the keyring UI is on (`InventoryKeys.KeyringUI`) and its open setting allows the command. See [Keyring UI](/mrnewbvehiclekeys/install/configuration#keyring-ui) |
 | `/givekeys` | Only when keys are virtual. Shares the closest car you have a key for with the nearest player. You need to be within 10 meters of that car. Five second cooldown |
-| `/throwkeys` | Tosses a key on the ground. Not registered on ox_inventory — use the Throw Keys button on the item, or the F2 list on virtual keys. On other inventories, sit in the car first |
+| `/throwkeys` | Tosses a key on the ground. Not registered on ox_inventory — use the Throw Keys button on the item, or the keyring UI on virtual keys. On other inventories, sit in the car first |
 
 ## Admins
 
@@ -20,7 +21,7 @@ These use the admin check from the bridge.
 
 | Command | What it does |
 | --- | --- |
-| `/vehiclekeyssetup` | Setup menu. Items, keybinds, hotwire, lockpicking, the locksmith, and the rest. |
+| `/vehiclekeyssetup` | Setup menu with a search box across every setting. Items, keybinds, hotwire, lockpicking, the locksmith, police alerts, and the rest. |
 | `/vehiclekeyadmin` | Give or take keys, see what someone is holding, and place parking spots for self-park |
 | `/admingivekeys [id] [plate]` | Gives that player a key. Example: `/admingivekeys 4 ABC123` |
 | `/removekeys [id] [plate]` | Takes that plate’s key off that player |

@@ -212,7 +212,7 @@ bridge.inventory.registerStash('pharmacy_storage', 'Pharmacy', 50, 100000, false
 
 ## `registerHook(eventName, callback, options?)` / `removeHooks(hookId?)`
 
-Ox_inventory-style inventory hooks. Real wrap on `ox_inventory` and `m-Inventory`. `one_inventory`, `tgiann-inventory`, and `origen_inventory` forward only if that resource exposes `registerHook` / `RegisterHook`. Everyone else (`qb-inventory`, `qs-inventory`, `jaksam_inventory`, `core_inventory`, `codem-inventory`, `qb-framework`, `esx-framework`) logs a debug warning and returns `false`.
+Ox_inventory-style inventory hooks. Real wrap on `ox_inventory`, `wasabi_inventory`, and `m-Inventory`. `one_inventory`, `tgiann-inventory`, and `origen_inventory` forward only if that resource exposes `registerHook` / `RegisterHook`. Everyone else (`qb-inventory`, `qs-inventory`, `jaksam_inventory`, `core_inventory`, `codem-inventory`, `qb-framework`, `esx-framework`) logs a debug warning and returns `false`.
 
 ```lua
 registerHook(eventName, callback, options)
@@ -242,7 +242,7 @@ bridge.inventory.openStash(source, 'pharmacy_storage')
 
 Ox-format shop data. Adapters map `inventory` / `groups` / `locations` as needed. Script-opened shops omit coords on ox/qb so the provider’s proximity check does not block a scripted open.
 
-**Shops work on** `ox_inventory`, `m-Inventory`, `one_inventory`, `tgiann-inventory`, and `qb-inventory`.
+**Shops work on** `ox_inventory`, `wasabi_inventory`, `m-Inventory`, `one_inventory`, `tgiann-inventory`, and `qb-inventory`.
 
 **Shops return `false` on** `origen_inventory`, `qs-inventory`, `jaksam_inventory`, `core_inventory`, `codem-inventory`, `qb-framework`, and `esx-framework`.
 
@@ -399,7 +399,7 @@ end)
 
 ### Inventory hooks
 
-Real on `ox_inventory` / `m-Inventory`; optional wrap on `one_inventory` / `tgiann-inventory` / `origen_inventory`. Callback receives ox-shaped payload; return `false` to cancel.
+Real on `ox_inventory`, `wasabi_inventory`, and `m-Inventory`. Optional wrap on `one_inventory`, `tgiann-inventory`, and `origen_inventory`. Callback receives ox-shaped payload; return `false` to cancel.
 
 ```lua
 local hookId = bridge.inventory.registerHook('swapItems', function(payload)

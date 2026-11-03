@@ -10,7 +10,7 @@ A quick tour of what players actually do. Hand this page to new staff.
 
 ### 1. The doctor writes a script
 
-A doctor uses the **prescription pad**. They pick a nearby patient, choose a medication, set how many doses, add a note, and sign. The patient gets a `medicalprescription` paper with an Rx number, the clinic letterhead, and an expiry date (180 days by default).
+A doctor uses the **prescription pad**. They pick a nearby patient, choose a medication, set how many doses, add a note, and sign. The patient gets a `medicalprescription` paper with an Rx number and the clinic letterhead.
 
 Only jobs listed under Medical jobs in the setup panel can do this, at or above their grade floor. Doctors keep a history of what they have written, up to 100 scripts each.
 
@@ -21,6 +21,8 @@ There are two ways to get filled.
 **Player-run pharmacy.** A pharmacist who is clocked in opens the **bottling bench**, picks the paper, and plays a short drag-and-drop minigame to drop pills into the bottle. Then they seal and label it. The ingredients come out of the pharmacy's stock room, so someone has to keep it stocked.
 
 **NPC pharmacist.** If nobody is working, a pharmacist ped fills the script when the patient brings the paper. The ped steps aside as soon as real staff clock in.
+
+Both routes check the paper the same way. A prescription that was revoked is refused with a message saying so. A paper that was only partly filled keeps its remaining doses, and is used up when the last ones are filled. A medication with no price is filled for free.
 
 ### 3. The patient pays
 
@@ -36,10 +38,11 @@ The pharmacy tablet places a supply order. The society pays for it, and a staff 
 
 Beyond orders, the tablet lets staff:
 
-- Search dispense history and doctor records
+- Search dispense history
 - Print a `medicalrecord` for a patient
-- Flag a prescription
-- Revoke a prescription so it can no longer be filled
+- Flag a dispense record
+
+A prescription is revoked with the `RevokePrescription` export, which stops it being filled at any counter. The tablet does not revoke.
 
 ## Insurance
 
@@ -51,11 +54,9 @@ Coverage lowers the patient's share at the register when a medication is on the 
 
 Using a medication runs its effect for the set duration. Some heal, some give armor, some are just strange: a smoky lung, a floating camera, a Pißwasser hangover. Every effect is listed on [Medications and effects](/mrnewbprescriptions/effects).
 
-Take it too often and it catches up with you.
+Take too many doses and it catches up with you.
 
-- **Addiction.** Repeated use raises a hidden score. Once hooked, a player gets cravings, sweating, shaky hands, and drains hunger and thirst faster. Wait it out and it slowly fades, or speed it up with yoga or a hospital visit
-- **Withdrawal.** Hooked and no recent use means withdrawal kicks in
-- **Overdose.** Too many doses too fast, four inside three minutes by default, starts an overdose that gets worse in stages. Dispatch can notify ambulance. Another player can use **Narkhan** spray to reverse it, and a revive clears it too
+- **Overdose.** Each dose counts for 30 minutes. At six doses (the default) an overdose starts and gets worse in stages, ending in death if nothing stops it. A revive clears it
 
 ## The shady side
 
@@ -63,15 +64,11 @@ Take it too often and it catches up with you.
 
 An underground desk lets players tamper with paper. They can **alter** a real script, changing the name or drug, or **forge a blank** from scratch with a pad and blank paper. They refine the result with a few skill checks. A forged paper can never look better than 70% convincing.
 
-At a player counter, staff can **verify** a paper at the register. At an NPC counter, unverified fakes are turned away and dispatch is pinged, unless you have set `npcAcceptForged`. A failed blank forge destroys the pad and the paper.
+At a player counter, staff can **verify** a paper at the register. A paper is checked once. If the check fails the paper stays fake, and checking it again does not re-roll. At an NPC counter, unverified fakes are turned away and dispatch is pinged, unless you have set `npcAcceptForged`. A failed blank forge destroys the pad and the paper.
 
 ### Shoplifting
 
-Players can rummage the shelves of a pharmacy for over-the-counter items like aspirin, pseudoephedrine, bandages, and cough syrup. It takes a progress bar and does not always work, and police may get a ping. After a successful search the shelf stays empty for two hours. Pharmacy staff cannot rob their own shelves.
-
-### Envious shots
-
-A shot glass used with Envious cough syrup in the bag pours a shot. That shot used with Sprunk in the bag mixes an **Envious shot**, which has five sips. A sip gives a five minute buzz with armor and health. Sip while it is still working and they throw up and lose health. Keep going and it kills them. Finishing a run of sips in one session starts the addiction.
+Players can rummage the shelves of a pharmacy for over-the-counter items like aspirin, pseudoephedrine, and bandages. It takes a progress bar and does not always work, and police may get a ping. After a successful search the shelf stays empty for two hours. Pharmacy staff cannot rob their own shelves.
 
 ## Quick staff reference
 

@@ -12,6 +12,46 @@ Everything ships ready for ox_inventory. Open `[INSTALL]/ox_inventory/items.txt`
 | qb-inventory / ps-inventory | `html/images/` |
 | one_inventory | `one_inventory/web/images/` |
 
+## one_inventory
+
+one_inventory keeps item definitions in its own database, not in a file you edit. You load them once with its item import, from an ox_inventory-format items file. That is `[INSTALL]/ox_inventory/items.txt`.
+
+1. Create a folder `resources/ox_inventory_old/` and **do not** `ensure` it. It only exists so the importer can read it. Put two files in it:
+
+   `ox_inventory_old/fxmanifest.lua`
+
+   ```lua
+   fx_version 'cerulean'
+   game 'gta5'
+   ```
+
+   `ox_inventory_old/data/items.lua`
+
+   ```lua
+   return {
+       -- paste the items here
+   }
+   ```
+
+2. Paste the whole contents of `[INSTALL]/ox_inventory/items.txt` between the braces. If you run other Newb scripts, paste their items into the same file.
+3. Copy the PNGs from `[INSTALL]/imgs/` into `one_inventory/web/images/`.
+4. Give your admins the one_inventory admin permission in `server.cfg`, then restart:
+
+   ```cfg
+   add_ace group.admin one_inventory.admin allow
+   ```
+
+5. In game, run `/inventory:manage`, open **Migration**, and run **Import definitions**. Pick the ox_inventory source (it should show a **Files** badge), keep the item category selected, and confirm. The summary shows how many items were imported.
+6. Restart `one_inventory`, then `MrNewbPrescriptions`. The "is not in your inventory" lines in the console should be gone. Delete the `ox_inventory_old` folder.
+
+<Callout type="info">
+  Coming from ox_inventory? Rename your old `ox_inventory` folder to `ox_inventory_old`, add the entries to its `data/items.lua`, and run the same import. It brings your other items over at the same time.
+</Callout>
+
+<Callout type="warning">
+  **Required:** set `Config.Inventory = "one_inventory"` in `Newb_Bridge/settings/bridge_resources.lua`. one_inventory provides itself as `ox_inventory` and is not fully compatible with its image paths, so on `"auto"` item images do not load. See [Newb_Bridge configuration](/newb_bridge/configuration).
+</Callout>
+
 <Callout type="warning">
   Pictures in the bottling bench and pharmacy tablet are found by item name (`<item>.png`), so keep the file names as they are.
 </Callout>
@@ -29,8 +69,6 @@ On start the console prints a line for every config item your inventory is missi
 | `pillboxpatch`, `redwoodrelief`, `stretchyum`, `chiliadburn`, `mollis`, `zombix`, `willies`, `spacecadet`, `mazenap`, `humaneorbit`, `upnatom`, `vinewoodglow`, `altruistcrystal` | **Yes** for the stock catalog | One item per medication |
 | `insurancecard` | Optional | Handed out when someone buys a plan |
 | `blankpaper` | Optional | Used at the forgery desk for blank fakes |
-| `narkhan` | Optional | Nasal spray that brings someone back from an overdose |
-| `shotglass`, `envious_cough_syrup`, `coughsyrup_shot`, `envious_shot` | Optional | Envious shots. Also needs the `sprunk` item |
 | `boxofaspirin`, `boxofpseudoephedrine`, `bandage` | Optional | Shoplifting loot. Skip `bandage` if your framework already has one |
 
 The names the script looks up (pad, paper, record, blank paper) are set on the Item names page of the setup panel, so you can rename them there.

@@ -10,11 +10,10 @@ The edits on this page are for the extras:
 
 - **Insured hospital bills.** Patients with coverage pay their copay instead of the full price
 - **Clearing overdoses on revive.** An EMS revive wipes the overdose effects
-- **Addiction relief.** A paid hospital stay knocks the score down (15 by default)
 
 Start `MrNewbPrescriptions` after your framework, inventory, and ambulance job. In every snippet below the `GetResourceState` check keeps your job working if Prescriptions is not running.
 
-Also check the setup panel on this side: add your ambulance job under Medical jobs, list it under the overdose dispatch jobs, and set the hospital treatment amount on the Habits page.
+Also check the setup panel on this side: add your ambulance job under Medical jobs.
 
 ## qb-ambulancejob
 
@@ -110,14 +109,6 @@ end
 
 Check-in and respawn beds both go through this function, so one edit covers both.
 
-**Addiction relief.** At the end of the `qbx_ambulancejob:server:playerEnteredBed` handler, after billing:
-
-```lua
-if GetResourceState('MrNewbPrescriptions') == 'started' then
-    exports.MrNewbPrescriptions:ReducePlayerAddiction(src, 15) -- match the hospital treatment amount in the panel
-end
-```
-
 **Clear overdose on revive.** Wherever you call `exports.qbx_medical:Revive(targetSrc)` from EMS, add this right after:
 
 ```lua
@@ -133,7 +124,6 @@ Wrapping the `Revive` call is the reliable way. Some builds also fire a `qbx_med
 Wasabi's pricing runs inside escrow, so there is nothing to patch in their files. Death, revive, and facility listeners are already included in `wasabi_ambulance_listeners.lua`:
 
 - Overdose effects are cleared on revive and on death
-- A facility heal reduces the addiction score by `hospitalTreatment`
 
 For **insured bills**, Wasabi charges the patient first. Refund the insurance share afterward, in a server script of your own:
 
@@ -151,5 +141,3 @@ AddEventHandler('wasabi_ambulance:Server:Listeners:OnFacilityHeal', function(src
     bridge.framework.addMoney(src, 'bank', refund)
 end)
 ```
-
-Do not duplicate the addiction relief listener unless you deleted the stock file.

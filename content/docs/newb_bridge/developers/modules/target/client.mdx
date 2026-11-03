@@ -1,11 +1,11 @@
 ---
 title: "Client"
-description: "Target (client). Client-only targeting (ox_target, tgiann-target, core_focus, qb-target, sleepless_interact, interact, or bl_sprites)."
+description: "Target (client). Client-only targeting (ox_target, tgiann-target, core_focus, qb-target, or sleepless_interact)."
 ---
 
 # Target (client)
 
-Client-only targeting (`ox_target`, `tgiann-target`, `core_focus`, `qb-target`, `sleepless_interact`, `interact`, or `bl_sprites`).
+Client-only targeting (`ox_target`, `tgiann-target`, `core_focus`, `qb-target`, or `sleepless_interact`).
 
 Each option needs a unique `name` and display `label`.
 
@@ -141,8 +141,6 @@ bridge.target.removeEntity(netId, 'inspect')
 ## Global targets
 
 ### `addGlobalPed(options)`
-
-No-op on `interact` — that resource has no global-ped API.
 
 ```lua
 bridge.target.addGlobalPed({

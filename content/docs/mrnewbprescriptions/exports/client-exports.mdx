@@ -13,11 +13,9 @@ Call them as `exports.MrNewbPrescriptions:Name(...)` from a client script.
 | `RunEffect(name, durationSec, strength)` | | Plays an effect id on the local player |
 | `StartOverdose()` / `StopOverdose()` | | Starts or ends the overdose sequence locally |
 | `DrugTaken()` | | Counts one dose toward the local overdose threshold |
-| `GetPedAddictionState(ped)` | boolean or `nil` | `true` when that player ped is overdosing. `nil` for non-players |
 
 ```lua
 exports.MrNewbPrescriptions:RunEffect('smokey', 20, 1)
-local overdosing = exports.MrNewbPrescriptions:GetPedAddictionState(PlayerPedId())
 ```
 
 `RegisterPrescription` and `RegisterEffect` need to run on both sides. Put them in a shared script so you only make the call once. Details: [Medications and effects](/mrnewbprescriptions/effects).

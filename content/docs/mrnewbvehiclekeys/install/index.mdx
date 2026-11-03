@@ -57,7 +57,7 @@ Players can rebind these under MrNewbVehicleKeys in FiveM’s settings.
 | --- | --- |
 | L | Lock or unlock the closest car you have a key for, about 15 meters. The on-screen fob reaches further |
 | Y | Toggle the engine. Stays off if jg-hud, ps-hud, qb-hud, or qbx_hud already handles the engine |
-| F2 | Open the key list. On ox_inventory you open the keyring item instead |
+| . (period) | Open the keyring UI, when the keyring UI is on. Leave it unbound for `/keyring` only. On ox_inventory without the menu you open the keyring item instead |
 | E | Hotwire, driver seat only, when you do not have a key |
 | H | Search the car for keys, driver seat only |
 | I / O | Put the key in the ignition, or take it back out, when insert mode is on |
@@ -69,7 +69,7 @@ Walking up to your own car locks and unlocks it. Players can turn that off from 
 
 | Symptom | Check |
 | --- | --- |
-| Keyring is the old menu | ox_inventory started after this resource, or container keyring is off in the setup menu |
+| Keyring is the context menu | ox_inventory started after this resource, or container keyring is off in the setup menu |
 | Two `/car` commands | `AdminCommands` is on and qbx_core still registers its own `/car` and `/dv`. Turn one of them off |
 | `provide` conflict on start | Another resource also provides `qbx_vehiclekeys` |
 | Shop will not sell a renamed item | The locksmith price entry key has to be the real item name |

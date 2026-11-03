@@ -32,6 +32,7 @@ const groups: Record<string, ProviderGroup> = {
     id: 'inventory',
     rows: [
       auto('ox_inventory'),
+      auto('wasabi_inventory'),
       auto('m-Inventory'),
       auto('one_inventory'),
       auto('jaksam_inventory'),
@@ -59,8 +60,6 @@ const groups: Record<string, ProviderGroup> = {
       auto('core_focus'),
       auto('qb-target'),
       auto('sleepless_interact'),
-      auto('interact'),
-      auto('bl_sprites'),
     ],
   },
   'vehicle-keys': {
@@ -117,6 +116,7 @@ const groups: Record<string, ProviderGroup> = {
       auto('lation_ui'),
       auto('wasabi_notify'),
       auto('zsx_uiv2'),
+      fallback('internal', 'Built-in notify when nothing in the list is installed.'),
     ],
   },
   inputs: {

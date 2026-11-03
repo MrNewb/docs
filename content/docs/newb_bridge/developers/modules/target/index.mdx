@@ -1,14 +1,12 @@
 ---
 title: "Target"
-description: "Target. Client-only targeting (ox_target, tgiann-target, core_focus, qb-target, sleepless_interact, interact, or bl_sprites)."
+description: "Target. Client-only targeting (ox_target, tgiann-target, core_focus, qb-target, or sleepless_interact)."
 icon: "IconFocus2"
 ---
 
-Client-only targeting (`ox_target`, `tgiann-target`, `core_focus`, `qb-target`, `sleepless_interact`, `interact`, or `bl_sprites`).
+Client-only targeting (`ox_target`, `tgiann-target`, `core_focus`, `qb-target`, or `sleepless_interact`). Full check order is on [Supported](/newb_bridge/supported#target).
 
 Each option needs a unique `name` and display `label`.
-
-`bl_sprites` is a world-sprite interact, not an eye target. Press **E** on a sprite; one valid option runs immediately, several open an ox_lib context menu. Pin it with `Config.Target = "bl_sprites"` — auto-detect keeps ox_target first if both are installed.
 
 - [Client](/newb_bridge/developers/modules/target/client) — zones, entities, models, `disableTargeting`
 - [Server](/newb_bridge/developers/modules/target/server) — not implemented
