@@ -19,11 +19,26 @@ The first time the panel opens, a short guide walks Access, Swarms, Shops, Honey
 | Honey zones | Map polygons per region, and priority when regions overlap. Outside every region the hive makes default honey |
 | Separator | On or off, world spots staff place (each named for its street, with a teleport button), an optional map blip on every spot (on by default), combs per batch, crank turns. Players cannot place or pick one up |
 | Production | Minutes per tick, max honey / wax / workers, worker loss chance |
-| Saving and cleanup | `shutdown` or `timed` saving, inactive hive wipe days |
+| Saving and cleanup | **Save hives** (`When the resource stops` or `On a timer as well`), the **Save every** slider (1 to 1440 minutes), inactive hive wipe days |
 | VIP hives | Extra slots. VIP from an identifier list, ACE groups, Discord roles, or the hook |
 | Logs | `ox` (ox_lib logger), `discord` (webhook), or `custom` (`SendBeeLog`). Per-action toggles |
 
-`shutdown` writes hives when the resource stops or the server restarts. A crash loses changes since boot. Use `timed` if that matters.
+## Saving
+
+Open **Server > Saving & cleanup**. **Save hives** has two modes:
+
+- **On a timer as well** (`timed`, the default for fresh installs): every 10 minutes (the **Save every** slider, 1 to 1440 minutes) only the hives that changed are written. Hives also save when the resource stops and when the server shuts down. A crash loses at most that many minutes.
+- **When the resource stops** (`shutdown`): hives are written only when the resource stops or the server shuts down or restarts. There is no timed SQL. A crash loses every change since boot.
+
+Servers that already saved a different mode keep it. Change it on that page.
+
+## Debug
+
+The **Debug prints** switch in the panel is off by default and applies right away. With it on, the console prints extra lines. Leave it off on a live server.
+
+## Install size
+
+Blip icons ship as one atlas image (`web/build/blips/atlas.webp` and `atlas.json`).
 
 Zone and location editing uses the built-in map in the panel. Place the points, then save.
 

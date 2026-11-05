@@ -6,7 +6,7 @@ icon: "IconPuzzle"
 
 You get at all of this through the `bridge` table once `@Newb_Bridge/import.lua` is in. A module loads the first time you touch it, based on the provider you set in [Configuration](/newb_bridge/configuration). The host preloads every provider you configured when it starts.
 
-Modules without an implementation become a quiet noop table (every method is a no-op function). `bridge.dialogue` and `bridge.task` error if accessed on the server. `bridge.dispatch` and `bridge.bossmenu` are host-only on the client (consumer clients get the noop table).
+Modules without an implementation become a no-op table (every method does nothing). `bridge.dialogue` and `bridge.task` error if accessed on the server. `bridge.dispatch` and `bridge.bossmenu` are host-only on the client (consumer clients get the noop table).
 
 ## Available modules
 

@@ -41,13 +41,25 @@ ensure MrNewbVehicleKeys
 
 Start the server once. SQL tables are created on their own, including `MrNewb__Settings`. There is no SQL file to import.
 
-Join as an admin and run `/vehiclekeyssetup`. What to change first: [Configuration](/mrnewbvehiclekeys/install/configuration).
+Join as an admin and run `/vehiclekeyssetup`. The first time it opens, a guided setup asks one question per page: how keys work, the fob, street cars, the engine, the keyring, throwing keys, break-in, police alerts, and the locksmith. Each page shows a recommended answer. Take it, or change it. Press **Save** when you are done.
+
+Advanced pages and settings stay hidden until you turn on **Advanced settings** in the left rail. The Save button shows how many changes are waiting. After a save, the panel lists the few settings that need a resource restart. Everything else is live for every player.
+
+Settings are stored in the database (`MrNewb__Settings`). The files under `resource/open/seed/` are only copied in on the first boot. After that the database copy wins and editing the seed does nothing. **Reset to the factory setup** in the panel loads the seed defaults over your saved settings.
+
+What each page does: [Configuration](/mrnewbvehiclekeys/install/configuration).
 
 ### Restart and check [step]
 
 Restart the inventory, then this resource, after you paste items. Give yourself a key, lock a car with **L**, and open the fob.
 
 Commands: [Commands](/mrnewbvehiclekeys/install/commands). Locker models: [Anticheat models](/mrnewbvehiclekeys/anticheat).
+
+## Good to know
+
+- Restarting the resource takes a moment. The key system starts about 2 seconds after the resource does, so wait a moment before you test.
+- The resource starts in about 0.25 seconds of server time. Blip icons ship as one atlas image (`web/build/blips/atlas.webp` and `atlas.json`), so the web UI build stays small. Do not delete files from `web/build`.
+- Restarting this resource also stops MrNewbVehicleKeysPhone. Start it again afterwards ([Phone app](/mrnewbvehiclekeys/phone)).
 
 ## Keys players press
 

@@ -1,6 +1,6 @@
 ---
 title: "Events"
-description: "Newb_Bridge fires when the framework says a player loaded or unloaded. Use these instead of that framework's own hooks."
+description: "Player load, unload, and job-change events from Newb_Bridge. Use these instead of each framework's own hooks so your script works on any framework."
 icon: "IconBolt"
 ---
 
@@ -10,8 +10,8 @@ Only the **host** sends them (`bridge.isHost`). Listen with `AddEventHandler` in
 
 ## `Newb_Bridge:server:playerLoad`
 
-| Payload | `src: number` |
-| **When** | Player data is ready on the server |
+**Payload:** `src: number`  
+**When:** Player data is ready on the server
 
 ```lua
 AddEventHandler('Newb_Bridge:server:playerLoad', function(src)
@@ -23,8 +23,8 @@ end)
 
 ## `Newb_Bridge:server:playerUnload`
 
-| Payload | `src: number` |
-| **When** | Player unloads or disconnects |
+**Payload:** `src: number`  
+**When:** Player unloads or disconnects
 
 ```lua
 AddEventHandler('Newb_Bridge:server:playerUnload', function(src)
@@ -36,8 +36,8 @@ end)
 
 ## `Newb_Bridge:server:playerJobUpdate`
 
-| Payload | `src: number`, `jobName: string` |
-| **When** | Player job changes |
+**Payload:** `src: number`, `jobName: string`  
+**When:** Player job changes
 
 ```lua
 AddEventHandler('Newb_Bridge:server:playerJobUpdate', function(src, jobName)
@@ -49,8 +49,8 @@ end)
 
 ## `Newb_Bridge:client:playerLoad`
 
-| Payload | none |
-| **When** | Local player data is ready (short delay on QB/QBX/ESX) |
+**Payload:** none  
+**When:** Local player data is ready (short delay on QB/QBX/ESX)
 
 ```lua
 AddEventHandler('Newb_Bridge:client:playerLoad', function()
@@ -62,8 +62,8 @@ end)
 
 ## `Newb_Bridge:client:playerUnload`
 
-| Payload | none |
-| **When** | Local player unloads |
+**Payload:** none  
+**When:** Local player unloads
 
 ```lua
 AddEventHandler('Newb_Bridge:client:playerUnload', function()
@@ -75,7 +75,7 @@ end)
 
 ## `Newb_Bridge:client:playerJobUpdate`
 
-| Payload | `jobName`, `jobLabel`, `gradeName`, `gradeLevel` |
+**Payload:** `jobName`, `jobLabel`, `gradeName`, `gradeLevel`
 
 Also fired on duty changes (`QBCore:Client:SetDuty` / equivalent). Same four arguments.
 

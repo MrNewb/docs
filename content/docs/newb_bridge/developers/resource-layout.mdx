@@ -1,10 +1,8 @@
 ---
 title: "Resource layout"
-description: "List your scripts in load order. Skip modules/** globs so escrow and review stay easy to follow."
+description: "How to list scripts in fxmanifest.lua so load order is explicit."
 icon: "IconFolders"
 ---
-
-# MrNewb resource layout
 
 ## fxmanifest pattern
 
@@ -30,7 +28,7 @@ dependencies {
 }
 ```
 
-List scripts explicitly in load order. Avoid `modules/**` globs so escrow and review stay predictable.
+List scripts explicitly in load order. Avoid `**` globs, since they load files in an order you do not control.
 
 ## Player lifecycle
 

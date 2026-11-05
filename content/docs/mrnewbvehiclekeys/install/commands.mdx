@@ -21,8 +21,7 @@ These use the admin check from the bridge.
 
 | Command | What it does |
 | --- | --- |
-| `/vehiclekeyssetup` | Setup menu with a search box across every setting. Items, keybinds, hotwire, lockpicking, the locksmith, police alerts, and the rest. |
-| `/vehiclekeyadmin` | Give or take keys, see what someone is holding, and place parking spots for self-park |
+| `/vehiclekeyssetup` | Setup menu with a search box across every setting. Items, keybinds, hotwire, lockpicking, the locksmith, police alerts, and the rest. Its **Manage** tab gives or takes keys, shows what a player is holding, edits vehicle locks, creates keys, and places parking spots for self-park |
 | `/admingivekeys [id] [plate]` | Gives that player a key. Example: `/admingivekeys 4 ABC123` |
 | `/removekeys [id] [plate]` | Takes that plate’s key off that player |
 | `/listkeys [id]` | Prints the plates they are holding to the server console |
@@ -31,14 +30,18 @@ These use the admin check from the bridge.
 | `/car [model] [plate] [keep]` | Spawns you into that model and gives you the key. Plate is optional. Pass anything other than `false` or `0` as the third argument to keep the car you are already in |
 | `/dv [radius]` | Deletes the car you are in and takes your key. On foot, deletes cars around you. `/dv 10` is 10 meters. Default on foot is 5 |
 
-`/car` and `/dv` stay off until Admin Commands is on in `/vehiclekeyssetup`. If qbx_core still has its own `/car` and `/dv`, turn those off or the one that starts last is the one that answers.
+`/car` and `/dv` are off by default. Turn them on under **General > Admin & debugging** (Advanced must be on to see that page). The command names are read when the resource starts, so a rename needs a restart. The on and off switches apply right away.
+
+A command name can only belong to one resource. If another resource already owns the name, such as qbx_core's own `/car` and `/dv`, this resource skips it and prints a warning to the server console. The setup page shows the same clash. Give ours a different name on that page, or leave qbx_core's. Its `/car` already hands out keys through this script.
 
 ## Debug
 
-Leave Debug Mode off on a live server. Turn it on in the setup menu and restart the resource for the server half of these.
+Leave Debug Mode off on a live server. Turn it on under **General > Admin & debugging** (Advanced must be on). See [Debug mode](/mrnewbvehiclekeys/install/configuration#debug-mode).
+
+The debug commands are only registered when Debug Mode was already on as the resource started. Turn it on, save, then restart the resource to get them.
 
 | Command | What it does |
 | --- | --- |
-| `/whatsloaded` | Which framework, inventory, notification, and target the bridge picked, and whether item keys and ox key mode are on. F8 is always available. The server console half only prints with Debug Mode on |
-| `/debugkeys` | Reloads the client as if you just joined. Every install |
-| `/debuglistkeys [id]` | Full key data for that player in the server console. Debug Mode only |
+| `/whatsloaded` | Which framework, inventory, notification, and target the bridge picked, and whether item keys and ox key mode are on. The server console half prints too |
+| `/debugkeys` | Reloads the client as if you just joined |
+| `/debuglistkeys [id]` | Full key data for that player in the server console |

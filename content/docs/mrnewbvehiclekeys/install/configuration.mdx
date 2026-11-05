@@ -4,11 +4,24 @@ description: "Vehicle Keys settings live in /vehiclekeyssetup."
 icon: "IconSettings"
 ---
 
-Run `/vehiclekeyssetup` as an admin. Changes are saved and pushed to connected players without a restart.
+Run `/vehiclekeyssetup` as an admin. Changes are saved to the database and pushed to connected players without a restart, except the few listed under [Needs a restart](#needs-a-restart).
 
-The setup menu has these pages: Overview, Manage (vehicles, players, vehicle locks, key creator, parking), Keys, Locking, Break-in, Jobs, Locksmith, Police and General. Use the search box at the top to find any single setting. Every setting shows its limits, marks a changed value, and has a reset to default. Save applies everything at once and shows how many changes are waiting.
+The first time it opens, a guided setup walks the essentials one question at a time and shows a recommended answer for each. You can leave it and use the full page list at any time.
 
-Coming from another key script? **General** has a picker for the script you are replacing. This resource then answers the calls that script used to receive, so nothing else needs editing. Keys held inside the old script are not copied, so give players their keys again from **Manage**.
+The left rail groups the pages: Keys, Key fob, Locking and engine, Break-in, Vehicles, Jobs, Locksmith, Police and tracking, and General. **Manage** holds the live admin tools. Use the search box at the top to find any single setting. Every setting shows its limits, marks a changed value, and has a reset to default.
+
+- **Advanced settings** in the rail shows the extra pages and settings (keybinds, proximity locks, eye-target options, key types, fob buttons, vehicle rules, admin and debug, and more). Easy mode hides them.
+- **Save** shows how many changes are waiting and applies them all at once. It reads Saved when nothing is pending. If you close with unsaved changes, the panel asks first.
+- After a save, a note lists any setting that needs a resource restart.
+- **Reset to the factory setup** replaces every saved setting with the seed defaults. The panel keeps a copy for the session so you can restore it.
+
+## How settings are stored
+
+Settings live in the `MrNewb__Settings` table. The files under `resource/open/seed/` are copied in only on the first boot, when no saved row exists. After that the database copy wins, and editing a seed file changes nothing. Reset in the panel loads the seed back over your saved settings.
+
+## Needs a restart
+
+Only these need a resource restart after a save: the ox_inventory features switch, the keyring container switch, `/car` and `/dv` command names, and renamed item names (the old name keeps working until the restart). New items must already exist in your inventory. Keybind defaults only apply to players who have not rebound that key.
 
 A few files stay editable because they hold code. A change there needs a resource restart:
 
@@ -31,7 +44,8 @@ A few files stay editable because they hold code. A change there needs a resourc
 | `KeyringSharing` | on, 10 m | Owners share a car from the keyring UI and can take it back. `MaxPerVehicle` 0 = no limit |
 | `InventoryKeys.EnableAftermarketLocks` | on | Owners can change a lock so old keys stop working |
 | `Driving.InsertMode.Enabled` | off | Key has to go in the ignition (I) before the engine starts. Turns off give-key-if-running and hotwire-gives-a-key while it is on |
-| `Driving.EngineToggleEnabled` | on, unless a known HUD runs | Engine key. Starts off when jg-hud, ps-hud, qb-hud, or qbx_hud is running |
+| `Driving.EngineToggleEnabled` | on, unless a known HUD runs | Engine key. Starts off when jg-hud, ps-hud, qb-hud, or qbx_hud is running with its own engine toggle on. See [Starting the engine](#starting-the-engine) |
+| `Driving.DisableVehicleAutoStart` | on | On = getting in does not start the engine. Off = a driver with a key has the engine started on entry |
 | `ProximityLocking` | on | Auto lock and unlock as the owner walks away or back |
 | `LockVehicleRange` / `KeyFobLockRange` | 15 / 150 m | L key, and the on-screen fob |
 | `Hotwire` | on, 3 attempts | `Item.Required` makes `hotwire_kit` mandatory |
@@ -45,6 +59,141 @@ A few files stay editable because they hold code. A change there needs a resourc
 | `AdminCommands` | off | Turns on `/car` and `/dv` |
 | `CompatibilityEvents` | qb and qbx on | Which foreign key events this resource answers |
 | `DebugMode` | off | Verbose logging and the debug commands |
+
+## Starting the engine
+
+Under **Locking and engine > Starting the engine** you pick one of three ways, plus an ignition switch.
+
+| Choice | What happens |
+| --- | --- |
+| Starts on its own | The engine starts as soon as a driver with a key sits down. The engine key still switches it off and on |
+| Press the engine key | The car stays off until the driver presses the engine key (Y by default). Getting in is not enough. This is the factory default |
+| Another script does it | A HUD or another script owns the engine key. This script leaves the engine key alone |
+
+**Key must be inserted** (insert mode) is a separate switch. With it on, the driver puts the key in with **I** and takes it out with **O**. Putting the key in starts the engine, and taking it out turns the engine off. While the key is in, it leaves the driver's inventory and stays in the car. The give-a-key-if-the-engine-is-running and hotwire-gives-a-key options are off while insert mode is on. The eye-menu Start engine option is not offered while insert mode is on.
+
+Which one to pick:
+
+- Most servers: **Press the engine key**.
+- Players should not have to press anything: **Starts on its own**.
+- You want a roleplay ignition step: turn on insert mode.
+- Your HUD has its own engine toggle: **Another script does it**. Two scripts answering the same key fight each other. The panel warns you when it finds jg-hud, ps-hud, qb-hud, or qbx_hud running with its engine toggle on, and the guided setup picks this choice for you. A jg-hud with `Config.EngineToggleKeybind = false` does not count.
+
+Remote start on the key fob and the eye-menu Start engine option work whichever way you choose. If you pick the engine key and then switch that key off under Keybinds, nobody can start a car with it, and the panel warns you.
+
+## Lock sound
+
+Under **Locking and engine > Locking and street cars** (Advanced):
+
+| Option | What plays |
+| --- | --- |
+| Off | Nothing |
+| Car sound (`native`) | The lock chirp from this resource's audio files, played from the car. Default |
+| Horn | A short horn tap |
+| Both | The chirp and a short horn tap |
+
+For Car sound and Both you can set the range (20 m by default) and whether the horn chirp plays too. The audio bank, sound name and sound group are only for servers that add their own audio files.
+
+## Key fob
+
+**Fob style** has two options:
+
+- **Legacy**: this script's own fob. It carries the extra buttons you set up.
+- **Branded**: the car maker's own fob (Karin, Pfister, Dinka and the rest). Every button works: lock, unlock, trunk, alarm and start. A car whose maker has no fob, and boats, fall back to the Legacy fob. The Fob buttons page does not apply to Branded keys, and locksmiths cannot add modules to them. At the locksmith bench, whoever cuts a key picks the brand.
+
+The fob style also decides what players see in the keyring screen.
+
+**Fob buttons** (Advanced) is a table of the extra buttons on smart keys: remote start, open doors, convertible roof, self park, summon, autopilot, dance mode, proximity locks and emergency lights. For each button:
+
+| Column | Meaning |
+| --- | --- |
+| Shown | The button exists on keys and in the locksmith menu. Hidden means gone, even from keys that already list it |
+| Free | Added to every new smart key |
+| Sold | A locksmith can add it for the price |
+| Price | Dollars. Only for Sold buttons |
+
+With Sold on, an Advanced job picker restricts the button to the chosen jobs. With no jobs chosen, any job can use it.
+
+**Key types** (Advanced) sets which style each car gets: smart, basic, luxury, boat or motorcycle. A model rule beats a class rule, and the default covers the rest. **Hold to close up or open up** (Advanced) makes a held lock or unlock button on the fob also close or open the windows, the roof and the doors.
+
+## Locksmith
+
+**Locksmith** is one page for both kinds. One item list and one set of prices serve either.
+
+**Walk-up NPC** (default on): sells spare keys, fob upgrades and shop items. Factory spare key prices are 150 for smart keys and 75 for basic, boat and motorcycle keys. The ped steps away while a player locksmith is working, unless you turn that off.
+
+**Player-run shop** (default on): each shop has a job, a minimum grade, an optional on-duty requirement, and four spots:
+
+| Spot | What it does |
+| --- | --- |
+| Bench | Cuts a key for a plate. Uses up one `blank_key` per cut when that is required, and can run a cutting minigame |
+| Computer | The workstation. Workers pay a one-time firmware licence (100 by default, can be set per shop) to program fob button modules, and sell blank keys and the shop items |
+| Register | Bills a nearby customer. The customer always gets an accept or decline prompt. One charge is capped at 25000 by default |
+| Stash | The shop's stash (50 slots by default) |
+
+The factory shop is tied to the `police` job so you can test. Set the real job on each shop. Renaming a shop key creates a new empty stash. The `keyfob_scanner` item clones a nearby fob onto a blank key. Its range, cooldown, failure chance and police alert chance are under the job tools on the Locksmith page. Item-key mode has to be on for the bench and the scanner.
+
+Factory shop item prices: lockpick 500, advanced lockpick 10000, keyring 500, blank key 25, ping transmitter 2500, ping receiver 1500, aftermarket locks 15000. The price list key has to be the real item name.
+
+## Break-in
+
+- **Hotwire** (default on): 3 attempts, 10 second cooldown, built-in arrows minigame. It can require an item such as `hotwire_kit`.
+- **Lockpicks** (default on): opens a locked door only. It does not start the car. Each lockpick item (Advanced) sets its own difficulty, break chance and police alert chance, and whether it opens cars that need a better pick. The alarm sounds for 45 seconds by default.
+- **Searching cars** (default on): 5 second search, 3 attempts per car, 50 percent chance to find the keys. Extra loot can turn up instead.
+- **Carjacking** (default on): pulls an NPC driver out at weapon point. Maximum car speed 20 mph, distance 10 m. Only the listed weapons work, and you can require police online. The driver can be searched for keys for about 2 minutes afterwards.
+- **Forcing doors** (Advanced, default on): the listed jobs (police, ambulance and mechanic by default) pry a locked door open. It does not start the car.
+
+**Police alerts**: hotwire, lockpick and carjack each have a chance from 0 to 100 (50 by default) to alert the listed jobs. Each lockpick item can override its own chance. Forcing a door only alerts if you turn that on.
+
+## Job keys and key storages
+
+**Job keys**: everyone with the job gets keys to that job's listed vehicles (police and ambulance models by default). **Require on duty** counts only while clocked in. **Autolock** locks the car behind the last driver.
+
+**Key storages** (Advanced, 2 police lockers by default): a cabinet with 12 hooks where a job hangs spare keys. Players reach it through the interaction style below.
+
+## Vehicle rules and exceptions
+
+The **Exceptions** and **Vehicle rules** pages (Advanced) hold the rules in [Per-vehicle rules](#per-vehicle-rules). Factory rules: bicycles, trailers, trains and farm or yard equipment need no key, police, ambulance and fire vehicles cannot be stolen, and taxis, tow trucks and flatbeds need the advanced lockpick. The Electric and convertible page and the Missing names page (cars that show a blank name) are Advanced too.
+
+## GPS tracker
+
+**GPS tracker** (Advanced, default on): a `ping_transmitter` is fitted to a car, and a `ping_receiver` pings its rough location. The location is blurred on purpose. A player can plant up to 5 trackers, and pings have a 30 second cooldown.
+
+## Interaction style
+
+**General > Interaction style** sets how players reach locksmiths and key storages: **Target** (third eye, default), **Help text prompt**, or **3D text**. With the last two, players press E. The eye-target options page only exists while Target is selected.
+
+## Other key scripts
+
+**General > Other key scripts**: pick the script you are replacing and press **Answer for** it. Calls meant for it are then answered by this resource, so other scripts that ask for keys keep working without edits. Save, stop the old script, and restart this one. Keys held inside the old script are not copied.
+
+`fxmanifest.lua` also has `provide` lines so `exports['qbx_vehiclekeys']:GiveKeys(...)` resolves here. Only `qbx_vehiclekeys` is active. To replace a different script, uncomment its line, run `refresh`, and restart this resource (a full server restart is safest). Never provide a name whose original resource is still running.
+
+## Admin commands
+
+`/car` and `/dv` are off by default. Turn them on under **General > Admin & debugging** (Advanced). Names are read when the resource starts. A name another resource owns is skipped with a console warning, so give ours a different name. Details: [Commands](/mrnewbvehiclekeys/install/commands).
+
+## Manage tab
+
+**Manage** in the rail holds the live admin tools:
+
+| Section | What it does |
+| --- | --- |
+| Vehicles | Nearby vehicles by plate or model, with a teleport button |
+| Players | See what a player holds, give or take keys |
+| Vehicle locks | Add and edit lock profiles (item keys only) |
+| Key creator | Make a key for any plate. With virtual keys it grants a key without an item |
+| Parking | Create the parking areas that self-park uses (item keys only) |
+
+## Debug mode
+
+**General > Admin & debugging > Debug messages** (Advanced). It is off by default and applies right away, no restart. Keep it off on a live server.
+
+With it on, the server console and F8 print plain one-line messages with names, ids and numbers, in the form `[MrNewbVehicleKeys:settings] Sam (id 7) opened the setup panel.` The word after the colon names the area, such as `keys`, `locks`, `engine`, `locksmith`, `theft`, `admin` or `settings`. The `/whatsloaded`, `/debugkeys` and `/debuglistkeys` commands only exist when debug was on at resource start.
+
+## Restart cost
+
+The resource starts in about 0.25 seconds of server time. The blip icons ship as one atlas image (`web/build/blips/atlas.webp` and `atlas.json`), which keeps the number of files every player downloads low.
 
 ## Keyring UI
 

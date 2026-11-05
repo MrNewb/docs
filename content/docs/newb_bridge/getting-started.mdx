@@ -5,12 +5,12 @@ icon: "IconDownload"
 ---
 
 <Callout type="warning">
-  Start Newb_Bridge **after** ox_lib, your **framework**, **inventory**, **target**, and anything else it has to talk to. If those come up later, it can miss them and you’ll get the wrong provider, or none. **Don’t** start Newb_Bridge before the framework. Scripts that import `@Newb_Bridge/import.lua` have to start **after** the bridge. `import.lua` errors if the bridge ain’t running.
+  Start Newb_Bridge **after** ox_lib, your **framework**, **inventory**, **target**, and anything else it has to talk to. If those come up later, it can miss them and the bridge may pick the wrong provider, or none. Scripts that import `@Newb_Bridge/import.lua` have to start **after** the bridge. `import.lua` errors if the bridge is not running.
 </Callout>
 
 ### Requirements [step]
 
-[ox_lib](https://github.com/overextended/ox_lib), [oxmysql](https://github.com/overextended/oxmysql), and a framework, inventory, and target from [Supported](/newb_bridge/supported). That inventory list includes `one_inventory`. Every provider defaults to `"auto"`. You only need the ones your server actually runs: notifications, fuel, and dispatch fall back to built-in versions when nothing else is installed.
+[ox_lib](https://github.com/overextended/ox_lib), [oxmysql](https://github.com/overextended/oxmysql), and a framework, inventory, and target from [Supported](/newb_bridge/supported). Every provider defaults to `"auto"`. You only need the ones your server actually runs: notifications, fuel, and dispatch fall back to built-in versions when nothing else is installed.
 
 ### Get the resource [step]
 

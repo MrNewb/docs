@@ -21,6 +21,7 @@ Call them as `exports.MrNewbVehicleKeys:Name(...)`. They return `false` (or an e
 | `MigratePlate` | `oldPlate, newPlate` | boolean. Moves the saved key profile. Item keys only. Does not touch held keys |
 | `GrantRental` | `src, plate, modelName, netid, rentalLocation?` | boolean. Keys plus `rental_paperwork` |
 | `RemoveRental` | `src, plate, netid` | boolean |
+| `ClearSharedKeys` | `plate` | number. Ends every keyring share of that car right away and returns how many people lost access. Shares also end on their own when the owner no longer owns the car |
 
 `keyType` is `smart`, `luxury`, `basic`, `boat`, or `motorcycle` (`classic`, `display`, and `bike` are aliases). `keyoptions` is a list of fob module ids.
 

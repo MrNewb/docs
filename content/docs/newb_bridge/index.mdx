@@ -1,24 +1,19 @@
 ---
 title: "Newb_Bridge"
-description: "Most of my scripts import this. You call bridge.* and it talks to the framework, inventory, and target you already got running."
+description: "The shared layer MrNewb scripts use to work with your framework, inventory, target, and other resources. Scripts call bridge.* and the bridge talks to whatever you already run."
 icon: "IconPlugConnected"
 ---
-
-<Callout>
-  I'm still filling this in. Pages are gonna move around.
-</Callout>
 
 [GitHub](https://github.com/MrNewb/Newb_Bridge) · [Supported](/newb_bridge/supported) · [Troubleshooting](/newb_bridge/troubleshooting)
 
 ## Start order
 
-```cfg
-ensure ox_lib
-ensure oxmysql
-ensure Newb_Bridge
-ensure MrNewb_YourScript
-```
+Start Newb_Bridge after ox_lib, oxmysql, your framework, inventory and target, and before any script that uses it. Full example: [Installation](/newb_bridge/getting-started).
 
-Keep the folder named `Newb_Bridge`.
+Leave providers on `"auto"` unless you need to pin one. The one exception is `one_inventory`, which must be pinned (see [Configuration](/newb_bridge/configuration)).
 
-Leave providers on `"auto"` unless you need to pin one. **The exception is one_inventory: you must set `Config.Inventory = "one_inventory"` yourself.** It provides itself as `ox_inventory`, so auto-detect picks the ox_inventory module and its image paths. See [Configuration](/newb_bridge/configuration). Dispatch is `"auto"` too and falls back to the built-in `internal` alerts when no dispatch resource is found. Inventories, targets, keys, fuel, and the rest are on [Supported](/newb_bridge/supported). `one_inventory` is on that inventory list. Details: [Configuration](/newb_bridge/configuration), [Modules](/newb_bridge/developers/modules). Writing your own resource? See [For Developers](/newb_bridge/developers).
+- [Installation](/newb_bridge/getting-started): requirements and start order
+- [Configuration](/newb_bridge/configuration): pin providers, theme, locale
+- [Supported](/newb_bridge/supported): every framework, inventory, target, and other resource
+- [Troubleshooting](/newb_bridge/troubleshooting): console messages and fixes
+- [For Developers](/newb_bridge/developers): writing your own resource against the bridge

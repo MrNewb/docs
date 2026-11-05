@@ -1,6 +1,6 @@
 ---
 title: "Utilities"
-description: "Extra exports on exports.Newb_Bridge. They ain't the bridge.* modules, but they ship in the same resource."
+description: "Extra exports on exports.Newb_Bridge. These are separate from the bridge.* modules but ship in the same resource."
 icon: "IconTool"
 ---
 
@@ -800,10 +800,9 @@ print(theme.accent)
 Full APIs live on dedicated module pages:
 
 - [Task Groups](/newb_bridge/developers/modules/taskgroups) — `bridge.taskGroups`, `CreateTaskGroup`, `OpenTaskGroupMenu`, …
-- [Task HUD](/newb_bridge/developers/modules/task/client) — `bridge.task` / `exports.Newb_Bridge:Task()` (WIP)
+- [Task HUD](/newb_bridge/developers/modules/task/client) — `bridge.task` / `exports.Newb_Bridge:Task()` (experimental)
 
 ```lua
--- Quick links
 local groups = exports.Newb_Bridge:TaskGroups()
 exports.Newb_Bridge:OpenTaskGroupMenu() -- client; server: OpenTaskGroupMenu(src)
 

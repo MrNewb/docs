@@ -81,7 +81,7 @@ Every dose a player takes counts toward an overdose, and each one stops counting
 | Setting | Plain English |
 | --- | --- |
 | Prompt style | How players interact: `target`, `drawtext`, or `helptext` |
-| Debug | Extra console spam. Leave it off. With it on, the duty check is skipped |
+| Debug | Off by default. Under Extras with Advanced on (**Debug mode**), or `Config.Utility.Debug`. It prints plain one-line messages such as `[MrNewbPrescriptions:server] area: text`, with names, ids and numbers. It also changes behaviour: the duty check is skipped for billing, supply runs and the panic button, and the prescription pad writes the script to yourself instead of a nearby patient. Leave it off on a live server |
 | Test commands | Test commands. All off for a live server. See [Commands](/mrnewbprescriptions/install/commands) |
 | NPC pharmacist | Hide the NPC pharmacist while staff are on duty |
 | Medication hooks | Run the stubs in `resource/open/server/medication_hooks.lua` |
@@ -104,6 +104,10 @@ The catalog lives on the **The meds** page. Each medication has a name, the numb
 ## Supply runs
 
 Stops are on the **Supply stops** page. Each is a set of crate props at a location. They stay on the server, so players never see the coordinates. The sample stops are the Elysian Island docks, a NOOSE yard, the Cypress Flats yard, and Humane Labs. Move them anywhere you like.
+
+## Install size
+
+Blip icons ship as one atlas image (`web/build/blips/atlas.webp` and `atlas.json`). The resource starts in about 0.09 seconds of server time.
 
 ## Languages
 
