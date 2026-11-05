@@ -8,7 +8,7 @@ icon: "IconPlugConnected"
   I'm still filling this in. Pages are gonna move around.
 </Callout>
 
-[GitHub](https://github.com/MrNewb/Newb_Bridge) · [Supported](/newb_bridge/supported)
+[GitHub](https://github.com/MrNewb/Newb_Bridge) · [Supported](/newb_bridge/supported) · [Troubleshooting](/newb_bridge/troubleshooting)
 
 ## Start order
 
@@ -19,6 +19,6 @@ ensure Newb_Bridge
 ensure MrNewb_YourScript
 ```
 
-Use the [latest release](https://github.com/MrNewb/Newb_Bridge/releases/latest), not the source zip from the main page (the UI isn't built there). Keep the folder named `Newb_Bridge`.
+Keep the folder named `Newb_Bridge`.
 
-Leave providers on `"auto"` unless you need to pin one. **The exception is one_inventory: you must set `Config.Inventory = "one_inventory"` yourself.** It provides itself as `ox_inventory`, so auto-detect picks the ox_inventory module and its image paths. See [Configuration](/newb_bridge/configuration). Dispatch defaults to `"internal"`. Inventories, targets, keys, fuel, and the rest are on [Supported](/newb_bridge/supported). `one_inventory` is on that inventory list. Details: [Configuration](/newb_bridge/configuration), [Modules](/newb_bridge/developers/modules). Writing your own resource? See [For Developers](/newb_bridge/developers).
+Leave providers on `"auto"` unless you need to pin one. **The exception is one_inventory: you must set `Config.Inventory = "one_inventory"` yourself.** It provides itself as `ox_inventory`, so auto-detect picks the ox_inventory module and its image paths. See [Configuration](/newb_bridge/configuration). Dispatch is `"auto"` too and falls back to the built-in `internal` alerts when no dispatch resource is found. Inventories, targets, keys, fuel, and the rest are on [Supported](/newb_bridge/supported). `one_inventory` is on that inventory list. Details: [Configuration](/newb_bridge/configuration), [Modules](/newb_bridge/developers/modules). Writing your own resource? See [For Developers](/newb_bridge/developers).

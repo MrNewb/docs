@@ -1,0 +1,45 @@
+---
+title: "Troubleshooting"
+description: "Console messages from Newb_Bridge and what to do about them."
+icon: "IconBug"
+---
+
+## "imports Newb_Bridge, which is not started"
+
+The script using the bridge started first, or the bridge failed to load. Put `ensure Newb_Bridge` above that script in `server.cfg` and check the console for errors from the bridge itself.
+
+## "No installed provider found for ..."
+
+The setting is `"auto"` and none of the supported resources for that module are running. Install one, make sure it starts **before** `Newb_Bridge`, or pin the one you run in `settings/bridge_resources.lua`. Modules you never use do not need a provider. See [Supported](/newb_bridge/supported).
+
+## The wrong provider was picked
+
+Auto-detect takes the first started resource in its list. If two inventories, targets, or notify resources are running, pin the one you want. See [Configuration](/newb_bridge/configuration).
+
+## Item images missing or shops won't open
+
+Using `one_inventory`? It has to be pinned: `Config.Inventory = "one_inventory"`. See [Configuration](/newb_bridge/configuration).
+
+## "has no client/server implementation for provider"
+
+The name you pinned isn't supported, or is misspelled. Names are case sensitive (`Renewed-Fuel`, `m-Inventory`). Copy it from [Supported](/newb_bridge/supported).
+
+## Stash or shop calls return nothing
+
+Not every inventory supports every call. `qb-framework` and `esx-framework` have no stashes, shops, or hooks, and some functions return `nil` or `false` where a provider can't do them.
+
+## `bridge.dialogue`, `bridge.task`, `bridge.target`, or `bridge.menu` error on the server
+
+Those are client modules. `bridge.dialogue` and `bridge.task` error if touched on the server; the others are no-ops there. See [Modules](/newb_bridge/developers/modules).
+
+## Text is untranslated
+
+Your `ox:locale` is set to a code without that key. Pick a code from the [locale list](/newb_bridge/supported#locales). Missing keys fall back to `en`.
+
+## Colours didn't change
+
+After editing `settings/theme.lua`, restart `Newb_Bridge`, then restart or reopen the scripts that use it.
+
+## An update message prints on start
+
+A newer release exists. It only prints to the server console. Set `Config.VersionCheck = false` to silence it. After updating, restart the bridge and every script that uses it together.

@@ -10,15 +10,11 @@ icon: "IconDownload"
 
 ### Requirements [step]
 
-[ox_lib](https://github.com/overextended/ox_lib), [oxmysql](https://github.com/overextended/oxmysql), and a framework, inventory, and target from [Supported](/newb_bridge/supported). That inventory list includes `one_inventory`. Providers default to `"auto"` except `Config.Dispatch`, which defaults to `"internal"`.
+[ox_lib](https://github.com/overextended/ox_lib), [oxmysql](https://github.com/overextended/oxmysql), and a framework, inventory, and target from [Supported](/newb_bridge/supported). That inventory list includes `one_inventory`. Every provider defaults to `"auto"`. You only need the ones your server actually runs: notifications, fuel, and dispatch fall back to built-in versions when nothing else is installed.
 
 ### Get the resource [step]
 
 Grab the newest build from the [Releases page](https://github.com/MrNewb/Newb_Bridge/releases/latest) and unzip it into `resources`. Keep the folder named **`Newb_Bridge`**, because `import.lua` finds the bridge by that name.
-
-<Callout type="warning">
-  Use the release zip, not the source from the repo's main page. The **Code → Download ZIP** button and the `main` branch give you the raw source with no built UI, so menus and inputs will come up blank or broken. It's the same mistake as pulling ox_lib from its source tree instead of a release.
-</Callout>
 
 ### Add to server.cfg [step]
 
@@ -36,11 +32,16 @@ ensure your_script
 
 ### Configure [step]
 
-Leave providers on `"auto"` in `settings/bridge_resources.lua`, or pin them. On start, the server console prints which provider each module resolved to. Details: [Configuration](/newb_bridge/configuration).
+Leave providers on `"auto"` in `settings/bridge_resources.lua`, or pin them. Optional. Set the language once with `setr ox:locale en` in `server.cfg` (the bridge follows ox_lib's locale).
+
+### Check it works [step]
+
+Restart the server and read the console. The bridge prints which provider each module resolved to, and a yellow `No installed provider found for ...` line for anything it could not match. A module you never use does not need a provider. If something looks wrong, see [Troubleshooting](/newb_bridge/troubleshooting). Details on pinning: [Configuration](/newb_bridge/configuration).
 
 ## Next steps
 
 - [Configuration](/newb_bridge/configuration): pin providers or leave them on auto-detect
 - [Supported](/newb_bridge/supported): which frameworks, inventories, and other resources it works with
+- [Troubleshooting](/newb_bridge/troubleshooting): console errors and what they mean
 
 Writing your own resource, or moving one off community_bridge? That's all under [For Developers](/newb_bridge/developers).

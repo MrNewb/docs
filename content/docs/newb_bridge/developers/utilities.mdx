@@ -764,6 +764,37 @@ exports.Newb_Bridge:ClearPropDuiTexture('tv_screen')
 
 ---
 
+## Core exports
+
+| Export | Side | Returns |
+| ------ | ---- | ------- |
+| `BridgeEnvironment()` | both | `{ config, resource }`. Used by `import.lua`; you rarely call it. |
+| `Framework()` | both | The framework module table (same as `bridge.framework`). |
+| `Inventory()` | both | The inventory module. Only used for `qb-inventory`, `qb-framework`, and `esx-framework`. Prefer `bridge.inventory`. |
+| `Locale(key, params?)` | both | Translated string for the current `ox:locale`. |
+| `Locales()` | both | The whole locale table. |
+
+## `Notify(data)` (client)
+
+Shows a toast in the bridge's own UI. To notify through whichever provider is configured, use `bridge.notifications.notify` instead.
+
+Fields: `id`, `title`, `description` (markdown), `type` (`inform`, `success`, `error`, `warning`), `duration` (ms), `showDuration`, `position` (`top`, `top-right`, `top-left`, `bottom`, `bottom-right`, `bottom-left`, `center-right`, `center-left`), `icon`, `iconColor`, `iconAnimation`, `alignIcon`, `image`, `style`, `sound`. A title or description is required. Reusing an `id` updates that toast instead of stacking.
+
+```lua
+exports.Newb_Bridge:Notify({ title = 'Saved', description = 'Your changes were stored.', type = 'success' })
+```
+
+## Theme
+
+`GetTheme()` returns the palette from `settings/theme.lua` as a table. `GetThemeCss()` returns it as a string of `--newb-*` CSS variables. Both work on client and server. Trigger the client event `Newb_Bridge:client:themeChanged` to make the bridge UI re-read the theme.
+
+```lua
+local theme = exports.Newb_Bridge:GetTheme()
+print(theme.accent)
+```
+
+---
+
 ## Task Groups and Task HUD
 
 Full APIs live on dedicated module pages:

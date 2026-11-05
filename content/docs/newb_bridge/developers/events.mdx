@@ -95,6 +95,8 @@ end)
 | `Newb_Bridge:Client:NotifyShown` | client | `data: OxNotification` | Fired after every client `notify` (pause-menu history) |
 | `Newb_Bridge:client:setFuel` | client | `netId: number`, `amount: number` | Fuel sync from server `bridge.vehiclefuel.set` (server-origin only) |
 | `Newb_Bridge:Interaction:Remove` | client | `id: string` | Server-initiated interaction removal (server-origin only) |
+| `Newb_Bridge:Server:DispatchAlert` | server | `src, jobs, coords, data, blip, alertFlash` | Fired when `bridge.dispatch.sendAlert` runs. Listen to mirror alerts into your own system |
+| `Newb_Bridge:client:themeChanged` | client | none | Trigger to make the bridge UI re-read the theme |
 | `Newb_Bridge:dispatch:internalAlert` | client | alert payload | Internal dispatch blip + notify (server-origin only) |
 | `Newb_Bridge:client:openTaskGroupMenu` | client | none | Opens task group NUI (server-origin only) |
 | `Newb_Bridge:client:taskGroupMenuRefresh` | client | menu payload | Refresh open task group menu (server-origin only) |
