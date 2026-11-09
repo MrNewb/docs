@@ -26,6 +26,36 @@ Copy every PNG from `[INSTALL]/images/` into your inventory images folder. File 
 | <img className="item-thumb" src="/docs/images/rental_paperwork_keys.webp" alt="" /> | Rental paperwork | `rental_paperwork.png` |
 | <img className="item-thumb" src="/docs/images/aftermarket_locks.webp" alt="" /> | Aftermarket locks | `aftermarket_locks.png` |
 | <img className="item-thumb" src="/docs/images/blank_key.webp" alt="" /> | Blank key | `blank_key.png` |
-| <img className="item-thumb" src="/docs/images/keyfob_scanner.webp" alt="" /> | Key fob scanner | `keyfob_scanner.png` |
+| <img className="item-thumb" src="/docs/images/keyfob_scanner.webp" alt="" /> | Key fob scanner (Pooper 9) | `keyfob_scanner.png` |
 | <img className="item-thumb" src="/docs/images/ping_transmitter.webp" alt="" /> | Ping transmitter | `ping_transmitter.png` |
 | <img className="item-thumb" src="/docs/images/ping_receiver.webp" alt="" /> | Ping receiver | `ping_receiver.png` |
+| <img className="item-thumb" src="/docs/images/alarm_module_linked.webp" alt="" /> | Linked alarm module | `alarm_module_linked.png` |
+| <img className="item-thumb" src="/docs/images/alarm_module_dispatch.webp" alt="" /> | Dispatch alarm module | `alarm_module_dispatch.png` |
+| <img className="item-thumb" src="/docs/images/ignition_cutoff_relay.webp" alt="" /> | Ignition cut-off relay | `ignition_cutoff_relay.png` |
+| <img className="item-thumb" src="/docs/images/keypad_cutoff_module.webp" alt="" /> | Keypad cut-off module | `keypad_cutoff_module.png` |
+| <img className="item-thumb" src="/docs/images/gps_tracker_module.webp" alt="" /> | GPS tracker module | `gps_tracker_module.png` |
+| <img className="item-thumb" src="/docs/images/gps_signal_jammer.webp" alt="" /> | GPS signal jammer | `gps_signal_jammer.png` |
+| <img className="item-thumb" src="/docs/images/tracker_extraction_kit.webp" alt="" /> | Tracker removal kit | `tracker_extraction_kit.png` |
+
+## Key pictures
+
+Every key item carries the name of a picture in its metadata (`metadata.image`), so an inventory shows the right fob without asking the server. These are in `[INSTALL]/images/` too, all 256 by 256 PNGs with a transparent background, and go in the same folder as the rest:
+
+- `vehicle_key_<make>.png`: the car maker's own fob, one for each of the 60 makers (for example `vehicle_key_karin.png` and `vehicle_key_bravado.png`). A key for a car of that make shows it.
+- `vehicle_key_smart.png`, `vehicle_key_luxury.png`, `vehicle_key_basic.png`, `vehicle_key_boat.png` and `vehicle_key_motorcycle.png`: one for each fob type. A key with no known maker shows the picture of its type.
+
+These are the fobs themselves, not the maker logos. Some makes the game spells short (`bucking`, `dewbauch`, `principl`), and the longer spellings the locksmith picker offers map onto the same picture.
+
+The name goes in the key's metadata without the extension:
+
+```lua
+metadata = { plate = 'ABC1234', brand = 'KARIN', image = 'vehicle_key_karin' }
+```
+
+ox_inventory, and any inventory that reads `metadata.image`, adds the folder and the `.png` itself, so the file has to be a PNG in the inventory's image folder with exactly that name. Turn this off with the **Key pictures** switch in `/setupkeys` (Keys, then Key behaviour, with Advanced on), and keys keep the plain key picture. It applies as soon as you save.
+
+Keys that already exist keep what they have until they are used or issued again.
+
+## Security item pictures
+
+The seven security items have their own pictures, in the same folder: `alarm_module_linked.png`, `alarm_module_dispatch.png`, `ignition_cutoff_relay.png`, `keypad_cutoff_module.png`, `gps_tracker_module.png`, `gps_signal_jammer.png` and `tracker_extraction_kit.png`.

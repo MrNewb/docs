@@ -84,3 +84,11 @@ When `CompatibilityEvents` for that resource is on, these keep working: `qb-vehi
 For your own server scripts, use the exports. They are not gated on the sender standing next to the car.
 
 `MrNewbVehicleKeys:Server:*` and `MrNewbVehicleKeys:Client:*` are internal. Client exports: [Client exports](/mrnewbvehiclekeys/exports/client-exports).
+
+## Police flags
+
+| Export | Arguments | Returns |
+| --- | --- | --- |
+| `FlagVehicle` | `plate, reason, setBy?` | boolean. `reason` is `'stolen'` or `'warrant'`, and `nil` clears the flag. A flagged car can be followed live by police while its GPS is fitted, and its immobiliser can be stripped. For MDT, phone and dispatch scripts |
+| `GetVehicleFlag` | `plate` | `'stolen'`, `'warrant'` or `nil` |
+| `TransferVehicleSecurity` | `oldPlate, newPlate` | boolean, true when something moved. Call it when a car's plate changes (a plate changer, a garage) so it keeps its alarm tier, immobiliser kind and police flag. A keypad lock keeps its place but not its PIN, because the PIN is tied to the plate: the next key holder chooses a new one. Safe to call more than once for the same change |

@@ -1,6 +1,6 @@
 ---
 title: "Commands"
-description: "Chat commands for Vehicle Keys. Most settings live in /vehiclekeyssetup."
+description: "Chat commands for Vehicle Keys. Most settings live in /setupkeys."
 icon: "IconTerminal2"
 ---
 
@@ -11,9 +11,22 @@ icon: "IconTerminal2"
 | `/clearoldkeys` | Deletes keys for cars that are not spawned. Keys for cars that are out stay. 30 second cooldown. Only when keys are real items |
 | `/anchor` | Drops or raises the anchor on a nearby boat, jetski, or sub. Within 8 meters, slower than 10 mph. Works from the shore |
 | `/newb_proximitylocks` | Turns your own walk-up auto lock on or off. Same toggle as the fob |
-| `/keyring` | Opens the keyring UI. Only when the keyring UI is on (`InventoryKeys.KeyringUI`) and its open setting allows the command. See [Keyring UI](/mrnewbvehiclekeys/install/configuration#keyring-ui) |
+| `/keyring` | Opens the keyring UI. Only when the **Keyring menu** is on and its open setting allows the command. See [Keyring UI](/mrnewbvehiclekeys/install/configuration#keyring-ui) |
 | `/givekeys` | Only when keys are virtual. Shares the closest car you have a key for with the nearest player. You need to be within 10 meters of that car. Five second cooldown |
 | `/throwkeys` | Tosses a key on the ground. Not registered on ox_inventory — use the Throw Keys button on the item, or the keyring UI on virtual keys. On other inventories, sit in the car first |
+| `/movekeys` | Lets you drag the key fob screen anywhere you like and make it bigger or smaller, then save it. Only when the fob screen is on in `/setupkeys`. The position and size are kept on your own computer (client KVP), so it follows you between sessions but not between machines. **Reset** puts it back. See [Moving the key fob](#moving-the-key-fob) |
+| `/enginepin` | In the driver seat of a car with a keypad immobiliser. Opens the PIN pad to change its PIN. You need the current one, unless the car was just sold and has none |
+| `/clearalarm` | Removes the alarm blip that a Linked or Dispatch alarm put on your map |
+
+## Police
+
+Only on-duty police (the jobs, grade and duty rule are on the **Vehicle security** page of `/setupkeys`). Admins can use them too.
+
+| Command | What it does |
+| --- | --- |
+| `/flagvehicle stolen\|warrant\|clear [plate]` | Flags a car, or clears the flag. The plate defaults to the nearest vehicle. MDT and phone scripts can set the same flag with the `FlagVehicle` export |
+| `/trackflagged [plate]` | Follows a flagged car live on the map for two minutes. It needs a fitted GPS that is not being jammed. Run it again to stop |
+| `/disableimmobiliser` | On the nearest flagged car, removes its immobiliser and PIN so it can be moved or searched |
 
 ## Admins
 
@@ -21,7 +34,7 @@ These use the admin check from the bridge.
 
 | Command | What it does |
 | --- | --- |
-| `/vehiclekeyssetup` | Setup menu with a search box across every setting. Items, keybinds, hotwire, lockpicking, the locksmith, police alerts, and the rest. Its **Manage** tab gives or takes keys, shows what a player is holding, edits vehicle locks, creates keys, and places parking spots for self-park |
+| `/setupkeys` | Setup menu with a search box across every setting. Items, keybinds, hotwire, lockpicking, the locksmith, police alerts, and the rest. Its **Manage** tab gives or takes keys, shows what a player is holding, edits vehicle locks, creates keys, places parking spots for self-park, and has a **Security** section to see and change a plate's alarm, immobiliser, GPS and police flag, or reset a PIN |
 | `/admingivekeys [id] [plate]` | Gives that player a key. Example: `/admingivekeys 4 ABC123` |
 | `/removekeys [id] [plate]` | Takes that plate’s key off that player |
 | `/listkeys [id]` | Prints the plates they are holding to the server console |
@@ -33,6 +46,21 @@ These use the admin check from the bridge.
 `/car` and `/dv` are off by default. Turn them on under **General > Admin & debugging** (Advanced must be on to see that page). The command names are read when the resource starts, so a rename needs a restart. The on and off switches apply right away.
 
 A command name can only belong to one resource. If another resource already owns the name, such as qbx_core's own `/car` and `/dv`, this resource skips it and prints a warning to the server console. The setup page shows the same clash. Give ours a different name on that page, or leave qbx_core's. Its `/car` already hands out keys through this script.
+
+## Moving the key fob
+
+Run `/movekeys` and the fob opens with a bar across the top of the screen. It only works when the fob screen is on in `/setupkeys`. The fob you see is the one your server uses:
+
+- **Branded fobs:** the preview shows the maker's own fob for the car you are in or standing next to (within 15 metres), and a Karin one when that car's maker has none.
+- **Digital fobs:** the preview shows the fob style that is already set.
+
+**Moving.** Drag anywhere to move it. A fine grid covers the screen, with a stronger line every tenth and the strongest through the middle. **Snap to grid** is on by default: the fob's edges and centre jump onto the nearest line, and a bright guide line shows the line it met. A dashed outline follows the fob and turns solid white while it is snapped. Turn snap off to place the fob freely, and the grid stays as a faint guide. Your snap choice is remembered. The fob always stays on screen.
+
+**Resizing.** Scroll over the screen, or use the **Size** slider in the bar, to make it smaller or bigger (60% to 150%). The fob is nudged back on screen if a bigger size would push it past an edge. The whole fob is scaled as one piece, so every button keeps working at any size, and its buttons do nothing while you are moving it.
+
+**Finishing.** **Save** keeps the position and size. **Reset** sends it back to its default spot and size. **Cancel** leaves without saving, and the fob slides away from where you left it.
+
+The position is a share of your screen, so it holds if you change resolution. It is stored in the game's client KVP under `mrnewb_keys:fob_offset:v1` as `{ x, y, s }` (across, down, size), one value per player machine. Nothing is saved on the server, so it follows a player between sessions but not between computers. The saved spot is sent with every fob open, so the fob appears there from the first time.
 
 ## Debug
 

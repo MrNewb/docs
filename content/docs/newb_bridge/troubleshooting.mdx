@@ -20,6 +20,10 @@ Auto-detect takes the first started resource in its list. If two inventories, ta
 
 Using `one_inventory`? It has to be pinned: `Config.Inventory = "one_inventory"`. See [Configuration](/newb_bridge/configuration).
 
+## Keys, stashes or item hooks act strangely on one_inventory
+
+Check which inventory the bridge picked. The server console prints one line per module when Newb_Bridge starts. If the inventory line says `ox_inventory` (and you run one_inventory), the setting is still on `"auto"`: one_inventory provides itself as `ox_inventory`, so auto-detect picks that, and scripts then use the ox_inventory calls and image paths. Pin it with `Config.Inventory = "one_inventory"` in `settings/bridge_resources.lua`, then restart Newb_Bridge and every script that uses it.
+
 ## "has no client/server implementation for provider"
 
 The name you pinned isn't supported, or is misspelled. Names are case sensitive (`Renewed-Fuel`, `m-Inventory`). Copy it from [Supported](/newb_bridge/supported).

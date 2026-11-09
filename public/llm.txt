@@ -178,7 +178,7 @@ Item: `customizableplate`. Optional `EnableOxExclusive` blocks giving the item t
 
 ## DigitalPets (`MrNewb_DigitalPets`)
 
-Pocket pet. Usable `digital_pet` (metadata). Newb_Bridge, ox_lib. No oxmysql. No exports. Handheld while the toy is open is `mrnewb_takosu`. Older `jim_g_digital_pets_1` through `_12` still ship in `stream/` and can still be requested from pet state.
+Pocket pet. Usable `digital_pet` (metadata). Newb_Bridge, ox_lib, oxmysql (settings table `MrNewb__Settings`). No exports. Setup panel: `/setupdigitalpets`; `/givealldigitalpets` gives one pet of each species. Display mode (Handheld page): `ui` overlay or `dui`, which draws the LCD on the prop's screen with a close-up camera and clickable printed buttons. Handheld while the toy is open is `mrnewb_takosu`. Older `jim_g_digital_pets_1` through `_12` still ship in `stream/` and can still be requested from pet state.
 
 - [Landing](https://mrnewb.github.io/docs/mrnewbdigitalpets)
 - [Install](https://mrnewb.github.io/docs/mrnewbdigitalpets/install)

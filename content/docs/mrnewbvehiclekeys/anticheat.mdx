@@ -1,21 +1,112 @@
 ---
 title: "Anticheat models"
-description: "Object models to allow so anticheats do not delete the key locker or the keys."
+description: "Object and ped models to allow so anticheats do not delete the key locker, the keys, the scanner or the summon driver."
 icon: "IconShield"
 ---
 
-Allow these object models so they are not deleted as unauthorized props.
+Allow these models so they are not deleted as unauthorized props or peds. Everything under "Streamed with the script" ships in the script's own `stream/` folder. Do not move or rename those files.
+
+## Streamed with the script
 
 | Model | Used as |
 | --- | --- |
-| `mrnewb_keylocker_body` | Cabinet body |
-| `mrnewb_keylocker_door` | Hinged door |
-| `mrnewb_keylocker_closed` | Placement preview |
-| `mrnewb_keylocker_open_empty` | Open empty cabinet |
-| `mrnewb_keylocker_key_classic` | Basic key |
-| `mrnewb_keylocker_key_smart` | Smart key |
-| `mrnewb_keylocker_key_luxury` | Luxury key |
-| `mrnewb_keylocker_key_boat` | Boat key |
-| `mrnewb_keylocker_key_motorcycle` | Motorcycle key |
+| `mrnewb_keylocker_body` | Key locker cabinet body |
+| `mrnewb_keylocker_door` | Key locker hinged door |
+| `mrnewb_keylocker_closed` | Key locker placement preview |
+| `mrnewb_keylocker_open_empty` | Key locker open, empty |
+| `mrnewb_keylocker_key_classic` | Basic key, on a hook and when thrown |
+| `mrnewb_keylocker_key_smart` | Smart key, on a hook and when thrown |
+| `mrnewb_keylocker_key_luxury` | Luxury key, on a hook and when thrown |
+| `mrnewb_keylocker_key_boat` | Boat key, on a hook and when thrown |
+| `mrnewb_keylocker_key_motorcycle` | Motorcycle key, on a hook and when thrown |
+| `prop_pooper9` | The Pooper 9 scanner in the player's hand |
+| `mrnewb_vehicle_key_<make>` | The car maker's own key, on a hook, held for the fob animation and when thrown. 65 models, listed below |
 
-Names come from `resource/shared/key_locker.lua`. Drawables live under `stream/`, with `stream/mrnewb_keylocker.ytyp`. Do not move or rename them.
+<Accordions>
+  <Accordion title="All 65 mrnewb_vehicle_key_ models">
+
+```text
+mrnewb_vehicle_key_albany
+mrnewb_vehicle_key_annis
+mrnewb_vehicle_key_basic
+mrnewb_vehicle_key_benefac
+mrnewb_vehicle_key_bf
+mrnewb_vehicle_key_boat
+mrnewb_vehicle_key_bollokan
+mrnewb_vehicle_key_bravado
+mrnewb_vehicle_key_brute
+mrnewb_vehicle_key_bucking
+mrnewb_vehicle_key_canis
+mrnewb_vehicle_key_chariot
+mrnewb_vehicle_key_cheval
+mrnewb_vehicle_key_classique
+mrnewb_vehicle_key_coil
+mrnewb_vehicle_key_declasse
+mrnewb_vehicle_key_dewbauch
+mrnewb_vehicle_key_dinka
+mrnewb_vehicle_key_dundrear
+mrnewb_vehicle_key_emperor
+mrnewb_vehicle_key_enus
+mrnewb_vehicle_key_fathom
+mrnewb_vehicle_key_gallivan
+mrnewb_vehicle_key_grotti
+mrnewb_vehicle_key_hijak
+mrnewb_vehicle_key_hvy
+mrnewb_vehicle_key_imponte
+mrnewb_vehicle_key_inverto
+mrnewb_vehicle_key_jobuilt
+mrnewb_vehicle_key_karin
+mrnewb_vehicle_key_kraken
+mrnewb_vehicle_key_lampada
+mrnewb_vehicle_key_lcc
+mrnewb_vehicle_key_luxury
+mrnewb_vehicle_key_maibatsu
+mrnewb_vehicle_key_mammoth
+mrnewb_vehicle_key_maxwell
+mrnewb_vehicle_key_motorcycle
+mrnewb_vehicle_key_mtl
+mrnewb_vehicle_key_nagasaki
+mrnewb_vehicle_key_obey
+mrnewb_vehicle_key_ocelot
+mrnewb_vehicle_key_overflod
+mrnewb_vehicle_key_pegassi
+mrnewb_vehicle_key_penaud
+mrnewb_vehicle_key_pfister
+mrnewb_vehicle_key_principl
+mrnewb_vehicle_key_progen
+mrnewb_vehicle_key_rune
+mrnewb_vehicle_key_schyster
+mrnewb_vehicle_key_shitzu
+mrnewb_vehicle_key_smart
+mrnewb_vehicle_key_speedoph
+mrnewb_vehicle_key_stanley
+mrnewb_vehicle_key_toundra
+mrnewb_vehicle_key_truffade
+mrnewb_vehicle_key_ubermach
+mrnewb_vehicle_key_vapid
+mrnewb_vehicle_key_vomfeuer
+mrnewb_vehicle_key_vulcar
+mrnewb_vehicle_key_vysser
+mrnewb_vehicle_key_weeny
+mrnewb_vehicle_key_western
+mrnewb_vehicle_key_willard
+mrnewb_vehicle_key_zirconiu
+```
+
+  </Accordion>
+</Accordions>
+
+The 60 makers plus five key types (`basic`, `smart`, `luxury`, `boat`, `motorcycle`). They are only spawned when the fob style is **Branded**, and a make without its own model falls back to the key type's model.
+
+## Stock GTA models
+
+| Model | Used as |
+| --- | --- |
+| `prop_cuff_keys_01` | Key fob in the hand during the fob animation (default, and the fallback for a branded key) |
+| `p_car_keys_01` | A thrown key when the key has no model of its own, or when "match key prop" is off |
+| `prop_cs_tablet` | The locksmith job's tablet at the bench |
+| `prop_laptop_01a` | The locksmith job's computer (default model, set per place in the setup panel) |
+| `u_m_y_abner` (ped) | The invisible driver for **Summon** and **Self park**. It is created, drives the car, and is removed again |
+| `a_m_y_vindouche_01` (ped) | The default walk-up locksmith. The model is set per place in the setup panel |
+
+Names come from `resource/modules/keylocker/shared/definitions.lua`, the stream folder, and the setup panel (`/setupkeys`). The streamed models load through `stream/mrnewb_keylocker.ytyp`.

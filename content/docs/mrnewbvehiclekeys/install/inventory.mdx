@@ -49,10 +49,10 @@ one_inventory keeps item definitions in its own database, not in a file you edit
 </Callout>
 
 <Callout type="warning">
-  **Required:** set `Config.Inventory = "one_inventory"` in `Newb_Bridge/settings/bridge_resources.lua`. one_inventory provides itself as `ox_inventory` and is not fully compatible with its image paths, so on `"auto"` item images do not load. See [Newb_Bridge configuration](/newb_bridge/configuration).
+  **Required:** set the inventory to `one_inventory` in the Newb_Bridge resource settings. one_inventory provides itself as `ox_inventory` and is not fully compatible with its image paths, so on `"auto"` item images do not load. See [Newb_Bridge configuration](/newb_bridge/configuration).
 </Callout>
 
-Names have to stay as they are unless you also change them in `/vehiclekeyssetup`. If you rename `blank_key` in the items file and forget the locksmith shop, the shop stops selling it.
+Names have to stay as they are unless you also change them in `/setupkeys`. If you rename `blank_key` in the items file and forget the locksmith shop, the shop stops selling it.
 
 Players do not craft `vehiclekeys`. Garages, the locksmith, and admin commands hand them out. The script fills in the plate when it gives the key.
 
@@ -66,9 +66,18 @@ Players do not craft `vehiclekeys`. Garages, the locksmith, and admin commands h
 | `rental_paperwork` | The paper that comes with a rental |
 | `aftermarket_locks` | Owner uses this to change the lock so old keys stop working |
 | `blank_key` | Uncut blank. Locksmiths burn one when they cut a key |
-| `keyfob_scanner` | Sniffs a nearby fob and clones it onto a blank |
+| `keyfob_scanner` | The Pooper 9. Clones a nearby fob onto a blank, and scans a car to read its security, then bypasses its immobiliser or jams its tracker |
 | `ping_transmitter` | Stick this on a car with the target option |
 | `ping_receiver` | Use it to ping cars you have a tracker on |
+| `alarm_module_linked` | Fit beside a parked car. Its alarm also alerts the online owner |
+| `alarm_module_dispatch` | Fit beside a parked car. Its alarm alerts the owner and sends police dispatch |
+| `ignition_cutoff_relay` | Fit beside a parked car. Blocks hotwiring, and a valid key is still needed to start it |
+| `keypad_cutoff_module` | Fit beside a parked car. Blocks hotwiring and asks for a four digit PIN at every engine start. Turns remote start off |
+| `gps_tracker_module` | Fit beside a parked car. Gives police live tracking once the car is flagged stolen or under warrant |
+| `gps_signal_jammer` | Silences a fitted tracker, and the wireless side of its alarm, for a while |
+| `tracker_extraction_kit` | Removes a fitted GPS tracker |
+
+The seven security items are fitted from the inventory beside a parked, registered car with its engine off, and by default only by the mechanic and locksmith jobs (change this under **Who can fit it** on the **Vehicle security** page). Their pictures are `alarm_module_linked.png`, `alarm_module_dispatch.png`, `ignition_cutoff_relay.png`, `keypad_cutoff_module.png`, `gps_tracker_module.png`, `gps_signal_jammer.png` and `tracker_extraction_kit.png`, and ship in `[INSTALL]/images`.
 
 On ox_inventory, `vehiclekeys` has two buttons. Throw Keys drops that key as a prop anyone can pick up. You have to be in a vehicle. Destroy Key deletes that one key. Spare copies you still have keep working. Thrown keys despawn after 30 minutes.
 
@@ -104,10 +113,17 @@ A held key looks like this:
 ```lua
 {
     plate = 'ABC1234',
-    modelName = 'adder',
-    keyType = 'smart', -- smart, luxury, basic, boat, motorcycle
-    keyoptions = {},
+    model = -1216765807,               -- the car's model hash, 0 until the car has been seen
+    modelName = 'Adder',
+    brand = 'TRUFFADE',                -- the car's maker, when it is known
+    image = 'vehicle_key_truffade',    -- the picture to show, see Item images
+    keyType = 'smart',                 -- smart, luxury, basic, boat, motorcycle
+    keyoptions = {},                   -- the fob buttons this key has
+    description = 'Key for Adder, plate ABC1234',
 }
 ```
 
-`lockid` is set when aftermarket locks are on. `hacked` is set on scanner clones.
+- `lockid` is added when aftermarket locks are on.
+- `brand` and `image` are added when **Key pictures** is on. `image` is the maker's fob when the maker is known, and the picture of the fob type otherwise. See [Key pictures](/mrnewbvehiclekeys/install/inventory-images#key-pictures).
+- `hacked` is set on keys cloned with the scanner when **Tag cloned keys** is on. Nothing in this script reads it, so it is there for your other scripts, such as police tools, to look for.
+- Keys made before this version also carry `vehName`, a second copy of `modelName`. New keys no longer have it, and a key that is renamed or migrated loses it. Everything still reads `modelName` first and falls back to `vehName`, so old keys keep working. Rental paperwork is a different item and still has its own `vehName`.

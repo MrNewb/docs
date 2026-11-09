@@ -1,10 +1,10 @@
 ---
 title: "Configuration"
-description: "DigitalPets settings live in /digitalpetssetup."
+description: "DigitalPets settings live in /setupdigitalpets."
 icon: "IconSettings"
 ---
 
-Run `/digitalpetssetup` as an admin. That panel is where you tune everything, and **Save** applies it to every player straight away.
+Run `/setupdigitalpets` as an admin. That panel is where you tune everything, and **Save** applies it to every player straight away.
 
 Use **Reset** in the panel if you want the defaults back.
 
@@ -14,14 +14,32 @@ The first time you open it, a short tutorial plays. The sidebar is grouped like 
 
 | Group | Pages | What you decide |
 | --- | --- | --- |
-| Raising | Life, Needs, Care, Rarity | How long an egg takes, the level cap, how fast stats drain, what each care button restores and how long it cools down, and the odds of an Ultra or Shiny hatch |
-| World | Shop, Visits, Pedometer, Outings, Spots | The coin shop, nearby visits and gifts, step counting, landmark trips, and map zones that cheer certain species up |
-| Handheld | Handheld | The prop model, the animation, and the bone it attaches to |
+| Raising | Life, Needs, Care, Rarity, Goals | How long an egg takes, the level cap, how fast stats drain, what each care button restores and how long it cools down, the odds of an Ultra or Shiny hatch, and the trophies, daily streak, toy effects and style shop |
+| World | Shop, Pedometer, Outings, Spots | The coin shop, step counting, landmark trips, and map zones that cheer certain species up |
+| Handheld | Handheld | The display mode (UI or DUI), the prop model, the animation, and the bone it attaches to |
 | General | General | Debug and the inventory item name |
 
 Overview and Review pages sit on top as a checklist and a list of pending changes, so you can see what you are about to save.
 
 For **Outings** and **Spots**, stand where you want the point and press the panel's position button. It grabs your coordinates and the zone name for you.
+
+## Display modes
+
+On the Handheld page, **Display mode** decides how the toy shows up when a player uses it.
+
+| Mode | What the player sees |
+| --- | --- |
+| UI (default) | The toy opens as a normal overlay on the screen |
+| DUI | The toy stays in the player's hand. A close-up camera frames the prop, the game plays on the prop's own screen, and the player clicks the printed buttons on it |
+
+In DUI mode the controls are the printed A, B, D-pad, SELECT and POWER buttons, or the keyboard: arrow keys for the D-pad, **Z** for A, **X** for B, Enter for A, Tab or Space for SELECT, and Esc to go back or close. The Clean game works with the mouse over the screen. Z and X also work in UI mode.
+
+A few things to know about DUI mode:
+
+- On foot, the player is frozen in place and the hand pose is held still while the toy is open, so the camera does not sway. In a vehicle the player is not frozen
+- A moment after opening, the prop is held still in front of the player. Other players see it there until the toy closes
+- The screen texture of `mrnewb_takosu` is replaced for that player only, and put back when the toy closes
+- After updating the files in `stream/`, restart the resource **and** fully restart the FiveM client. The client caches streamed models
 
 ## What the settings mean
 
@@ -38,11 +56,11 @@ You rarely need to change these, but here is what they do.
 | `Care` | For each button, how much it restores (`Fill`), the cooldown in seconds (`Wait`), and the XP it gives (`Xp`) |
 | `Rarity` | Percent chance of `Ultra` and `Shiny`. Ultra is rolled first |
 | `Shop` | `Enabled`, plus the item list. Each item needs a unique `id`, a `label`, a `cost` in pet coins, and a `happiness` value |
-| `Visit` | `Enabled`, how close two players need to be, and the size and cooldown of gifts |
 | `Pedometer` | `Enabled`, the steps needed for the Walk bonus, and the soft session goal |
 | `Outings` | `Enabled`, the cooldown, arrival radius, whether it sets a waypoint, the reward, and the list of places |
 | `FavoriteSpots` | `Enabled`, the happiness tick, its cooldown, and zones tied to a species trait (`beach`, `city`, or `wild`) |
-| `Handheld` | Prop models, a fallback, the animation, and the bone |
+| `Handheld` | Prop models, a fallback, the animation, the bone, and `DisplayMode` (`ui` or `dui`) |
+| `Streak`, `Trophies`, `Toys`, `Style` | The Goals page: the daily care streak rewards, the trophy payout, whether toys have effects, and the style shop (hats, shells, scenes) |
 | `Debug` | Extra logging. Off by default. Set it on **General > Debug output** in the panel. It prints plain one-line messages with names, ids and numbers, as `[MrNewb_DigitalPets:server] area: text` or `[MrNewb_DigitalPets:client] area: text`. Leave off on a live server |
 
 Custom shop items can use an `https://` image or a `nui://<resource>/...` path. The stock toys use bundled art.
@@ -61,7 +79,7 @@ Paste: [Item setup](/mrnewbdigitalpets/install/inventory). Icon: [Item images](/
 
 | Command | Who | What it does |
 | --- | --- | --- |
-| `/digitalpetssetup` | Admin (framework admin or `group.admin`) | Opens the setup panel |
+| `/setupdigitalpets` | Admin (framework admin or `group.admin`) | Opens the setup panel |
 | `/givealldigitalpets` | `group.admin` | Gives you one hatched pet of every species. Handy for testing |
 
 Players have no commands. They just use the item.

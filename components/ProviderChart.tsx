@@ -34,7 +34,6 @@ const groups: Record<string, ProviderGroup> = {
       auto('ox_inventory'),
       auto('wasabi_inventory'),
       auto('m-Inventory'),
-      auto('one_inventory'),
       auto('jaksam_inventory'),
       auto('tgiann-inventory'),
       auto('codem-inventory'),
@@ -42,6 +41,10 @@ const groups: Record<string, ProviderGroup> = {
       auto('origen_inventory'),
       auto('qs-inventory'),
       auto('qb-inventory'),
+      manual(
+        'one_inventory',
+        'Set Config.Inventory = "one_inventory". It provides itself as ox_inventory, so auto-detect picks ox_inventory instead.',
+      ),
       manual(
         'qb-framework',
         'Set Config.Inventory. QBCore / QBX player items via Player.Functions. No stashes, shops, or hooks.',

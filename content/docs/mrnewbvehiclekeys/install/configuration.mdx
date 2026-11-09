@@ -1,10 +1,10 @@
 ---
 title: "Configuration"
-description: "Vehicle Keys settings live in /vehiclekeyssetup."
+description: "Vehicle Keys settings live in /setupkeys."
 icon: "IconSettings"
 ---
 
-Run `/vehiclekeyssetup` as an admin. Changes are saved to the database and pushed to connected players without a restart, except the few listed under [Needs a restart](#needs-a-restart).
+Run `/setupkeys` as an admin. Changes are saved to the database and pushed to connected players without a restart, except the few listed under [Needs a restart](#needs-a-restart).
 
 The first time it opens, a guided setup walks the essentials one question at a time and shows a recommended answer for each. You can leave it and use the full page list at any time.
 
@@ -37,28 +37,28 @@ A few files stay editable because they hold code. A change there needs a resourc
 
 | Setting | Default | What it does |
 | --- | --- | --- |
-| `InventoryKeys.Enabled` | on | On = keys are inventory items. Off = virtual keys, kept as a list and opened from the keyring UI. Switch this before launch |
-| `InventoryKeys.OxInventory.ContainerKeyring` | on, 10 slots | Keyring is a real ox_inventory container. Off = the keyring item, managed from the keyring context menu |
-| `InventoryKeys.KeyringUI` | off | The keyring becomes a menu that saves keys. See [Keyring UI](#keyring-ui) |
-| `InventoryKeys.KeyringUIOpenWith` | both | How the keyring UI opens: `both`, `item` or `command` |
-| `KeyringSharing` | on, 10 m | Owners share a car from the keyring UI and can take it back. `MaxPerVehicle` 0 = no limit |
-| `InventoryKeys.EnableAftermarketLocks` | on | Owners can change a lock so old keys stop working |
-| `Driving.InsertMode.Enabled` | off | Key has to go in the ignition (I) before the engine starts. Turns off give-key-if-running and hotwire-gives-a-key while it is on |
-| `Driving.EngineToggleEnabled` | on, unless a known HUD runs | Engine key. Starts off when jg-hud, ps-hud, qb-hud, or qbx_hud is running with its own engine toggle on. See [Starting the engine](#starting-the-engine) |
-| `Driving.DisableVehicleAutoStart` | on | On = getting in does not start the engine. Off = a driver with a key has the engine started on entry |
-| `ProximityLocking` | on | Auto lock and unlock as the owner walks away or back |
-| `LockVehicleRange` / `KeyFobLockRange` | 15 / 150 m | L key, and the on-screen fob |
-| `Hotwire` | on, 3 attempts | `Item.Required` makes `hotwire_kit` mandatory |
-| `Lockpicks` | on | Opens a locked door. Does not start the car |
-| `SearchForKeys` | on | Search a car for left-in keys |
-| `Carjacking` | on | Pulls the driver out at weapon point |
-| `Dispatch` | on | Alerts for hotwire, lockpick, and hijacking. Chances are 0–100 |
-| `LocksmithNPC` | on | Walk-up ped. Hides while a player locksmith is online |
-| `LocksmithJob` | on | Player locksmith. Factory job name is `police` so you can test. Set the real job on each location |
-| `KeyJobStorages` | 2 police lockers | Cabinets where a job hangs spare keys |
-| `AdminCommands` | off | Turns on `/car` and `/dv` |
-| `CompatibilityEvents` | qb and qbx on | Which foreign key events this resource answers |
-| `DebugMode` | off | Verbose logging and the debug commands |
+| Keys as items | on | On = keys are inventory items. Off = virtual keys, kept as a list and opened from the keyring UI. Switch this before launch |
+| Keyring container | on, 10 slots | Keyring is a real ox_inventory container. Off = the keyring item, managed from the keyring context menu |
+| Keyring menu | off | The keyring becomes a menu that saves keys. See [Keyring UI](#keyring-ui) |
+| Keyring menu opens with | both | How the keyring UI opens: `both`, `item` or `command` |
+| Keyring sharing | on, 10 m | Owners share a car from the keyring UI and can take it back. A limit of 0 means no limit |
+| Aftermarket locks | on | Owners can change a lock so old keys stop working |
+| Key must be inserted | off | Key has to go in the ignition (I) before the engine starts. Turns off give-key-if-running and hotwire-gives-a-key while it is on, and takes the lock, unlock, start, stop and roof options off the eye menu. Remote start, summon and self-park are off too |
+| Engine key | on, unless a known HUD runs | Starts off when a known HUD is running with its own engine toggle on. See [Starting the engine](#starting-the-engine) |
+| Start the engine on entry | on | On = getting in does not start the engine. Off = a driver with a key has the engine started on entry |
+| Walk-up locking | on | Auto lock and unlock as the owner walks away or back |
+| Lock range and fob range | 15 / 150 m | L key, and the on-screen fob |
+| Hotwire | on, 3 attempts | Requiring an item makes `hotwire_kit` mandatory |
+| Lockpicks | on | Opens a locked door. Does not start the car |
+| Search for keys | on | Search a car for left-in keys |
+| Carjack | on | Pulls the driver out at weapon point |
+| Police alerts | on | Alerts for hotwire, lockpick, and hijacking. Chances are 0–100 |
+| Walk-up locksmith | on | Walk-up ped. Hides while a player locksmith is online |
+| Player locksmith | on | Player locksmith. Factory job name is `police` so you can test. Set the real job on each location |
+| Job key lockers | 2 police lockers | Cabinets where a job hangs spare keys |
+| Admin commands | off | Turns on `/car` and `/dv` |
+| Integrations | qb and qbx on | Which foreign key events this resource answers |
+| Debug mode | off | Verbose logging and the debug commands |
 
 ## Starting the engine
 
@@ -70,14 +70,14 @@ Under **Locking and engine > Starting the engine** you pick one of three ways, p
 | Press the engine key | The car stays off until the driver presses the engine key (Y by default). Getting in is not enough. This is the factory default |
 | Another script does it | A HUD or another script owns the engine key. This script leaves the engine key alone |
 
-**Key must be inserted** (insert mode) is a separate switch. With it on, the driver puts the key in with **I** and takes it out with **O**. Putting the key in starts the engine, and taking it out turns the engine off. While the key is in, it leaves the driver's inventory and stays in the car. The give-a-key-if-the-engine-is-running and hotwire-gives-a-key options are off while insert mode is on. The eye-menu Start engine option is not offered while insert mode is on.
+**Key must be inserted** (insert mode) is a separate switch. With it on, the driver puts the key in with **I** and takes it out with **O**. Putting the key in starts the engine, and taking it out turns the engine off. While the key is in, it leaves the driver's inventory and stays in the car. The give-a-key-if-the-engine-is-running and hotwire-gives-a-key options are off while insert mode is on. None of the eye-menu options for lock, unlock, start engine, stop engine and roof are offered while insert mode is on, and the key fob has no remote start, summon or self-park. The fob's lock, unlock and roof buttons, and the lock key (L), still work.
 
 Which one to pick:
 
 - Most servers: **Press the engine key**.
 - Players should not have to press anything: **Starts on its own**.
 - You want a roleplay ignition step: turn on insert mode.
-- Your HUD has its own engine toggle: **Another script does it**. Two scripts answering the same key fight each other. The panel warns you when it finds jg-hud, ps-hud, qb-hud, or qbx_hud running with its engine toggle on, and the guided setup picks this choice for you. A jg-hud with `Config.EngineToggleKeybind = false` does not count.
+- Your HUD has its own engine toggle: **Another script does it**. Two scripts answering the same key fight each other. The panel warns you when it finds a known HUD running with its engine toggle on, and the guided setup picks this choice for you. A HUD with its engine key turned off does not count.
 
 Remote start on the key fob and the eye-menu Start engine option work whichever way you choose. If you pick the engine key and then switch that key off under Keybinds, nobody can start a car with it, and the panel warns you.
 
@@ -197,7 +197,7 @@ The resource starts in about 0.25 seconds of server time. The blip icons ship as
 
 ## Keyring UI
 
-With `InventoryKeys.KeyringUI` on, the keyring is a menu that saves keys on the player instead of an item or container. Players browse their keys, see time left on loaned keys, share a car with a nearby player and take it back. Sharing a key gives the other player a saved virtual key straight away. It stays on their keyring after they relog until the owner takes it back.
+With the **Keyring menu** on, the keyring is a menu that saves keys on the player instead of an item or container. Players browse their keys, see time left on loaned keys, share a car with a nearby player and take it back. Sharing a key gives the other player a saved virtual key straight away. It stays on their keyring after they relog until the owner takes it back.
 
 `KeyringUIOpenWith` picks how it opens:
 
@@ -207,7 +207,7 @@ With `InventoryKeys.KeyringUI` on, the keyring is a menu that saves keys on the 
 | `item` | Only using the keyring item |
 | `command` | Only the keybind and `/keyring`. Use this on servers without an item keyring |
 
-The default keybind is `.` (PERIOD). F2 belongs to ox_inventory, so it is not used. Set `Keybinds.OpenKeyRing` to an empty value to leave it unbound and keep `/keyring` only. Each key in the keybind list can also be switched off in `/vehiclekeyssetup`. Players can still rebind it in FiveM settings, and a player's own binding is never overwritten by your default.
+The default keybind is `.` (PERIOD). F2 belongs to ox_inventory, so it is not used. Clear the keyring key under Keybinds in `/setupkeys` to leave it unbound and keep `/keyring` only. Each key in the keybind list can also be switched off in `/setupkeys`. Players can still rebind it in FiveM settings, and a player's own binding is never overwritten by your default.
 
 ## Logging
 
@@ -261,8 +261,72 @@ The player job has a bench, register, stash, and computer. The bench burns one `
 
 Using the `keyfob_scanner` item puts the "Pooper 9" in the player's hand and opens its screen. The screen can be driven with the mouse (the pad and back button, or clicking rows) or the keyboard: arrow keys move, Enter selects, Backspace steps back one screen and Escape closes it. The Sub-GHz screen re-reads the signal every second or so while it is open, so the bars follow the player. Its Settings page has a sound toggle, remembered per player on their own computer.
 
+The **Security** screen reads what the target car has fitted, but only once the car has been scanned. Choosing **Scan vehicle** puts the screen away and drops a small bouncing marker on the car: the front, then the driver's side, then the rear. The player uses the target on each marker, an animation plays, and the next marker appears. Going further than `WalkAwayMeters` (15 metres) from the car, finishing, or running out of time takes the markers away, and a finished scan stays readable and usable on that car for `RevealSeconds`. The screen then shows: its alarm tier, its immobiliser (none, cut-off relay or keypad) and whether a GPS tracker is fitted or being jammed. From there the player can **Bypass immobiliser**, which switches an immobiliser off for two minutes (no hotwire block, no keypad PIN), or **Jam GPS**, which silences the tracker for a minute. Both take a few seconds of work, can fail, and a failed try sounds the car's alarm. The screen refreshes itself while it is open, so a bypass counts down. The times, the failure chance and the cooldown are on the **Pooper 9 scanner** card of the **Vehicle security** page, and every try is written to the staff log.
+
+## Vehicle security
+
+Equipment that protects a car, fitted from the inventory. Everything here is on the **Vehicle security** page of `/setupkeys`: fitting, who can fit each item, alarms, GPS, the keypad PIN, the scanner, the police tools and the staff log.
+
+The items are in [Inventory items](/mrnewbvehiclekeys/install/inventory), and their pictures in [Item images](/mrnewbvehiclekeys/install/inventory-images#security-item-pictures). The locksmith NPC and the locksmith computer sell them from the same price list as the rest of the catalogue.
+
+### Fitting
+
+Use the item next to a parked, registered car with its engine off and nobody in it. A progress bar runs (**Fitting time**), the item is used up, and a failed or cancelled fit keeps it.
+
+Who may fit it is set per item on the **Who can fit it** card. The shipped lists are `mechanic` and `locksmith` for the alarms, cut-off relay, keypad lock and GPS, so only those jobs can fit them, and they can do it on any registered car without a key. Empty an item's list and anyone holding the item can fit it, but then they must hold a key for that car (or be an admin), so nobody can fit equipment on a stranger's car. **On duty only** makes the job lists count only on duty.
+
+The GPS jammer and the removal kit are open to anyone by default, because they are tampering tools.
+
+### Alarms
+
+| Tier | Who hears it |
+| --- | --- |
+| Basic | Every car, no item. The siren, plus the police alert from the dispatch settings |
+| Linked (`alarm_module_linked`) | The siren, and the owner when they are online, with a flashing blip. The owner testing their own car does not alert themselves. `/clearalarm` removes the blip, and it also goes after a minute or when the owner is back at the car |
+| Dispatch (`alarm_module_dispatch`) | Everything above, and police dispatch to the jobs picked under **Dispatch alarm goes to** |
+
+Lockpicking sounds the alarm as the pick goes in, and hotwiring and carjacking as they start. **Wait between alerts** stops one car raising an alert over and over. A jammed car sends no wireless alert.
+
+### Immobilisers and the keypad PIN
+
+An immobiliser (`ignition_cutoff_relay`) blocks hotwiring, and a valid key is still needed. A keypad lock (`keypad_cutoff_module`) does that and also asks for a four digit PIN at every engine start. It turns remote start off. The PIN is chosen when the keypad lock is fitted, typed on a pad that looks like the hotwire minigame, and changed with `/enginepin`.
+
+- **PIN entry time** is how long the pad stays open.
+- **Wrong tries** in a row sound the alarm and lock the pad for the **Retry delay**.
+- A job vehicle, a car shared with a job, never has a keypad. One cannot be fitted to it, nobody can set up or change a PIN on it, and nobody is asked for one, so a job's car cannot be locked out by a PIN its members were not given. The **Skip the PIN in job vehicles** switch turns this off.
+- A sold car has its PIN cleared, and the first key holder to sit in it chooses a new one.
+- The PIN is kept as a salted hash. Four digits only have 10,000 combinations, so what protects the car is the retry limit and the alarm, not the hash.
+
+### GPS
+
+`gps_tracker_module` fits the same tracker as the transmitter. It belongs to the car's registered owner, and it is what lets police follow a flagged car live. `gps_signal_jammer` silences it for the **Jam time**, which also blocks the receiver ping and the wireless side of the alarm. `tracker_extraction_kit` removes it. **Use up the jammer** and **Use up the removal kit** choose whether they are used up.
+
+### Police tools
+
+On-duty police (the **Police jobs**, **On duty only** and **Lowest grade**) can flag a car, follow it live while its GPS is fitted and not jammed, and strip the immobiliser from a flagged car. The commands are in [Commands](/mrnewbvehiclekeys/install/commands#police). Other scripts, such as an MDT or a phone, set the flag with the `FlagVehicle` export.
+
+### The scanner
+
+The keyfob scanner can scan a car and then bypass or jam it. See [The scanner device](#the-scanner-device).
+
+### Staff log
+
+Fitting, jamming, tracker removal, PIN lockouts, alarms, police flags, tracks and disables, scanner scans and tries, and admin changes are written through ox_lib's logger. The **Staff log** card has the on and off switch and the Discord webhook, and **Do not log these** (with Advanced on) skips single events.
+
+## Theft stress and hotwire method
+
+Theft stress goes to the stress script chosen on the **Integrations** page (automatic picks the first supported one that is running, or choose none). The amount for each crime is on its own page: Hotwire, Lockpicks, Carjack and Search for keys. `0` turns that one off. A missing provider never stops the action.
+
+The **Which challenge a car gets** card on the **Hotwire** page chooses the challenge each car gets: the ignition hack or the wire puzzle. The default is used first, then the car's class (Sports Classics, Sports, Super and Open Wheel get the ignition hack by default), and a spawn name listed for a method beats the class. With Advanced on, the minigame, difficulty and rounds are set for each method.
+
 ## Compatibility
 
-`CompatibilityEvents` chooses which foreign events and legacy exports answer. Garage entries switch on when that garage resource is running. `provide` lines in `fxmanifest.lua` let `exports['qbx_vehiclekeys']:GiveKeys(...)` resolve here. Only `provide 'qbx_vehiclekeys'` is active in the shipped manifest.
+This resource provides for these key systems: `qb-vehiclekeys`, `qbx_vehiclekeys`, `qs-vehiclekeys`, `wasabi_carlock`, `Renewed-Vehiclekeys`, `mk_vehiclekeys`, `jg-vehiclekeys` and `tgiann-hotwire`. The **Integrations** page chooses which foreign events and legacy exports answer. Garage entries switch on when that garage resource is running. `provide` lines in `fxmanifest.lua` let `exports['qbx_vehiclekeys']:GiveKeys(...)` resolve here. Only `provide 'qbx_vehiclekeys'` is active in the shipped manifest.
+
+### jg-vehiclekeys
+
+As a key system we provide for, the `jg-vehiclekeys` server API is answered here: `giveKeys`, `removeKeys`, `hasKeys`, `getKeys`, the three `...Entity` key calls, `isPlayerNearVehicle`, `unlockVehicle`, `setLockState`, `canParkVehicle`, `canCollectVehicle`, `vehicleParked`, `vehicleOwnershipChanged`, `vehiclePlateChanged`, `getVehicleSecurity`, `getVehicleTrackingLocation`, `getVehicleGhostInstallations` and `changeVehiclePin`, with the same result tables. The same calls written in capitals (`GiveKeys`, `RemoveKeys`, `HasKeys`, `GetKeys`, `UnlockVehicle`, `VehicleOwnershipChanged`) work too. Switch it on in **Integrations** and add a `provide 'jg-vehiclekeys'` line, so that callers keep working when this resource restarts. Do not run the real `jg-vehiclekeys` at the same time.
+
+A few things differ. A `design` option is ignored. `expiresAt` becomes a temporary key. Alarm tiers, immobiliser and GPS come from the security above. `changeVehiclePin` only works on a car with a keypad immobiliser. `tgiann-hotwire` is answered here too.
 
 `MrNewbVehicleKeys:Client:*` and `MrNewbVehicleKeys:Server:*` are internal. Do not build on them.

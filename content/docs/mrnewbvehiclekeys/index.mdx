@@ -13,14 +13,19 @@ Vehicle keys, locks, hotwiring, lockpicking, a key fob, and locksmith work. Runs
 ## Features
 
 - Item keys or virtual keys. On ox_inventory the keyring can be a real container, or a keyring UI with sharing and loaned keys
-- Migration from other key scripts: one picker answers their calls
+- Key systems we provide for: `qb-vehiclekeys`, `qbx_vehiclekeys`, `qs-vehiclekeys`, `wasabi_carlock`, `Renewed-Vehiclekeys`, `mk_vehiclekeys`, `jg-vehiclekeys` and `tgiann-hotwire`. Scripts that call them keep working, and one picker on the Integrations page chooses which one this resource answers for. See [Compatibility](/mrnewbvehiclekeys/install/configuration#compatibility)
 - Lock and unlock, engine toggle, ignition insert mode, walk-up proximity lock
 - Hotwire, lockpick, search the car for keys, carjacking
 - On-screen key fob (remote start, doors, self-park, summon, autopilot, and the rest of the button list)
 - Walk-up locksmith ped and a player locksmith job (bench, computer, register, stash), plus job key lockers
 - Two fob styles: this script's own (Legacy) or the car maker's own (Branded)
 - GPS tracker (`ping_transmitter` / `ping_receiver`)
+- Vehicle security: three alarm tiers, an immobiliser, a keypad immobiliser with a four digit PIN, a fitted GPS, and the jammer and removal kit that go with it. See [Vehicle security](/mrnewbvehiclekeys/install/configuration#vehicle-security)
+- Police tools: flag a car stolen or under warrant, follow it live on its GPS, and strip the immobiliser of a flagged car
+- The keyfob scanner (the "Pooper 9") scans a car to read what it has fitted, then bypasses its immobiliser or jams its tracker for a while
+- `/movekeys`: players move and resize the key fob on their own screen, with a snap grid. Saved on their own computer
+- Key items carry the picture of their maker's own fob in the metadata, so any inventory shows it
 - Aftermarket locks so old keys stop working
-- Admin setup menu (`/vehiclekeyssetup`) with a guided first run, search, defaults and reset on every setting. Its Manage tab holds the live admin tools: vehicles, players, vehicle locks, key creator and parking
+- Admin setup menu (`/setupkeys`) with a guided first run, search, defaults and reset on every setting. Its Manage tab holds the live admin tools: vehicles, players, vehicle locks, key creator and parking
 - LB Phone app for lock, trunk, engine and more: [Phone app](/mrnewbvehiclekeys/phone)
 - Structured action logs with optional Discord webhook

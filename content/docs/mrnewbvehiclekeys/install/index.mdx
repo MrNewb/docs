@@ -41,7 +41,7 @@ ensure MrNewbVehicleKeys
 
 Start the server once. SQL tables are created on their own, including `MrNewb__Settings`. There is no SQL file to import.
 
-Join as an admin and run `/vehiclekeyssetup`. The first time it opens, a guided setup asks one question per page: how keys work, the fob, street cars, the engine, the keyring, throwing keys, break-in, police alerts, and the locksmith. Each page shows a recommended answer. Take it, or change it. Press **Save** when you are done.
+Join as an admin and run `/setupkeys`. The first time it opens, a guided setup asks one question per page: how keys work, the fob, street cars, the engine, the keyring, throwing keys, break-in, police alerts, and the locksmith. Each page shows a recommended answer. Take it, or change it. Press **Save** when you are done.
 
 Advanced pages and settings stay hidden until you turn on **Advanced settings** in the left rail. The Save button shows how many changes are waiting. After a save, the panel lists the few settings that need a resource restart. Everything else is live for every player.
 
@@ -68,12 +68,13 @@ Players can rebind these under MrNewbVehicleKeys in FiveM’s settings.
 | Key | What it does |
 | --- | --- |
 | L | Lock or unlock the closest car you have a key for, about 15 meters. The on-screen fob reaches further |
-| Y | Toggle the engine. Stays off if jg-hud, ps-hud, qb-hud, or qbx_hud already handles the engine |
+| Y | Toggle the engine. Stays off if your HUD already handles the engine |
 | . (period) | Open the keyring UI, when the keyring UI is on. Leave it unbound for `/keyring` only. On ox_inventory without the menu you open the keyring item instead |
 | E | Hotwire, driver seat only, when you do not have a key |
 | H | Search the car for keys, driver seat only |
 | I / O | Put the key in the ignition, or take it back out, when insert mode is on |
 | F11 | Change the auto-pilot mode while it is running |
+| Throw key (no key until you set one) | Throw the key for the car you sit in. Set the default key on the Keybinds page of `/setupkeys`, and players can rebind it in FiveM's key bindings. While the key fob screen is open, the screen listens for the server's default key (a letter, a digit or an F key), because the game does not hear key bindings while the screen has focus |
 
 Walking up to your own car locks and unlocks it. Players can turn that off from the fob or with `/newb_proximitylocks`.
 
@@ -85,5 +86,5 @@ Walking up to your own car locks and unlocks it. Players can turn that off from 
 | Two `/car` commands | `AdminCommands` is on and qbx_core still registers its own `/car` and `/dv`. Turn one of them off |
 | `provide` conflict on start | Another resource also provides `qbx_vehiclekeys` |
 | Shop will not sell a renamed item | The locksmith price entry key has to be the real item name |
-| Seed file edits do nothing | The database copy wins after the first boot. Use `/vehiclekeyssetup` |
+| Seed file edits do nothing | The database copy wins after the first boot. Use `/setupkeys` |
 | Locker props deleted | Allow the models on [Anticheat models](/mrnewbvehiclekeys/anticheat) |
