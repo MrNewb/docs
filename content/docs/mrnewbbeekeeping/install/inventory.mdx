@@ -14,45 +14,9 @@ Paste the matching snippet into your items file, then copy PNGs from `[INSTALL]/
 
 - **OX** — `ox_inventory/data/items.lua` (ESX and Qbox that run ox use this tab). Same text ships as `[INSTALL]/ox_inventory_items.txt`.
 - **QB** — `qb-core/shared/items.lua` (or your shared items path).
-- **one_inventory** — import the items with one_inventory's item import. See [one_inventory](#one_inventory) below. The PNGs go in `one_inventory/web/images/`.
+- **one_inventory** — add the items from the ox_inventory text. The PNGs go in `one_inventory/web/images/`.
 
 Restart the inventory resource after pasting. Item names have to match the setup panel. If you rename one there, register that name instead.
-
-## one_inventory
-
-one_inventory keeps item definitions in its own database, not in a file you edit. You load them once with its item import, from an ox_inventory-format items file. That is the same text as the OX tab below.
-
-1. Create a folder `resources/ox_inventory_old/` and **do not** `ensure` it. It only exists so the importer can read it. Put two files in it:
-
-   `ox_inventory_old/fxmanifest.lua`
-
-   ```lua
-   fx_version 'cerulean'
-   game 'gta5'
-   ```
-
-   `ox_inventory_old/data/items.lua`
-
-   ```lua
-   return {
-       -- paste the items here
-   }
-   ```
-
-2. Paste the item entries between the braces. Use the Lua from the **OX** tab below, or the block from `[INSTALL]/ox_inventory_items.txt` that starts at `["beehive"] = {`. Skip the plain-text notes at the top of that file. If you run other Newb scripts, paste their items into the same file.
-3. Copy the PNGs from `[INSTALL]/imgs/` into `one_inventory/web/images/`.
-4. Give your admins the one_inventory admin permission in `server.cfg`, then restart:
-
-   ```cfg
-   add_ace group.admin one_inventory.admin allow
-   ```
-
-5. In game, run `/inventory:manage`, open **Migration**, and run **Import definitions**. Pick the ox_inventory source (it should show a **Files** badge), keep the item category selected, and confirm. The summary shows how many items were imported.
-6. Restart `one_inventory`, then `MrNewbBeeKeeping`. Delete the `ox_inventory_old` folder.
-
-<Callout type="info">
-  Coming from ox_inventory? Rename your old `ox_inventory` folder to `ox_inventory_old`, add the entries to its `data/items.lua`, and run the same import. It brings your other items over at the same time.
-</Callout>
 
 <Callout type="warning">
   **Required:** set `Config.Inventory = "one_inventory"` in `Newb_Bridge/settings/bridge_resources.lua`. one_inventory provides itself as `ox_inventory` and is not fully compatible with its image paths, so on `"auto"` item images do not load and the shop can fail to open. See [Newb_Bridge configuration](/newb_bridge/configuration).

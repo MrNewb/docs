@@ -18,43 +18,7 @@ Copy `digital_pet.png` from `[INSTALL]/IMAGES/` into:
 | qb-inventory / ps-inventory | `html/images/` |
 | one_inventory | `one_inventory/web/images/` |
 
-OX is ox_inventory (ESX and Qbox that run ox use this tab). QB is `qb-core/shared/items.lua`. one_inventory needs the PNG in `one_inventory/web/images/` and the item imported, see [one_inventory](#one_inventory).
-
-## one_inventory
-
-one_inventory keeps item definitions in its own database, not in a file you edit. You load them once with its item import, from an ox_inventory-format items file. That is the same text as the OX tab below, and ships as `[INSTALL]/ox_inventory_items.txt`.
-
-1. Create a folder `resources/ox_inventory_old/` and **do not** `ensure` it. It only exists so the importer can read it. Put two files in it:
-
-   `ox_inventory_old/fxmanifest.lua`
-
-   ```lua
-   fx_version 'cerulean'
-   game 'gta5'
-   ```
-
-   `ox_inventory_old/data/items.lua`
-
-   ```lua
-   return {
-       -- paste the item here
-   }
-   ```
-
-2. Paste the `digital_pet` entry between the braces. If you run other Newb scripts, paste their items into the same file.
-3. Copy `digital_pet.png` from `[INSTALL]/IMAGES/` into `one_inventory/web/images/`.
-4. Give your admins the one_inventory admin permission in `server.cfg`, then restart:
-
-   ```cfg
-   add_ace group.admin one_inventory.admin allow
-   ```
-
-5. In game, run `/inventory:manage`, open **Migration**, and run **Import definitions**. Pick the ox_inventory source (it should show a **Files** badge), keep the item category selected, and confirm. The summary shows how many items were imported.
-6. Restart `one_inventory`, then `MrNewb_DigitalPets`. Delete the `ox_inventory_old` folder.
-
-<Callout type="info">
-  Coming from ox_inventory? Rename your old `ox_inventory` folder to `ox_inventory_old`, add the entry to its `data/items.lua`, and run the same import. It brings your other items over at the same time.
-</Callout>
+OX is ox_inventory (ESX and Qbox that run ox use this tab). QB is `qb-core/shared/items.lua`. one_inventory needs the PNG in `one_inventory/web/images/` and the item added from the ox_inventory entry.
 
 <Callout type="warning">
   **Required:** set `Config.Inventory = "one_inventory"` in `Newb_Bridge/settings/bridge_resources.lua`. one_inventory provides itself as `ox_inventory` and is not fully compatible with its image paths, so on `"auto"` item images do not load. See [Newb_Bridge configuration](/newb_bridge/configuration).
