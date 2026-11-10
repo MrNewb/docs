@@ -1,5 +1,5 @@
 :root {
-  --font-inter: Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-inter: 'Inter Variable', Inter, ui-sans-serif, system-ui, sans-serif;
   --mrnewb-ink: #3c3c43;
   --mrnewb-muted: #67676c;
   --mrnewb-surface: #f6f6f7;
