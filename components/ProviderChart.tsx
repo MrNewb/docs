@@ -26,11 +26,12 @@ function fallback(name: string, note: string): ProviderRow {
 const groups: Record<string, ProviderGroup> = {
   framework: {
     id: 'framework',
-    rows: [auto('qbx_core'), auto('qb-core'), auto('es_extended')],
+    rows: [auto('kora_core'), auto('qbx_core'), auto('qb-core'), auto('es_extended')],
   },
   inventory: {
     id: 'inventory',
     rows: [
+      auto('kora_inventory'),
       auto('ox_inventory'),
       auto('wasabi_inventory'),
       auto('m-Inventory'),
@@ -58,6 +59,7 @@ const groups: Record<string, ProviderGroup> = {
   target: {
     id: 'target',
     rows: [
+      auto('kora_target'),
       auto('ox_target'),
       auto('tgiann-target'),
       auto('core_focus'),

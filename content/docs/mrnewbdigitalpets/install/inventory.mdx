@@ -24,7 +24,7 @@ OX is ox_inventory (ESX and Qbox that run ox use this tab). QB is `qb-core/share
   **Required:** set `Config.Inventory = "one_inventory"` in `Newb_Bridge/settings/bridge_resources.lua`. one_inventory provides itself as `ox_inventory` and is not fully compatible with its image paths, so on `"auto"` item images do not load. See [Newb_Bridge configuration](/newb_bridge/configuration).
 </Callout>
 
-<Tabs items={['OX', 'QB']} storageKey="inventory-items">
+<Tabs items={['OX', 'QB', 'Kora']} storageKey="inventory-items">
 <Tab>
 
 Add to `ox_inventory/data/items.lua`:
@@ -47,6 +47,11 @@ Add to your QBCore shared items (`qb-core/shared/items.lua`):
 ```lua
 ['digital_pet'] = { name = 'digital_pet', label = 'Digital Pet', weight = 500, type = 'item', image = 'digital_pet.png', unique = true, useable = true, shouldClose = true, description = 'A pocket digital pet. Use it to open the Digital Pets toy.' },
 ```
+
+</Tab>
+<Tab>
+
+On Kora, `kora_inventory` does not read `ox_inventory/data/items.lua`. Copy the **OX** block into `newb_kora_items/items/` and copy the PNGs into `kora_inventory/images/`. The full steps are on [Kora install](/mrnewbdigitalpets/install/kora).
 
 </Tab>
 </Tabs>

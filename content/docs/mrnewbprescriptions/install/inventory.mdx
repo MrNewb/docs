@@ -41,7 +41,7 @@ The names the script looks up (pad, paper, record, blank paper) are set on the I
 
 These are the items that matter most. The full file has all the rest.
 
-<Tabs items={['OX', 'QB']} storageKey="inventory-items">
+<Tabs items={['OX', 'QB', 'Kora']} storageKey="inventory-items">
 <Tab>
 
 ```lua
@@ -81,6 +81,11 @@ Repeat this shape for every item in `[INSTALL]/ox_inventory/items.txt`, using th
 ```lua
 ['prescriptionpad'] = { name = 'prescriptionpad', label = 'Prescription pad', weight = 100, type = 'item', image = 'prescriptionpad.png', unique = true, useable = true, shouldClose = true, description = 'Doctor prescription pad. Use to write a new prescription.' },
 ```
+
+</Tab>
+<Tab>
+
+On Kora, `kora_inventory` does not read `ox_inventory/data/items.lua`. Copy the **OX** block into `newb_kora_items/items/` and copy the PNGs into `kora_inventory/images/`. The full steps are on [Kora install](/mrnewbprescriptions/install/kora).
 
 </Tab>
 </Tabs>

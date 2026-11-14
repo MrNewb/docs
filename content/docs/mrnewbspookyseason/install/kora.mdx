@@ -1,0 +1,51 @@
+---
+title: "Kora install"
+description: "Install SpookySeason on Kora Framework (kora_core): start order, items, images and server.cfg."
+icon: "IconServerCog"
+---
+
+<Callout type="warning">
+  Kora Framework is in alpha, so its API can change. Start order matters: the Kora resources first, then Newb_Bridge, then this script.
+</Callout>
+
+This is the install for SpookySeason on **kora_core**, **kora_inventory** and **kora_target**. The standard steps are on [Installation](/mrnewbspookyseason/install); this page replaces the framework-specific parts.
+
+### Set up the Kora stack [step]
+
+Install `kora_sql`, `kora_lib`, `kora_core`, `kora_inventory` and `kora_target` as described in the [kora_core docs](https://github.com/KoraFiveM/kora_core/blob/dev/docs.md), then [Newb_Bridge](/newb_bridge). Newb_Bridge finds the Kora resources by itself. See [Kora Framework](/newb_bridge/kora) for how it picks them and how to pin them.
+
+### Add the items [step]
+
+Kora does not read `ox_inventory/data/items.lua`. Set up the `newb_kora_items` importer from [Kora Framework](/newb_bridge/kora), then:
+
+1. Open [Item setup](/mrnewbspookyseason/install/inventory) and copy the block from the **OX** tab.
+2. Create `newb_kora_items/items/spookyseason.lua` containing `return {`, that block, then `}`.
+3. Add `'spookyseason'` to the `files` list in `newb_kora_items/server.lua`.
+
+Items that already exist in Kora are skipped, so your own edits to them stay.
+
+### Add the images [step]
+
+Copy the PNGs named on [Item images](/mrnewbspookyseason/install/inventory-images) into `kora_inventory/images/`.
+
+### Configure [step]
+
+Configure as normal on [Configuration](/mrnewbspookyseason/install/configuration). Job names and grades follow the Kora notes above.
+
+### Add to server.cfg [step]
+
+```cfg
+ensure ox_lib
+ensure kora_sql
+ensure kora_lib
+ensure kora_core
+ensure kora_inventory
+ensure kora_target
+ensure Newb_Bridge
+ensure newb_kora_items
+ensure MrNewbsSpookySeason
+```
+
+### Restart the server [step]
+
+Restart the server, not individual resources. Newb_Bridge in particular should not be restarted live on Kora.

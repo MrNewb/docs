@@ -4,6 +4,7 @@
   "pages": [
     "configuration",
     "inventory",
-    "inventory-images"
+    "inventory-images",
+    "kora"
   ]
 }

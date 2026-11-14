@@ -14,7 +14,7 @@ Paste the matching snippet into your items file. The item name is `tracker`. The
 
 OX is ox_inventory (ESX and Qbox that run ox use this tab). QB is `qb-core/shared/items.lua`. one_inventory only needs the PNG in that folder.
 
-<Tabs items={['OX', 'QB']} storageKey="inventory-items">
+<Tabs items={['OX', 'QB', 'Kora']} storageKey="inventory-items">
 <Tab>
 
 Add to `ox_inventory/data/items.lua`:
@@ -37,6 +37,11 @@ Add to your QBCore shared items (`qb-core/shared/items.lua`):
 ```lua
 ['tracker'] = { name = 'tracker', label = 'tracker', weight = 200, type = 'item', image = 'tracker.png', unique = true, useable = true, shouldClose = true, combinable = nil, description = 'Property Of LSPD' },
 ```
+
+</Tab>
+<Tab>
+
+On Kora, `kora_inventory` does not read `ox_inventory/data/items.lua`. Copy the **OX** block into `newb_kora_items/items/` and copy the PNGs into `kora_inventory/images/`. The full steps are on [Kora install](/mrnewbphonetracker/install/kora).
 
 </Tab>
 </Tabs>

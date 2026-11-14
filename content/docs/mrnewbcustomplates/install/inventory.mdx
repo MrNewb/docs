@@ -16,7 +16,7 @@ Copy `customizableplate.png` from `[INSTALL]/itemimages/` into:
 
 OX is ox_inventory (ESX and Qbox that run ox use this tab). QB is `qb-core/shared/items.lua`. one_inventory only needs the PNG in that folder.
 
-<Tabs items={['OX', 'QB']} storageKey="inventory-items">
+<Tabs items={['OX', 'QB', 'Kora']} storageKey="inventory-items">
 <Tab>
 
 Add to `ox_inventory/data/items.lua`:
@@ -39,6 +39,11 @@ Add to your QBCore shared items (`qb-core/shared/items.lua`):
 ```lua
 ['customizableplate'] = { name = 'customizableplate', label = 'Custom Plate', weight = 200, type = 'item', image = 'customizableplate.png', unique = true, useable = true, shouldClose = true, combinable = nil, description = 'Apply a custom plate to a vehicle you own.' },
 ```
+
+</Tab>
+<Tab>
+
+On Kora, `kora_inventory` does not read `ox_inventory/data/items.lua`. Copy the **OX** block into `newb_kora_items/items/` and copy the PNGs into `kora_inventory/images/`. The full steps are on [Kora install](/mrnewbcustomplates/install/kora).
 
 </Tab>
 </Tabs>

@@ -16,7 +16,7 @@ OX is ox_inventory (ESX and Qbox that run ox use this tab). QB is `qb-core/share
 
 These items are not usable. `[INSTALL]/` does not ship framework item files — only images.
 
-<Tabs items={['OX', 'QB']} storageKey="inventory-items">
+<Tabs items={['OX', 'QB', 'Kora']} storageKey="inventory-items">
 <Tab>
 
 Add to `ox_inventory/data/items.lua`:
@@ -46,6 +46,11 @@ Add to your QBCore shared items (`qb-core/shared/items.lua`):
 ['pineapple'] = { name = 'pineapple', label = 'Pineapple', weight = 1, type = 'item', image = 'pineapple.png', unique = false, useable = false, shouldClose = true, combinable = nil, description = 'A ripe pineapple' },
 ['lettuce'] = { name = 'lettuce', label = 'Lettuce', weight = 1, type = 'item', image = 'lettuce.png', unique = false, useable = false, shouldClose = true, combinable = nil, description = 'A head of lettuce' },
 ```
+
+</Tab>
+<Tab>
+
+On Kora, `kora_inventory` does not read `ox_inventory/data/items.lua`. Copy the **OX** block into `newb_kora_items/items/` and copy the PNGs into `kora_inventory/images/`. The full steps are on [Kora install](/mrnewborganics/install/kora).
 
 </Tab>
 </Tabs>

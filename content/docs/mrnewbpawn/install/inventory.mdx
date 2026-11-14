@@ -45,7 +45,7 @@ OX is ox_inventory (ESX and Qbox that run ox use this tab). QB is `qb-core/share
   Pawn sells and smelts them as normal inventory items.
 </Callout>
 
-<Tabs items={['OX', 'QB']} storageKey="inventory-items">
+<Tabs items={['OX', 'QB', 'Kora']} storageKey="inventory-items">
 <Tab>
 
 Add any missing names to `ox_inventory/data/items.lua`:
@@ -100,6 +100,11 @@ Add any missing names to your QBCore shared items (`qb-core/shared/items.lua`):
 ['gold'] = { name = 'gold', label = 'Gold Bar', weight = 100, type = 'item', image = 'gold.png', unique = false, useable = false, shouldClose = false, combinable = nil, description = 'A gold bar' },
 ['diamond'] = { name = 'diamond', label = 'Diamond', weight = 1000, type = 'item', image = 'diamond.png', unique = false, useable = false, shouldClose = false, combinable = nil, description = 'A diamond' },
 ```
+
+</Tab>
+<Tab>
+
+On Kora, `kora_inventory` does not read `ox_inventory/data/items.lua`. Copy the **OX** block into `newb_kora_items/items/` and copy the PNGs into `kora_inventory/images/`. The full steps are on [Kora install](/mrnewbpawn/install/kora).
 
 </Tab>
 </Tabs>

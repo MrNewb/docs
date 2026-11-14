@@ -3,6 +3,7 @@
   "icon": "IconDownload",
   "pages": [
     "commands",
-    "configuration"
+    "configuration",
+    "kora"
   ]
 }

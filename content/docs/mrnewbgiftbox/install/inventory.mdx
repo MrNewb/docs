@@ -16,7 +16,7 @@ Copy `giftbox.png` from `[INSTALL]/` into:
 
 OX is ox_inventory (ESX and Qbox that run ox use this tab). QB is `qb-core/shared/items.lua`. one_inventory only needs the PNG in that folder. You can point extra boxes at the same `giftbox.png`.
 
-<Tabs items={['OX', 'QB']} storageKey="inventory-items">
+<Tabs items={['OX', 'QB', 'Kora']} storageKey="inventory-items">
 <Tab>
 
 Add to `ox_inventory/data/items.lua`:
@@ -53,6 +53,11 @@ Add to your QBCore shared items (`qb-core/shared/items.lua`):
 ['starter_box'] = { name = 'starter_box', label = 'Starter Gift Box', weight = 1000, type = 'item', image = 'giftbox.png', unique = false, useable = true, shouldClose = true, combinable = nil, description = 'A gift box' },
 ['gang_kit'] = { name = 'gang_kit', label = 'Gang Kit', weight = 1000, type = 'item', image = 'giftbox.png', unique = false, useable = true, shouldClose = true, combinable = nil, description = 'A gift box' },
 ```
+
+</Tab>
+<Tab>
+
+On Kora, `kora_inventory` does not read `ox_inventory/data/items.lua`. Copy the **OX** block into `newb_kora_items/items/` and copy the PNGs into `kora_inventory/images/`. The full steps are on [Kora install](/mrnewbgiftbox/install/kora).
 
 </Tab>
 </Tabs>

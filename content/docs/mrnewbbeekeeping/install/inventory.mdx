@@ -26,7 +26,7 @@ Restart the inventory resource after pasting. Item names have to match the setup
   Usable items are `beehive`, `beehive_rustic`, `queen_bee`, `bee_trap`, `beekeeping_guide`, and `beekeeper_suit`. Honeycomb is not usable and does not stack. Each frame keeps its own honey amount.
 </Callout>
 
-<Tabs items={['OX', 'QB']} storageKey="inventory-items">
+<Tabs items={['OX', 'QB', 'Kora']} storageKey="inventory-items">
 <Tab>
 
 Add to `ox_inventory/data/items.lua`:
@@ -177,6 +177,11 @@ Add to your QBCore shared items (`qb-core/shared/items.lua`):
 ['beekeeping_guide'] = { name = 'beekeeping_guide', label = "Beekeeper's Strain Guide", weight = 250, type = 'item', image = 'beekeeping_guide.png', unique = true, useable = true, shouldClose = true, combinable = nil, description = 'A field guide to queen strains and regional honey production. Use to read.' },
 ['beekeeper_suit'] = { name = 'beekeeper_suit', label = 'Beekeeper Suit', weight = 1500, type = 'item', image = 'beekeeper_suit.png', unique = true, useable = true, shouldClose = true, combinable = nil, description = 'A full veil and coveralls. Use to put it on or take it off. Wild bees cannot sting you while it is on.' },
 ```
+
+</Tab>
+<Tab>
+
+On Kora, `kora_inventory` does not read `ox_inventory/data/items.lua`. Copy the **OX** block into `newb_kora_items/items/` and copy the PNGs into `kora_inventory/images/`. The full steps are on [Kora install](/mrnewbbeekeeping/install/kora).
 
 </Tab>
 </Tabs>

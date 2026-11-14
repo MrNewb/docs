@@ -1,0 +1,40 @@
+---
+title: "Kora install"
+description: "Install CityHall on Kora Framework (kora_core): start order, items, images and server.cfg."
+icon: "IconServerCog"
+---
+
+<Callout type="warning">
+  Kora Framework is in alpha, so its API can change. Start order matters: the Kora resources first, then Newb_Bridge, then this script.
+</Callout>
+
+This is the install for CityHall on **kora_core**, **kora_inventory** and **kora_target**. The standard steps are on [Installation](/mrnewbcityhall/install); this page replaces the framework-specific parts.
+
+### Set up the Kora stack [step]
+
+Install `kora_sql`, `kora_lib`, `kora_core`, `kora_inventory` and `kora_target` as described in the [kora_core docs](https://github.com/KoraFiveM/kora_core/blob/dev/docs.md), then [Newb_Bridge](/newb_bridge). Newb_Bridge finds the Kora resources by itself. See [Kora Framework](/newb_bridge/kora) for how it picks them and how to pin them.
+
+### Items [step]
+
+CityHall ships no items. It gives the ID card as `Config.IdCardItem`, which is `id_card` by default. kora_core's default item list already includes `id_card`. If you changed `Config.IdCardItem`, register that item in Kora yourself.
+
+### Configure [step]
+
+Configure as normal on [Configuration](/mrnewbcityhall/configuration). Job names and grades follow the Kora notes above.
+
+### Add to server.cfg [step]
+
+```cfg
+ensure ox_lib
+ensure kora_sql
+ensure kora_lib
+ensure kora_core
+ensure kora_inventory
+ensure kora_target
+ensure Newb_Bridge
+ensure MrNewbCityHall
+```
+
+### Restart the server [step]
+
+Restart the server, not individual resources. Newb_Bridge in particular should not be restarted live on Kora.

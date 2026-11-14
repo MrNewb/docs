@@ -18,7 +18,7 @@ OX is ox_inventory (ESX and Qbox that run ox use this tab). QB is `qb-core/share
   Usable items are `pumpkin_basket` and `rotten_casket`.
 </Callout>
 
-<Tabs items={['OX', 'QB']} storageKey="inventory-items">
+<Tabs items={['OX', 'QB', 'Kora']} storageKey="inventory-items">
 <Tab>
 
 Add to `ox_inventory/data/items.lua`:
@@ -68,6 +68,11 @@ Add to your QBCore shared items (`qb-core/shared/items.lua`):
 ['pumpkin_basket'] = { name = 'pumpkin_basket', label = 'Pumpkin Basket', weight = 1, type = 'item', image = 'pumpkin_basket.png', unique = false, useable = true, shouldClose = true, combinable = nil, description = 'A basket of Halloween treats.' },
 ['rotten_casket'] = { name = 'rotten_casket', label = 'Rotten Casket', weight = 1, type = 'item', image = 'rotten_casket.png', unique = false, useable = true, shouldClose = true, combinable = nil, description = 'A grim crate of event loot.' },
 ```
+
+</Tab>
+<Tab>
+
+On Kora, `kora_inventory` does not read `ox_inventory/data/items.lua`. Copy the **OX** block into `newb_kora_items/items/` and copy the PNGs into `kora_inventory/images/`. The full steps are on [Kora install](/mrnewbspookyseason/install/kora).
 
 </Tab>
 </Tabs>

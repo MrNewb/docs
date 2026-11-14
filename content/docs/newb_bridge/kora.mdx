@@ -1,0 +1,113 @@
+---
+title: "Kora Framework"
+description: "Install Newb_Bridge and MrNewb scripts on kora_core: start order, what auto-detects, and how to get items in."
+icon: "IconServerCog"
+---
+
+<Callout type="warning">
+  Kora Framework is in alpha. Its authors say the API can change and that it is not ready for production. Newb_Bridge talks to Kora's own exports, so a Kora update can change how a script behaves. Check the [kora_core repository](https://github.com/KoraFiveM/kora_core) before you update.
+</Callout>
+
+Newb_Bridge has native providers for the Kora stack: **kora_core** (framework), **kora_inventory** (inventory) and **kora_target** (target). They call Kora's own exports, not its qb-core or ox_inventory compatibility layer. Every MrNewb script that uses the bridge works on them with no extra setup, apart from items.
+
+### Set up Kora first [step]
+
+Kora needs `kora_sql` and `kora_lib` before `kora_core`. Follow the setup in the [kora_core docs](https://github.com/KoraFiveM/kora_core/blob/dev/docs.md). Its tables are created on first boot.
+
+### Add to server.cfg [step]
+
+Newb_Bridge and every MrNewb script start **after** the Kora resources.
+
+```cfg
+set mysql_connection_string "mysql://user:pass@localhost/kora_core?charset=utf8mb4"
+
+ensure ox_lib
+ensure oxmysql
+ensure kora_sql
+ensure kora_lib
+ensure kora_core
+ensure kora_inventory
+ensure kora_target
+ensure Newb_Bridge
+
+# MrNewb scripts
+ensure MrNewbVehicleKeys
+```
+
+ox_lib is still required. The bridge and the scripts use it for menus, inputs and locales.
+
+### Check the bridge picked Kora [step]
+
+On start the bridge prints the provider it resolved for each module. You should see `kora_core`, `kora_inventory` and `kora_target`. Auto-detect lists them **before** qbx_core, ox_inventory and ox_target, because Kora also answers to those names.
+
+If you want to pin them, set these in `settings/bridge_resources.lua`. See [Configuration](/newb_bridge/configuration).
+
+```lua
+Config.Framework = "kora_core"
+Config.Inventory = "kora_inventory"
+Config.Target    = "kora_target"
+```
+
+### Add the items [step]
+
+Each script's **Item setup** page lists its items in ox_inventory format. Kora does not read `ox_inventory/data/items.lua`, so those items go into Kora's item registry through `kora_inventory`'s ox importer, `ImportOxItems`. It skips any item that already exists.
+
+Make one small resource for this, for example `newb_kora_items`, and add one file per script under `items/`. Every script's **Kora** install page tells you which file to make and what to paste.
+
+```lua
+-- fxmanifest.lua
+fx_version 'cerulean'
+game 'gta5'
+server_script 'server.lua'
+files { 'items/*.lua' }
+```
+
+```lua
+-- server.lua
+-- One entry per file in items/. Add a name here when you install another script.
+local files = {
+    'vehiclekeys',
+    'prescriptions',
+}
+
+local function importAll()
+    for _, name in ipairs(files) do
+        local text = LoadResourceFile(GetCurrentResourceName(), ('items/%s.lua'):format(name))
+        local chunk, err = text and load(text, '@items/' .. name, 't', {})
+        local ok, definitions = false, nil
+        if chunk then ok, definitions = pcall(chunk) end
+
+        if ok and type(definitions) == 'table' then
+            local registered = exports.kora_inventory:ImportOxItems(definitions, { overwrite = false })
+            print(('^2[newb_kora_items] %s: %d item(s) registered.^0'):format(name, registered or 0))
+        else
+            print(('^1[newb_kora_items] %s: could not read items (%s).^0'):format(name, tostring(err or definitions or 'file missing')))
+        end
+    end
+end
+
+CreateThread(function()
+    while GetResourceState('kora_core') ~= 'started' or GetResourceState('kora_inventory') ~= 'started' do
+        Wait(500)
+    end
+    Wait(1000)
+    importAll()
+end)
+```
+
+Each `items/<name>.lua` file is `return {`, then the item blocks from the script's Item setup page (the OX tab), then `}`.
+
+Start `newb_kora_items` after `kora_inventory` and keep it running. The items it registers belong to that resource, so stopping it removes them.
+
+Copy each script's PNGs into `kora_inventory/images/`.
+
+### Restart the server [step]
+
+Restart after changing items or the start order.
+
+## Good to know
+
+- **Grades.** Kora job grades start at 1. The bridge converts them, so scripts and their configs use the same zero-based grades as on every other framework.
+- **Vehicle keys.** `MrNewbVehicleKeys` can stand in for `kora_vehiclekeys`. Set `Config.VehicleKeys = "MrNewbVehicleKeys"` in the bridge settings, and remove `kora_vehiclekeys` if you run it. Other Kora resources that cached the keys export need a restart after the keys script restarts.
+- **Stashes and shops.** Stash weight and slot limits are only known for stashes the bridge registered. Per-row shop license, grade and currency options are not supported by the Kora inventory provider.
+- **Restarting the bridge live.** Restart the whole server, not Newb_Bridge by itself.

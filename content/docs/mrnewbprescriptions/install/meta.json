@@ -6,6 +6,7 @@
     "configuration",
     "commands",
     "inventory",
-    "inventory-images"
+    "inventory-images",
+    "kora"
   ]
 }

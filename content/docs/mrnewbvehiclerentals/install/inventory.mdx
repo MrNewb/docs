@@ -29,7 +29,7 @@ Copy `rental_paperwork.png` from `[INSTALL]/images/` into:
 
 OX is ox_inventory (ESX and Qbox that run ox use this tab). QB is `qb-core/shared/items.lua`. one_inventory only needs the PNG in that folder.
 
-<Tabs items={['OX', 'QB']} storageKey="inventory-items">
+<Tabs items={['OX', 'QB', 'Kora']} storageKey="inventory-items">
 <Tab>
 
 Add to `ox_inventory/data/items.lua`:
@@ -52,6 +52,11 @@ Add to your QBCore shared items (`qb-core/shared/items.lua`):
 ```lua
 ['rental_paperwork'] = { name = 'rental_paperwork', label = 'Rental Paperwork', weight = 220, type = 'item', image = 'rental_paperwork.png', unique = true, useable = false, shouldClose = false, combinable = nil, description = 'Paperwork for a rental vehicle' },
 ```
+
+</Tab>
+<Tab>
+
+On Kora, `kora_inventory` does not read `ox_inventory/data/items.lua`. Copy the **OX** block into `newb_kora_items/items/` and copy the PNGs into `kora_inventory/images/`. The full steps are on [Kora install](/mrnewbvehiclerentals/install/kora).
 
 </Tab>
 </Tabs>
