@@ -50,54 +50,27 @@ Config.Target    = "kora_target"
 
 ### Add the items [step]
 
-Each script's **Item setup** page lists its items in ox_inventory format. Kora does not read `ox_inventory/data/items.lua`, so those items go into Kora's item registry through `kora_inventory`'s ox importer, `ImportOxItems`. It skips any item that already exists.
+Each script's **Item setup** page lists its items in ox_inventory format and has a **Kora** tab with the same items in Kora's shared format. Kora does not read `ox_inventory/data/items.lua`, so add the Kora-format records to kora_core's shared items.
 
-Make one small resource for this, for example `newb_kora_items`, and add one file per script under `items/`. Every script's **Kora** install page tells you which file to make and what to paste.
-
-```lua
--- fxmanifest.lua
-fx_version 'cerulean'
-game 'gta5'
-server_script 'server.lua'
-files { 'items/*.lua' }
-```
+Kora seeds its registry from `kora_core/shared/items.lua`. Add records to the `KoraCoreSeed.items` table in that file, one per item:
 
 ```lua
--- server.lua
--- One entry per file in items/. Add a name here when you install another script.
-local files = {
-    'vehiclekeys',
-    'prescriptions',
-}
-
-local function importAll()
-    for _, name in ipairs(files) do
-        local text = LoadResourceFile(GetCurrentResourceName(), ('items/%s.lua'):format(name))
-        local chunk, err = text and load(text, '@items/' .. name, 't', {})
-        local ok, definitions = false, nil
-        if chunk then ok, definitions = pcall(chunk) end
-
-        if ok and type(definitions) == 'table' then
-            local registered = exports.kora_inventory:ImportOxItems(definitions, { overwrite = false })
-            print(('^2[newb_kora_items] %s: %d item(s) registered.^0'):format(name, registered or 0))
-        else
-            print(('^1[newb_kora_items] %s: could not read items (%s).^0'):format(name, tostring(err or definitions or 'file missing')))
-        end
-    end
-end
-
-CreateThread(function()
-    while GetResourceState('kora_core') ~= 'started' or GetResourceState('kora_inventory') ~= 'started' do
-        Wait(500)
-    end
-    Wait(1000)
-    importAll()
-end)
+{ name = 'beehive', label = 'Beehive', weight = 2000, type = 'item', image = 'beehive.png', unique = true, useable = true, shouldClose = true, description = 'A portable beehive. Use to place a hive in the world.' },
 ```
 
-Each `items/<name>.lua` file is `return {`, then the item blocks from the script's Item setup page (the OX tab), then `}`.
+| Field | Meaning |
+| --- | --- |
+| `name` | Item name, must match the script's setup panel |
+| `label` | Display name |
+| `weight` | Grams |
+| `type` | `'item'` |
+| `image` | PNG file name in `kora_inventory/images/` |
+| `unique` | `true` for items that do not stack |
+| `useable` | `true` if the item can be used |
+| `shouldClose` | Close the inventory on use |
+| `description` | Tooltip text |
 
-Start `newb_kora_items` after `kora_inventory` and keep it running. The items it registers belong to that resource, so stopping it removes them.
+A kora_core update can overwrite that file, so keep a copy of your additions. Skip any item name that is already in it. Resources can also register at runtime with `exports.kora_core:registerShared('items', name, record)`.
 
 Copy each script's PNGs into `kora_inventory/images/`.
 

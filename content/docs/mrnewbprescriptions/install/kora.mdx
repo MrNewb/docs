@@ -16,13 +16,7 @@ Install `kora_sql`, `kora_lib`, `kora_core`, `kora_inventory` and `kora_target` 
 
 ### Add the items [step]
 
-Kora does not read `ox_inventory/data/items.lua`. Set up the `newb_kora_items` importer from [Kora Framework](/newb_bridge/kora), then:
-
-1. Open [Item setup](/mrnewbprescriptions/install/inventory) and copy the block from the **OX** tab.
-2. Create `newb_kora_items/items/prescriptions.lua` containing `return {`, that block, then `}`.
-3. Add `'prescriptions'` to the `files` list in `newb_kora_items/server.lua`.
-
-Items that already exist in Kora are skipped, so your own edits to them stay.
+Kora does not read `ox_inventory/data/items.lua`. Open the **Kora** tab on [Item setup](/mrnewbprescriptions/install/inventory) and add its records to `KoraCoreSeed.items` in `kora_core/shared/items.lua`. Each record is `{ name = '...', label = '...', weight = 0, type = 'item', image = '....png', unique = false, useable = false, shouldClose = true, description = '...' }`. Skip any item name that is already in that file. A kora_core update can overwrite the file, so keep a copy of your additions.
 
 ### Add the images [step]
 
@@ -47,7 +41,6 @@ ensure kora_core
 ensure kora_inventory
 ensure kora_target
 ensure Newb_Bridge
-ensure newb_kora_items
 ensure MrNewbPrescriptions
 ```
 

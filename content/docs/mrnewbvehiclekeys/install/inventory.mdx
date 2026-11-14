@@ -71,3 +71,28 @@ On ox_inventory, `vehiclekeys` has two buttons. Throw Keys drops that key as a p
 ```
 
 The full ox and QB lists are the two text files in `[INSTALL]`.
+
+### Kora
+
+On Kora, `kora_inventory` does not read `ox_inventory/data/items.lua`. Add these records to `KoraCoreSeed.items` in `kora_core/shared/items.lua` and copy the PNGs into `kora_inventory/images/`. Skip `lockpick` and `advancedlockpick` if Kora already defines them. Kora has no item buttons, so the Throw Keys and Destroy Key buttons are not available there. The full steps are on [Kora install](/mrnewbvehiclekeys/install/kora).
+
+```lua
+{ name = 'vehiclekeys', label = 'Vehicle Keys', weight = 50, type = 'item', image = 'vehiclekeys.png', unique = true, useable = false, shouldClose = true, description = 'Keys for a vehicle' },
+{ name = 'lockpick', label = 'Lockpick', weight = 160, type = 'item', image = 'lockpick.png', unique = false, useable = false, shouldClose = true, description = 'A basic lockpick' },
+{ name = 'advancedlockpick', label = 'Advanced Lockpick', weight = 160, type = 'item', image = 'advancedlockpick.png', unique = false, useable = false, shouldClose = true, description = 'An advanced lockpick for tougher locks' },
+{ name = 'hotwire_kit', label = 'Hotwire Kit', weight = 200, type = 'item', image = 'hotwire_kit.png', unique = false, useable = false, shouldClose = true, description = 'Tools for bridging an ignition without a key' },
+{ name = 'keyring', label = 'Keyring', weight = 100, type = 'item', image = 'keyring.png', unique = true, useable = true, shouldClose = true, description = 'Opens your keyring screen' },
+{ name = 'rental_paperwork', label = 'Rental Paperwork', weight = 50, type = 'item', image = 'rental_paperwork.png', unique = true, useable = false, shouldClose = true, description = 'Rental agreement for a vehicle' },
+{ name = 'aftermarket_locks', label = 'Aftermarket Lock System', weight = 500, type = 'item', image = 'aftermarket_locks.png', unique = false, useable = false, shouldClose = true, description = 'Install a new lock code on a vehicle you own' },
+{ name = 'blank_key', label = 'Blank Key', weight = 50, type = 'item', image = 'blank_key.png', unique = false, useable = false, shouldClose = true, description = 'An uncut key blank for programming at a locksmith bench' },
+{ name = 'keyfob_scanner', label = 'Pooper 9', weight = 200, type = 'item', image = 'keyfob_scanner.png', unique = true, useable = false, shouldClose = true, description = 'Clones rolling codes onto blank keys, and scans or tampers with vehicle security.' },
+{ name = 'ping_transmitter', label = 'Ping Transmitter', weight = 150, type = 'item', image = 'ping_transmitter.png', unique = false, useable = false, shouldClose = true, description = 'Player ping GPS. Install on a vehicle via target while in inventory.' },
+{ name = 'ping_receiver', label = 'Ping Receiver', weight = 200, type = 'item', image = 'ping_receiver.png', unique = true, useable = false, shouldClose = true, description = 'Ping the approximate location of vehicles you planted a transmitter on.' },
+{ name = 'gps_tracker_module', label = 'Police GPS Module', weight = 150, type = 'item', image = 'gps_tracker_module.png', unique = false, useable = false, shouldClose = true, description = 'Fits police live GPS for /trackflagged on a flagged car. Not the player ping transmitter.' },
+{ name = 'alarm_module_linked', label = 'Linked Alarm Module', weight = 200, type = 'item', image = 'alarm_module_linked.png', unique = true, useable = false, shouldClose = true, description = 'Adds alerts for the online owner. Use it next to the parked car.' },
+{ name = 'alarm_module_dispatch', label = 'Dispatch Alarm Module', weight = 200, type = 'item', image = 'alarm_module_dispatch.png', unique = true, useable = false, shouldClose = true, description = 'Adds owner alerts and police dispatch. Use it next to the parked car.' },
+{ name = 'ignition_cutoff_relay', label = 'Ignition Cut-off Relay', weight = 250, type = 'item', image = 'ignition_cutoff_relay.png', unique = true, useable = false, shouldClose = true, description = 'Blocks hotwiring. A valid key is required to start the engine. Fit at hood markers.' },
+{ name = 'keypad_cutoff_module', label = 'Keypad Cut-off Module', weight = 250, type = 'item', image = 'keypad_cutoff_module.png', unique = true, useable = false, shouldClose = true, description = 'Blocks hotwiring and asks for a four-digit PIN at every engine start. Turns remote start off.' },
+{ name = 'gps_signal_jammer', label = 'GPS Signal Jammer', weight = 200, type = 'item', image = 'gps_signal_jammer.png', unique = false, useable = false, shouldClose = true, description = 'Temporarily blocks police GPS tracking and wireless alarm alerts.' },
+{ name = 'tracker_extraction_kit', label = 'Tracker Extraction Kit', weight = 200, type = 'item', image = 'tracker_extraction_kit.png', unique = false, useable = false, shouldClose = true, description = 'Removes an installed police GPS module.' },
+```

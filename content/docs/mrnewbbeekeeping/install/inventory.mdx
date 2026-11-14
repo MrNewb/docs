@@ -181,7 +181,29 @@ Add to your QBCore shared items (`qb-core/shared/items.lua`):
 </Tab>
 <Tab>
 
-On Kora, `kora_inventory` does not read `ox_inventory/data/items.lua`. Copy the **OX** block into `newb_kora_items/items/` and copy the PNGs into `kora_inventory/images/`. The full steps are on [Kora install](/mrnewbbeekeeping/install/kora).
+Kora keeps items in its shared registry, seeded from `kora_core/shared/items.lua`. Add these records to the `KoraCoreSeed.items` table in that file (same fields as the QB tab, as plain table entries), then copy the PNGs into `kora_inventory/images/`.
+
+```lua
+    { name = 'beehive', label = 'Beehive', weight = 2000, type = 'item', image = 'beehive.png', unique = true, useable = true, shouldClose = true, description = 'A portable beehive. Use to place a hive in the world.' },
+    { name = 'beehive_rustic', label = 'Rustic Beehive', weight = 2000, type = 'item', image = 'beehive_rustic.png', unique = true, useable = true, shouldClose = true, description = 'An alternate hive shell. Same colony gameplay, different look.' },
+    { name = 'honeycomb', label = 'Honeycomb', weight = 50, type = 'item', image = 'honeycomb.png', unique = true, useable = false, shouldClose = true, description = 'A filled honeycomb frame from a hive. Spin it in a honey separator for jars.' },
+    { name = 'queen_bee', label = 'Queen Bee', weight = 10, type = 'item', image = 'queen_bee.png', unique = false, useable = true, shouldClose = true, description = 'A queen bee. Use to inspect genetics, or install in a hive to start production.' },
+    { name = 'worker_bees', label = 'Worker Bees', weight = 10, type = 'item', image = 'worker_bees.png', unique = false, useable = false, shouldClose = true, description = 'Worker bees for your hive. Required for honey and wax production.' },
+    { name = 'bees_wax', label = 'Bees Wax', weight = 1, type = 'item', image = 'bees_wax.png', unique = false, useable = false, shouldClose = true, description = 'Beeswax harvested from a hive. Can be sold to the beekeeper.' },
+    { name = 'bees_honey', label = 'Wild Honey', weight = 1, type = 'item', image = 'bees_honey.png', unique = false, useable = false, shouldClose = true, description = 'Default wild honey from hives outside specialty pollen regions.' },
+    { name = 'blue_honey', label = 'Blue Blossom Honey', weight = 1, type = 'item', image = 'blue_honey.png', unique = false, useable = false, shouldClose = true, description = 'Coastal blue-region honey with a light floral finish.' },
+    { name = 'green_honey', label = 'Forest Bloom Honey', weight = 1, type = 'item', image = 'green_honey.png', unique = false, useable = false, shouldClose = true, description = 'Forest-region honey with deep woodland notes.' },
+    { name = 'red_honey', label = 'Desert Flame Honey', weight = 1, type = 'item', image = 'red_honey.png', unique = false, useable = false, shouldClose = true, description = 'Desert-region honey with a rich, warm profile.' },
+    { name = 'amber_honey', label = 'Amber Dune Honey', weight = 1, type = 'item', image = 'amber_honey.png', unique = false, useable = false, shouldClose = true, description = 'Amber dune-region honey with a golden sweetness.' },
+    { name = 'lavender_honey', label = 'Lavender Ridge Honey', weight = 1, type = 'item', image = 'lavender_honey.png', unique = false, useable = false, shouldClose = true, description = 'Lavender ridge-region honey with a soft floral aroma.' },
+    { name = 'citrus_honey', label = 'Coastal Citrus Honey', weight = 1, type = 'item', image = 'citrus_honey.png', unique = false, useable = false, shouldClose = true, description = 'Coastal citrus-region honey with bright, zesty notes.' },
+    { name = 'wildflower_honey', label = 'Wildflower Meadow Honey', weight = 1, type = 'item', image = 'wildflower_honey.png', unique = false, useable = false, shouldClose = true, description = 'Wildflower meadow-region honey with mixed floral tones.' },
+    { name = 'bee_trap', label = 'Bee Trap', weight = 500, type = 'item', image = 'bee_trap.png', unique = false, useable = true, shouldClose = true, description = 'Set it down inside a wild bee swarm and leave it. Come back later to collect the worker bees. May also hold a queen.' },
+    { name = 'beekeeping_guide', label = "Beekeeper's Strain Guide", weight = 250, type = 'item', image = 'beekeeping_guide.png', unique = true, useable = true, shouldClose = true, description = 'A field guide to queen strains and regional honey production. Use to read.' },
+    { name = 'beekeeper_suit', label = 'Beekeeper Suit', weight = 1500, type = 'item', image = 'beekeeper_suit.png', unique = true, useable = true, shouldClose = true, description = 'A full veil and coveralls. Use to put it on or take it off. Wild bees cannot sting you while it is on.' },
+```
+
+The full steps are on [Kora install](/mrnewbbeekeeping/install/kora).
 
 </Tab>
 </Tabs>
