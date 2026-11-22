@@ -25,7 +25,7 @@ Green is a dark military green, not neon. Custom weapon streams that replace tin
 
 Tint items set `metadata.tint` and `metadata.weapontint` (the item label) on the **weapon slot**. The serial file sets `metadata.serial` to the locale string `WeaponTints.SerialRemoved` (`The serial number has been filed off` in `locales/en.json`). ox_inventory applies `metadata.tint` when the weapon is drawn. `weapontint` is display-only.
 
-MK2 weapons remap the vanilla tint id through a built-in table in `resource/server/weapon_items.lua`. A weapon is treated as MK2 when its item name contains `MK2` (case-insensitive):
+MK2 weapons remap the vanilla tint id through a built-in table in `resource/modules/tints/server/weapon_items.lua`. A weapon is treated as MK2 when its item name contains `MK2` (case-insensitive):
 
 | `server.tint` | MK2 index |
 | --- | --- |

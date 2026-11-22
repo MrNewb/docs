@@ -1,0 +1,37 @@
+---
+title: "Installation"
+description: "How to install Yoga. Start it after ox_lib, your framework, your inventory and Newb_Bridge."
+icon: "IconDownload"
+---
+
+<Callout type="warning">
+  Start this **after** ox_lib, your framework, your inventory and Newb_Bridge. The bridge looks at what is already running. If this script starts first, it can miss them.
+</Callout>
+
+### Dependencies [step]
+
+[Newb_Bridge](/newb_bridge), ox_lib, your framework, and an [inventory and target the bridge supports](/newb_bridge/supported).
+
+### Add the items [step]
+
+Register the three mat items from [Item setup](/mrnewbyoga/install/inventory) and copy the images from `[INSTALL]/imgs/` into your inventory's image folder. The script registers the use of each item for you through Newb_Bridge, so the items need no `server.export`.
+
+### Configure [step]
+
+Edit `resource/open/shared/config.lua`. See [Configuration](/mrnewbyoga/install/configuration). The shipped config has one mat spot and the supply ped turned off.
+
+### Add to server.cfg [step]
+
+Swap `qbx_core` / `ox_inventory` for whatever you actually run.
+
+```cfg
+ensure ox_lib
+ensure qbx_core
+ensure ox_inventory
+ensure Newb_Bridge
+ensure MrNewb_Yoga
+```
+
+### Restart the server [step]
+
+Restart after config or item changes.

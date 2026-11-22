@@ -26,10 +26,12 @@ The pack ships `apple.png`, `pineapple.png`, and `lettuce.png`. These produce it
 
 ### Configure [step]
 
-Edit `configs/config.lua`:
+Edit `resource/open/shared/config.lua`:
 
-- `Config.PickingTypes` — `locations` (`vector4`), `rewardItem`, `anim`, optional `propModel` (spawned prop) or omit it for a sphere zone
-- `Config.FarmersMarket` — `Enabled`, vendor `model` / `coords` / `shopItems` (item → bank price)
+- `Config.PickingTypes`: the reward item, animation and optional `propModel` for each plant type
+- `Config.PickingFields`: the areas and the plants inside them (the shipped fields use at most 5 positions per plant type)
+- `Config.PickingRestoreSeconds`: how long a picked plant stays gone
+- `Config.FarmersMarket`: `Enabled`, and each vendor's `model`, `coords` and `shopItems` (item to bank price)
 
 Field tables: [Configuration](/mrnewborganics/install/configuration).
 

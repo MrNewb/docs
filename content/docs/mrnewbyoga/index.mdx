@@ -1,0 +1,45 @@
+---
+title: "MrNewb_Yoga"
+description: "A yoga minigame at mats around the map, with stress relief when you finish. Players can also put down their own mats."
+icon: "IconYoga"
+---
+
+<img src="/docs/images/banners/yoga.webp" alt="MrNewb_Yoga" className="resource-banner" />
+
+Runs on [Newb_Bridge](/newb_bridge/getting-started).
+
+[GitHub](https://github.com/MrNewb/MrNewb_Yoga) · [Discord](https://discord.gg/mrnewbscripts) · [Configuration](/mrnewbyoga/install/configuration) · [Short](https://www.youtube.com/shorts/9S7sS3tPDKU)
+
+<YouTubePoster id="NvzLnXOVNDg" title="MrNewb_Yoga preview" className="resource-video" />
+
+<a href="https://www.youtube.com/shorts/9S7sS3tPDKU" className="short-cover"><img src="/docs/images/shorts/yoga.webp" alt="MrNewb_Yoga on YouTube Shorts" /></a>
+
+## Features
+
+- A yoga minigame: match the pose markers with the left and right stick, keyboard or controller
+- Finishing a session restores health and takes a random amount off the player's stress
+- Players can use mats placed by the script, or yoga mat props already on your map
+- Player mat items: use one to place a mat on the ground, and only the owner can pick it up again
+- An optional supply ped that sells the mat items through your inventory's shop
+- Pose effects, yoga music and the session camera can each be turned off
+
+No commands.
+
+## How it plays
+
+Target a mat and choose **Start yoga**. The camera moves back, the character takes the mat and the minigame begins. Match the markers for each pose, then work the breath with the triggers (the mouse buttons on a keyboard). Escape stops the session.
+
+Finish all the poses and you get the stress relief, and your health is topped up if that is turned on. Stop early and nothing is given.
+
+## Player mats
+
+Each mat item is a rolled mat. Use it, aim where the mat should go and confirm. The player kneels and lays it out. Each player can have three mats out at once, and picking one up puts the item back in their inventory.
+
+## What the server checks
+
+The server checks mat access and whether a session was really completed:
+
+- You must be near the mat, and nobody else can be using it.
+- Only one session per player at a time, and not from a vehicle.
+- Sessions that finish too quickly are rejected, and players have to wait before starting another one.
+- Placing, picking up and the supply shop all check distance and ownership on the server.

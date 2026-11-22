@@ -26,10 +26,10 @@ Shipped names: `metalscrap`, `iron`, `steel`, `copper`, `aluminum`, `plastic`, `
 
 ### Configure [step]
 
-Edit `configs/config.lua`:
+Edit `resource/open/shared/config.lua`:
 
 - `Config.Debug` — leave `false` on a live server. Debug waits two seconds on resource start, then rebuilds shops and foundries.
-- `Config.Logging` — `true` prints `[MrNewbPawn]` sell/buy/smelt lines to the server console.
+- `Config.Logging` — `true` also prints `[MrNewbPawn]` sell/buy/smelt lines to the server console. Trades are always logged through ox_lib's logger.
 - Shops (`Config.PawnShops`, shipped: `Christians Pawn Shop`, `Stretchs Pawn Shop`, `Robbies Pawn Shop`): `position`, `model`, `itemlist`, `radius` (AddInteraction spawn radius; shipped `100.0`, omitted → `100.0`), optional `Blip`, optional `storeHours` (`open` / `close` via `GetClockHours()`, both ends inclusive; overnight wrap if `open > close`; same `open`/`close` = always open)
 - Buy-back: `Config.PurchaseStock` (`true`), `Config.PurchaseMarkup` — **percent** over sell price, rounded up (shipped `20` → sell `$4` buys at `$5`)
 - Foundries (`Config.FoundryLocations`, shipped: `Foundry`, `Foundry2`): target **box zones** via `Zone` (`coords`, `size`, `rotation`). Client uses `bridge.target.addBoxZone`. Server only checks distance from `Zone.coords` (within **10.0**). Optional `Blip`, optional `lerpProp` (`lerpSpeed`, `waypoints`)

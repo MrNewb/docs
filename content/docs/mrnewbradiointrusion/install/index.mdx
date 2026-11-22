@@ -1,0 +1,38 @@
+---
+title: "Installation"
+description: "How to install RadioIntrusion. Start it after ox_lib, your framework, your inventory, your voice resource and Newb_Bridge."
+icon: "IconDownload"
+---
+
+<Callout type="warning">
+  Start this **after** ox_lib, your framework, your inventory, your voice resource and Newb_Bridge. The bridge looks at what is already running. If this script starts first, it can miss them.
+</Callout>
+
+### Dependencies [step]
+
+[Newb_Bridge](/newb_bridge), ox_lib, your framework and inventory through the bridge, and pma-voice or saltychat.
+
+### Add the item [step]
+
+Register the device from [Item setup](/mrnewbradiointrusion/install/inventory). The radio the player must carry is your server's normal `radio` item.
+
+### Configure [step]
+
+Edit `resource/open/shared/config.lua`. See [Configuration](/mrnewbradiointrusion/install/configuration).
+
+### Add to server.cfg [step]
+
+Swap `qbx_core` / `ox_inventory` for whatever you actually run.
+
+```cfg
+ensure ox_lib
+ensure qbx_core
+ensure ox_inventory
+ensure pma-voice
+ensure Newb_Bridge
+ensure MrNewbRadioIntrusion
+```
+
+### Restart the server [step]
+
+Restart after config or item changes.

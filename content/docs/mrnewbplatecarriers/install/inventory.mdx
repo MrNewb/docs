@@ -8,8 +8,6 @@ You need an inventory that can store metadata on an item. If it can’t, this wo
 
 Keep the existing repair-plate names — they are also the modular plate names. Do not rename them during an upgrade.
 
-`tactical_helmet`, `broken_armor_plate`, and `armor_repair_material` are already named in shipped config. Add the inventory defs if you want those features — field repair uses the material even when stations are empty.
-
 Copy item PNGs into:
 
 | Inventory | Image folder |
@@ -96,28 +94,6 @@ Add to `ox_inventory/data/items.lua`:
     close = true,
     description = 'A heavy, reinforced repair plate used by NOOSE forces for high-risk operations.',
 },
--- Named in shipped config. Add if you want helmets, broken-plate returns, or field/station repair.
-['tactical_helmet'] = {
-    label = 'Tactical Helmet',
-    weight = 1200,
-    stack = false,
-    close = true,
-    description = 'A metadata-backed tactical helmet.',
-},
-['broken_armor_plate'] = {
-    label = 'Broken Armor Plate',
-    weight = 700,
-    stack = true,
-    close = false,
-    description = 'A damaged armor plate that can be recycled or repaired.',
-},
-['armor_repair_material'] = {
-    label = 'Armor Repair Material',
-    weight = 250,
-    stack = true,
-    close = true,
-    description = 'Material used to repair a damaged equipped plate or at an armor service station.',
-},
 ```
 
 </Tab>
@@ -136,13 +112,9 @@ Add to your QBCore shared items (`qb-core/shared/items.lua`). qb-inventory must 
 ['fib_tactical_repair_plate'] = { name = 'fib_tactical_repair_plate', label = 'FIB Tactical Repair Plate', weight = 900, type = 'item', image = 'fib_tactical_repair_plate.png', unique = true, useable = true, shouldClose = true, description = 'A tactical modular armor plate.' },
 ['noose_heavy_repair_plate'] = { name = 'noose_heavy_repair_plate', label = 'NOOSE Heavy Repair Plate', weight = 1200, type = 'item', image = 'noose_heavy_repair_plate.png', unique = true, useable = true, shouldClose = true, description = 'A heavy modular armor plate.' },
 ['armstrong_elite_repair_plate'] = { name = 'armstrong_elite_repair_plate', label = 'Armstrong Elite Repair Plate', weight = 1500, type = 'item', image = 'armstrong_elite_repair_plate.png', unique = true, useable = true, shouldClose = true, description = 'An elite modular armor plate.' },
--- Named in shipped config. Add if you want helmets, broken-plate returns, or field/station repair.
-['tactical_helmet'] = { name = 'tactical_helmet', label = 'Tactical Helmet', weight = 1200, type = 'item', image = 'tactical_helmet.png', unique = true, useable = true, shouldClose = true, description = 'A metadata-backed tactical helmet.' },
-['broken_armor_plate'] = { name = 'broken_armor_plate', label = 'Broken Armor Plate', weight = 700, type = 'item', image = 'broken_armor_plate.png', unique = false, useable = false, shouldClose = false, description = 'A damaged armor plate for recycling or repair.' },
-['armor_repair_material'] = { name = 'armor_repair_material', label = 'Armor Repair Material', weight = 250, type = 'item', image = 'armor_repair_material.png', unique = false, useable = true, shouldClose = true, description = 'Material used to repair a damaged equipped plate or at an armor service station.' },
 ```
 
-The snippet references matching `.png` filenames. Carriers and plates ship in `[INSTALL]/item_images/`. Supply your own icons for `tactical_helmet`, `broken_armor_plate`, and `armor_repair_material`.
+The snippet references matching `.png` filenames. Carriers and repair plates ship in `[INSTALL]/item_images/`.
 
 </Tab>
 <Tab>

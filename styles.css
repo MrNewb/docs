@@ -777,6 +777,25 @@ html[class~="dark"] .intro-place-icon-github path {
   max-width: none;
 }
 
+.resource-banner {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0 0 1.25rem;
+}
+
+.short-cover {
+  display: block;
+  width: 180px;
+  margin: 0 0 1.5rem;
+}
+
+.short-cover img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
 @media (min-width: 720px) {
   .intro-places,
   .intro-hits,

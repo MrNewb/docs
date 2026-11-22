@@ -6,12 +6,12 @@ icon: "IconSettings"
 
 ## Where you edit
 
-`configs/config.lua`.
+`resource/open/shared/config.lua`.
 
 | Key | Purpose |
 | --- | --- |
 | `Config.Debug` | Box-zone debug draw. Debug also waits two seconds on resource start, then rebuilds shops and foundries. Leave `false` live. |
-| `Config.Logging` | Prints sell / buy / smelt lines to the server console |
+| `Config.Logging` | Also prints sell / buy / smelt lines to the server console. Every trade and smelt is always logged through ox_lib's logger |
 | `Config.PurchaseStock` | Let players buy items others sold at that shop (`true`) |
 | `Config.PurchaseMarkup` | Buy-back **percent** over sell price, rounded **up**. Shipped `20` means sell `$4` → buy `$5`, sell `$8` → buy `$10` |
 | `Config.PawnShops` | Ped shops: `position`, `model`, `itemlist`, optional `Blip` / `storeHours` |
@@ -160,3 +160,11 @@ Paste: [Item setup](/mrnewbpawn/install/inventory). Icons: [Item images](/mrnewb
 
 **Smelt** — target the foundry **box zone**, pick a recipe, choose a count (max 50), progress, input removed and rewards added (counts × batch). Server requires within **10.0** of `Zone.coords`.
 
+## What the server checks
+
+The server checks every sale, purchase and smelting request:
+
+- Each player has a 1 second cooldown between trades, and another between smelts.
+- Counts must be whole numbers, up to `100` per sale or buy and `50` per smelt. Anything else is ignored.
+- Buy-back stock is reserved during a purchase so two players cannot buy the same units. A failed purchase releases it.
+- Items you do not hold, items the shop does not take and requests from too far away are refused with a message.

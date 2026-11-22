@@ -1,0 +1,36 @@
+---
+title: "Configuration"
+description: "Device item, radio item, voice, break chance, minigame and dispatch for RadioIntrusion."
+icon: "IconSettings"
+---
+
+Everything is in `resource/open/shared/config.lua`. Text shown to players is in `locales/*.json`.
+
+| Field | Default | Purpose |
+| --- | --- | --- |
+| `Config.ItemName` | `zipper9` | The device item |
+| `Config.RadioName` | `radio` | The radio the player must carry |
+| `Config.Voice` | `pma-voice` | `pma-voice` or `saltychat` |
+| `Config.BreakChance` | `50` | Percent chance the device breaks after use |
+| `Config.LogUse` | `true` | Log successful joins through the ox_lib logger |
+| `Config.InputIcon` | walkie-talkie | Icon on the frequency prompt |
+| `Config.MiniGame` | `ox_lib` | `ox_lib`, `ps-ui` or `SN-Hacking` |
+| `Config.MiniGames` | see below | The setting for each minigame provider |
+| `Config.DispatchJobs` | `{ 'police' }` | Jobs that receive the failed-crack alert |
+| `Config.DispatchBlip` | see file | Blip sprite, colour, scale, length and radius for the alert |
+
+## Minigames
+
+| Provider | Setting | Options |
+| --- | --- | --- |
+| `ox_lib` | A list of difficulties, for example `{ 'easy', 'easy', 'medium' }` | `easy`, `medium`, `hard` |
+| `ps-ui` | One game name | `Circle`, `Maze`, `VarHack`, `Thermite`, `Scrambler` |
+| `SN-Hacking` | One game name | `SkillCheck`, `MemoryGame`, `NumberUp`, `Thermite`, `SkillBar`, `KeyPad`, `ColorPicker`, `MemoryCards`, `Mines` |
+
+## Dispatch
+
+The alert goes through [Newb_Bridge](/newb_bridge) dispatch, so it reaches whichever dispatch your server runs. With no supported dispatch, the bridge falls back to its own internal alert.
+
+## Locales
+
+`locales/*.json`, loaded with `lib.locale()`. ox_lib picks the client language. Edit `locales/en.json` (or add a file) and restart.

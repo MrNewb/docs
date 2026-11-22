@@ -27,7 +27,7 @@ Returns `false` when `GetCurrentWeapon` is empty (notify `WeaponTints.NotEquippe
 On `usedItem`:
 
 1. Reads `item.server.tint`
-2. If the weapon name contains `MK2`, remaps through the table in `resource/server/weapon_items.lua`
+2. If the weapon name contains `MK2`, remaps through the table in `resource/modules/tints/server/weapon_items.lua`
 3. Sets `metadata.tint` and `metadata.weapontint` (`item.label`)
 4. `SetMetadata` on that slot, success notify (`WeaponTints.HasBeenApplied`), `ox_inventory:disarm`
 

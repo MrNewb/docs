@@ -6,7 +6,7 @@ icon: "IconSettings"
 
 ## Where you edit
 
-`configs/config.lua` — `Config.Agencies`, plus `Config.BlipCategory` / `Config.BlipCategoryLabel` for the shared map legend group.
+`resource/open/shared/config.lua` — `Config.Agencies`, plus `Config.BlipCategory` / `Config.BlipCategoryLabel` for the shared map legend group.
 
 The table key is the agency id: menu title, blip name, interaction label, and the `rentalLocation` written onto paperwork.
 
@@ -75,7 +75,7 @@ Target the desk. The menu lists every `stock` entry, then return rows for paperw
 
 **Return** — bring the vehicle back near the desk and use the return row. Bank is refunded, keys are removed, the vehicle is deleted, and that paperwork slot is removed.
 
-Stopping the resource cleans up active rental vehicles.
+Stopping the resource cleans up active rental vehicles. Each active renter gets the bank refund, and their paperwork and keys are removed.
 
 ## Paperwork
 

@@ -1,0 +1,92 @@
+---
+title: "Configuration"
+description: "Mats, rewards, player mat items and the supply shop for Yoga."
+icon: "IconSettings"
+---
+
+## Where you edit
+
+One file: `resource/open/shared/config.lua`. Labels and messages are in `locales/en.json`. Restart after config or item changes.
+
+### Mats and sessions
+
+| Key | Default | Purpose |
+| --- | --- | --- |
+| `Config.Mats` | the three GTA yoga mat props | Prop models that get the **Start yoga** target. Add your own model hash if you stream a custom mat |
+| `Config.MatSpots` | one spot | List of `vector4` positions where a mat is spawned for you. Leave it empty to use only props already on your map |
+| `Config.DefaultMatModel` | `prop_yoga_mat_01` | Model spawned at each `MatSpots` entry |
+| `Config.SpawnRadius` | `100.0` | How close a player must be before a spot's mat spawns |
+| `Config.MatSnapToGround` | `true` | Drops a spawned mat onto the ground. Set `false` when the spot's Z is already placed by hand |
+| `Config.MatGroundOffset` | `0.00` | Nudge after spawning. A negative value sinks the mat slightly |
+| `Config.InteractDistance` | `2.4` | Target distance on a mat |
+| `Config.ServerDistance` | `6.0` | How far from the mat the server still accepts a start, a finish or a pickup |
+
+A `MatSpots` entry can also be a table with a position and its own model, radius, snap and offset, if one mat needs different settings.
+
+### Rewards
+
+| Key | Default | Purpose |
+| --- | --- | --- |
+| `Config.RestoreHealth` | `true` | Fills the player's health when a session is completed |
+| `Config.StressRelief.Enabled` | `true` | Takes stress off the player on completion |
+| `Config.StressRelief.Min` | `5` | Smallest amount taken off. The result never goes below `0` |
+| `Config.StressRelief.Max` | `15` | Largest amount taken off |
+
+The stress amount is picked at random between `Min` and `Max` and applied to the `stress` value in the player's framework metadata.
+
+### Effects
+
+| Key | Default | Purpose |
+| --- | --- | --- |
+| `Config.Music.enabled` | `true` | The GTA yoga music during a session |
+| `Config.PhaseSuccessPtfx.enabled` | `true` | A small particle on the player when a pose is matched |
+| `Config.PhaseSuccessPtfx` | clown-appears particle on the stomach | `dict`, `name`, `boneId`, offsets, `scale` and `durationMs` for that particle |
+
+### Player mats
+
+| Key | Default | Purpose |
+| --- | --- | --- |
+| `Config.PlaceableMats` | `yoga_mat`, `yoga_mat_blue`, `yoga_mat_red` | Item name to the prop model it places. Add an entry to make another item place a mat |
+| `Config.Placement.MaxDistance` | `8.0` | How far from the player the mat can be placed |
+| `Config.Placement.MaxPerPlayer` | `3` | Mats one player can have out at once |
+| `Config.Placement.SpawnRadius` | `75.0` | How close a player must be before a placed mat shows for them |
+
+Placing a mat uses up the item, and picking it up gives the item back. Placed mats are kept in memory, so a resource restart removes them without returning the items.
+
+### Supply shop
+
+Off by default. Turn it on to spawn a ped that sells the mat items.
+
+| Key | Default | Purpose |
+| --- | --- | --- |
+| `Config.Shop.Enabled` | `false` | Spawn the ped and register the shop |
+| `Config.Shop.Id` | `mrnewb_yoga_shop` | Shop id in your inventory |
+| `Config.Shop.Name` | `Yoga Supplies` | Shop name |
+| `Config.Shop.Coords` | near the shipped mat spot | `vec4` for the ped |
+| `Config.Shop.PedModel` | `u_m_m_jesus_01` | Ped model |
+| `Config.Shop.Scenario` | `WORLD_HUMAN_YOGA` | What the ped does |
+| `Config.Shop.Radius` | `75.0` | How close a player must be before the ped spawns |
+| `Config.Shop.InteractDistance` | `2.4` | Target distance on the ped |
+| `Config.Shop.Blip` | on | `Enabled`, `Sprite`, `Colour`, `Scale` and `Label` for the map blip |
+| `Config.ShopItems` | all three mats | List of `{ name, price, count }`. `price` is what the player pays and `count` is the stock |
+
+## Other scripts
+
+When a session is completed the server triggers `MrNewb_Yoga:Server:SessionComplete` with the player's source. The stress relief is a handler for that event in `resource/open/server/open.lua`, and you can add your own handler to give a reward of your own.
+
+Use the hooks in `resource/open/client/open.lua` to hide or show your HUD during a session:
+
+| Hook | Runs when |
+| --- | --- |
+| `OnYogaSessionStart` | A session starts |
+| `OnYogaSessionCancel` | A session is stopped early |
+| `OnYogaSessionEnd` | A session ends |
+
+## What the server checks
+
+The server checks session access, timing and mat ownership:
+
+- A session start must be within `Config.ServerDistance` of the mat, and nobody else can be on it.
+- Each player has one session at a time and a 30 second cooldown after finishing one.
+- A session shorter than 35 seconds does not count, and one that runs past 10 minutes expires.
+- Placing a mat, picking one up and opening the shop all check distance on the server. Only the owner can pick up a placed mat.

@@ -26,9 +26,9 @@ This resource does not ship `[INSTALL]/` item defs or images. If you use the fal
 
 | File | Contents |
 | --- | --- |
-| `configs/cityhall.lua` | `Config.AvailableJobs` (shipped: `bus` / `taxi` at grade `0`; police / sheriff / ambulance / mechanic are commented), `Config.IdCardPrice` (`100`, bank only), `Config.IdCardItem` (`id_card`), `Config.InteractDistance` (`5.0`), `Config.ApplicationCooldown` (`60`), one desk `'Job Center'` |
-| `configs/applications.lua` | `Config.Applications` — shipped `police` and `mechanic`. Only `question` and `required` are read; `type` is unused |
-| `configs/webhooks.lua` | Server-only. Per-job Discord URLs. Empty string = submit rejected (application still listed) |
+| `resource/open/shared/cityhall.lua` | `Config.AvailableJobs` (shipped: `bus` / `taxi` at grade `0`; police / sheriff / ambulance / mechanic are commented), `Config.IdCardPrice` (`100`, bank only), `Config.IdCardItem` (`id_card`), `Config.InteractDistance` (`5.0`), `Config.ApplicationCooldown` (`60`), one desk `'Job Center'` |
+| `resource/open/shared/applications.lua` | `Config.Applications` — shipped `police` and `mechanic`. Only `question` and `required` are read; `type` is unused |
+| `resource/open/server/webhooks.lua` | Server-only. Per-job Discord URLs. Empty string = submit rejected (application still listed) |
 
 Labels: `locales/en.json` (this resource ships English only).
 

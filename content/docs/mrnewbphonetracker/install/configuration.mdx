@@ -6,7 +6,7 @@ icon: "IconSettings"
 
 ## Where you edit
 
-`configs/config.lua`:
+`resource/open/shared/config.lua`:
 
 | Key | Purpose |
 | --- | --- |
@@ -25,7 +25,9 @@ qb-phone / charinfo lookups: `resource/open/server/phone_lookup.lua`. Labels: `l
 
 Use the item. Wrong job or missing item notifies and never opens the device.
 
-The NUI is a handheld GPS overlay (not an ox_lib dialog). Digits only, max 10. Dial or Enter submits. Escape closes.
+The NUI is a handheld GPS overlay at the lower right of the screen (not an ox_lib dialog). Tap the keypad to enter a number (digits only, max 10, shown in groups of 3-3-4 with dots for the digits still to come), then press Track. Track stays off until a number is entered. The keypad has a delete key and a clear key, and a close key sits at the top right of the device. Clicking outside the device closes it. The device scales with the screen height.
 
-- **Hit** — device closes, waypoint + timed blip (sprite 161, 100 seconds).
-- **Miss / empty / cooldown / no item** — device stays open and shows the miss line on the glass.
+A status line on the screen always says what is happening: a hint when empty, READY once a number is entered, SEARCHING while the ping runs (with a sweep bar), and a plain line for a miss or missing tracker. The Track button never changes colour: its label becomes Searching, Wait Ns or Locked, and the cooldown countdown shows there, and the keypad stays usable during it so a typo can be fixed. Messages show on the device only, with no extra pop-up.
+
+- **Hit** — the screen shows LOCKED for a moment, then the device closes, with a waypoint and a timed blip (sprite 161, 100 seconds).
+- **Miss / empty / cooldown / no item** — device stays open and shows the matching line on the screen. A miss also starts the cooldown.

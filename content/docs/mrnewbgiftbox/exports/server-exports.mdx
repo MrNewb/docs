@@ -43,7 +43,7 @@ exports.MrNewbGiftBox:GiveGiftBoxRewards(source, 'starter_box')
 
 Returns `false` when the player is invalid or `Config.GiftBoxes[giftBoxName]` is missing. Returns `true` after the rolls are granted.
 
-Normal player use goes through `resource/server/gift_box.lua`: unwrap progress on the client, space check for `always` items, `removeItem` on the box, then `giveGiftBoxRewards`.
+Normal player use goes through `resource/modules/giftbox/server/gift_box.lua`: unwrap progress on the client, space check for `always` items, `removeItem` on the box, then `giveGiftBoxRewards`.
 
 ## GetItemPool
 

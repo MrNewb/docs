@@ -12,7 +12,7 @@ Icon: [Item images](/mrnewbgiftbox/install/inventory-images).
 
 ## Config files
 
-`configs/config.lua` is loaded as a **server script** only. Loot tables stay off the client. Every key under `Config.GiftBoxes` is registered with `bridge.framework.registerItemUse` at start. Add a matching inventory item for each key. Reward `item` names (`water`, `phone`, `sandwich`, …) must already exist in your inventory.
+`resource/open/server/config.lua` is loaded as a **server script** only. Loot tables stay off the client. Every key under `Config.GiftBoxes` is registered with `bridge.framework.registerItemUse` at start. Add a matching inventory item for each key. Reward `item` names (`water`, `phone`, `sandwich`, …) must already exist in your inventory.
 
 `always = true` always grants that entry. Entries with `weight` (any number `> 0`) are pooled into ox_lib's `lib.selector` and **one** extra is rolled per open. Weights are relative: `50` is two and a half times as likely as `20`. Same idea as LootTables. If an entry has neither `always` nor `weight`, it is skipped.
 

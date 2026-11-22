@@ -1,0 +1,30 @@
+---
+title: "MrNewbRadioIntrusion"
+description: "Crack an encrypted radio channel with a device, a frequency and a minigame. A failed crack alerts dispatch."
+icon: "IconRadio"
+---
+
+<img src="/docs/images/banners/radiointrusion.webp" alt="MrNewbRadioIntrusion" className="resource-banner" />
+
+Runs on [Newb_Bridge](/newb_bridge/getting-started).
+
+[GitHub](https://github.com/MrNewb/MrNewbRadioIntrusion) · [Discord](https://discord.gg/mrnewbscripts) · [Configuration](/mrnewbradiointrusion/install/configuration) · [Short](https://www.youtube.com/shorts/1eOhGaC54wc)
+
+<a href="https://www.youtube.com/shorts/1eOhGaC54wc" className="short-cover"><img src="/docs/images/shorts/radiointrusion.webp" alt="MrNewbRadioIntrusion on YouTube Shorts" /></a>
+
+## Features
+
+- A usable device item that needs a radio in the inventory
+- A frequency prompt, then a minigame: ox_lib skill check, ps-ui or SN-Hacking
+- The device can break after use
+- A failed crack sends a dispatch alert for the configured jobs, using the dispatch Newb_Bridge detected
+- Voice: pma-voice or saltychat
+- Joins are logged through ox_lib's logger
+
+No commands.
+
+## How it plays
+
+Use the device. If you have no radio, you are told so and nothing happens. Otherwise you enter a frequency, the server checks you again and rolls whether the device breaks, then the minigame runs. Pass and you are connected to that channel. Fail and dispatch gets an alert at your position.
+
+The server decides the break roll and sends the dispatch alert, and it ignores a result for a crack it never started.

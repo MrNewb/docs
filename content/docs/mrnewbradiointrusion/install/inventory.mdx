@@ -1,0 +1,37 @@
+---
+title: "Item setup"
+description: "The device item for RadioIntrusion. Add it to your inventory, no export needed."
+icon: "IconPackage"
+---
+
+Add one item named to match `Config.ItemName` (`zipper9` by default). The script registers the use for you through Newb_Bridge, so the item needs no `server.export`.
+
+OX is ox_inventory (ESX and Qbox that run ox use this tab). QB is `qb-core/shared/items.lua`.
+
+<Tabs items={['OX', 'QB']} storageKey="inventory-items">
+<Tab>
+
+Add to `ox_inventory/data/items.lua`:
+
+```lua
+['zipper9'] = {
+    label = 'Zipper 9',
+    weight = 200,
+    stack = false,
+    close = true,
+},
+```
+
+</Tab>
+<Tab>
+
+Add to your QBCore shared items (`qb-core/shared/items.lua`):
+
+```lua
+['zipper9'] = { name = 'zipper9', label = 'Zipper 9', weight = 200, type = 'item', image = 'zipper9.png', unique = true, useable = true, shouldClose = true, combinable = nil, description = 'Zipper 9' },
+```
+
+</Tab>
+</Tabs>
+
+The device has no image in these docs. Point `image` at any icon you ship with your inventory.

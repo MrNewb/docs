@@ -1,0 +1,8 @@
+{
+  "title": "RadioIntrusion",
+  "icon": "IconRadio",
+  "pages": [
+    "requirements",
+    "install"
+  ]
+}

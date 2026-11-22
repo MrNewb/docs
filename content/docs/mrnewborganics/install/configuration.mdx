@@ -1,59 +1,118 @@
 ---
 title: "Configuration"
-description: "Pick sites, the farmers market, and cooldowns for Organics."
+description: "Pick types, fields, the restore timer and the farmers market for Organics."
 icon: "IconSettings"
 ---
 
 ## Where you edit
 
-One file: `configs/config.lua`.
+One file: `resource/open/shared/config.lua`.
 
 | Key | Purpose |
 | --- | --- |
-| `Config.PickingTypes` | Harvest sites keyed by type name |
+| `Config.PickingRestoreSeconds` | How long a picked plant stays gone for everyone. Shipped `2 * 60 * 60` (two hours), counted from the moment it was picked |
+| `Config.PickingTypes` | What each plant type gives, the animation and the optional prop |
+| `Config.PickingFields` | The areas players walk into and the plants inside them |
+| `Config.BlipCategory` / `Config.BlipCategoryLabel` | Map legend group shared by the market blips |
 | `Config.FarmersMarket` | Vendor NPCs. Set `Enabled = false` to skip them |
 
 Labels: `locales/en.json`. Restart after config or item changes.
 
-### Pick type
+### Pick types
 
 ```lua
-['Apple Trees'] = {
-    locations = {
-        vector4(347.5, 6517.5, 30.5, 1.0),
+Config.PickingTypes = {
+    apple = {
+        rewardItem = { item = 'apple', count = 1, metadata = {} },
+        anim = { dict = 'amb@prop_human_movie_bulb@idle_a', name = 'idle_a', flag = 1 },
     },
-    rewardItem = { item = 'apple', count = 1, metadata = {} },
-    anim = { dict = 'amb@prop_human_movie_bulb@idle_a', name = 'idle_a', flag = 1 },
-},
-['Pineapples'] = {
-    locations = {
-        vector4(2188.4407, 5098.7378, 47.0, 42.9676),
+    pineapple = {
+        rewardItem = { item = 'pineapple', count = 1, metadata = {} },
+        anim = { dict = 'amb@world_human_gardener_plant@male@base', name = 'base', flag = 1 },
+        propModel = 'prop_pineapple',
     },
-    rewardItem = { item = 'pineapple', count = 1, metadata = {} },
-    anim = { dict = 'amb@world_human_gardener_plant@male@base', name = 'base', flag = 1 },
-    propModel = 'prop_pineapple',
-},
+}
 ```
 
-| Field | Used? | Notes |
+| Field | Notes |
+| --- | --- |
+| `rewardItem.item` | Inventory item granted on a successful pick |
+| `rewardItem.count` | Amount per pick |
+| `rewardItem.metadata` | Optional. Passed to the inventory when the item is added |
+| `anim` | Optional. `{ dict, name, flag }` played during the pick |
+| `propModel` | Optional world model. When set, the plant is a spawned prop. When omitted, it is a sphere zone |
+
+Shipped types: `apple`, `pineapple` and `lettuce`. Pineapple and lettuce set `propModel`; apple does not.
+
+### Fields
+
+A field is an area. When a player walks into it, the server sends back the plants that are available and the client spawns only those. When a plant is picked, it disappears for everyone in the field until the restore timer runs out.
+
+```lua
+Config.PickingFields = {
+    grapeseed = {
+        zone = {
+            points = {
+                vec3(2153.78, 5087.38, 44.59),
+                vec3(2243.47, 4994.81, 41.05),
+                vec3(2308.55, 5061.18, 44.42),
+            },
+            thickness = 33.00,
+        },
+        plants = {
+            {
+                plantType = 'pineapple',
+                coords = {
+                    vec4(2185.0920, 5062.7695, 43.6382, 154.1222),
+                    vec4(2199.4265, 5061.1816, 45.5715, 36.7008),
+                },
+            },
+        },
+    },
+    paleto_orchard = {
+        zone = { coords = vec3(347.5, 6517.5, 30.5), radius = 25.0 },
+        plants = {
+            { coords = vec4(347.5, 6517.5, 30.5, 1.0), plantType = 'apple' },
+        },
+    },
+}
+```
+
+| Field | Notes |
+| --- | --- |
+| `zone.points` and `zone.thickness` | A polygon field. At least three points |
+| `zone.coords` and `zone.radius` | A sphere field. Use this or `zone.points` |
+| `plants` | A list. Each entry has a `plantType` and either one `coords` or a list of `coords` |
+| `restoreSeconds` | Optional. Overrides `Config.PickingRestoreSeconds` for this field |
+| `grid` | Optional generator that fills the field with plants for you. See below |
+
+Each `vec4` is one plant.
+
+| Part | Meaning |
+| --- | --- |
+| `x`, `y`, `z` | The position |
+| `w` | The heading for a prop, or the target zone radius for a sphere plant. A radius that is missing or outside `0.5` to `8.0` becomes `1.5` |
+
+A field holds at most 256 plants. The shipped fields use at most 5 positions per plant type, so add only the plants you want. More plants mean more props spawned for players in the field.
+
+#### Grid
+
+A `grid` fills the zone with evenly spaced plants of one type, on top of anything in `plants`.
+
+| Field | Default | Notes |
 | --- | --- | --- |
-| `locations` | yes | Array of `vector4`. One harvest site per entry (`Type_1`, `Type_2`, …) |
-| `rewardItem.item` | yes | Inventory item granted on a successful pick |
-| `rewardItem.count` | yes | Amount (`1` if omitted or below `1`) |
-| `rewardItem.metadata` | optional | Passed to `bridge.inventory.addItem` |
-| `anim` | optional | `{ dict, name, flag }` played before the server grant |
-| `propModel` | optional | World model. When set, the site is a spawned prop; when omitted, it is a sphere zone |
+| `plantType` | the field's `plantType` | Type to place |
+| `center` | the zone centre | Where the grid is centred |
+| `radius` | `80.0` | Plants further than this from the centre are skipped |
+| `spacing` | `8.0` | Distance between plants |
+| `rotation` | `0.0` | Rotates the grid, in degrees |
+| `maxPoints` | `64` | Cap on generated plants. Never above 256 |
 
-Shipped types: `Apple Trees`, `Pineapples`, `Lettuce`. Only pineapple and lettuce set `propModel`.
+### Props and zones
 
-#### Props vs zones
+Plants with a `propModel` appear as props that spawn near players and snap to the ground. Plants without one use a sphere target zone at the configured position. Both use a target distance of `3.0`, and props spawn within 80 of the player.
 
-- **`propModel` set** — `AddInteraction` spawns that model. `vector4.w` is heading. Spawn radius `50`, `snapToGround`. Target distance `3.0`.
-- **`propModel` omitted** — `bridge.target.addSphereZone` at the point. `vector4.w` is zone radius (`1.5` if missing or below `0.5`). Target distance `3.0`.
-
-#### Pick blip
-
-One map blip per type, on the **first** location only. Sprite `280`, colour `2`, scale `0.8`, category `9`. Label is locale `Blips.pickblip`. There is no per-type blip table in config.
+There are no map blips for the fields.
 
 ### Farmers market
 
@@ -62,14 +121,14 @@ Config.FarmersMarket = {
     Enabled = true,
     Markets = {
         ['Mr Solitaire'] = {
-            blip = { id = 52, color = 2, scale = 0.8, label = 'Farmers Market' },
+            blip = { id = 52, color = 2, scale = 0.8, label = 'Farmers Market', category = Config.BlipCategory },
             entityType = 'ped',
             model = 'cs_brad',
-            coords = vector4(1263.4164, 3545.6189, 34.1728, 204.9759),
+            coords = vector4(1263.4164, 3545.6189, 35.1728, 204.9759),
             shopItems = {
-                apple = 5,
-                pineapple = 10,
-                lettuce = 7,
+                apple = 2,
+                pineapple = 2,
+                lettuce = 2,
             },
         },
     },
@@ -79,35 +138,34 @@ Config.FarmersMarket = {
 | Field | Purpose |
 | --- | --- |
 | `Enabled` | Skip all vendors when `false` |
-| `blip` | Optional map blip (`id`, `color`, `scale`, `label`) |
-| `model` | Ped model for `AddInteraction` |
-| `coords` | `vector4` (heading in `w`) |
-| `shopItems` | Item name → **bank** price per unit (a bare number) |
-| `entityType` | Unused leftover. Ped vs prop comes from `model` |
+| `blip` | Optional map blip: `id`, `color`, `scale`, `label` and an optional `category` |
+| `model` | Ped model |
+| `coords` | `vector4`, heading in `w` |
+| `shopItems` | Item name to **bank** price per unit |
+| `entityType` | Unused leftover. The ped comes from `model` |
 
-Ped spawn radius is hardcoded `100.0`. Target distance is `3.0`. Payout is `price * count` to **bank**, not an inventory money item. The menu lists every `shopItems` key; selling an item you do not hold notifies and stops.
+Market sales pay into the player's **bank**, not an inventory money item. The menu lists every item in `shopItems`. If the player does not have the item, the sale stops and a message says why. The ped spawns within 100 of the player and the target distance is `3.0`.
 
 ## Items
 
-Not usable. Skip names you already have.
+These items cannot be used directly. Only add the ones that are missing from your inventory.
 
 | | Item | Role |
 | --- | --- | --- |
-| <img className="item-thumb" src="/docs/images/apple.webp" alt="" /> | `apple` | Apple Trees pick + market |
-| <img className="item-thumb" src="/docs/images/pineapple.webp" alt="" /> | `pineapple` | Pineapples pick + market |
-| <img className="item-thumb" src="/docs/images/lettuce.webp" alt="" /> | `lettuce` | Lettuce pick + market |
+| <img className="item-thumb" src="/docs/images/apple.webp" alt="" /> | `apple` | Apple pick and market |
+| <img className="item-thumb" src="/docs/images/pineapple.webp" alt="" /> | `pineapple` | Pineapple pick and market |
+| <img className="item-thumb" src="/docs/images/lettuce.webp" alt="" /> | `lettuce` | Lettuce pick and market |
 
-`[INSTALL]/images/` ships `apple.png`, `pineapple.png`, and `lettuce.png`. Icons: [Item images](/mrnewborganics/install/inventory-images).
+`[INSTALL]/images/` ships `apple.png`, `pineapple.png` and `lettuce.png`. Icons: [Item images](/mrnewborganics/install/inventory-images).
 
-## Cooldown and yield
+## What the server checks
 
-Not configurable. After a completed pick anim:
+The server checks every pick and sale:
 
-- Client hides the target for **60 seconds**
-- Server locks that player identifier on that site for **60 seconds**
-- Yield is `rewardItem.count` of `rewardItem.item`
-- Server rejects anyone farther than **10.0** from the site
-- Market sells reject anyone farther than **5.0** from the vendor. Batch cap is **1000**
+- You must be inside the field, within `5.0` of the plant you pick, and the plant must be available.
+- The plant is marked as picked before the reward is added, so two players cannot pick the same plant at the same moment. If the inventory refuses the reward, the plant goes back.
+- Picks and sales each have a 1 second cooldown per player.
+- A sale must be within `5.0` of the vendor and is capped at `1000` per request.
+- Every pick and sale is logged through ox_lib's logger.
 
-There is no skill check and no `Config.Debug`.
-
+The pick itself is a 5 second progress bar. There is no skill check and no `Config.Debug`.
