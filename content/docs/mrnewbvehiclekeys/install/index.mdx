@@ -45,6 +45,23 @@ ensure ox_inventory
 ensure MrNewbVehicleKeys
 ```
 
+### Add the phone app [step]
+
+Optional. Skip it unless you run [LB Phone](https://lbphone.com) and want players to use their keys from the phone. MrNewbVehicleKeysPhone is a separate resource that adds a **Keys** app. It only calls this resource and changes nothing in it.
+
+Start it last, after `lb-phone` and `MrNewbVehicleKeys`:
+
+```cfg
+ensure ox_lib
+ensure lb-phone
+ensure MrNewbVehicleKeys
+ensure MrNewbVehicleKeysPhone
+```
+
+The app adds itself to LB Phone on start. Players open **Keys** on their phone, pick a vehicle and lock, unlock, open the trunk, start the engine or locate it. There is nothing to set up in game. If the app is missing from the phone, check that all four resources are started in that order.
+
+Saving item keys to the phone needs item-based keys turned on in `/setupkeys`. Details and the action list: [Phone app](/mrnewbvehiclekeys/phone).
+
 ### First start [step]
 
 Start the server once. SQL tables are created on their own, including `MrNewb__Settings`. There is no SQL file to import.
