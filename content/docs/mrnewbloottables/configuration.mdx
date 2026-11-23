@@ -1,60 +1,86 @@
 ---
 title: "Configuration"
-description: "Loot table fields and job payout keys for LootTables."
+description: "The setup panel, loot table rows, job pay tiers, loot crates and logging for LootTables."
 icon: "IconSettings"
 ---
 
-## Config
+## Where you edit
 
-`configs/config.lua` loads on the **server only**. Weights, `shared` flags, and payout ranges are not shipped to clients.
+Use `/setuploottables` to edit the tables, job pay and settings. They are saved in the database. The file `configs/config.lua` only fills the database the first time the resource starts, and again if you press Reset in the panel. After that, changing the file does nothing until you reset.
 
-```lua
-Config.Utility = {
-    Debug = false,
-}
+The file is a server script, so players never receive it.
 
-Config.LootTables = {
-    convenience_store = {
-        { name = 'tosti', metadata = {}, min = 1, max = 2, chance = 25, shared = false },
-        { name = 'sandwich', metadata = {}, min = 1, max = 2, chance = 20, shared = false },
-        { name = 'water_bottle', metadata = {}, min = 1, max = 3, chance = 25, shared = false },
-        { name = 'kurkakola', metadata = {}, min = 1, max = 2, chance = 15, shared = false },
-        { name = 'snikkel_candy', metadata = {}, min = 1, max = 3, chance = 10, shared = false },
-        { name = 'twerks_candy', metadata = {}, min = 1, max = 3, chance = 5, shared = false },
-    },
-}
-```
+## Loot tables
+
+A loot table has an id, a name and category for the panel, and a list of rows.
+
+| Setting | Meaning |
+| --- | --- |
+| Table id | Lowercase letters, numbers and underscores, up to 64 characters. This is what your scripts pass to the export |
+| Name and category | Only used to find the table in the panel |
+| Rows | Up to 200 per table |
+
+Each row is one possible result:
 
 | Field | Meaning |
 | --- | --- |
-| `name` | Inventory item |
-| `metadata` | Passed to `bridge.inventory.addItem` when a player source is supplied |
-| `min` / `max` | Quantity range (`math.random`). Defaults to `1` if omitted. Count is capped at `1000` |
-| `chance` | Weight for `lib.selector` (higher is more likely). `0` or missing skips the entry |
-| `shared` | If `true`, the entry is removed from **that server table** after it hits once |
+| Item | An item that exists in your inventory |
+| Count (`min` and `max`) | The quantity is a random number between the two. At least `1` |
+| Chance (`chance`) | A weight, not a percent. A row with `30` comes up three times as often as a row with `10`. A row with `0` never comes up |
+| Shared (`shared`) | If on, the row is taken out of the table after it comes up once, for the whole server |
+| Metadata | Optional item metadata, passed to the inventory when the item is given |
 
-`shared` is **server-global** for that table, not per player. A later roll on the same id will not see that entry again until you `RegisterLootTable` or restart.
+A shared row can be picked once across the whole server, not once per player. It comes back when the table is rebuilt, which happens on a restart or when you save in the panel.
 
-Shipped loot keys: `convenience_store`, `house_robbery`, `vehicle_search`, `dumpster`. Item names are stock qb-core. Add your own.
+You can have up to 100 tables.
 
-`Config.Utility.Debug` prints roll traces (`[MrNewbLootTables] …`).
+## Job pay
 
-## Job payouts
+Each job has three ranges, `low`, `mid` and `high`, each with a minimum and a maximum (up to 10,000,000).
 
-```lua
-Config.JobPayouts = {
-    taxi = {
-        low_tier = { min = 75, max = 150 },
-        mid_tier = { min = 150, max = 275 },
-        high_tier = { min = 250, max = 400 },
-    },
-}
-```
+The amount for each tier is rolled when the resource starts, and it stays the same until you change that job's ranges or restart. Saving unrelated settings does not change it. Scripts ask for a job and a tier and get the current amount.
 
-Each job **must** have `low_tier`, `mid_tier`, and `high_tier`. Each range is rolled **once** when that payout id is registered (config jobs at resource start). Those numbers stay fixed until restart.
+Your scripts ask for `'low'`, `'mid'` or `'high'`. In the example config the keys are written `low_tier`, `mid_tier` and `high_tier`, but the export argument is the short name.
 
-Shipped jobs: `taxi`, `bus`, `trucker`, `tow`, `garbage`, `mechanic`, `vineyard`, `hotdog`, `reporter`.
+## Loot crates
 
-The export tier names are `low`, `mid`, and `high` — not `low_tier`.
+A crate is an item that opens a loot table when a player uses it.
 
-Missing job or unknown tier returns `0`. Client `GetJobPayout` uses the same arguments and caches the server's rolled values. The min/max ranges stay on the server — the client only receives the rolled amounts for that job.
+| Setting | Meaning |
+| --- | --- |
+| Crate item | The item name. One item opens one table |
+| Rolls | How many rolls one crate gives, from 1 to 25 |
+
+When a player uses a crate, LootTables rolls the table, checks the player has room for everything, takes the crate and gives the items. If there is no room, the crate is kept and the player is told. Restart LootTables after adding a new crate item, so the item becomes usable.
+
+## Limits
+
+| Setting | Default | Range |
+| --- | --- | --- |
+| Most items one roll can give | `25` | 1 to 100 |
+| Largest count for one row | `1000` | 1 to 100000 |
+
+## Logging
+
+Every roll is recorded in a log you can watch live in the panel. You can also send it elsewhere.
+
+| Setting | Default | Meaning |
+| --- | --- | --- |
+| Logging | on | Keep the roll log |
+| Entries kept | `500` | How many recent rolls the panel keeps, 50 to 5000 |
+| ox_lib logger | on | Also send rolls to ox_lib's logger, when you have a logging provider set |
+| Discord webhook | off | Post rolls to a Discord channel |
+| Log payouts | off | Also log job pay lookups |
+
+The webhook is a secret. You paste it into the panel once, and it is stored on the server and never sent back to anyone. The panel only shows whether one is set. A valid Discord webhook URL replaces the old one, and you can clear it from the panel.
+
+## Seed file
+
+`configs/config.lua` holds the example data that fills the database on first start:
+
+- `Config.LootTables` with `convenience_store`, `house_robbery`, `vehicle_search` and `dumpster`
+- `Config.LootTableInfo` with the names and categories for those tables
+- `Config.JobPayouts` with `taxi`, `bus`, `trucker`, `tow`, `garbage`, `mechanic`, `vineyard`, `hotdog` and `reporter`
+- `Config.Utility.Debug` for console traces of every roll
+
+The example items are stock qb-core item names. If your inventory uses different names, change them in the panel.

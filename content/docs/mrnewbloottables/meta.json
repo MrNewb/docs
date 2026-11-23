@@ -6,6 +6,7 @@
     "install",
     "kora",
     "configuration",
+    "integration",
     "exports"
   ]
 }

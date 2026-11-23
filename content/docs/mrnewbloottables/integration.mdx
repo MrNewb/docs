@@ -1,0 +1,225 @@
+---
+title: "Integration"
+description: "How to use LootTables from your own scripts: rolling loot, giving it safely, paying jobs, and registering tables from code."
+icon: "IconPlugConnected"
+---
+
+Your script decides **when** something is rolled. LootTables decides **what** comes out. Every example here runs on the server, because that is where loot and pay should be decided. The only client example is for showing a number.
+
+Make sure LootTables starts before your script. In your script's `fxmanifest.lua`:
+
+```lua
+dependencies {
+    'MrNewbLootTables',
+}
+```
+
+The examples use [Newb_Bridge](/newb_bridge) for the inventory, money and notification calls, so add `'@Newb_Bridge/import.lua'` to your shared scripts. If you use a different inventory, swap those calls for yours. The LootTables exports are the same either way.
+
+The panel also has copy buttons on every table and job. They give you the export call for that table or job, which you wrap in your own checks like the ones below.
+
+## What a roll returns
+
+| Result | Meaning |
+| --- | --- |
+| `{ name, count, metadata, shared }` | A normal hit. `count` is already rolled |
+| `{}` | The table id does not exist |
+| `false` | The table exists but has nothing it can pick (empty, or every chance is `0`) |
+
+`GetMultipleLootRolls` returns a list of those hits, or an empty list.
+
+## Roll one item and give it
+
+Roll without passing a player, so nothing is given yet. Then check the player is allowed to be doing this, check they can carry the item, and give it yourself.
+
+Passing the player into the export skips the room check, so do not use that for loot you care about.
+
+```lua
+local DUMPSTERS = {
+    alley_1 = vec3(-165.2, -1423.1, 31.2),
+}
+local lastSearchAt = {}
+
+local function searchedDumpster(src, dumpsterId)
+    local coords = DUMPSTERS[dumpsterId]
+    if not coords then return false end
+
+    local ped = GetPlayerPed(src)
+    if ped == 0 or #(GetEntityCoords(ped) - coords) > 4.0 then return false end
+
+    local now = GetGameTimer()
+    if lastSearchAt[src] and now - lastSearchAt[src] < 30000 then return false end
+    lastSearchAt[src] = now
+
+    local item = exports.MrNewbLootTables:GetSingleLootRoll('dumpster')
+    if not item or not item.name then return false end
+
+    if not bridge.inventory.canCarryItem(src, item.name, item.count, item.metadata) then
+        bridge.notifications.notify(src, { description = 'You cannot carry that.', type = 'error' })
+        return false
+    end
+
+    if not bridge.inventory.addItem(src, item.name, item.count, item.metadata) then return false end
+    return item.name, item.count
+end
+
+lib.callback.register('my_script:server:searchedDumpster', searchedDumpster)
+```
+
+The server checks where the player is and how often they search. The client only says which dumpster. Never let the client tell the server what it found.
+
+## Roll several items
+
+`GetMultipleLootRolls` takes a table id, an optional player and how many rolls to make. Up to 25 by default.
+
+After the same distance and cooldown checks as above, roll the house loot. This example gives each result that fits and skips the rest.
+
+```lua
+local HOUSES = {
+    vinewood_12 = vec3(-174.5, 497.3, 137.7),
+}
+local lastLootedAt = {}
+
+local function lootedHouse(src, houseId)
+    local coords = HOUSES[houseId]
+    if not coords then return false end
+
+    local ped = GetPlayerPed(src)
+    if ped == 0 or #(GetEntityCoords(ped) - coords) > 6.0 then return false end
+
+    local now = GetGameTimer()
+    if lastLootedAt[src] and now - lastLootedAt[src] < 60000 then return false end
+    lastLootedAt[src] = now
+
+    local items = exports.MrNewbLootTables:GetMultipleLootRolls('house_robbery', nil, 3)
+    for index = 1, #items do
+        local item = items[index]
+        if bridge.inventory.canCarryItem(src, item.name, item.count, item.metadata) then
+            bridge.inventory.addItem(src, item.name, item.count, item.metadata)
+        end
+    end
+    return true
+end
+
+lib.callback.register('my_script:server:lootedHouse', lootedHouse)
+```
+
+A row marked `shared` is taken out of the table the moment it comes up, so it cannot appear twice in the same call.
+
+## Pay a job
+
+The job export returns the current amount for that job and tier. Pay after the server has confirmed the fare is complete, and choose the tier from the distance the server recorded, not one the client sent.
+
+```lua
+local activeFares = {}
+
+local function startedFare(src, pickup, dropoff)
+    activeFares[src] = { distance = #(pickup - dropoff) }
+end
+
+local function completedFare(src)
+    local fare = activeFares[src]
+    if not fare then return end
+    activeFares[src] = nil
+
+    local tier = fare.distance > 6000 and 'high' or fare.distance > 3000 and 'mid' or 'low'
+    local amount = exports.MrNewbLootTables:GetJobPayout('taxi', tier)
+    if amount < 1 then return end
+
+    bridge.framework.addMoney(src, 'bank', amount, 'taxi_fare')
+end
+```
+
+Your own taxi script is what starts and completes a fare. The point is that the amount and tier come from state the server holds, and a fare can only be paid once.
+
+An unknown job or tier returns `0`, so check before paying. The tier names are `'low'`, `'mid'` and `'high'`.
+
+## Show the pay on the client
+
+The client can read the same amount, for a job menu or a notification. The client only receives the amount, never the ranges.
+
+```lua
+local fare = exports.MrNewbLootTables:GetJobPayout('taxi', 'mid')
+
+bridge.notifications.notify({
+    description = ('A mid fare pays $%s'):format(fare),
+    type = 'inform',
+})
+```
+
+This is for display. Always pay from the server.
+
+## Register a table from your own script
+
+If your script owns its loot, register a table from code. It replaces any table with the same id, and it is not saved to the database or shown in the panel.
+
+```lua
+local function registerChestLoot()
+    exports.MrNewbLootTables:RegisterLootTable('my_script_chest', {
+        { name = 'lockpick', min = 1, max = 2, chance = 40 },
+        { name = 'water_bottle', min = 1, max = 3, chance = 40 },
+        { name = 'goldchain', min = 1, max = 1, chance = 15 },
+        { name = 'diamond_ring', min = 1, max = 1, chance = 5, shared = true },
+    })
+end
+
+registerChestLoot()
+
+AddEventHandler('onResourceStart', function(resourceName)
+    if resourceName == 'MrNewbLootTables' then registerChestLoot() end
+end)
+```
+
+The second part registers it again if LootTables is restarted while your script keeps running. Then roll it like any other table:
+
+```lua
+local item = exports.MrNewbLootTables:GetSingleLootRoll('my_script_chest')
+```
+
+Rows need a `name`. `min` and `max` default to `1`, and a row with no `chance` is never picked.
+
+## Register pay for a job from your script
+
+```lua
+exports.MrNewbLootTables:RegisterPayoutTable('courier', {
+    low_tier = { min = 60, max = 120 },
+    mid_tier = { min = 120, max = 220 },
+    high_tier = { min = 200, max = 350 },
+})
+```
+
+If a `courier` job already exists, for example one you saved in the panel, this call leaves it unchanged. Register it again when LootTables restarts, the same way as the loot table above.
+
+## Let players open a crate
+
+A loot crate needs no code. In the panel, open a table and set its crate item and how many rolls one crate gives. Make sure that item exists in your inventory. When a player uses it, LootTables rolls the table, checks they have room, takes the crate and gives the items.
+
+Your scripts can hand out crates as rewards like any other item:
+
+```lua
+bridge.inventory.addItem(src, 'loot_crate', 1)
+```
+
+Restart LootTables after adding a new crate item, so the item becomes usable.
+
+## Read a table
+
+`GetLootTable` returns a copy of a table's rows without rolling it. Changing the copy does not change the real table.
+
+```lua
+local rows = exports.MrNewbLootTables:GetLootTable('dumpster')
+for index = 1, #rows do
+    print(rows[index].name, rows[index].chance)
+end
+```
+
+An unknown id returns `{}`. Keep this on the server. The weights are not meant to be shown to players.
+
+## Habits worth keeping
+
+- Roll on the server, and check distance and cooldowns there.
+- Roll without a player, check room, then give. Passing the player skips the room check.
+- Keep your table ids in your own config so server owners can point them at their own tables.
+- Check for `false` and `{}` on a single roll before you use the result.
+
+Every export, with its arguments and return values, is on the [exports pages](/mrnewbloottables/exports).

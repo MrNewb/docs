@@ -1,6 +1,6 @@
 ---
 title: "Pharmacy job"
-description: "Add the pharmacy job to QBCore, Qbox, or ESX and point each pharmacy at it."
+description: "Add the pharmacy job to QBCore, Qbox, ESX, or Kora and point each pharmacy at it."
 icon: "IconBriefcase"
 ---
 
@@ -13,8 +13,38 @@ Merge the file for your framework, restart the framework core, then restart this
 | Qbox | `qbx_core.txt` | Merge into `qbx_core/shared/jobs.lua` |
 | QBCore | `qb-core.txt` | Merge into `qb-core/shared/jobs.lua` |
 | ESX Legacy | `esx.sql` | Run once against your database |
+| Kora | `kora_core.txt` | Merge into the `KoraCoreSeed.jobs` table in `kora_core/shared/jobs.lua` |
 
 The sample job has four grades: Clerk, Pharmacist, Senior Pharmacist, and Manager. The manager grade is the boss, with bank access, so the boss menu works without extra setup.
+
+## Kora format
+
+Kora jobs are records in a list, not a table keyed by job name. Each record carries its own `name`, and `grades` is an array where the first entry is grade 1. Add this record inside `KoraCoreSeed.jobs` in `kora_core/shared/jobs.lua`:
+
+```lua
+{
+    name = 'pharmacy', label = 'Pharmacy', defaultDuty = true, offDutyPay = false, type = 'none',
+    grades = {
+        { name = 'Clerk',             payment = 50 },
+        { name = 'Pharmacist',        payment = 75 },
+        { name = 'Senior Pharmacist', payment = 100 },
+        { name = 'Manager',           payment = 125, isboss = true },
+    },
+},
+```
+
+| Field | Meaning |
+| --- | --- |
+| `name` | Job name. Must match the job name on the pharmacy |
+| `label` | Display name |
+| `defaultDuty` | On duty when the job is assigned. `true` means the clerk does not have to clock in first |
+| `offDutyPay` | A number pays that amount while off duty. `false` pays nothing |
+| `type` | Service grouping. `'none'` for a normal job |
+| `grades` | Array, lowest grade first. Each entry has `name` and `payment`; `isboss = true` marks the boss grade |
+
+Kora grades start at 1, the script's grades start at 0. The bridge converts, so Clerk stays grade `0` in `/prescriptionssetup` and in any `minimumGrade` setting. Do not shift your numbers by one.
+
+A kora_core update can overwrite `shared/jobs.lua`, so keep a copy of your addition. A resource can also register the job at runtime with `exports.kora_core:registerShared('jobs', 'pharmacy', record)`, but Kora removes records a resource registered when that resource stops, so the seed file is the safer place.
 
 ## Point the pharmacy at it
 

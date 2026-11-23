@@ -78,6 +78,36 @@ Copy each script's PNGs into `kora_inventory/images/`.
 
 Restart after changing items or the start order.
 
+## Jobs
+
+Jobs work the same through the bridge as on every other framework: `getPlayerJobData`, `hasJob`, `setPlayerJob`, `setPlayerDuty`, the on-duty and job-count helpers, `getFrameworkJobs` and the `playerJobUpdate` events. Only the place a job is defined differs.
+
+Kora keeps jobs in a list of records in `KoraCoreSeed.jobs` (`kora_core/shared/jobs.lua`). Each record has its own `name`, and `grades` is an array with the lowest grade first:
+
+```lua
+{
+    name = 'pharmacy', label = 'Pharmacy', defaultDuty = true, offDutyPay = false, type = 'none',
+    grades = {
+        { name = 'Clerk',             payment = 50 },
+        { name = 'Pharmacist',        payment = 75 },
+        { name = 'Senior Pharmacist', payment = 100 },
+        { name = 'Manager',           payment = 125, isboss = true },
+    },
+},
+```
+
+| QBCore / Qbox | Kora |
+| --- | --- |
+| `['pharmacy'] = { ... }`, keyed by name | `{ name = 'pharmacy', ... }`, one record in a list |
+| `grades = { [0] = {...}, [1] = {...} }` | `grades = { {...}, {...} }`, first entry is grade 1 |
+| `isboss = true`, `bankAuth = true` | `isboss = true` (`bankAuth` is not a Kora field) |
+| `payment` per grade | `payment` per grade |
+| `defaultDuty`, `offDutyPay` | `defaultDuty`, `offDutyPay`, plus `type` |
+
+Every grade number in a script's setup or config stays zero-based. A manager at `minimumGrade = 3` on QBCore is `3` on Kora too, even though it is the fourth entry in Kora's array. `getFrameworkJobs()` returns Kora's jobs keyed by name with zero-based grades, the same shape as the other providers.
+
+Kora also exposes `exports.kora_core:registerShared('jobs', name, record)` to add a job at runtime. Kora removes records a resource registered when that resource stops, so put jobs your server depends on in the seed file. Each MrNewb script that needs a job, such as [Pharmacy job](/mrnewbprescriptions/install/pharmacy-job#kora-format), shows its record in this format on its install page.
+
 ## Good to know
 
 - **Grades.** Kora job grades start at 1. The bridge converts them, so scripts and their configs use the same zero-based grades as on every other framework.

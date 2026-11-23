@@ -24,7 +24,7 @@ Copy the PNGs named on [Item images](/mrnewbprescriptions/install/inventory-imag
 
 ### Pharmacy job [step]
 
-A player-run pharmacy needs a job that exists in Kora. The record format for Kora jobs is not in the public kora_core docs, so add the job the way your Kora server already adds jobs, then use that exact name in `/prescriptionssetup` under **Shops**. The sample job and its grades are on [Pharmacy job](/mrnewbprescriptions/install/pharmacy-job). Kora grades start at 1; the script uses the zero-based grade and the bridge converts it.
+A player-run pharmacy needs a job that exists in Kora. Merge the sample record into the `KoraCoreSeed.jobs` table in `kora_core/shared/jobs.lua`; the record and its fields are on [Pharmacy job](/mrnewbprescriptions/install/pharmacy-job#kora-format). Then use that exact name in `/prescriptionssetup` under **Shops**. Kora grades start at 1; the script uses the zero-based grade and the bridge converts it.
 
 ### Configure [step]
 

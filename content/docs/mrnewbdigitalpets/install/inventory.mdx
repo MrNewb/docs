@@ -17,6 +17,7 @@ Copy `digital_pet.png` from `[INSTALL]/IMAGES/` into:
 | ox_inventory | `ox_inventory/web/images/` |
 | qb-inventory / ps-inventory | `html/images/` |
 | one_inventory | `one_inventory/web/images/` |
+| Kora (kora_inventory) | `kora_inventory/images/` |
 
 OX is ox_inventory (ESX and Qbox that run ox use this tab). QB is `qb-core/shared/items.lua`. one_inventory needs the PNG in `one_inventory/web/images/` and the item added from the ox_inventory entry.
 
@@ -51,7 +52,13 @@ Add to your QBCore shared items (`qb-core/shared/items.lua`):
 </Tab>
 <Tab>
 
-On Kora, `kora_inventory` does not read `ox_inventory/data/items.lua`. Add the records above to `KoraCoreSeed.items` in `kora_core/shared/items.lua` and copy the PNGs into `kora_inventory/images/`. The full steps are on [Kora install](/mrnewbdigitalpets/install/kora).
+Kora keeps items in its shared registry, seeded from `kora_core/shared/items.lua`. Add these records to the `KoraCoreSeed.items` table in that file, then copy the PNGs into `kora_inventory/images/`. Skip any item name that is already in it.
+
+```lua
+    { name = 'digital_pet', label = 'Digital Pet', weight = 500, type = 'item', image = 'digital_pet.png', unique = true, useable = true, shouldClose = true, description = 'A pocket digital pet. Use it to open the Digital Pets toy.' },
+```
+
+The same record ships as `[INSTALL]/items/kora_items.txt`. The full steps are on [Kora install](/mrnewbdigitalpets/install/kora).
 
 </Tab>
 </Tabs>

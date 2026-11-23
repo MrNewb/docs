@@ -16,7 +16,18 @@ Install `kora_sql`, `kora_lib`, `kora_core`, `kora_inventory` and `kora_target` 
 
 ### Items [step]
 
-Recycling ships no items. The seed recipes expect `phone`, `radio`, `lockpick`, `plastic`, `metalscrap` and `copper` to exist in Kora's item registry. Anything missing can be added to `KoraCoreSeed.items` in `kora_core/shared/items.lua`.
+Recycling's recipes expect `phone`, `radio`, `lockpick`, `plastic`, `metalscrap` and `copper` to exist in Kora's item registry. Anything missing can be added to `KoraCoreSeed.items` in `kora_core/shared/items.lua`.
+
+Murder mode is the only part that ships its own items. If you keep it on, add these records to the same table and copy the PNGs from `[INSTALL]/images/` into `kora_inventory/images/`. Skip them if murder mode stays off. They also ship as `[INSTALL]/items/kora_items.txt`.
+
+```lua
+    { name = 'human_heart', label = 'Human Heart', weight = 350, type = 'item', image = 'human_heart.png', unique = false, useable = false, shouldClose = true, description = 'Still warm. Someone is going to want this.' },
+    { name = 'human_liver', label = 'Human Liver', weight = 1500, type = 'item', image = 'human_liver.png', unique = false, useable = false, shouldClose = true, description = 'A whole liver, fresh from a recycler.' },
+    { name = 'human_kidney', label = 'Human Kidney', weight = 150, type = 'item', image = 'human_kidney.png', unique = false, useable = false, shouldClose = true, description = 'One of two. They only ever need the one.' },
+    { name = 'human_lungs', label = 'Human Lungs', weight = 600, type = 'item', image = 'human_lungs.png', unique = false, useable = false, shouldClose = true, description = 'A matching pair, still inflated.' },
+    { name = 'human_eye', label = 'Human Eye', weight = 30, type = 'item', image = 'human_eye.png', unique = false, useable = false, shouldClose = true, description = 'It keeps looking at you.' },
+    { name = 'human_hand', label = 'Severed Hand', weight = 400, type = 'item', image = 'human_hand.png', unique = false, useable = false, shouldClose = true, description = 'Cleanly removed. The fingerprints are the valuable part.' },
+```
 
 ### Configure [step]
 

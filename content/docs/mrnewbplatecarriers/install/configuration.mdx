@@ -6,7 +6,7 @@ icon: "IconSettings"
 
 ## Where you edit
 
-`resource/open/shared/config.lua` is one file. Labels and messages are in `locales/*.json`. Restart after config or item changes.
+Edit `resource/open/shared/config.lua`. Labels and messages are in `locales/*.json`. Restart after config or item changes.
 
 | Key | Purpose |
 | --- | --- |
@@ -105,7 +105,7 @@ Config.RepairPlates = {
 
 ## Clothing
 
-The clothing table is **drawable and texture per gender**, not the component index. The component is fixed: the carrier uses `SetPedComponentVariation` on component **9** (body armor). Shipped drawables are `male = 11` and `female = 1` for every carrier, with texture `0`. Change the drawable numbers to match your clothing pack.
+Set the drawable and texture for each gender. Carriers use clothing component 9, the body armor slot. Match the values to your clothing pack.
 
 Freemode peds only (`mp_m_freemode_01` and `mp_f_freemode_01`). `DisableVestClothing` skips the clothing change.
 
@@ -114,10 +114,6 @@ Freemode peds only (`mp_m_freemode_01` and `mp_f_freemode_01`). `DisableVestClot
 Each carrier item stores its condition, strength, serial number and owner history in item metadata, so you need an inventory that can store metadata on an item. A carrier worn when a player leaves is saved with the player and restored on login, including its armor and clothing.
 
 ## Items
-
-Carriers: `pegasus_carrier`, `merryweather_carrier`, `fib_carrier`, `noose_carrier` and `armstrong_carrier`.
-
-Repair plates: `pegasus_light_repair_plate`, `merryweather_standard_repair_plate`, `fib_tactical_repair_plate`, `noose_heavy_repair_plate` and `armstrong_elite_repair_plate`.
 
 Item defs: [Item setup](/mrnewbplatecarriers/install/inventory). Images: [Item images](/mrnewbplatecarriers/install/inventory-images). Do not add `server.export` on the ox_inventory carrier items, because use is registered through Newb_Bridge.
 

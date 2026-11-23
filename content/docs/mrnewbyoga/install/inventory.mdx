@@ -14,9 +14,9 @@ GTA only ships three rolled mat colours, so there are three items. The script re
 
 Copy `yoga_mat.png`, `yoga_mat_blue.png` and `yoga_mat_red.png` from `[INSTALL]/imgs/` into your inventory's image folder (`ox_inventory/web/images/` for ox_inventory).
 
-OX is ox_inventory (ESX and Qbox that run ox use this tab). QB is `qb-core/shared/items.lua`.
+OX is ox_inventory (ESX and Qbox that run ox use this tab). QB is `qb-core/shared/items.lua`. Kora is `kora_core/shared/items.lua`.
 
-<Tabs items={['OX', 'QB']} storageKey="inventory-items">
+<Tabs items={['OX', 'QB', 'Kora']} storageKey="inventory-items">
 <Tab>
 
 Add to `ox_inventory/data/items.lua`:
@@ -54,6 +54,17 @@ Add to your QBCore shared items (`qb-core/shared/items.lua`):
 ['yoga_mat'] = { name = 'yoga_mat', label = 'Grey Yoga Mat', weight = 500, type = 'item', image = 'yoga_mat.png', unique = true, useable = true, shouldClose = true, combinable = nil, description = 'A rolled grey yoga mat. Use to lay it out on the ground.' },
 ['yoga_mat_blue'] = { name = 'yoga_mat_blue', label = 'Blue Yoga Mat', weight = 500, type = 'item', image = 'yoga_mat_blue.png', unique = true, useable = true, shouldClose = true, combinable = nil, description = 'A rolled blue yoga mat. Use to lay it out on the ground.' },
 ['yoga_mat_red'] = { name = 'yoga_mat_red', label = 'Red Yoga Mat', weight = 500, type = 'item', image = 'yoga_mat_red.png', unique = true, useable = true, shouldClose = true, combinable = nil, description = 'A rolled red yoga mat. Use to lay it out on the ground.' },
+```
+
+</Tab>
+<Tab>
+
+Kora keeps items in its shared registry, seeded from `kora_core/shared/items.lua`. Add these records to the `KoraCoreSeed.items` table in that file, then copy the PNGs from `[INSTALL]/imgs/` into `kora_inventory/images/`. Skip any item name that is already in it. The same text ships as `[INSTALL]/kora_items.txt`. Start order and the rest of the Kora setup are on [Newb_Bridge: Kora Framework](/newb_bridge/kora).
+
+```lua
+    { name = 'yoga_mat', label = 'Grey Yoga Mat', weight = 500, type = 'item', image = 'yoga_mat.png', unique = true, useable = true, shouldClose = true, description = 'A rolled grey yoga mat. Use to lay it out on the ground.' },
+    { name = 'yoga_mat_blue', label = 'Blue Yoga Mat', weight = 500, type = 'item', image = 'yoga_mat_blue.png', unique = true, useable = true, shouldClose = true, description = 'A rolled blue yoga mat. Use to lay it out on the ground.' },
+    { name = 'yoga_mat_red', label = 'Red Yoga Mat', weight = 500, type = 'item', image = 'yoga_mat_red.png', unique = true, useable = true, shouldClose = true, description = 'A rolled red yoga mat. Use to lay it out on the ground.' },
 ```
 
 </Tab>

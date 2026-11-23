@@ -23,7 +23,7 @@ No commands.
 
 ## How it plays
 
-Target a mat and choose **Start yoga**. The camera moves back, the character takes the mat and the minigame begins. Match the markers for each pose, then work the breath with the triggers (the mouse buttons on a keyboard). Escape stops the session.
+Target a mat and choose **Start yoga**. The camera moves back and the character starts yoga on the mat. Match the pose markers. Use the controller triggers or the mouse buttons for the breathing stage. Escape stops the session.
 
 Finish all the poses and you get the stress relief, and your health is topped up if that is turned on. Stop early and nothing is given.
 
@@ -33,9 +33,9 @@ Each mat item is a rolled mat. Use it, aim where the mat should go and confirm. 
 
 ## What the server checks
 
-The server checks mat access and whether a session was really completed:
+The server checks mat access, session length and cooldowns:
 
 - You must be near the mat, and nobody else can be using it.
 - Only one session per player at a time, and not from a vehicle.
 - Sessions that finish too quickly are rejected, and players have to wait before starting another one.
-- Placing, picking up and the supply shop all check distance and ownership on the server.
+- The server checks distance when placing a mat, picking one up and using the shop. Only the owner can pick up a placed mat.

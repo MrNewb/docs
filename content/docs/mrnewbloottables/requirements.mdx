@@ -5,5 +5,10 @@ icon: "IconChecklist"
 ---
 
 - ox_lib
+- [oxmysql](https://github.com/overextended/oxmysql). The settings you save in the panel are stored in the database
 - [Newb_Bridge](/newb_bridge)
-- An [inventory Newb_Bridge supports](/newb_bridge/supported#inventory), including `one_inventory`, if you pass a player source so the roll can `addItem`
+- An [inventory Newb_Bridge supports](/newb_bridge/supported#inventory), including `one_inventory`, if you let an export give items to a player or you use loot crates
+- Every item name in your tables must already exist in your inventory
+- [Server artifact and OneSync](/getting-started/download#check-your-artifact)
+
+LootTables creates its own database table the first time it starts. There is no SQL file to import.

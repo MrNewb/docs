@@ -1,57 +1,67 @@
 ---
 title: "Installation"
-description: "How to install LootTables. Start this after ox_lib and Newb_Bridge. The bridge looks at what’s already running. If this script starts first, it can miss them."
+description: "How to install LootTables. Start it after ox_lib, oxmysql, your inventory and Newb_Bridge, then set up your tables in the in-game panel."
 icon: "IconDownload"
 ---
 
 <Callout type="warning">
-  Start this **after** ox_lib and Newb_Bridge. The bridge looks at what’s already running. If this script starts first, it can miss them.
+  Start this **after** ox_lib, oxmysql, your framework, your inventory and Newb_Bridge, and **before** any script that calls its exports. The bridge looks at what is already running. If this script starts first, it can miss them.
 </Callout>
 
 ### Dependencies [step]
 
-[Newb_Bridge](/newb_bridge) and ox_lib. oxmysql is not required. If you pass a player source into a loot export so it can add items, an [inventory the bridge supports](/newb_bridge/supported#inventory) (including `one_inventory`) must already be running.
+[Newb_Bridge](/newb_bridge), ox_lib and oxmysql. If your scripts let LootTables give items, or you use loot crates, an [inventory the bridge supports](/newb_bridge/supported#inventory) (including `one_inventory`) has to be running too.
 
-This resource does not ship items or `[INSTALL]/` images. Loot `name` values must exist in your inventory.
+LootTables ships no items. Every item name in your tables must already exist in your inventory.
 
-### Configure [step]
+### Add to server.cfg [step]
 
-Edit `configs/config.lua`. That file is listed under `server_scripts` only — players never receive the tables.
+Keep the folder named `MrNewbLootTables`. Swap `qbx_core` and `ox_inventory` for whatever you run.
 
-| Key | Purpose |
-| --- | --- |
-| `Config.Utility.Debug` | Console roll traces (`[MrNewbLootTables] …`) |
-| `Config.LootTables` | Weighted tables. Shipped: `convenience_store`, `house_robbery`, `vehicle_search`, `dumpster` (stock qb-core items) |
-| `Config.JobPayouts` | Per-job `low_tier` / `mid_tier` / `high_tier` ranges. Shipped: `taxi`, `bus`, `trucker`, `tow`, `garbage`, `mechanic`, `vineyard`, `hotdog`, `reporter` |
-
-Loot row fields: `name` (required), `min` / `max` (count; omitted → `1`; capped at `1000`), `chance` (`lib.selector` **weight**, not a percent — omitted or `0` skips the row), `shared`, `metadata`.
-
-Payout **config** keys are `*_tier`. The export argument is `'low'` / `'mid'` / `'high'` — not `'mid_tier'`.
-
-Payout ranges are rolled once when the table is registered (resource start for config jobs). Those numbers stay fixed until restart. `shared = true` removes that loot row from the **server-global** live table after it hits (not per player).
-
-`GetSingleLootRoll` on a missing id returns `{}`. Same id with no selectable weights returns `false`.
+```cfg
+ensure ox_lib
+ensure oxmysql
+ensure qbx_core
+ensure ox_inventory
+ensure Newb_Bridge
+ensure MrNewbLootTables
+ensure your_script_that_uses_loot
+```
 
 <Callout type="info">
   **Running Kora Framework?** Follow the dedicated [Kora install](/mrnewbloottables/kora) instead of the framework steps on this page.
 </Callout>
 
-### Add to server.cfg [step]
+### Allow your admins [step]
 
-Start this **before** any resource that calls its exports.
+The setup panel is for admins only. Give your admin group the ACE permission, in `server.cfg` or `permissions.cfg`:
 
 ```cfg
-ensure ox_lib
-ensure qbx_core
-ensure ox_inventory
-ensure Newb_Bridge
-ensure MrNewbLootTables
+add_ace group.admin command.setuploottables allow
 ```
 
-Swap `qbx_core` / `ox_inventory` for whatever you actually run. Callers that only need payouts can omit the inventory line.
+Use whichever group your admins are in. Anyone without the permission gets nothing from the panel.
 
-### Restart the server [step]
+### Start the server [step]
 
-Restart after config changes so tables and payout rolls rebuild. Runtime `RegisterLootTable` **replaces** a loot id without a restart. `RegisterPayoutTable` **does not** overwrite a payout id that already exists.
+On the first start LootTables creates its own database table and fills it with the four example loot tables and nine example jobs. After that the panel owns the data. See [Configuration](/mrnewbloottables/configuration) for what each setting does.
 
-No public net events, no commands, no SQL.
+### Open the panel [step]
+
+In game, as an admin, type `/setuploottables`. From there you can:
+
+- edit the example tables or make your own, picking items from your inventory's item list
+- set the odds and count range for every row
+- set the three pay tiers for each job
+- roll a table to test it without giving anything out
+- copy ready-made code for a table or a job to paste into your script
+
+Saved changes apply immediately. The one exception is a new loot crate item: restart LootTables after adding one.
+
+### Use it in your scripts [step]
+
+Call the exports from the scripts that should hand out loot or pay. Working examples are on the [integration page](/mrnewbloottables/integration).
+
+### Restart when you add a crate item [step]
+
+Restart LootTables after adding a **new loot crate item**, because the item has to be registered as usable when the resource starts. Everything else in the panel applies as soon as you save.

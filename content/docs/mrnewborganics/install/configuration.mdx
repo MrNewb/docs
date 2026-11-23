@@ -93,7 +93,7 @@ Each `vec4` is one plant.
 | `x`, `y`, `z` | The position |
 | `w` | The heading for a prop, or the target zone radius for a sphere plant. A radius that is missing or outside `0.5` to `8.0` becomes `1.5` |
 
-A field holds at most 256 plants. The shipped fields use at most 5 positions per plant type, so add only the plants you want. More plants mean more props spawned for players in the field.
+A field holds at most 256 plants. The shipped fields use at most 5 positions per plant type, so add only the plants you want. Adding plants creates more props or target zones for nearby players.
 
 #### Grid
 
@@ -163,9 +163,9 @@ These items cannot be used directly. Only add the ones that are missing from you
 The server checks every pick and sale:
 
 - You must be inside the field, within `5.0` of the plant you pick, and the plant must be available.
-- The plant is marked as picked before the reward is added, so two players cannot pick the same plant at the same moment. If the inventory refuses the reward, the plant goes back.
+- Only one player can collect each plant. If the reward cannot be added, the plant becomes available again.
 - Picks and sales each have a 1 second cooldown per player.
 - A sale must be within `5.0` of the vendor and is capped at `1000` per request.
 - Every pick and sale is logged through ox_lib's logger.
 
-The pick itself is a 5 second progress bar. There is no skill check and no `Config.Debug`.
+Picking takes five seconds and has no skill check.

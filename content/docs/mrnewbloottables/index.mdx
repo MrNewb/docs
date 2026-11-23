@@ -1,13 +1,36 @@
 ---
 title: "MrNewbLootTables"
-description: "Weighted loot and job payouts. Other scripts call the exports. This one does the rolling."
+description: "Weighted loot tables and job pay for your other scripts. Set the odds in game, call an export, get a roll."
 icon: "IconDice"
 ---
 
-[GitHub](https://github.com/MrNewb/MrNewbLootTables) · [Discord](https://discord.gg/mrnewbscripts) · [Configuration](/mrnewbloottables/configuration) · [Exports](/mrnewbloottables/exports)
+<img src="/docs/images/banners/loottables.webp" alt="MrNewbLootTables" className="resource-banner" />
 
-## Features
+Runs on [Newb_Bridge](/newb_bridge/getting-started).
 
-- Weighted loot tables other scripts roll through exports
-- Job payout tiers (`low`, `mid`, `high`) rolled once when the table registers
-- Weights and ranges stay on the server
+[GitHub](https://github.com/MrNewb/MrNewbLootTables) · [Discord](https://discord.gg/mrnewbscripts) · [Installation](/mrnewbloottables/install) · [Integration](/mrnewbloottables/integration) · [Exports](/mrnewbloottables/exports)
+
+LootTables stores loot tables and job pay for the scripts that call its exports. Those scripts ask it for a roll and it answers with the item and the amount. You change the odds and the pay in an in-game panel, and a saved change applies straight away. The scripts that use it do not need to be edited or restarted.
+
+## What it does
+
+- Weighted loot tables. Each row is an item, a count range and a weight, and a roll picks one by weight
+- Job pay in three tiers, `low`, `mid` and `high`, for each job you set up
+- A setup panel at `/setuploottables` to edit tables, odds and pay, with test rolls
+- Loot crates: an item that opens a table when a player uses it
+- Loot and pay are decided on the server. Regular players never receive the weights or pay ranges
+- A roll log in the panel, with optional ox_lib logger and Discord webhook output
+
+Four loot tables and nine jobs ship as examples. Change them or delete them.
+
+## How it fits together
+
+1. Build a table in the panel, for example a dumpster that gives food, junk and the odd lockpick.
+2. In your own script, call an export with that table's id.
+3. Give the player what it returns, or pay them what the job export returns.
+
+The [integration page](/mrnewbloottables/integration) has working examples of each, including how to check the player has room before giving anything.
+
+## What it is not
+
+It does not ship items and it does not decide when loot is rolled. Your scripts decide that, and LootTables decides what comes out. The item names in your tables have to exist in your inventory.

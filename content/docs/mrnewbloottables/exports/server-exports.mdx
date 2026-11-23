@@ -14,7 +14,7 @@ exports.MrNewbLootTables:GetLootRoll(lootTableId, rollType, src, maxRewards)
 
 | Argument | Type | Description |
 | --- | --- | --- |
-| `lootTableId` | string | Key in `Config.LootTables` or a runtime `RegisterLootTable` id |
+| `lootTableId` | string | A table id from the setup panel, or a runtime `RegisterLootTable` id |
 | `rollType` | string | `'single'` or `'multiple'` |
 | `src` | number? | If set, each rolled item is added with `bridge.inventory.addItem` |
 | `maxRewards` | number? | Used only for `'multiple'`. Defaults to `1`, capped at `25` |
@@ -68,7 +68,7 @@ exports.MrNewbLootTables:RegisterLootTable(lootTableId, lootEntries)
 | `lootTableId` | string | Table id |
 | `lootEntries` | table[] | Rows with `name`, optional `min` / `max` / `chance` / `shared` / `metadata`. `chance` is a `lib.selector` weight; omitted or `0` is skipped |
 
-If `lootTableId` already exists it is replaced. Returns `true` on success, `false` on bad arguments. Entries are copied on register so `shared` removals do not mutate `Config.LootTables`. Config tables are registered this way on resource start.
+If `lootTableId` already exists it is replaced. Returns `true` on success, `false` on bad arguments. Entries are copied on register, so `shared` removals never change what you passed in. The tables from the setup panel are registered this way when the resource starts and again on every save.
 
 ## RemoveLootTable
 

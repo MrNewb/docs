@@ -1,0 +1,123 @@
+---
+title: "Locksmith job"
+description: "Add the locksmith job to QBCore, Qbox, ESX, or Kora and point each locksmith shop at it."
+icon: "IconBriefcase"
+---
+
+A player-run locksmith shop (key cutting bench, shop computer, register, stash, and the Pooper 9 scanner) works for a framework job. Its job name has to match a real job in your framework. The sample name is `locksmith`.
+
+Skip this page if you only use the walk-up locksmith NPC. That needs no job.
+
+Merge the file for your framework, restart the framework core, then restart this resource. The files live in `[INSTALL]/jobs/`.
+
+| Framework | File | Where it goes |
+| --- | --- | --- |
+| Qbox | `qbx_core.txt` | Merge into `qbx_core/shared/jobs.lua` |
+| QBCore | `qb-core.txt` | Merge into `qb-core/shared/jobs.lua` |
+| ESX Legacy | `esx.sql` | Run once against your database |
+| Kora | `kora_core.txt` | Merge into the `KoraCoreSeed.jobs` table in `kora_core/shared/jobs.lua` |
+
+The sample job has four grades: Apprentice, Locksmith, Senior Locksmith, and Manager. The manager grade is the boss, with bank access on QBCore and Qbox, so the boss menu works without extra setup.
+
+<Tabs items={['Qbox', 'QBCore', 'ESX', 'Kora']} storageKey="job-framework">
+<Tab>
+
+Merge into `qbx_core/shared/jobs.lua`:
+
+```lua
+['locksmith'] = {
+    label = 'Locksmith',
+    defaultDuty = true,
+    offDutyPay = false,
+    grades = {
+        [0] = { name = 'Apprentice', payment = 50 },
+        [1] = { name = 'Locksmith', payment = 75 },
+        [2] = { name = 'Senior Locksmith', payment = 100 },
+        [3] = { name = 'Manager', isboss = true, bankAuth = true, payment = 125 },
+    },
+},
+```
+
+</Tab>
+<Tab>
+
+Merge into `qb-core/shared/jobs.lua`. QBCore keys the grades as strings:
+
+```lua
+['locksmith'] = {
+    label = 'Locksmith',
+    defaultDuty = true,
+    offDutyPay = false,
+    grades = {
+        ['0'] = { name = 'Apprentice', payment = 50 },
+        ['1'] = { name = 'Locksmith', payment = 75 },
+        ['2'] = { name = 'Senior Locksmith', payment = 100 },
+        ['3'] = { name = 'Manager', isboss = true, bankAuth = true, payment = 125 },
+    },
+},
+```
+
+</Tab>
+<Tab>
+
+Run once against your ESX database, then restart `es_extended`:
+
+```sql
+INSERT INTO `jobs` (`name`, `label`)
+VALUES ('locksmith', 'Locksmith')
+ON DUPLICATE KEY UPDATE `label` = VALUES(`label`);
+
+INSERT INTO `job_grades` (`job_name`, `grade`, `name`, `label`, `salary`, `skin_male`, `skin_female`) VALUES
+    ('locksmith', 0, 'apprentice', 'Apprentice', 50, '{}', '{}'),
+    ('locksmith', 1, 'locksmith', 'Locksmith', 75, '{}', '{}'),
+    ('locksmith', 2, 'senior_locksmith', 'Senior Locksmith', 100, '{}', '{}'),
+    ('locksmith', 3, 'manager', 'Manager', 125, '{}', '{}')
+ON DUPLICATE KEY UPDATE
+    `name` = VALUES(`name`),
+    `label` = VALUES(`label`),
+    `salary` = VALUES(`salary`);
+```
+
+</Tab>
+<Tab>
+
+Add this record inside the `KoraCoreSeed.jobs` table in `kora_core/shared/jobs.lua`. Kora jobs are a list of records, and `grades` is an array with the lowest grade first:
+
+```lua
+{
+    name = 'locksmith', label = 'Locksmith', defaultDuty = true, offDutyPay = false, type = 'none',
+    grades = {
+        { name = 'Apprentice',       payment = 50 },
+        { name = 'Locksmith',        payment = 75 },
+        { name = 'Senior Locksmith', payment = 100 },
+        { name = 'Manager',          payment = 125, isboss = true },
+    },
+},
+```
+
+Kora grades start at 1. The script uses the zero-based grade and the bridge converts it, so the Apprentice stays grade `0` in `/setupkeys`. The full field list is on [Newb_Bridge: Kora Framework](/newb_bridge/kora#jobs). A kora_core update can overwrite the file, so keep a copy of your addition.
+
+</Tab>
+</Tabs>
+
+## Point the shop at it
+
+Open `/setupkeys`, go to **Locksmith**, and set the job on each shop:
+
+| Setting | Meaning |
+| --- | --- |
+| Job | The framework job name. Must match exactly. The factory shop uses `police` so you can test, so change it |
+| Lowest grade | The lowest grade that can use the shop. `0` lets every grade in |
+
+If you rename the job, say to `keysmith`, change it in your framework **and** on every shop that uses it.
+
+## Other jobs the script names
+
+These are standard framework jobs, so there is nothing to add if your server already has them.
+
+| Job | Used for |
+| --- | --- |
+| `mechanic`, `locksmith` | Fitting security gear and, if you turn it on, aftermarket lock kits on a customer's car (**Vehicle security > Who can fit it** and **Keys > Aftermarket locks > Install jobs**) |
+| `police`, `sheriff` | Police alerts, flag and track, and key lockers |
+
+The **Lowest job grade** control on those pages sets the grade a listed job needs. `0` lets every grade in.
