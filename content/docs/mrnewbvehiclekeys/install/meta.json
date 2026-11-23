@@ -6,7 +6,6 @@
     "configuration",
     "inventory",
     "inventory-images",
-    "locksmith-job",
-    "kora"
+    "locksmith-job"
   ]
 }

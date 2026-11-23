@@ -10,28 +10,25 @@ icon: "IconDownload"
 
 ### Dependencies [step]
 
-[Newb_Bridge](/newb_bridge), [ox_lib](https://github.com/overextended/ox_lib), [oxmysql](https://github.com/overextended/oxmysql), and [Server artifact and OneSync](/getting-started/download#check-your-artifact). You do not edit the framework for this.
+[Newb_Bridge](/newb_bridge), [ox_lib](https://github.com/overextended/ox_lib), [oxmysql](https://github.com/overextended/oxmysql), and [Server artifact and OneSync](/getting-started/download#check-your-artifact). You do not edit the framework for this. QBCore, Qbox, ESX and Kora are all supported. Newb_Bridge finds your framework by itself ([Kora Framework](/newb_bridge/kora) explains how it picks the Kora resources and how to pin them).
 
 Check the `provide 'qbx_vehiclekeys'` line before the first start. Details: [Requirements](/mrnewbvehiclekeys/requirements).
 
 ### Add the items and images [step]
 
-Paste from [Item setup](/mrnewbvehiclekeys/install/inventory). The same text ships as `[INSTALL]/ox_inventory_items.txt` and `[INSTALL]/qb-core_items.txt`.
+Paste from [Item setup](/mrnewbvehiclekeys/install/inventory). The same text ships as `[INSTALL]/ox_inventory_items.txt` and `[INSTALL]/qb-core_items.txt`. Kora has no items file to paste. Add the records from the Kora section of that page to `KoraCoreSeed.items` in `kora_core/shared/items.lua`.
 
 Copy every PNG from `[INSTALL]/images/` into your inventory images folder.
 
 - ox_inventory: `ox_inventory/web/images/`
 - qb-inventory: `qb-inventory/html/images/`
+- kora_inventory: `kora_inventory/images/`
 
 `hotwire_kit` is optional until you turn on “require an item to hotwire”. Leave the item in anyway. The script sets the slot count.
 
-<Callout type="info">
-  **Running Kora Framework?** Follow the dedicated [Kora install](/mrnewbvehiclekeys/install/kora) instead of the framework steps on this page.
-</Callout>
-
 ### Add the locksmith job [step]
 
-Only needed for a player-run locksmith. Add the `locksmith` job for your framework from [Locksmith job](/mrnewbvehiclekeys/install/locksmith-job), then set it on each shop in `/setupkeys`. Skip this if you only use the walk-up NPC.
+Only needed for a player-run locksmith. Add the `locksmith` job for your framework (Qbox, QBCore, ESX or Kora) from [Locksmith job](/mrnewbvehiclekeys/install/locksmith-job), then set it on each shop in `/setupkeys`. Skip this if you only use the walk-up NPC.
 
 ### Add to server.cfg [step]
 
@@ -44,6 +41,22 @@ ensure Newb_Bridge
 ensure ox_inventory
 ensure MrNewbVehicleKeys
 ```
+
+On Kora, start the Kora stack first and use `kora_inventory` in place of ox_inventory:
+
+```cfg
+ensure ox_lib
+ensure oxmysql
+ensure kora_sql
+ensure kora_lib
+ensure kora_core
+ensure kora_inventory
+ensure kora_target
+ensure Newb_Bridge
+ensure MrNewbVehicleKeys
+```
+
+If you run `kora_vehiclekeys`, remove it and set `Config.VehicleKeys = "MrNewbVehicleKeys"` in `Newb_Bridge/settings/bridge_resources.lua`. This resource provides the name `kora_vehiclekeys`, so Kora garages and dealerships use these keys. Restart those resources whenever this one restarts.
 
 ### Add the phone app [step]
 
@@ -84,6 +97,7 @@ Commands: [Commands](/mrnewbvehiclekeys/install/commands). Locker models: [Antic
 
 - Restarting the resource takes a moment. The key system starts about 2 seconds after the resource does, so wait a moment before you test.
 - The resource starts in about 0.25 seconds of server time. Blip icons ship as one atlas image (`web/build/blips/atlas.webp` and `atlas.json`), so the web UI build stays small. Do not delete files from `web/build`.
+- On Kora, restart the whole server after changes to the Kora stack. Do not restart Newb_Bridge live.
 - Restarting this resource also stops MrNewbVehicleKeysPhone. Start it again afterwards ([Phone app](/mrnewbvehiclekeys/phone)).
 
 ## Keys players press
