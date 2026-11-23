@@ -2,9 +2,10 @@ type YouTubePosterProps = {
   id: string
   title: string
   className?: string
+  poster?: string
 }
 
-export function YouTubePoster({ id, title, className }: YouTubePosterProps) {
+export function YouTubePoster({ id, title, className, poster }: YouTubePosterProps) {
   const wrapClass = className ? `intro-video ${className}` : 'intro-video'
   return (
     <div className={wrapClass}>
@@ -16,10 +17,10 @@ export function YouTubePoster({ id, title, className }: YouTubePosterProps) {
         aria-label={`Play ${title}`}
       >
         <img
-          src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`}
+          src={poster ?? `https://i.ytimg.com/vi/${id}/hqdefault.jpg`}
           alt=""
-          width={480}
-          height={360}
+          width={poster ? 1280 : 480}
+          height={poster ? 720 : 360}
           loading="lazy"
           decoding="async"
         />
