@@ -13,7 +13,6 @@ A custom pet is a folder. Inside it are a small text file that describes the pet
 ## What you need
 
 - An image editor that exports **WebP with transparency** and can work on a 128 pixel grid (Aseprite, Photoshop with a WebP plugin, GIMP, Krita, or export PNG and convert).
-- Python 3 on your own computer, to run the checker that ships with the script. Pillow (`pip install pillow`) is optional and makes the checker look inside the images.
 - File access to the server's resource folder, and permission to restart the resource.
 - Patience. A full sheet is 96 frames.
 
@@ -30,7 +29,6 @@ The script ships a ready-made pack in `[INSTALL]/custom_pet_template/`:
 | `portrait_template.png` | The 256x256 portrait guide |
 | `fight_sheet_template.png` | The optional fight sheet grid, 1536x2048, with every row named |
 | `example_pet/` | A working folder with a placeholder blob creature. It is switched off until you turn it on |
-| `check_pet.py` | The checker script |
 
 ## The folder layout
 
@@ -131,24 +129,22 @@ Open the example's `pet.json` and `sheet.webp` next to the template files. It is
 3. **Draw the sheet.** Open `sheet_template.png` as a guide layer and draw 12 frames for each of the 8 rows above it. Hide the guide, then export your art as a lossless WebP at exactly 1536x1024 named `sheet.webp`. `sheet_blank.png` is the same size with nothing on it, if you would rather start there.
 4. **Draw the portrait.** 256x256, saved as `portrait.webp`.
 5. **Optional: draw the fight sheet.** 1536x2048, saved as `fight.webp`, and set the fight field in `pet.json` to `true`.
-6. **Check it** with the checker script (next section).
+6. **Check it.** Install it, then read the check the server runs (next section).
 7. **Install it** (see Installing).
 
-## The checker script
+## Checking your pet
 
-Run it from the template pack, on your pet's folder:
+Nothing to download or run. The server checks every pet when the resource starts, and shows the result in two places:
 
-```
-python check_pet.py path/to/custom/pets/my_pet
-```
+- **The server console.** A pet with a problem is skipped and a yellow `Custom pet skipped` line names the file and the problem. A good start ends with a count such as `Custom pets: 1 loaded, 0 skipped`. A warning line, such as an image with no transparency, does not stop the pet but is worth a look.
+- **The setup panel.** In `/setupdigitalpets`, turn **Advanced** on and open **General**, then **Custom pets**. Every pet in `index.json` reads **OK** or **Invalid**, with the reasons listed, and a good pet shows a live preview.
 
-It prints `OK`, `WARN` and `ERROR` lines in plain language and exits with an error code if anything would stop the server from loading the pet. It checks:
+It checks:
 
-- the fields in `pet.json` (id matches the folder, colours, ranges, spelling of field names);
-- the size of every image, and that each has transparency;
-- with Pillow installed: empty frames, a sheet that has only 6 columns drawn, art touching the frame edge, and dark fringes on soft edges.
+- the fields in `pet.json`: the id matches the folder, the name, the colours, the number ranges and the spelling of field names (an unknown field is ignored with a warning);
+- that `sheet.webp` and `portrait.webp` are there, are exactly the right size, and have transparency (and `fight.webp` when `fight` is `true`).
 
-Fix every `ERROR`. A pet with an error is skipped by the server. A `WARN` is worth a look but does not stop the pet.
+Fix every problem it lists. A pet with a problem is skipped. The preview in the setup panel is the quickest way to spot a sheet that is shifted, cut off, or missing frames, since the server cannot judge the drawing itself.
 
 ## Installing
 
