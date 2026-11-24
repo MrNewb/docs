@@ -1,0 +1,26 @@
+---
+title: "Phone"
+description: "Phone. Bridge.Phone → bridge.phone. Full API: server. Phones are server-only."
+icon: "IconDeviceMobile"
+---
+
+`Bridge.Phone` → `bridge.phone`. Full API: [server](/newb_bridge/developers/modules/phone/server).
+
+| community_bridge | Newb_Bridge |
+| --- | --- |
+| `GetPlayerPhone(src)` (server) | `getPlayerPhone(src)` |
+| `SendEmail(src, email, title, message)` (server) | `sendEmail(src, email, title, message)` |
+| `SendEmail(email, title, message)` (client) | **Removed.** Send your own server event, check it there, then call `sendEmail` |
+| `GetPhoneName()` | Dropped. Use `getResourceName()` |
+
+<Callout type="warning">
+  There is no client `sendEmail`. community_bridge let any client ask for mail through a bridge-owned event. Newb_Bridge keeps phones server-only so a player cannot send mail through your phone resource.
+</Callout>
+
+```lua
+-- Old (client)
+Bridge.Phone.SendEmail('bank@maze.com', 'Statement', 'Ready')
+
+-- New (server, after your own checks)
+bridge.phone.sendEmail(src, 'bank@maze.com', 'Statement', 'Ready')
+```

@@ -22,11 +22,13 @@ Using `one_inventory`? It has to be pinned: `Config.Inventory = "one_inventory"`
 
 ## Keys, stashes or item hooks act strangely on one_inventory
 
-Check which inventory the bridge picked. The server console prints one line per module when Newb_Bridge starts. If the inventory line says `ox_inventory` (and you run one_inventory), the setting is still on `"auto"`: one_inventory provides itself as `ox_inventory`, so auto-detect picks that, and scripts then use the ox_inventory calls and image paths. Pin it with `Config.Inventory = "one_inventory"` in `settings/bridge_resources.lua`, then restart Newb_Bridge and every script that uses it.
+Check which inventory the bridge picked: set `Config.Debug = true` and restart, and the server console prints one line per module with its provider. If the inventory line says `ox_inventory` (and you run one_inventory), the setting is still on `"auto"`: one_inventory provides itself as `ox_inventory`, so auto-detect picks that, and scripts then use the ox_inventory calls and image paths. Pin it with `Config.Inventory = "one_inventory"` in `settings/bridge_resources.lua`, then restart Newb_Bridge and every script that uses it.
 
 ## "has no client/server implementation for provider"
 
-The name you pinned isn't supported, or is misspelled. Names are case sensitive (`Renewed-Fuel`, `m-Inventory`). Copy it from [Supported](/newb_bridge/supported).
+This line only prints when `Config.Debug = true`. It is normal for a module that only has code on one side (weather is client-only, banking and phone are server-only), so ignore it for modules you only use on the other side.
+
+If you do use that module on that side, the name you pinned isn't supported or is misspelled. Names are case sensitive (`Renewed-Fuel`, `m-Inventory`, `ZSX_UIV2`). Copy it from [Supported](/newb_bridge/supported).
 
 ## Stash or shop calls return nothing
 
@@ -46,4 +48,4 @@ After editing `settings/theme.lua`, restart `Newb_Bridge`, then restart or reope
 
 ## An update message prints on start
 
-A newer release exists. It only prints to the server console. Set `Config.VersionCheck = false` to silence it. After updating, restart the bridge and every script that uses it together.
+A newer release exists. It only prints to the server console. Set `Config.VersionCheck = false` to turn off every version check, including the ones the other MrNewb scripts run through the bridge. After updating, restart the bridge and every script that uses it together.

@@ -46,7 +46,7 @@ end
 if bridge.progressbar.progressActive() then return end
 ```
 
-| **Providers** | Real on `ox_lib` and `lation_ui`. `zsx_uiv2` tracks its own callback. `wasabi_uikit` / `progressbar` always return `false`. |
+| **Providers** | Real on `ox_lib` and `lation_ui`. `ZSX_UIV2` tracks its own callback and, like ox_lib, only lets the player cancel when `canCancel = true`. `wasabi_uikit` / `progressbar` always return `false`. |
 | **Returns** | `boolean` |
 
 ## `cancelProgress()` (optional)
@@ -55,7 +55,7 @@ if bridge.progressbar.progressActive() then return end
 bridge.progressbar.cancelProgress()
 ```
 
-| **Providers** | Real on `ox_lib` and `lation_ui`. Other adapters are no-ops (`zsx_uiv2` has no cancel export). |
+| **Providers** | Real on `ox_lib` and `lation_ui`. Other adapters are no-ops (`ZSX_UIV2` has no cancel export). |
 | **Description** | Cancels the active progress bar |
 
 ## Types

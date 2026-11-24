@@ -57,7 +57,7 @@ exports[bridge.name]:AddInteraction('pharmacy_clerk', {
 })
 ```
 
-`radius` is spawn distance (default 100, clamped 1–175). Do not periodically remove/re-add for distance. Server `RemoveInteraction(id)` broadcasts `Newb_Bridge:Interaction:Remove`.
+`radius` is spawn distance (default 100, clamped 1–175). Do not periodically remove/re-add for distance. Server `RemoveInteraction(id)` broadcasts `Newb_Bridge:client:interactionRemoved`.
 
 ## Placeable → PropPlacer
 

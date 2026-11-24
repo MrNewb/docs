@@ -1,0 +1,49 @@
+---
+title: "Server"
+description: "Banking (server). Read, add and remove money on a society (job) account through the active banking resource (Config.Banking)."
+---
+
+# Banking (server)
+
+`account` is the job or society name (for example `'police'`). Player wallets are `bridge.framework.getMoney` / `addMoney` / `removeMoney`. Regular clients don't load this module, see [client](/newb_bridge/developers/modules/banking/client).
+
+## `getAccountMoney(account)`
+
+```lua
+local balance = bridge.banking.getAccountMoney('police')
+```
+
+| Param | Type | Description |
+| ----- | ---- | ----------- |
+| `account` | `string` | Society account name |
+
+| **Returns** | `number` — the balance, `0` when the account is unknown |
+
+## `addAccountMoney(account, amount, reason?)`
+
+```lua
+bridge.banking.addAccountMoney('police', 250, 'fine paid')
+```
+
+| Param | Type | Description |
+| ----- | ---- | ----------- |
+| `account` | `string` | Society account name |
+| `amount` | `number` | Above `0` |
+| `reason` | `string?` | Passed to banking resources that keep a statement. Others ignore it |
+
+| **Returns** | `boolean?` — the banking resource's own result |
+
+## `removeAccountMoney(account, amount, reason?)`
+
+```lua
+if not bridge.banking.removeAccountMoney('police', 500, 'equipment') then
+    return -- not enough money, or no banking resource
+end
+```
+
+Same parameters and result as `addAccountMoney`.
+
+## Safe by default
+
+- `account` must be a string and `amount` a number above `0`. Anything else returns `false` (or `0` for `getAccountMoney`) without touching the bank, so a negative amount can never reach the provider.
+- If the banking resource is stopped, missing or errors, the call returns the same fallback and the bridge prints one console line per call. Your script never throws. See [Missing or broken providers](/newb_bridge/developers/modules#missing-or-broken-providers).

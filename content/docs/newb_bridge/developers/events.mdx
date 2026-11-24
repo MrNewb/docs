@@ -6,81 +6,85 @@ icon: "IconBolt"
 
 Only the **host** sends them (`bridge.isHost`). Listen with `AddEventHandler` in your resource.
 
+<Callout type="warning">
+  Event names were renamed on 2026-11-17 to `Newb_Bridge:{client|server}:{subject}{PastTense}`. The old names still fire next to the new ones until **2026-12-17**, then they are removed. Move your listeners now: see [Deprecations](#deprecations).
+</Callout>
+
 ---
 
-## `Newb_Bridge:server:playerLoad`
+## `Newb_Bridge:server:playerLoaded`
 
 **Payload:** `src: number`  
 **When:** Player data is ready on the server
 
 ```lua
-AddEventHandler('Newb_Bridge:server:playerLoad', function(src)
+AddEventHandler('Newb_Bridge:server:playerLoaded', function(src)
     -- Initialize per-player server state
 end)
 ```
 
 ---
 
-## `Newb_Bridge:server:playerUnload`
+## `Newb_Bridge:server:playerUnloaded`
 
 **Payload:** `src: number`  
 **When:** Player unloads or disconnects
 
 ```lua
-AddEventHandler('Newb_Bridge:server:playerUnload', function(src)
+AddEventHandler('Newb_Bridge:server:playerUnloaded', function(src)
     -- Cleanup server state for src
 end)
 ```
 
 ---
 
-## `Newb_Bridge:server:playerJobUpdate`
+## `Newb_Bridge:server:playerJobUpdated`
 
 **Payload:** `src: number`, `jobName: string`  
 **When:** Player job changes
 
 ```lua
-AddEventHandler('Newb_Bridge:server:playerJobUpdate', function(src, jobName)
+AddEventHandler('Newb_Bridge:server:playerJobUpdated', function(src, jobName)
     print(('Player %s job: %s'):format(src, jobName))
 end)
 ```
 
 ---
 
-## `Newb_Bridge:client:playerLoad`
+## `Newb_Bridge:client:playerLoaded`
 
 **Payload:** none  
 **When:** Local player data is ready (short delay on QB/QBX/ESX)
 
 ```lua
-AddEventHandler('Newb_Bridge:client:playerLoad', function()
+AddEventHandler('Newb_Bridge:client:playerLoaded', function()
     -- Safe to read bridge.framework.* on client
 end)
 ```
 
 ---
 
-## `Newb_Bridge:client:playerUnload`
+## `Newb_Bridge:client:playerUnloaded`
 
 **Payload:** none  
 **When:** Local player unloads
 
 ```lua
-AddEventHandler('Newb_Bridge:client:playerUnload', function()
+AddEventHandler('Newb_Bridge:client:playerUnloaded', function()
     -- Remove blips, interactions, menus
 end)
 ```
 
 ---
 
-## `Newb_Bridge:client:playerJobUpdate`
+## `Newb_Bridge:client:playerJobUpdated`
 
 **Payload:** `jobName`, `jobLabel`, `gradeName`, `gradeLevel`
 
 Also fired on duty changes (`QBCore:Client:SetDuty` / equivalent). Same four arguments.
 
 ```lua
-AddEventHandler('Newb_Bridge:client:playerJobUpdate', function(jobName, jobLabel, gradeName, gradeLevel)
+AddEventHandler('Newb_Bridge:client:playerJobUpdated', function(jobName, jobLabel, gradeName, gradeLevel)
     print(jobName, gradeName)
 end)
 ```
@@ -91,19 +95,19 @@ end)
 
 | Event | Side | Payload | Description |
 | ----- | ---- | ------- | ----------- |
-| `Newb_Bridge:client:notify` | client | `data: OxNotification` | Server notification delivery (`source == 65535` only) |
-| `Newb_Bridge:Client:NotifyShown` | client | `data: OxNotification` | Fired after every client `notify` (pause-menu history) |
-| `Newb_Bridge:client:setFuel` | client | `netId: number`, `amount: number` | Fuel sync from server `bridge.vehiclefuel.set` (server-origin only) |
-| `Newb_Bridge:Interaction:Remove` | client | `id: string` | Server-initiated interaction removal (server-origin only) |
-| `Newb_Bridge:Server:DispatchAlert` | server | `src, jobs, coords, data, blip, alertFlash` | Fired when `bridge.dispatch.sendAlert` runs. Listen to mirror alerts into your own system |
+| `Newb_Bridge:client:notificationSent` | client | `data: OxNotification` | Server notification delivery (`source == 65535` only) |
+| `Newb_Bridge:client:notificationShown` | client | `data: OxNotification` | Fired after every client `notify` (pause-menu history) |
+| `Newb_Bridge:client:fuelSet` | client | `netId: number`, `amount: number` | Fuel sync from server `bridge.vehiclefuel.set` (server-origin only) |
+| `Newb_Bridge:client:interactionRemoved` | client | `id: string` | Server-initiated interaction removal (server-origin only) |
+| `Newb_Bridge:server:dispatchAlertSent` | server | `src, jobs, coords, data, blip, alertFlash` | Fired when `bridge.dispatch.sendAlert` runs. Listen to mirror alerts into your own system |
 | `Newb_Bridge:client:themeChanged` | client | none | Trigger to make the bridge UI re-read the theme |
-| `Newb_Bridge:dispatch:internalAlert` | client | alert payload | Internal dispatch blip + notify (server-origin only) |
-| `Newb_Bridge:client:openTaskGroupMenu` | client | none | Opens task group NUI (server-origin only) |
-| `Newb_Bridge:client:taskGroupMenuRefresh` | client | menu payload | Refresh open task group menu (server-origin only) |
+| `Newb_Bridge:client:dispatchAlertReceived` | client | alert payload | Internal dispatch blip + notify (server-origin only) |
+| `Newb_Bridge:client:taskGroupMenuOpened` | client | none | Opens task group NUI (server-origin only) |
+| `Newb_Bridge:client:taskGroupMenuRefreshed` | client | menu payload | Refresh open task group menu (server-origin only) |
 | `Newb_Bridge:client:taskGroupsChanged` | client | state table | Local `Player.state.taskGroups` mirror updated |
-| `Newb_Bridge:client:openBossMenu:*` | client | `jobName`, `jobType?` | Boss menu open relay (server-origin only; suffix `qbx` / `qb` / `esx` / `vms` / `tk` / `okok` / `codem` / `zat` / `m`) |
+| `Newb_Bridge:client:bossMenuOpened` | client | `jobName`, `jobType?` | Boss menu open relay (server-origin only) |
 
-The bridge already handles `Newb_Bridge:client:notify`. Do not register your own copy that calls `bridge.notifications.notify` again — that double-fires. Use `bridge.notifications.notify` on the server (or client) instead.
+The bridge already handles `Newb_Bridge:client:notificationSent`. Do not register your own copy that calls `bridge.notifications.notify` again — that double-fires. Use `bridge.notifications.notify` on the server (or client) instead.
 
 Task-group **server** events (`taskGroupCreated`, `taskGroupMemberAdded`, …) are listed on [Task groups (server)](/newb_bridge/developers/modules/taskgroups/server#events).
 
@@ -147,3 +151,64 @@ CreateThread(function()
     -- initialize
 end)
 ```
+
+
+---
+
+## Deprecations
+
+The bridge fires every old event name next to its new one, and still accepts the old internal names, until the removal date. Nothing breaks today.
+
+| Step | Date |
+| ---- | ---- |
+| New names added, old names deprecated | 2026-11-17 |
+| Old names still work | until 2026-12-17 |
+| Old names removed | the first release after 2026-12-17 |
+
+After the removal a listener left on an old name never fires, and there is no error. The arguments of every event are unchanged.
+
+### Events your scripts listen to
+
+| Old name (deprecated) | New name | Side |
+| --------------------- | -------- | ---- |
+| `Newb_Bridge:client:playerLoad` | `Newb_Bridge:client:playerLoaded` | client |
+| `Newb_Bridge:client:playerUnload` | `Newb_Bridge:client:playerUnloaded` | client |
+| `Newb_Bridge:client:playerJobUpdate` | `Newb_Bridge:client:playerJobUpdated` | client |
+| `Newb_Bridge:server:playerLoad` | `Newb_Bridge:server:playerLoaded` | server |
+| `Newb_Bridge:server:playerUnload` | `Newb_Bridge:server:playerUnloaded` | server |
+| `Newb_Bridge:server:playerJobUpdate` | `Newb_Bridge:server:playerJobUpdated` | server |
+| `Newb_Bridge:Client:NotifyShown` | `Newb_Bridge:client:notificationShown` | client |
+| `Newb_Bridge:Server:DispatchAlert` | `Newb_Bridge:server:dispatchAlertSent` | server |
+
+### Events the bridge sends to itself
+
+Only change these if your own script triggers or listens to them.
+
+| Old name (deprecated) | New name | Side |
+| --------------------- | -------- | ---- |
+| `Newb_Bridge:client:notify` | `Newb_Bridge:client:notificationSent` | client |
+| `Newb_Bridge:client:setFuel` | `Newb_Bridge:client:fuelSet` | client |
+| `Newb_Bridge:client:openBossMenu:<provider>` | `Newb_Bridge:client:bossMenuOpened` | client |
+| `Newb_Bridge:Interaction:Remove` | `Newb_Bridge:client:interactionRemoved` | client |
+| `Newb_Bridge:dispatch:internalAlert` | `Newb_Bridge:client:dispatchAlertReceived` | client |
+| `Newb_Bridge:client:openTaskGroupMenu` | `Newb_Bridge:client:taskGroupMenuOpened` | client |
+| `Newb_Bridge:client:taskGroupMenuRefresh` | `Newb_Bridge:client:taskGroupMenuRefreshed` | client |
+| `Newb_Bridge:server:taskGroupMenu:setOpen` | `Newb_Bridge:server:taskGroupMenuOpenChanged` | server |
+
+`<provider>` in the old boss menu event was one of `codem`, `esx`, `m`, `okok`, `qb`, `qbx`, `tk`, `vms` or `zat`.
+
+### Moved files
+
+The code folders moved under `resource/`. One old path is still forwarded until the removal date:
+
+| Old require (deprecated) | New require |
+| ------------------------ | ----------- |
+| `require '@Newb_Bridge/utility/client/camera_ray'` | `require '@Newb_Bridge/resource/utility/client/camera_ray'` |
+
+`import.lua` did not move. Any other `@Newb_Bridge/utility/...` or `@Newb_Bridge/modules/...` require needs the `resource/` part added.
+
+### How to migrate
+
+1. Search your scripts for the old names above. They are plain strings in `AddEventHandler`, `RegisterNetEvent` and `TriggerEvent` calls.
+2. Replace each with its new name.
+3. Restart the script and check nothing still listens to an old name.

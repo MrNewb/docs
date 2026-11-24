@@ -1,0 +1,8 @@
+{
+  "title": "Banking",
+  "icon": "IconBuildingBank",
+  "pages": [
+    "client",
+    "server"
+  ]
+}

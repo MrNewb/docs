@@ -4,12 +4,14 @@ description: "Dispatch. Server-side dispatch alerts that route through the confi
 icon: "IconSpeakerphone"
 ---
 
-Server-side dispatch alerts that route through the configured provider (`Config.Dispatch`). When set to `"internal"`, Newb_Bridge notifies eligible on-duty players with a blip + notification.
+Server-side dispatch alerts that route through the configured provider (`Config.Dispatch`). When it resolves to `internal` (the built-in version), Newb_Bridge notifies eligible on-duty players with a blip + notification.
 
 - [Client](/newb_bridge/developers/modules/dispatch/client) — host internal-alert listener (consumer noop)
 - [Server](/newb_bridge/developers/modules/dispatch/server) — `sendAlert`
 
-`Config.Dispatch` defaults to `"internal"`. Auto-detect order when set to `"auto"`: `ps-dispatch` → `cd_dispatch` → `tk_dispatch` → `rcore_dispatch` → `lb-tablet` → `origen_police` → `core_dispatch` → `kartik-mdt` → `codem-dispatch` → `wasabi_mdt` → `redutzu-mdt`. Fallback is `internal`.
+`Config.Dispatch` is `"auto"` by default. Auto-detect order: `ps-dispatch` → `cd_dispatch` → `tk_dispatch` → `rcore_dispatch` → `lb-tablet` → `origen_police` → `core_dispatch` → `kartik-mdt` → `codem-dispatch` → `wasabi_mdt` → `redutzu-mdt`. When none is installed it falls back to `internal`.
+
+`wasabi_mdt` receives the documented `CreateDispatch` fields only (type, title, description, location, coords, priority, code and sender). It has no department filter, so the `jobs` argument does not narrow who sees the call.
 
 ```lua
 -- Server

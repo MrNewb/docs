@@ -1,0 +1,50 @@
+---
+title: "Server"
+description: "Phone (server). getPlayerPhone returns a player's number, sendEmail delivers an email to their phone, through the active phone resource (Config.Phone)."
+---
+
+# Phone (server)
+
+Regular clients don't load this module, see [client](/newb_bridge/developers/modules/phone/client).
+
+## `getPlayerPhone(src)`
+
+```lua
+local number = bridge.phone.getPlayerPhone(src)
+```
+
+| Param | Type | Description |
+| ----- | ---- | ----------- |
+| `src` | `number` | Player server id |
+
+| **Returns** | `string \| number \| false` — the phone number, `false` when the player has no phone, no number yet, or no phone resource is installed |
+
+## `sendEmail(src, email, title, message)`
+
+```lua
+local sent = bridge.phone.sendEmail(src, 'bank@maze.com', 'Statement ready', 'Your statement is available.')
+```
+
+| Param | Type | Description |
+| ----- | ---- | ----------- |
+| `src` | `number` | Player server id (the recipient) |
+| `email` | `string` | Sender shown in the inbox |
+| `title` | `string` | Subject |
+| `message` | `string` | Body |
+
+| **Returns** | `boolean` — `true` when the mail was handed to the phone, `false` otherwise |
+
+All four arguments are checked. A non-numeric `src` or non-string text returns `false` without reaching the phone resource.
+
+## Per phone
+
+| Phone | `getPlayerPhone` | `sendEmail` |
+| ----- | ---------------- | ----------- |
+| `kora_phone` | Selected handset's active SIM number | System mail to the character's Mail app |
+| `sd-phone` | Through its lb-phone compatibility layer | System mail to the player's first mail account |
+| `sky_phone` | Native export | **Not supported.** sky_phone has no way to send mail, so this returns `false` |
+| `lb-phone` | Equipped phone number | Mail to the number's email address. The phone must be equipped (used) first |
+| `gksphone`, `okokPhone`, `yseries`, `qb-phone` | Native export | Native mail |
+| `qs-smartphone` | `qs-base` export | `SendMail`. qs mails have no sender field, so `email` is not shown |
+
+A stopped or missing phone resource returns `false` and prints one console line. See [Missing or broken providers](/newb_bridge/developers/modules#missing-or-broken-providers).

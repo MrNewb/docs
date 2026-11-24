@@ -1,0 +1,18 @@
+---
+title: "Weather"
+description: "Weather. Client-only. Turn the weather sync script off and on for the local player (Config.Weather)."
+icon: "IconCloud"
+---
+
+Client-only. Turns the weather sync script off and back on for the local player, for example while a script sets its own weather in an interior. Uses the active weather resource (`Config.Weather`).
+
+- [Client](/newb_bridge/developers/modules/weather/client) — `disableSync` / `enableSync`
+- [Server](/newb_bridge/developers/modules/weather/server) — not implemented
+
+Auto-detect order: `Renewed-Weathersync` → `qb-weathersync` → `cd_easytime`. With none installed it resolves to `none` and nothing happens.
+
+```lua
+bridge.weather.disableSync()
+-- ... set your own weather ...
+bridge.weather.enableSync()
+```

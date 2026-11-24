@@ -6,7 +6,7 @@ icon: "IconPuzzle"
 
 You get at all of this through the `bridge` table once `@Newb_Bridge/import.lua` is in. A module loads the first time you touch it, based on the provider you set in [Configuration](/newb_bridge/configuration). The host preloads every provider you configured when it starts.
 
-Modules without an implementation become a no-op table (every method does nothing). `bridge.dialogue` and `bridge.task` error if accessed on the server. `bridge.dispatch` and `bridge.bossmenu` are host-only on the client (consumer clients get the noop table).
+Modules without an implementation become a no-op table (every method does nothing). `bridge.dialogue` and `bridge.task` error if accessed on the server. `bridge.dispatch`, `bridge.bossmenu`, `bridge.banking` and `bridge.phone` are host-only on the client (consumer clients get the noop table). `bridge.weather` is client-only.
 
 ## Available modules
 
@@ -24,6 +24,10 @@ Modules without an implementation become a no-op table (every method does nothin
 | `bridge.vehiclefuel` | [Client](/newb_bridge/developers/modules/vehiclefuel/client) | [Server](/newb_bridge/developers/modules/vehiclefuel/server) |
 | `bridge.bossmenu` | [Client](/newb_bridge/developers/modules/bossmenu/client) | [Server](/newb_bridge/developers/modules/bossmenu/server) |
 | `bridge.dispatch` | [Client](/newb_bridge/developers/modules/dispatch/client) | [Server](/newb_bridge/developers/modules/dispatch/server) |
+| `bridge.banking` | [Client](/newb_bridge/developers/modules/banking/client) | [Server](/newb_bridge/developers/modules/banking/server) |
+| `bridge.doorlock` | [Client](/newb_bridge/developers/modules/doorlock/client) | [Server](/newb_bridge/developers/modules/doorlock/server) |
+| `bridge.phone` | [Client](/newb_bridge/developers/modules/phone/client) | [Server](/newb_bridge/developers/modules/phone/server) |
+| `bridge.weather` | [Client](/newb_bridge/developers/modules/weather/client) | [Server](/newb_bridge/developers/modules/weather/server) |
 | `bridge.dialogue` | [Client](/newb_bridge/developers/modules/dialogue/client) | [Server](/newb_bridge/developers/modules/dialogue/server) |
 | `bridge.taskGroups` | [Client](/newb_bridge/developers/modules/taskgroups/client) | [Server](/newb_bridge/developers/modules/taskgroups/server) |
 | `bridge.task` | [Client](/newb_bridge/developers/modules/task/client) | [Server](/newb_bridge/developers/modules/task/server) |
@@ -33,6 +37,10 @@ Modules without an implementation become a no-op table (every method does nothin
 - [Utilities](/newb_bridge/developers/utilities): `PropPlacer`, `AddInteraction`, `VersionCheck`, and other exports
 - [Events](/newb_bridge/developers/events): player load/unload and bridge events
 - [Migrating](/newb_bridge/developers/migrating): community_bridge → Newb_Bridge
+
+## Missing or broken providers
+
+`bridge.banking`, `bridge.doorlock`, `bridge.phone` and `bridge.weather` never throw into your script. With no provider installed they resolve to `none`, which does nothing. Arguments of the wrong type (a non-string account, an amount that is not a number above `0`, a door id that is not a string or number, a non-numeric player id, non-string mail text) return the fallback without reaching the provider. If the provider resource is stopped later, or one of its exports errors, the call returns the same fallback (`0`, `false` or `nil`) and the bridge prints one console line per call name.
 
 ## Notes
 

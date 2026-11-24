@@ -1,0 +1,19 @@
+---
+title: "Banking"
+description: "Banking. Server-only. Society (job) account balances through the configured banking resource (Config.Banking)."
+icon: "IconBuildingBank"
+---
+
+Server-only. Reads and changes **society (job) account** money through the active banking resource (`Config.Banking`). Player wallets are not here: use `bridge.framework.getMoney` / `addMoney` / `removeMoney`.
+
+- [Client](/newb_bridge/developers/modules/banking/client) — noop (the module is not loaded on regular clients)
+- [Server](/newb_bridge/developers/modules/banking/server) — `getAccountMoney` / `addAccountMoney` / `removeAccountMoney`
+
+Auto-detect order: `Renewed-Banking` → `qb-banking` → `okokBanking` → `fd_banking` → `kartik-banking` → `tgg-banking` → `tgiann-bank` → `wasabi_banking`. With none installed it resolves to `none`: the balance is `0` and changes return `false`.
+
+```lua
+-- Server
+if bridge.banking.removeAccountMoney('police', 500, 'equipment') then
+    bridge.inventory.addItem(src, 'radio', 1)
+end
+```

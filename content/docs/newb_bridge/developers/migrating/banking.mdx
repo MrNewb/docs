@@ -1,0 +1,25 @@
+---
+title: "Banking"
+description: "Banking. Bridge.Banking → bridge.banking. Full API: server."
+icon: "IconBuildingBank"
+---
+
+`Bridge.Banking` → `bridge.banking`. Full API: [server](/newb_bridge/developers/modules/banking/server). Server-only, regular clients get a noop table.
+
+| community_bridge | Newb_Bridge |
+| --- | --- |
+| `GetAccountMoney(account)` | `getAccountMoney(account)` |
+| `AddAccountMoney(account, amount, reason)` | `addAccountMoney(account, amount, reason?)` |
+| `RemoveAccountMoney(account, amount, reason)` | `removeAccountMoney(account, amount, reason?)` |
+| `GetManagmentName()` | Dropped. Use `getResourceName()` |
+| `GetResourceName()` | `getResourceName()` |
+
+```lua
+-- Old
+Bridge.Banking.AddAccountMoney('police', 250, 'fine')
+
+-- New
+bridge.banking.addAccountMoney('police', 250, 'fine')
+```
+
+Player wallets are not banking: use `bridge.framework.getMoney` / `addMoney` / `removeMoney`. Bad arguments (a non-string account, an amount that is not above `0`) now return `false` without reaching the bank.

@@ -1,0 +1,20 @@
+---
+title: "Doorlock"
+description: "Doorlock. Lock and unlock a door from the server, find the closest door from the client, through the configured doorlock resource (Config.Doorlock)."
+icon: "IconDoor"
+---
+
+Lock and unlock doors from the server and find the closest door from the client, through the active doorlock resource (`Config.Doorlock`).
+
+- [Client](/newb_bridge/developers/modules/doorlock/client) — `getClosestDoor`
+- [Server](/newb_bridge/developers/modules/doorlock/server) — `lockDoor` / `unlockDoor`
+
+Auto-detect order: `ox_doorlock` → `qb-doorlock` → `rcore_doorlock` → `doors_creator`. With none installed it resolves to `none` and nothing happens.
+
+```lua
+-- Client: which door is nearest?
+local doorId = bridge.doorlock.getClosestDoor()
+
+-- Server: lock it
+bridge.doorlock.lockDoor(doorId)
+```

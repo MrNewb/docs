@@ -111,6 +111,7 @@ Kora also exposes `exports.kora_core:registerShared('jobs', name, record)` to ad
 ## Good to know
 
 - **Grades.** Kora job grades start at 1. The bridge converts them, so scripts and their configs use the same zero-based grades as on every other framework.
-- **Vehicle keys.** `MrNewbVehicleKeys` can stand in for `kora_vehiclekeys`. Set `Config.VehicleKeys = "MrNewbVehicleKeys"` in the bridge settings, and remove `kora_vehiclekeys` if you run it. Other Kora resources that cached the keys export need a restart after the keys script restarts.
+- **Vehicle keys.** `kora_vehiclekeys` is a supported provider. It is detected after `MrNewbVehicleKeys`, so with both running the bridge uses `MrNewbVehicleKeys`; pin `Config.VehicleKeys = "kora_vehiclekeys"` to use the Kora one. It has no client exports, so grant keys from the server, and its keys last until the player disconnects. Other Kora resources that cached the keys export need a restart after the keys script restarts.
+- **Phone.** `kora_phone` is a supported phone and is detected before the other phones. `bridge.phone` is server-only: `getPlayerPhone` returns the selected handset's SIM number and `sendEmail` delivers system mail to the character's Mail app.
 - **Stashes and shops.** Stash weight and slot limits are only known for stashes the bridge registered. Per-row shop license, grade and currency options are not supported by the Kora inventory provider.
 - **Restarting the bridge live.** Restart the whole server, not Newb_Bridge by itself.

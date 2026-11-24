@@ -4,7 +4,7 @@ description: "Choose which resources Newb_Bridge uses, or leave everything on au
 icon: "IconSettings"
 ---
 
-Open `settings/bridge_resources.lua` in the Newb_Bridge folder. Set a value to a resource name to pin it, or leave `"auto"` and the bridge uses the first supported resource that is started. Every setting ships as `"auto"`. Notifications, fuel, and dispatch fall back to a built-in `internal` provider when nothing else is installed; the rest do nothing until a supported resource is running.
+Open `settings/bridge_resources.lua` in the Newb_Bridge folder. Set a value to a resource name to pin it, or leave `"auto"` and the bridge uses the first supported resource that is started. Every setting ships as `"auto"`. Notifications, fuel, and dispatch fall back to a built-in `internal` provider when nothing else is installed. Banking, doorlock, phone, and weather fall back to `none`, which does nothing. The rest do nothing until a supported resource is running.
 
 ```lua
 Config = {}
@@ -24,6 +24,10 @@ Config.TextUI = "auto"
 Config.ProgressBar = "auto"
 Config.BossMenu = "auto"
 Config.Dispatch = "auto"
+Config.Banking = "auto"
+Config.Doorlock = "auto"
+Config.Phone = "auto"
+Config.Weather = "auto"
 
 Config.TaskGroups = {
     DefaultMaxPlayers = 8,
@@ -47,17 +51,28 @@ Config.TaskGroups = {
   Restart Newb_Bridge and every script that uses it after changing this.
 </Callout>
 
+<Callout type="info">
+  **Using ZSX UI V2?** The resource has to be named exactly `ZSX_UIV2`, and that is the value to pin (`Config.TextUI = "ZSX_UIV2"`). The old lowercase `zsx_uiv2` is no longer a valid value.
+</Callout>
+
 | Setting | What it does |
 | --- | --- |
-| `Config.Debug` | Extra debug lines in the console. Leave `false` in production. |
-| `Config.VersionCheck` | Checks GitHub on start and prints newer versions to the **server console only**. Set `false` to silence it. |
+| `Config.Debug` | `true` prints one line per module on each side (client and server) with the provider it loaded, and a warning when a provider has no code for that side. Both are normal for one-sided modules such as weather. It also turns on debug drawing in the target and DUI helpers. Leave `false` in production. |
+| `Config.VersionCheck` | Checks GitHub on start and prints newer versions to the **server console only**. Set `false` to turn off every version check, including the ones the other MrNewb scripts run through the bridge. |
 | `Config.TaskGroups` | Limits for the party/task group menu (max players, invite radius, join code length). |
 
 ## Auto-detection
 
 When a setting is `"auto"`, Newb_Bridge walks the list in order and picks the first resource that is `started`. If none are started yet (bridge init can run before dependents), it picks the first whose state is not `"missing"`. If still nothing, it uses the module `fallback` when one exists.
 
-Start order in `server.cfg` matters. Bridged resources should be running before scripts that depend on them. On start, the server console prints one line per module (`auto`, `manual`, or `auto, fallback`).
+Start order in `server.cfg` matters. Bridged resources should be running before scripts that depend on them. Set `Config.Debug = true` and restart to see what each module resolved to: every side prints one line per module with its provider.
+
+Two values are not resources and can be pinned like any other:
+
+| Value | Meaning |
+| --- | --- |
+| `internal` | The bridge's own built-in version. It works with nothing else installed. Used by notifications, fuel, and dispatch. |
+| `none` | Nothing was found, so the module does nothing. Used by banking, doorlock, phone, and weather. Pin it to switch a module off. |
 
 Valid values for each setting, in check order: [Supported](/newb_bridge/supported).
 

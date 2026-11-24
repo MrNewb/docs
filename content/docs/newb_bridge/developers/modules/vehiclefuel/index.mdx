@@ -4,7 +4,7 @@ description: "Vehicle fuel. Fuel is applied on the client (most providers are cl
 icon: "IconGasStation"
 ---
 
-Fuel is applied on the client (most providers are client-driven). The server path relays through `Newb_Bridge:client:setFuel` so server scripts can still set fuel for a player.
+Fuel is applied on the client (most providers are client-driven). The server path relays through `Newb_Bridge:client:fuelSet` so server scripts can still set fuel for a player.
 
 - [Client](/newb_bridge/developers/modules/vehiclefuel/client) — local `set(vehicle, amount)`
 - [Server](/newb_bridge/developers/modules/vehiclefuel/server) — `set(source, vehicle, amount)` relay

@@ -51,4 +51,4 @@ Field mapping:
 | `data.vehicle` / `plate` / `ped` | — | Not on the Newb_Bridge payload |
 | default jobs `{ 'police' }` | same if you pass `'police'` or omit handling on your side |
 
-Internal dispatch (`Config.Dispatch = "internal"`) draws a blip + notify on `Newb_Bridge:dispatch:internalAlert`. Do not trigger `community_bridge:Client:DispatchAlert`.
+The built-in dispatch (`internal`) draws a blip + notify on `Newb_Bridge:client:dispatchAlertReceived`. Do not trigger `community_bridge:Client:DispatchAlert`.

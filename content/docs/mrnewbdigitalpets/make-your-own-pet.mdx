@@ -1,0 +1,211 @@
+---
+title: "Make your own digital pet"
+description: "Advanced users only. Add your own pet species to DigitalPets with your own sprite sheet, then tune it in the setup panel."
+icon: "IconPalette"
+---
+
+<Callout type="error">
+  **Advanced users only.** A custom pet needs image editing skills (you draw a 1536x1024 sprite sheet yourself) and access to your server's files. The setup panel cannot create images or upload files for you. A sheet that is the wrong size or badly drawn shows a broken pet to your players. If you are not comfortable with that, use the built-in pets: they need nothing from this page.
+</Callout>
+
+A custom pet is a folder. Inside it are a small text file that describes the pet and a few images you drew. The server reads the folder when the resource starts and adds the pet to the hatch list next to the built-in pets. It then works everywhere a built-in pet does: hatching and rarity, the care screen, the shop, hats, the Takosu fight, and as a relative in the family features.
+
+## What you need
+
+- An image editor that exports **WebP with transparency** and can work on a 128 pixel grid (Aseprite, Photoshop with a WebP plugin, GIMP, Krita, or export PNG and convert).
+- Python 3 on your own computer, to run the checker that ships with the script. Pillow (`pip install pillow`) is optional and makes the checker look inside the images.
+- File access to the server's resource folder, and permission to restart the resource.
+- Patience. A full sheet is 96 frames.
+
+## The template pack
+
+The script ships a ready-made pack in `[INSTALL]/custom_pet_template/`:
+
+| File | What it is |
+| --- | --- |
+| `pet.template.json` | A pet definition with sensible values, ready to copy and edit |
+| `pet.template.README` | Explains every field of the definition (JSON cannot hold comments) |
+| `sheet_template.png` | The 1536x1024 sprite sheet grid, with row names, a safe area, the foot line and the head anchor marked. Paint on a layer above it |
+| `sheet_blank.png` | The same size, fully transparent and without guides. Export your art from this |
+| `portrait_template.png` | The 256x256 portrait guide |
+| `fight_sheet_template.png` | The optional fight sheet grid, 1536x2048, with every row named |
+| `example_pet/` | A working folder with a placeholder blob creature. It is switched off until you turn it on |
+| `check_pet.py` | The checker script |
+
+## The folder layout
+
+Everything lives in the `custom` folder in the script's root:
+
+```
+MrNewb_DigitalPets/
+  custom/
+    pets/
+      index.json          the list of pet folders to load
+      my_pet/
+        pet.json          the definition
+        sheet.webp        required, 1536x1024
+        portrait.webp     required, 256x256
+        fight.webp        optional, 1536x2048
+```
+
+`index.json` is a plain list of folder names, for example `["my_pet", "other_pet"]`. The server cannot look through folders by itself, so **a pet that is not listed is not loaded**. The `custom` folder is left readable (not encrypted) on purpose, so you can edit it.
+
+The folder name is the pet's **id**. Use 2 to 20 characters: lowercase letters, digits and `_`. It must not be the id of a built-in pet. Never change the id once players own that pet, because pets remember their species by it.
+
+## The sprite sheet
+
+`sheet.webp` is **exactly 1536x1024**: 12 columns by 8 rows of 128 pixel frames, lossless WebP with a transparent background.
+
+Each row is one animation:
+
+| Row | Animation | Used when |
+| --- | --- | --- |
+| 0 | idle | The pet is fine and waiting |
+| 1 | walk | A walk, or the pet moving about |
+| 2 | eat | Feeding and drinking |
+| 3 | sleep | Resting or lights out. Hats are hidden on this row |
+| 4 | happy | A hug, a game, a clean, or a good mood |
+| 5 | sad | Refusing, a low mood, dirty or hungry |
+| 6 | fight | The fight stance (also borrowed for attacks when you have no fight sheet) |
+| 7 | sick | The pet is ill, or takes medicine |
+
+The 12 columns are 12 frames of the animation. **Even columns (0, 2, 4, 6, 8, 10) are the classic 6 frame cycle and odd columns (1, 3, 5, 7, 9, 11) are the in-between frames.** The pet plays all 12 smoothly. Some screens (the small icon, a few mini games) only read the even columns, so the even frames must work on their own as a complete loop.
+
+Tips for a clean sheet:
+
+- Keep the pet at the same size and the same place in every frame, feet on the foot line (the green line, 117 pixels down in the frame). Otherwise it jitters.
+- Stay inside the blue safe area. Art that touches the frame edge is cut off or looks cramped.
+- Draw crisp pixel art with a limited palette and a dark outline to match the built-in pets. Do not scale it with smoothing.
+- The pet faces forward or slightly right.
+
+## The portrait
+
+`portrait.webp` is **exactly 256x256**, transparent background. It is used where a sheet frame is too small or too plain, for example on the fight and in some mini games. Centre the pet in the blue box of `portrait_template.png`.
+
+## The fight sheet (optional)
+
+`fight.webp` is **exactly 1536x2048**: 12 columns by 16 rows of 128 pixel frames. Without it, the pet still fights: the fight borrows frames from the main sheet (the fight row for attacks, sad for being hit, sick for a knockout, happy for a win). That works, but a real fight sheet looks much better.
+
+| Row | Move | Row | Move |
+| --- | --- | --- | --- |
+| 0 | idle | 8 | jump (the intro) |
+| 1 | walk | 9 | dodge |
+| 2 | jab | 10 | hurt |
+| 3 | kick | 11 | hurt hard |
+| 4 | haymaker | 12 | ko |
+| 5 | special | 13 | dizzy |
+| 6 | windup | 14 | win |
+| 7 | guard | 15 | taunt |
+
+The fighter faces **right**. Frame 0 of row 0 is also the small picture on the fight bar. Set the **fight** field in `pet.json` to `true` only when you supply this file.
+
+## Hat anchors
+
+Built-in pets have a measured hat position for every frame. A custom pet has no per-frame data, so you give **one fixed head anchor** in `pet.json`: three numbers `[x, y, scale]` in pixels of one 128 pixel frame.
+
+- `x` is the middle of the head, across.
+- `y` is the top of the head, down.
+- `scale` is about how wide the head is.
+
+`[64, 30, 56]` is what the built-in pets use, and it is the pink cross on `sheet_template.png`. If a pet's head sits higher, lower, or moves a lot in one animation, add an override for just that row, for example for the walk row. Hats are hidden on the sleep row.
+
+The setup panel's preview draws a hat from your sheet's idle row so you can see whether the anchor is right.
+
+## Try the example pet first
+
+Before you draw anything, see a working pet on your own server. The template pack contains `example_pet/`, a placeholder blob creature that is switched off by default.
+
+1. Copy the `example_pet` folder from `[INSTALL]/custom_pet_template/` into `custom/pets/` on your server.
+2. Open `custom/pets/index.json` and change `[]` to `["example_pet"]`.
+3. Restart the resource and reconnect.
+4. Run `/setupdigitalpets`, press **Advanced settings** on the left rail, then open **General**, then **Custom pets**. The example shows as **OK, not hatching**, with a live preview of its idle row.
+5. Turn **Can hatch** on and press **Save** if you want to hatch it, or leave it off and only look at the preview.
+6. When you are done, switch **Can hatch** off again (or remove it from `index.json` on a fresh server) so your players do not hatch a placeholder.
+
+Open the example's `pet.json` and `sheet.webp` next to the template files. It is the quickest way to see what a finished folder looks like before you make your own.
+
+## Step by step
+
+1. **Copy the template.** Make a folder `custom/pets/my_pet/` (pick your own id). Copy `pet.template.json` into it and rename it to `pet.json`.
+2. **Edit `pet.json`.** Set the id (it must match the folder name), the name, the colours and the rest. `pet.template.README` explains every field. You can also build this file in the setup panel (see below) and copy the text.
+3. **Draw the sheet.** Open `sheet_template.png` as a guide layer and draw 12 frames for each of the 8 rows above it. Hide the guide, then export your art as a lossless WebP at exactly 1536x1024 named `sheet.webp`. `sheet_blank.png` is the same size with nothing on it, if you would rather start there.
+4. **Draw the portrait.** 256x256, saved as `portrait.webp`.
+5. **Optional: draw the fight sheet.** 1536x2048, saved as `fight.webp`, and set the fight field in `pet.json` to `true`.
+6. **Check it** with the checker script (next section).
+7. **Install it** (see Installing).
+
+## The checker script
+
+Run it from the template pack, on your pet's folder:
+
+```
+python check_pet.py path/to/custom/pets/my_pet
+```
+
+It prints `OK`, `WARN` and `ERROR` lines in plain language and exits with an error code if anything would stop the server from loading the pet. It checks:
+
+- the fields in `pet.json` (id matches the folder, colours, ranges, spelling of field names);
+- the size of every image, and that each has transparency;
+- with Pillow installed: empty frames, a sheet that has only 6 columns drawn, art touching the frame edge, and dark fringes on soft edges.
+
+Fix every `ERROR`. A pet with an error is skipped by the server. A `WARN` is worth a look but does not stop the pet.
+
+## Installing
+
+1. Upload the pet's folder to `custom/pets/` in the script's root on your server.
+2. Open `custom/pets/index.json` and add the folder name to the list, for example `["my_pet"]`.
+3. Restart the resource. Players who are already online need to reconnect so they receive the new files.
+4. Look at the server console. A pet that was skipped prints a yellow line naming the file and the problem. When the pet loads, you see `Custom pets: 1 loaded, 0 skipped`.
+
+The server never stops because of a bad pet. It skips that pet, tells you why, and carries on with the others.
+
+## Adding it through the setup panel
+
+Run `/setupdigitalpets` as an admin. **Custom pets is hidden until you turn Advanced on.** Press **Advanced settings** at the bottom of the left rail (it then reads **Advanced is on**). The page then appears under **General**, in the page list on the **Overview**, and in the search box. Press the button again to hide it. If you switch Advanced off while you are on the page, the panel takes you back to the Overview. Your custom pets keep working either way; this only decides whether the page is shown.
+
+Open **General**, then **Custom pets**. A red **Advanced users only** notice sits at the top of the page.
+
+- **Installed custom pets** lists every pet in `index.json`. Each shows **OK** or **Invalid**. An invalid pet lists the reasons. A good pet shows a live preview of its idle row at 128 pixels, with a hat you can pick, and a check of the real sheet size.
+- For each pet you can change **Can hatch**, **Name**, **Hatch weight** and the four colours. These save with the normal **Save** button and are stored in your settings, never in the pet's folder. The sprite files always come from the folder.
+- **Can hatch** off, or a **Hatch weight** of 0, stops new hatches of that pet. Pets that already have the species keep it and keep working.
+- **Add a custom pet** is a guided form (id, name, shape, affinity, weight, colours, hat anchor, fight sheet). It writes the `pet.json` text for you and lists exactly which files to put where, plus the line to add to `index.json`. Use **Copy**, or **Download** if your game allows it.
+
+The panel does not write any files to your server. Copy the text and the images across yourself, then restart the resource.
+
+## Export and import
+
+- **Export** on a pet, or **Export all**, produces a text bundle with each definition (including your changes to the name, weight, switch and colours) and a checklist of the files it needs.
+- On another server, paste that text into **Import a definition** and press **Import definition**. Press **Use in the form** to load a pet into the Add form, which then shows the files and the `index.json` line.
+
+The bundle carries the definition only. **The sprite files are not inside it.** Copy `sheet.webp`, `portrait.webp` and `fight.webp` across by hand.
+
+## Common mistakes
+
+| Mistake | What happens | Fix |
+| --- | --- | --- |
+| The sheet is the wrong size (for example 1536x1536, or a scaled export) | The pet is skipped and the console names the size it found | Export at exactly 1536x1024 with no resampling |
+| A 6 frame sheet (768 wide, or only the left half drawn) | Skipped, or half the animation is empty | Draw all 12 columns. Even columns are the main cycle, odd columns are the in-betweens |
+| Premultiplied or black-matte edges | A dark fringe around the pet | Export with straight (non premultiplied) alpha, and no black background layer |
+| The id in `pet.json` does not match the folder name | Skipped | Make them identical, lowercase |
+| The id is a built-in pet's id | Skipped | Pick another id |
+| Forgot to add the folder to `index.json` | The pet never loads | Add the name to the list |
+| Hat floats or sits inside the head | Wrong hat anchor | Edit the anchor (x is the middle of the head, y is the top) |
+| The pet jitters while it plays | Feet or size change between frames | Keep the pet on the foot line at one size |
+| Switched the fight option on without a `fight.webp` | Skipped | Add the file, or turn the option off |
+| The sprite sheet is lossy or has no transparency | A solid box or smudged pixels | Save as lossless WebP with alpha |
+
+## Troubleshooting
+
+**The pet is not in the setup panel list.** It is not in `index.json`, or `index.json` is not valid JSON. It must look like `["my_pet"]`.
+
+**The panel says Invalid.** Read the reasons under the pet. They are the same messages the console printed at start.
+
+**The pet shows as OK but the preview is empty or says the sheet does not load.** The server accepted the files, but your game did not receive them. Restart the resource and reconnect. New files are only sent when the resource starts.
+
+**Nothing hatches my pet.** Check that Can hatch is on, the Hatch weight is above 0, and the pet is not marked secret. Hatching rolls among every pet that can hatch, so with 31 built-in pets and weight 1 you will see it about once in 32 hatches.
+
+**Existing players' pets look wrong after I changed the files.** The species stays the same, so the new art simply shows. Keep the id unchanged and the frame layout the same.
+
+**I want to remove a pet.** Delete its entry from `index.json` and restart. Pets that already have that species are given a different, random species the next time they are read, so only do this on a fresh server or after telling players. To retire a pet without that, switch **Can hatch** off instead.
+
+**Fight looks odd with my pet.** Without a fight sheet the fight borrows rows from the main sheet. Draw a fight sheet for the best result.

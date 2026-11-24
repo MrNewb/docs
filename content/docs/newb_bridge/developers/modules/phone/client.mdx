@@ -1,0 +1,10 @@
+---
+title: "Client"
+description: "Phone (client). Regular clients don't load bridge.phone, they get a no-op table. Phones are server-only so a client can never ask the bridge to send mail."
+---
+
+# Phone (client)
+
+Regular clients don't load `bridge.phone`: every call does nothing and returns `nil`.
+
+Phones are server-only on purpose. A client-callable email path would let any player send mail through your phone resource. If a client script needs to trigger an email, send your own server event, check the request there, then call [`sendEmail`](/newb_bridge/developers/modules/phone/server).

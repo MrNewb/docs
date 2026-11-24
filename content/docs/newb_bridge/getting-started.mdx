@@ -36,7 +36,7 @@ Leave providers on `"auto"` in `settings/bridge_resources.lua`, or pin them. Opt
 
 ### Check it works [step]
 
-Restart the server and read the console. The bridge prints which provider each module resolved to, and a yellow `No installed provider found for ...` line for anything it could not match. A module you never use does not need a provider. If something looks wrong, see [Troubleshooting](/newb_bridge/troubleshooting). Details on pinning: [Configuration](/newb_bridge/configuration).
+Restart the server and read the console. A yellow `No installed provider found for ...` line means a module could not match a supported resource. To see which provider every module resolved to, set `Config.Debug = true` in `settings/bridge_resources.lua` and restart. A module you never use does not need a provider. If something looks wrong, see [Troubleshooting](/newb_bridge/troubleshooting). Details on pinning: [Configuration](/newb_bridge/configuration).
 
 ## Next steps
 

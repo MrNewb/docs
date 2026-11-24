@@ -9,9 +9,13 @@ icon: "IconKey"
 - [Client](/newb_bridge/developers/modules/vehiclekeys/client) — entity-handle grants (provider-dependent)
 - [Server](/newb_bridge/developers/modules/vehiclekeys/server) — authoritative grants
 
-Auto-detect order: `MrNewbVehicleKeys` → `qbx_vehiclekeys` → `cd_garage` → `mVehicle` → `okokGarage` → `qb-vehiclekeys` → `vehicles_keys` → `wasabi_carlock` → `Renewed-Vehiclekeys` → `mk_vehiclekeys` → `ak47_vehiclekeys` → `0r-vehiclekeys`.
+Auto-detect order: `MrNewbVehicleKeys` → `kora_vehiclekeys` → `jg-vehiclekeys` → `qbx_vehiclekeys` → `cd_garage` → `mVehicle` → `okokGarage` → `qb-vehiclekeys` → `vehicles_keys` → `wasabi_carlock` → `Renewed-Vehiclekeys` → `mk_vehiclekeys` → `ak47_vehiclekeys` → `0r-vehiclekeys`.
 
 When **MrNewbVehicleKeys** is the active key resource, these calls route into its grant/revoke flow.
+
+- **kora_vehiclekeys** and **jg-vehiclekeys** are checked before `qbx_vehiclekeys` and `qb-vehiclekeys` because they provide those names.
+- **kora_vehiclekeys** has no client exports, so client `give` / `remove` do nothing on it. Server `give` stores a session key that lasts until the player disconnects.
+- **wasabi_carlock** receives the vehicle's model with a server grant, so the right key item is used.
 
 For plate changes, lock profiles, rentals, and temp keys, call the key resource's own exports. This page is only the bridge wrapper.
 

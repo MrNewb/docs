@@ -71,6 +71,8 @@ const groups: Record<string, ProviderGroup> = {
     id: 'vehicle-keys',
     rows: [
       auto('MrNewbVehicleKeys'),
+      auto('kora_vehiclekeys', 'No client exports: grant keys from the server. Keys last until the player disconnects.'),
+      auto('jg-vehiclekeys', 'Detected before qbx_vehiclekeys and qb-vehiclekeys, which it provides.'),
       auto('qbx_vehiclekeys'),
       auto('cd_garage'),
       auto('mVehicle'),
@@ -98,7 +100,7 @@ const groups: Record<string, ProviderGroup> = {
       auto('ps-fuel'),
       auto('qs-fuelstations'),
       auto('ti_fuel'),
-      fallback('internal', 'Native fuel when nothing in the list is installed.'),
+      fallback('internal', 'The built-in version: native fuel. Used when nothing in the list is installed.'),
     ],
   },
   menu: {
@@ -120,8 +122,8 @@ const groups: Record<string, ProviderGroup> = {
       auto('t-notify'),
       auto('lation_ui'),
       auto('wasabi_notify'),
-      auto('zsx_uiv2'),
-      fallback('internal', 'Built-in notify when nothing in the list is installed.'),
+      auto('ZSX_UIV2'),
+      fallback('internal', 'The built-in version: the bridge toast. Used when nothing in the list is installed.'),
     ],
   },
   inputs: {
@@ -137,7 +139,7 @@ const groups: Record<string, ProviderGroup> = {
       auto('cd_drawtextui'),
       auto('jg-textui'),
       auto('lab-TextUI'),
-      auto('zsx_uiv2'),
+      auto('ZSX_UIV2'),
     ],
   },
   'progress-bar': {
@@ -147,7 +149,7 @@ const groups: Record<string, ProviderGroup> = {
       auto('lation_ui'),
       auto('wasabi_uikit'),
       auto('progressbar'),
-      auto('zsx_uiv2'),
+      auto('ZSX_UIV2'),
     ],
   },
   'boss-menu': {
@@ -164,6 +166,54 @@ const groups: Record<string, ProviderGroup> = {
       auto('m-BossMenu'),
     ],
   },
+  banking: {
+    id: 'banking',
+    rows: [
+      auto('Renewed-Banking'),
+      auto('qb-banking'),
+      auto('okokBanking'),
+      auto('fd_banking'),
+      auto('kartik-banking'),
+      auto('tgg-banking'),
+      auto('tgiann-bank'),
+      auto('wasabi_banking'),
+      fallback('none', 'Nothing installed: the module does nothing. Balance is 0 and changes return false.'),
+    ],
+  },
+  doorlock: {
+    id: 'doorlock',
+    rows: [
+      auto('ox_doorlock'),
+      auto('qb-doorlock'),
+      auto('rcore_doorlock'),
+      auto('doors_creator'),
+      fallback('none', 'Nothing installed: the module does nothing.'),
+    ],
+  },
+  phone: {
+    id: 'phone',
+    rows: [
+      auto('kora_phone', 'Provides sd-phone, lb-phone and yseries, so it is detected first.'),
+      auto('sd-phone', 'Provides lb-phone, qs-smartphone, gksphone and qb-phone.'),
+      auto('sky_phone', 'Provides lb-phone, qs-smartphone and yseries. Cannot send email: sendEmail returns false.'),
+      auto('lb-phone'),
+      auto('gksphone'),
+      auto('okokPhone'),
+      auto('qs-smartphone'),
+      auto('yseries'),
+      auto('qb-phone', 'Detected last, because it is often left installed beside the phone actually in use.'),
+      fallback('none', 'Nothing installed: the module does nothing. Everything returns false.'),
+    ],
+  },
+  weather: {
+    id: 'weather',
+    rows: [
+      auto('Renewed-Weathersync'),
+      auto('qb-weathersync'),
+      auto('cd_easytime'),
+      fallback('none', 'Nothing installed: the module does nothing.'),
+    ],
+  },
   dispatch: {
     id: 'dispatch',
     rows: [
@@ -178,7 +228,7 @@ const groups: Record<string, ProviderGroup> = {
       auto('codem-dispatch'),
       auto('wasabi_mdt'),
       auto('redutzu-mdt'),
-      fallback('internal', 'Used when no dispatch resource is installed. On-duty blip + notification.'),
+      fallback('internal', 'The built-in version: on-duty blip + notification. Used when no dispatch resource is installed.'),
     ],
   },
 }
@@ -250,7 +300,7 @@ export function ProviderKey() {
             <td>
               <Status kind="fallback" />
             </td>
-            <td className="provider-note">Used when nothing in the list is installed, or as the dispatch default.</td>
+            <td className="provider-note">Not a resource. `internal` is the bridge's built-in version, `none` means the module does nothing. Used when nothing in the list is installed.</td>
           </tr>
         </tbody>
       </table>

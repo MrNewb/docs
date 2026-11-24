@@ -1,0 +1,25 @@
+---
+title: "Doorlock"
+description: "Doorlock. Bridge.Doorlock → bridge.doorlock. Full API: client · server."
+icon: "IconDoor"
+---
+
+`Bridge.Doorlock` → `bridge.doorlock`. Full API: [client](/newb_bridge/developers/modules/doorlock/client) · [server](/newb_bridge/developers/modules/doorlock/server).
+
+`ToggleDoorLock(doorId, toggle)` took a boolean. Newb_Bridge has one call per state.
+
+| community_bridge | Newb_Bridge |
+| --- | --- |
+| `ToggleDoorLock(doorId, true)` (server) | `lockDoor(doorId)` |
+| `ToggleDoorLock(doorId, false)` (server) | `unlockDoor(doorId)` |
+| `GetClosestDoor()` (client) | `getClosestDoor()` |
+
+```lua
+-- Old
+Bridge.Doorlock.ToggleDoorLock(doorId, true)
+
+-- New
+bridge.doorlock.lockDoor(doorId)
+```
+
+Note that `rcore_doorlock` treats its own state `0` as locked, which the bridge handles for you.

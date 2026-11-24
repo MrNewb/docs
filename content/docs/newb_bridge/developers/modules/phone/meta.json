@@ -1,0 +1,8 @@
+{
+  "title": "Phone",
+  "icon": "IconDeviceMobile",
+  "pages": [
+    "client",
+    "server"
+  ]
+}

@@ -1,14 +1,16 @@
 ---
-title: "Anticheat models"
-description: "Object models to allow so anticheats do not delete the handheld pet."
+title: "Anticheat whitelist"
+description: "Models, particle effects and other things to allow so anticheats do not delete or flag Digital Pets."
 icon: "IconShield"
 ---
 
-Allow these object models so they are not deleted as unauthorized props.
+Allow these so they are not deleted or flagged as unauthorized. Everything below is created on the player's own client for a short time and is cleaned up when the task ends or the resource stops.
+
+## Object models
 
 | Model | Used as |
 | --- | --- |
-| `mrnewb_takosu` | Handheld while the toy is open |
+| `mrnewb_takosu` | The handheld while the toy is open, and the glowing prop for outings, swims and Find Uncle hunts |
 | `jim_g_digital_pets_1` | Older handheld (still streamed) |
 | `jim_g_digital_pets_2` | Older handheld (still streamed) |
 | `jim_g_digital_pets_3` | Older handheld (still streamed) |
@@ -23,3 +25,38 @@ Allow these object models so they are not deleted as unauthorized props.
 | `jim_g_digital_pets_12` | Older handheld (still streamed) |
 
 The current handheld is `mrnewb_takosu`. Saved pet state can still ask for one of the `jim_g_digital_pets_*` models, so allow those too. Drawables live under `stream/`, with `stream/jim_g_digital_pets.ytyp`. Do not move or rename them.
+
+How the `mrnewb_takosu` object is spawned:
+
+- **Handheld.** One networked object attached to the player's hand while the toy is open. Other players can see it. It is deleted when the toy closes, and a sweep on start and on spawn removes leftovers that carry this resource's tag.
+- **Outing, swim and Find Uncle props.** A local, non-networked object placed on the ground (or floating on the water for swims) near the destination, with a coloured outline and a glow. It only exists for the player who is on that task, and it is collected by walking up to it.
+
+## Particle effects
+
+| Asset | Effect | Used for |
+| --- | --- | --- |
+| `scr_xs_celebration` | `scr_xs_confetti_burst` | A one-shot confetti burst when an outing prop or an uncle is collected |
+| `scr_rcbarry1` | `scr_alien_teleport` | A looped glow on the outing and Find Uncle props (removed when the prop goes) |
+
+## Shopkeeper ped
+
+The Digital Pet shop is a ped in the world.
+
+| Item | Default | Notes |
+| --- | --- | --- |
+| Ped model | `u_m_y_rsranger_01` | Set on the Shopkeeper page of `/setupdigitalpets`. If you change the model, allow the new model too |
+| Idle scenario | `WORLD_HUMAN_STAND_IMPATIENT` | Chosen from a list on the same page (`WORLD_HUMAN_CLIPBOARD`, `WORLD_HUMAN_STAND_MOBILE`, `WORLD_HUMAN_HANG_OUT_STREET`, `WORLD_HUMAN_GUARD_STAND`, or none) |
+
+The ped is local to each player (not networked), frozen and invincible, and is only created while the player is near it. The shop menu itself is a Newb_Bridge dialogue.
+
+## Other things you may see
+
+| What | Detail |
+| --- | --- |
+| Frontend sound | `PICK_UP` in `HUD_FRONTEND_DEFAULT_SOUNDSET`, played when a prop is collected |
+| World sound | `Beep_Red` in `DLC_HEIST_HACKING_SNAKE_SOUNDS`, a faint beep near an uncle prop |
+| Animation | `cellphone@` / `cellphone_text_read_base` while the handheld is held (changeable on the Handheld page) |
+| Scripted camera and DUI | In DUI display mode the toy uses a scripted camera and replaces the texture `takosu_screen` in the `mrnewb_takosu` dictionary with a runtime texture named `takosu_screen_dui` (dictionary `mrnewb_digitalpets_dui`) |
+| Entity outline and light | `SetEntityDrawOutline` and a light drawn near the glowing props |
+
+If your anticheat blocks particle assets by name, allow the two assets above. Nothing here spawns vehicles or explosions, and it does not touch the player's weapons or health. In DUI display mode the player is held still while the toy is open, and released when it closes. The shop dialogue is drawn by Newb_Bridge, which also hides the player and frames a camera on the shopkeeper while it is open.

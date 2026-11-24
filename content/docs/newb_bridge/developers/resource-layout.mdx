@@ -32,4 +32,4 @@ List scripts explicitly in load order. Avoid `**` globs, since they load files i
 
 ## Player lifecycle
 
-Register world objects on `Newb_Bridge:client:playerLoad` and tear them down on `Newb_Bridge:client:playerUnload`. See [Events](/newb_bridge/developers/events).
+Register world objects on `Newb_Bridge:client:playerLoaded` and tear them down on `Newb_Bridge:client:playerUnloaded`. See [Events](/newb_bridge/developers/events).

@@ -1,0 +1,8 @@
+{
+  "title": "Weather",
+  "icon": "IconCloud",
+  "pages": [
+    "client",
+    "server"
+  ]
+}

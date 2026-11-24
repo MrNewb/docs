@@ -1,0 +1,23 @@
+---
+title: "Client"
+description: "Doorlock (client). getClosestDoor returns the id of the nearest door as the doorlock resource names it."
+---
+
+# Doorlock (client)
+
+## `getClosestDoor()`
+
+```lua
+local doorId = bridge.doorlock.getClosestDoor()
+```
+
+| **Returns** | `string \| number \| table \| nil` — the nearest door as the doorlock resource identifies it, `nil` when none is close or no doorlock resource is installed |
+
+The id format belongs to the resource: a string on `ox_doorlock`, a number on `rcore_doorlock`, and the door entry or id on `qb-doorlock` and `doors_creator`. Do not build your own. Send the value to your server and pass it to [`lockDoor` / `unlockDoor`](/newb_bridge/developers/modules/doorlock/server) unchanged.
+
+```lua
+local doorId = bridge.doorlock.getClosestDoor()
+if doorId then
+    TriggerServerEvent('myscript:server:doorChosen', doorId)
+end
+```

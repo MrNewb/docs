@@ -1,0 +1,20 @@
+---
+title: "Phone"
+description: "Phone. Server-only. Look up a player's phone number and send an email to their phone through the configured phone resource (Config.Phone)."
+icon: "IconDeviceMobile"
+---
+
+Server-only. Looks up a player's phone number and sends an email to their phone through the active phone resource (`Config.Phone`).
+
+- [Client](/newb_bridge/developers/modules/phone/client) — noop (the module is not loaded on regular clients)
+- [Server](/newb_bridge/developers/modules/phone/server) — `getPlayerPhone` / `sendEmail`
+
+Auto-detect order: `kora_phone` → `sd-phone` → `sky_phone` → `lb-phone` → `gksphone` → `okokPhone` → `qs-smartphone` → `yseries` → `qb-phone`. With none installed it resolves to `none` and everything returns `false`.
+
+kora_phone, sd-phone and sky_phone also provide the names of other phones (`lb-phone`, `qs-smartphone`, `yseries`, and for kora_phone `sd-phone`), so they are checked first. Otherwise the bridge would pick the name they impersonate.
+
+```lua
+-- Server
+local number = bridge.phone.getPlayerPhone(src)
+bridge.phone.sendEmail(src, 'dispatch@lspd.gov', 'New call', 'Robbery at Legion Square.')
+```

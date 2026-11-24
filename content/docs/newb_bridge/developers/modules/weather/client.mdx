@@ -1,0 +1,35 @@
+---
+title: "Client"
+description: "Weather (client). disableSync and enableSync switch the weather sync script off and on for the local player."
+---
+
+# Weather (client)
+
+Always pair the calls. Leaving sync off means the player stops receiving the server weather.
+
+## `disableSync()`
+
+```lua
+bridge.weather.disableSync()
+```
+
+Stops the weather script from applying server weather to this player.
+
+## `enableSync()`
+
+```lua
+bridge.weather.enableSync()
+```
+
+Starts applying server weather again.
+
+```lua
+-- Entering a custom interior
+bridge.weather.disableSync()
+SetWeatherTypeNowPersist('EXTRASUNNY')
+
+-- Leaving it
+bridge.weather.enableSync()
+```
+
+Neither call returns anything. A missing or failing weather resource is ignored. See [Missing or broken providers](/newb_bridge/developers/modules#missing-or-broken-providers).

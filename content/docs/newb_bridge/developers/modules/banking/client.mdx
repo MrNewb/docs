@@ -1,0 +1,8 @@
+---
+title: "Client"
+description: "Banking (client). Regular clients don't load bridge.banking, they get a no-op table. Move money from the server."
+---
+
+# Banking (client)
+
+Regular clients don't load `bridge.banking`: every call does nothing and returns `nil`. Move money from the [server](/newb_bridge/developers/modules/banking/server).

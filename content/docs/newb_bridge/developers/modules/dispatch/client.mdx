@@ -7,4 +7,4 @@ description: "Dispatch (client). Regular clients don't load bridge.dispatch — 
 
 Regular clients don't load `bridge.dispatch` — they get a no-op table. Send alerts from the [server](/newb_bridge/developers/modules/dispatch/server).
 
-The host client listens for `Newb_Bridge:dispatch:internalAlert` and draws a temporary blip + notification when `Config.Dispatch` is `"internal"`.
+The host client listens for `Newb_Bridge:client:dispatchAlertReceived` and draws a temporary blip + notification when `Config.Dispatch` is `"internal"`.

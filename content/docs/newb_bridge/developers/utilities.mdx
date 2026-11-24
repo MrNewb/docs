@@ -49,7 +49,7 @@ exports.Newb_Bridge:AddInteraction('pharmacy_clerk', {
 RemoveInteraction(id, target)
 ```
 
-| Side | client removes locally; server triggers `Newb_Bridge:Interaction:Remove` |
+| Side | client removes locally; server triggers `Newb_Bridge:client:interactionRemoved` |
 | **Returns** | `boolean` |
 
 Server `target` is an optional player source. Omit it to broadcast to every client. A bad `target` does **not** fall back to broadcast.
@@ -478,7 +478,7 @@ Dialogue.OpenMenu(id, ped)
 
 ## `VersionCheck(repoPath, resourceName)` (server)
 
-Checks GitHub `resources.json` for newer versions and prints patch notes to the server console.
+Checks GitHub `resources.json` for newer versions and prints patch notes to the server console. It returns immediately and prints nothing when `Config.VersionCheck = false`, so the one setting silences every MrNewb script that calls it.
 
 ```lua
 VersionCheck(repoPath, resourceName)

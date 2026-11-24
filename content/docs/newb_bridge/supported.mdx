@@ -56,9 +56,29 @@ icon: "IconCircleCheck"
 
 ## Dispatch
 
-Detected in the order below. `internal` is used when none is installed.
+Detected in the order below. `internal` (the built-in version) is used when no dispatch resource is installed.
 
 <ProviderTable group="dispatch" />
+
+## Banking
+
+Society (job) accounts. `none` is used when no banking resource is installed, and the module does nothing.
+
+<ProviderTable group="banking" />
+
+## Doorlock
+
+<ProviderTable group="doorlock" />
+
+## Phone
+
+`kora_phone`, `sd-phone` and `sky_phone` provide the names of other phones, so they are detected first. `none` is used when no phone resource is installed.
+
+<ProviderTable group="phone" />
+
+## Weather
+
+<ProviderTable group="weather" />
 
 ## Locales
 

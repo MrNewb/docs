@@ -34,7 +34,7 @@ print('Inventory:', Config.Inventory, Config.Providers.inventory)
 print(bridge.framework.getResourceName(), bridge.inventory.getResourceName())
 ```
 
-The host also prints a one-time `detected scripts:` block to the server console on start.
+Set `Config.Debug = true` in `settings/bridge_resources.lua` and the host prints one line per module on each side when it starts, with the provider it loaded (or `no client implementation` / `no server implementation` for a module that only exists on the other side).
 
 ## IDE support
 

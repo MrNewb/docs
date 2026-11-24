@@ -1,11 +1,13 @@
 ---
 title: "Client"
-description: "Text UI (client). Client-only on-screen helper text (ox_lib, lation_ui, okokTextUI, cd_drawtextui, jg-textui, lab-TextUI, zsx_uiv2)."
+description: "Text UI (client). Client-only on-screen helper text (ox_lib, lation_ui, okokTextUI, cd_drawtextui, jg-textui, lab-TextUI, ZSX_UIV2)."
 ---
 
 # Text UI (client)
 
-Client-only on-screen helper text (`ox_lib`, `lation_ui`, `okokTextUI`, `cd_drawtextui`, `jg-textui`, `lab-TextUI`, `zsx_uiv2`).
+Client-only on-screen helper text (`ox_lib`, `lation_ui`, `okokTextUI`, `cd_drawtextui`, `jg-textui`, `lab-TextUI`, `ZSX_UIV2`).
+
+On `ZSX_UIV2` the bridge uses its persistent TextUI exports, so calling `showTextUI` every tick keeps one entry instead of stacking a new one.
 
 The `lab-TextUI` adapter ignores `options` and `isTextUIOpen()` always returns `false`.
 

@@ -1,0 +1,26 @@
+---
+title: "Weather"
+description: "Weather. Bridge.Weather → bridge.weather. Full API: client."
+icon: "IconCloud"
+---
+
+`Bridge.Weather` → `bridge.weather`. Full API: [client](/newb_bridge/developers/modules/weather/client). Client-only.
+
+`ToggleSync(toggle)` took a boolean. Newb_Bridge has one call per state.
+
+| community_bridge | Newb_Bridge |
+| --- | --- |
+| `ToggleSync(false)` | `disableSync()` |
+| `ToggleSync(true)` | `enableSync()` |
+
+```lua
+-- Old
+Bridge.Weather.ToggleSync(false)
+-- ...
+Bridge.Weather.ToggleSync(true)
+
+-- New
+bridge.weather.disableSync()
+-- ...
+bridge.weather.enableSync()
+```
