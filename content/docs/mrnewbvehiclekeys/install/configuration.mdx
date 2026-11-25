@@ -13,6 +13,7 @@ The left rail groups the pages: Keys, Key fob, Locking and engine, Break-in, Veh
 - **Advanced settings** in the rail shows the extra pages and settings (keybinds, proximity locks, eye-target options, key types, fob buttons, vehicle rules, admin and debug, and more). Easy mode hides them.
 - **Save** shows how many changes are waiting and applies them all at once. It reads Saved when nothing is pending. If you close with unsaved changes, the panel asks first.
 - After a save, a note lists any setting that needs a resource restart.
+- **Export or import** (Advanced) copies your whole setup as JSON, or loads one you paste in. The export starts with the MrNewbVehicleKeys version, the Newb_Bridge version, and the framework, inventory, target and other providers Newb_Bridge is using, which is what support asks for. The Discord webhook is never included and an import keeps your own. If the export came from a different version, the message after the import names both versions. An import only changes the panel on screen until you press **Save**, and **Undo** in the message that appears puts it back.
 - **Reset to the factory setup** replaces every saved setting with the seed defaults. The panel keeps a copy for the session so you can restore it.
 
 ## How settings are stored

@@ -98,6 +98,7 @@ Commands: [Commands](/mrnewbvehiclekeys/install/commands). Locker models: [Antic
 - Restarting the resource takes a moment. The key system starts about 2 seconds after the resource does, so wait a moment before you test.
 - The resource starts in about 0.25 seconds of server time. Blip icons ship as one atlas image (`web/build/blips/atlas.webp` and `atlas.json`), so the web UI build stays small. Do not delete files from `web/build`.
 - On Kora, restart the whole server after changes to the Kora stack. Do not restart Newb_Bridge live.
+- Works with `sv_stateBagStrictMode` on. The script's clients do not write vehicle state bags, the server does.
 - Restarting this resource also stops MrNewbVehicleKeysPhone. Start it again afterwards ([Phone app](/mrnewbvehiclekeys/phone)).
 
 ## Keys players press

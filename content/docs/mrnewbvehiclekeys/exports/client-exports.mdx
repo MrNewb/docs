@@ -28,7 +28,7 @@ icon: "IconDeviceDesktop"
 | `HasTempKey` / `RemoveTempKeyByPlate` | `plate` | boolean |
 | `SetVehicleLockpickImmuneEntity` | `vehicle, immune` | boolean |
 | `SetVehicleLockpickImmunePlate` | `plate, immune` | boolean |
-| `SetVehicleHotwireImmune` | `vehicle, immune` | boolean |
+| `SetVehicleHotwireImmune` | `vehicle, immune` | boolean. The server applies it, and only for an admin, someone with a real key, or the vehicle's owner. A borrowed temporary key is not enough |
 | `OpenKeyFob` | `plate, buttons` | boolean |
 | `StartVehicleAlarm`, `ToggleTrunk`, `ToggleRemoteStart` (starts or stops from the real engine state), `DanceMode`, `SelfParkVehicle`, `SummonVehicle`, `ToggleAutoPilot` | `vehicle` | boolean |
 | `IsItemBasedMode` / `IsInsertModeEnabled` | none | boolean |

@@ -55,6 +55,7 @@ exports.MrNewbVehicleKeys:GiveKeysCustom(src, netid, plate, 'smart', {}, true, f
 | `SetVehicleLock` | `netid, lockStatus` | boolean. `1` unlocked, `2` locked |
 | `RemoteLock` | `src, plate, lockStatus` | boolean. As if that player used the fob |
 | `DisableLockpickingVehicle` | `netid, status` | boolean. `true` makes it lockpick-proof |
+| `SetVehicleHotwireImmune` | `netid, immune` | boolean. `true` uses up the hotwire attempts so the vehicle cannot be hotwired, `false` clears them |
 | `IsKeyInIgnition` | `netid` | boolean |
 | `SetKeyInIgnition` | `netid, inserted, metadata?` | boolean |
 | `SearchForKeys` | `src, netId` | boolean |
