@@ -127,6 +127,10 @@ If you also want the lines in Discord, open the **Extras** page, paste a webhook
 
 The file `resource/open/server/utility.lua` holds the log function if you want to send the lines somewhere else.
 
+## Society money
+
+Pharmacy sales, insurance purchases and supply orders pay into and out of the pharmacy's society account through Newb_Bridge, which finds your banking resource on its own. If you run more than one banking resource, pin the one you want in Newb_Bridge under `Banking`. If it finds none, the console says so on start and supply runs cannot be paid for.
+
 ## Supply runs
 
 Stops are on the **Supply stops** page. Each is a set of crate props at a location. They stay on the server, so players never see the coordinates. The sample stops are the Elysian Island docks, a NOOSE yard, the Cypress Flats yard, and Humane Labs. Move them anywhere you like.
