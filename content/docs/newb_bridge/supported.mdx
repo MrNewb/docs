@@ -118,3 +118,25 @@ JSON files in `locales/`. Newb_Bridge uses whatever locale ox_lib is set to (`se
 | `zh-cn` | Chinese (Simplified) |
 | `zh-hk` | Chinese (Hong Kong) |
 | `zh-tw` | Chinese (Traditional) |
+
+
+## Kora and WHIP
+
+### Kora
+
+Set up Kora itself with its own docs. For our scripts, only these parts differ:
+
+- **Start order:** start `Newb_Bridge` and your MrNewb scripts after the Kora resources. The bridge finds `kora_core`, `kora_inventory` and `kora_target` by itself.
+- **Items:** Kora does not read `ox_inventory/data/items.lua`. Each script's **Item setup** page has a **Kora** tab. Add those records to `KoraCoreSeed.items` in `kora_core/shared/items.lua` and copy the PNGs into `kora_inventory/images/`.
+- **Jobs:** scripts that need a job show a Kora version of it on their install page. Grade numbers in scripts and configs stay zero-based.
+- **Vehicle keys:** with both running, the bridge uses `MrNewbVehicleKeys`. Pin `Config.VehicleKeys = "kora_vehiclekeys"` to use the Kora one.
+- **Restarting:** restart the whole server, not Newb_Bridge by itself.
+
+### WHIP
+
+The bridge has a `whip_core` provider (framework, inventory, target, notifications, inputs, text UI, progress bar and vehicle keys) and a `whip_fuel` provider. Auto-detect picks them when WHIP is running. Do not run the other framework, inventory or target providers beside it.
+
+- Money is `cash` and `bank` only, and there is no `crypto`.
+- The bridge adds no items. Register yours with WHIP, and note that WHIP weights are kilograms.
+- WHIP has no list menu, boss menu, dispatch or hooks. Menus keep `ox_lib` and dispatch uses the built-in one.
+- A shop needs `coords` so WHIP can open it within range.

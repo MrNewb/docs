@@ -1,48 +1,51 @@
 ---
 title: "Installation"
-description: "How to install Newb_Bridge. Start Newb_Bridge after ox_lib, your framework, inventory, target, and any other resource it bridges."
+description: "Install Newb_Bridge in three steps. Start it after ox_lib, your framework, inventory and target."
 icon: "IconDownload"
 ---
 
-<Callout type="warning">
-  Start Newb_Bridge **after** ox_lib, your **framework**, **inventory**, **target**, and anything else it has to talk to. If those come up later, it can miss them and the bridge may pick the wrong provider, or none. Scripts that import `@Newb_Bridge/import.lua` have to start **after** the bridge. `import.lua` errors if the bridge is not running.
-</Callout>
+Newb_Bridge lets MrNewb scripts work with whatever framework, inventory and target your server runs. You install it once, and every MrNewb script uses it.
 
-### Requirements [step]
+### Download it [step]
 
-[ox_lib](https://github.com/overextended/ox_lib), [oxmysql](https://github.com/overextended/oxmysql), and a framework, inventory, and target from [Supported](/newb_bridge/supported). Every provider defaults to `"auto"`. You only need the ones your server actually runs: notifications, fuel, and dispatch fall back to built-in versions when nothing else is installed.
+Get the newest build from the [Releases page](https://github.com/MrNewb/Newb_Bridge/releases/latest) and unzip it into your `resources` folder. Keep the folder named **`Newb_Bridge`**.
 
-### Get the resource [step]
+You also need [ox_lib](https://github.com/overextended/ox_lib), [oxmysql](https://github.com/overextended/oxmysql), and a framework and inventory from the [Supported](/newb_bridge/supported) list.
 
-Grab the newest build from the [Releases page](https://github.com/MrNewb/Newb_Bridge/releases/latest) and unzip it into `resources`. Keep the folder named **`Newb_Bridge`**, because `import.lua` finds the bridge by that name.
+### Add it to server.cfg [step]
 
-### Add to server.cfg [step]
+Put `ensure Newb_Bridge` **after** your framework, inventory and target, and **before** any MrNewb script.
 
 ```cfg
 ensure ox_lib
 ensure oxmysql
-ensure qbx_core          # or qb-core / es_extended (Kora: see the Kora Framework page)
+ensure qbx_core          # or qb-core / es_extended
 ensure ox_inventory      # your inventory
-ensure ox_target         # optional; any other bridged resource too
+ensure ox_target         # your target
 ensure Newb_Bridge
 
-# scripts that use bridge.*
-ensure your_script
+# your MrNewb scripts go below
+ensure MrNewbVehicleKeys
 ```
 
-### Configure [step]
+### Restart and check [step]
 
-Leave providers on `"auto"` in `settings/bridge_resources.lua`, or pin them. Optional. Set the language once with `setr ox:locale en` in `server.cfg` (the bridge follows ox_lib's locale).
+Restart the server. That is all most servers need, because the bridge finds your resources by itself.
 
-### Check it works [step]
+If the console shows a yellow `No installed provider found for ...` line, a part could not find a matching resource. You can ignore it for parts you do not use. Otherwise see [Troubleshooting](/newb_bridge/troubleshooting).
 
-Restart the server and read the console. A yellow `No installed provider found for ...` line means a module could not match a supported resource. To see which provider every module resolved to, set `Config.Debug = true` in `settings/bridge_resources.lua` and restart. A module you never use does not need a provider. If something looks wrong, see [Troubleshooting](/newb_bridge/troubleshooting). Details on pinning: [Configuration](/newb_bridge/configuration).
+## Notifications are built in
+
+You do not need a notification resource. If you have none installed, the bridge shows its own: four types, markdown in the text, and item images.
+
+<img src="/docs/images/newb_bridge/notifications.gif" alt="Newb_Bridge built-in notifications sliding in: success, info, warning, error and an item with an image" />
+
+If you already run a notification resource such as ox_lib or okokNotify, the bridge uses that instead. To always use the built-in ones, set `Config.Notifications = "internal"` in `settings/bridge_resources.lua` ([Configuration](/newb_bridge/configuration)).
 
 ## Next steps
 
-- [Configuration](/newb_bridge/configuration): pin providers or leave them on auto-detect
-- [Kora Framework](/newb_bridge/kora): install on kora_core, start order and items
-- [Supported](/newb_bridge/supported): which frameworks, inventories, and other resources it works with
-- [Troubleshooting](/newb_bridge/troubleshooting): console errors and what they mean
+- [Configuration](/newb_bridge/configuration): choose which resource the bridge uses, if you do not want auto-detect
+- [Supported](/newb_bridge/supported): everything it works with
+- [Troubleshooting](/newb_bridge/troubleshooting): console messages and what they mean
 
-Writing your own resource, or moving one off community_bridge? That's all under [For Developers](/newb_bridge/developers).
+Writing your own resource? That is under [For Developers](/newb_bridge/developers).

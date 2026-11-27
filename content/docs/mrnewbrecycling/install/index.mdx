@@ -13,8 +13,17 @@ icon: "IconDownload"
 [Newb_Bridge](/newb_bridge), [ox_lib](https://github.com/overextended/ox_lib), [oxmysql](https://github.com/overextended/oxmysql), and [Server artifact and OneSync](/getting-started/download#check-your-artifact).
 
 <Callout type="info">
-  **Running Kora Framework?** Follow the dedicated [Kora install](/mrnewbrecycling/install/kora) instead of the framework steps on this page.
+  **On Kora Framework:** Only murder mode ships its own items. If you keep it on, add these records to `KoraCoreSeed.items` in `kora_core/shared/items.lua` and copy the PNGs from `[INSTALL]/images/` into `kora_inventory/images/`. They also ship as `[INSTALL]/items/kora_items.txt`.
 </Callout>
+
+```lua
+    { name = 'human_heart', label = 'Human Heart', weight = 350, type = 'item', image = 'human_heart.png', unique = false, useable = false, shouldClose = true, description = 'Still warm. Someone is going to want this.' },
+    { name = 'human_liver', label = 'Human Liver', weight = 1500, type = 'item', image = 'human_liver.png', unique = false, useable = false, shouldClose = true, description = 'A whole liver, fresh from a recycler.' },
+    { name = 'human_kidney', label = 'Human Kidney', weight = 150, type = 'item', image = 'human_kidney.png', unique = false, useable = false, shouldClose = true, description = 'One of two. They only ever need the one.' },
+    { name = 'human_lungs', label = 'Human Lungs', weight = 600, type = 'item', image = 'human_lungs.png', unique = false, useable = false, shouldClose = true, description = 'A matching pair, still inflated.' },
+    { name = 'human_eye', label = 'Human Eye', weight = 30, type = 'item', image = 'human_eye.png', unique = false, useable = false, shouldClose = true, description = 'It keeps looking at you.' },
+    { name = 'human_hand', label = 'Severed Hand', weight = 400, type = 'item', image = 'human_hand.png', unique = false, useable = false, shouldClose = true, description = 'Cleanly removed. The fingerprints are the valuable part.' },
+```
 
 ### Add to server.cfg [step]
 

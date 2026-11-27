@@ -10,7 +10,9 @@ icon: "IconDownload"
 
 ### Dependencies [step]
 
-[Newb_Bridge](/newb_bridge), [ox_lib](https://github.com/overextended/ox_lib), [oxmysql](https://github.com/overextended/oxmysql), [Server artifact and OneSync](/getting-started/download#check-your-artifact), and an [inventory the bridge supports](/newb_bridge/supported#inventory), including `one_inventory`. Badger_Discord_API is optional, and only for Discord-role VIP slots.
+[Newb_Bridge](/newb_bridge) **0.1.3 or newer**, [ox_lib](https://github.com/overextended/ox_lib/releases) **3.40.2 or newer**, [oxmysql](https://github.com/overextended/oxmysql), [Server artifact and OneSync](/getting-started/download#check-your-artifact), and an [inventory the bridge supports](/newb_bridge/supported#inventory), including `one_inventory`. Badger_Discord_API is optional, and only for Discord-role VIP slots.
+
+BeeKeeping checks the ox_lib and Newb_Bridge versions when it starts and prints a red message in the server console if either is older. It uses modules that older builds do not have, so update them before you go on.
 
 Model names: [Anticheat models](/mrnewbbeekeeping/anticheat).
 
@@ -19,10 +21,6 @@ Model names: [Anticheat models](/mrnewbbeekeeping/anticheat).
 Seventeen items. Paste from [Item setup](/mrnewbbeekeeping/install/inventory). The same ox text ships as `[INSTALL]/items/ox_inventory_items.txt`. The separator is a world prop, not an item.
 
 Copy every PNG from `[INSTALL]/images/` into your inventory images folder. Icons: [Item images](/mrnewbbeekeeping/install/inventory-images).
-
-<Callout type="info">
-  **Running Kora Framework?** Follow the dedicated [Kora install](/mrnewbbeekeeping/install/kora) instead of the framework steps on this page.
-</Callout>
 
 ### Add to server.cfg [step]
 
@@ -53,6 +51,7 @@ Commands: [Commands](/mrnewbbeekeeping/install/commands).
 
 | Symptom | Check |
 | --- | --- |
+| Console says ox_lib or Newb_Bridge needs a newer version, or adding a queen errors with `attempt to index a function value (field 'selector')` | One of them is too old. Update ox_lib from the [ox_lib releases](https://github.com/overextended/ox_lib/releases) or Newb_Bridge from the [Newb_Bridge releases](https://github.com/MrNewb/Newb_Bridge/releases), then restart the server |
 | Items do nothing when used | Missing item defs, or this resource started before Newb_Bridge / the inventory |
 | Hive is not producing | It is open, workers are zero, the queen is dead, or honey / wax are already full |
 | Honey slide will not finish | It completes at 2 percent of cells left, or at 120 seconds. Set the minigame to `none` or `ox` on the Hives page to skip it |

@@ -25,6 +25,27 @@ bridge.notifications.notify(source, {
 })
 ```
 
+## Built-in notifications
+
+When no supported notification resource is installed, the bridge falls back to `internal`, its own notification UI. It needs nothing else installed, and you can pin it with `Config.Notifications = "internal"`.
+
+<img src="/docs/images/newb_bridge/notifications.gif" alt="Newb_Bridge built-in notifications sliding in: success, info, warning, error and an item with an image" />
+
+- **Types:** `success`, `inform`, `warning` and `error` each get their own icon colour and duration bar from the shadcn palette.
+- **Markdown:** `title` and `description` support markdown, so `**$1,250**` shows in bold.
+- **Images:** set `image` to an image URL and it replaces the icon. An item image from your inventory works, for example `nui://ox_inventory/web/images/burger.png`. If the image fails to load, the type icon is shown instead.
+- **Icons:** `icon` takes a Font Awesome icon name such as `gas-pump`. `iconColor` and `iconAnimation` change its look.
+- **Position and stacking:** all eight `position` values work. Up to five notifications show at once, and the oldest is dropped when a sixth arrives.
+
+```lua
+bridge.notifications.notify({
+    type = 'success',
+    title = 'Item received',
+    description = '2x **Burger**',
+    image = 'nui://ox_inventory/web/images/burger.png',
+})
+```
+
 ## Types
 
 ### `OxNotification`
