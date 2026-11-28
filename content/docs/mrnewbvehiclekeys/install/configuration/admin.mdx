@@ -51,11 +51,3 @@ Each log row carries who, to whom, which plate and where. Messages are queued to
 ## Compatibility
 
 This resource provides for these key systems: `qb-vehiclekeys`, `qbx_vehiclekeys`, `qs-vehiclekeys`, `wasabi_carlock`, `Renewed-Vehiclekeys`, `mk_vehiclekeys`, `jg-vehiclekeys` and `tgiann-hotwire`. The **Integrations** page chooses which foreign events and legacy exports answer. Garage entries switch on when that garage resource is running. `provide` lines in `fxmanifest.lua` let `exports['qbx_vehiclekeys']:GiveKeys(...)` resolve here. Only `provide 'qbx_vehiclekeys'` is active in the shipped manifest.
-
-### jg-vehiclekeys
-
-As a key system we provide for, the `jg-vehiclekeys` server API is answered here: `giveKeys`, `removeKeys`, `hasKeys`, `getKeys`, the three `...Entity` key calls, `isPlayerNearVehicle`, `unlockVehicle`, `setLockState`, `canParkVehicle`, `canCollectVehicle`, `vehicleParked`, `vehicleOwnershipChanged`, `vehiclePlateChanged`, `getVehicleSecurity`, `getVehicleTrackingLocation`, `getVehicleGhostInstallations` and `changeVehiclePin`, with the same result tables. The same calls written in capitals (`GiveKeys`, `RemoveKeys`, `HasKeys`, `GetKeys`, `UnlockVehicle`, `VehicleOwnershipChanged`) work too. Switch it on in **Integrations** and add a `provide 'jg-vehiclekeys'` line, so that callers keep working when this resource restarts. Do not run the real `jg-vehiclekeys` at the same time.
-
-A few things differ. A `design` option is ignored. `expiresAt` becomes a temporary key. Alarm tiers, immobiliser and GPS come from the security above. `changeVehiclePin` only works on a car with a keypad immobiliser. `tgiann-hotwire` is answered here too.
-
-`MrNewbVehicleKeys:Client:*` and `MrNewbVehicleKeys:Server:*` are internal. Do not build on them.

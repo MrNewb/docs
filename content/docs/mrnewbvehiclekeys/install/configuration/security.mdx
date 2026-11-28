@@ -1,6 +1,6 @@
 ---
 title: "Vehicle security"
-description: "Alarms, immobilisers, the keypad PIN, GPS, the scanner and the police tools."
+description: "Alarms, immobilisers, the keypad PIN, GPS and the scanner."
 icon: "IconSettings"
 ---
 
@@ -8,7 +8,7 @@ Part of [Configuration](/mrnewbvehiclekeys/install/configuration). Open `/setupk
 
 ## Vehicle security
 
-Equipment that protects a car, fitted from the inventory. Everything here is on the **Vehicle security** page of `/setupkeys`: fitting, who can fit each item, alarms, GPS, the keypad PIN, the scanner, the police tools and the staff log.
+Equipment that protects a car, fitted from the inventory. Everything here is on the **Vehicle security** page of `/setupkeys`: fitting, who can fit each item, alarms, GPS, the keypad PIN, the scanner and the staff log.
 
 The items are in [Inventory items](/mrnewbvehiclekeys/install/inventory), and their pictures in [Item images](/mrnewbvehiclekeys/install/inventory-images#security-item-pictures). The locksmith NPC and the locksmith computer sell them from the same price list as the rest of the catalogue.
 
@@ -42,11 +42,7 @@ An immobiliser (`ignition_cutoff_relay`) blocks hotwiring, and a valid key is st
 
 ### GPS
 
-`gps_tracker_module` fits the same tracker as the transmitter. It belongs to the car's registered owner, and it is what lets police follow a flagged car live. `gps_signal_jammer` silences it for the **Jam time**, which also blocks the receiver ping and the wireless side of the alarm. `tracker_extraction_kit` removes it. **Use up the jammer** and **Use up the removal kit** choose whether they are used up.
-
-### Police tools
-
-On-duty police (the **Police jobs**, **On duty only** and **Lowest grade**) can flag a car, follow it live while its GPS is fitted and not jammed, and strip the immobiliser from a flagged car. The commands are in [Commands](/mrnewbvehiclekeys/install/commands#police). Other scripts, such as an MDT or a phone, set the flag with the `FlagVehicle` export.
+`gps_tracker_module` fits the same tracker as the transmitter. It belongs to the car's registered owner, and the scanner or `gps_signal_jammer` can silence it. `gps_signal_jammer` silences it for the **Jam time**, which also blocks the receiver ping and the wireless side of the alarm. `tracker_extraction_kit` removes it. **Use up the jammer** and **Use up the removal kit** choose whether they are used up.
 
 ### The scanner
 
@@ -54,4 +50,4 @@ The keyfob scanner can scan a car and then bypass or jam it. See [The scanner de
 
 ### Staff log
 
-Fitting, jamming, tracker removal, PIN lockouts, alarms, police flags, tracks and disables, scanner scans and tries, and admin changes are written through ox_lib's logger. The **Staff log** card has the on and off switch and the Discord webhook, and **Do not log these** (with Advanced on) skips single events.
+Fitting, jamming, tracker removal, PIN lockouts, alarms, scanner scans and tries, and admin changes are written through ox_lib's logger. The **Staff log** card has the on and off switch and the Discord webhook, and **Do not log these** (with Advanced on) skips single events.

@@ -102,6 +102,6 @@ Every other `MrNewbVehicleKeys:Server:*` and `MrNewbVehicleKeys:Client:*` event 
 
 | Export | Arguments | Returns |
 | --- | --- | --- |
-| `FlagVehicle` | `plate, reason, setBy?` | boolean. `reason` is `'stolen'` or `'warrant'`, and `nil` clears the flag. A flagged car can be followed live by police while its GPS is fitted, and its immobiliser can be stripped. For MDT, phone and dispatch scripts |
+| `FlagVehicle` | `plate, reason, setBy?` | boolean. `reason` is `'stolen'` or `'warrant'`, and `nil` clears the flag. For MDT, phone and dispatch scripts |
 | `GetVehicleFlag` | `plate` | `'stolen'`, `'warrant'` or `nil` |
 | `TransferVehicleSecurity` | `oldPlate, newPlate` | boolean, true when something moved. Call it when a car's plate changes (a plate changer, a garage) so it keeps its alarm tier, immobiliser kind and police flag. A keypad lock keeps its place but not its PIN, because the PIN is tied to the plate: the next key holder chooses a new one. Safe to call more than once for the same change |
