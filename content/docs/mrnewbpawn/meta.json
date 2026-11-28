@@ -3,6 +3,7 @@
   "icon": "IconCoin",
   "pages": [
     "requirements",
-    "install"
+    "install",
+    "changelog"
   ]
 }

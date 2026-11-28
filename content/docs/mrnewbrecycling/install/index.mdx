@@ -1,16 +1,22 @@
 ---
 title: "Installation"
-description: "How to install Recycling. Start this after ox_lib, oxmysql, your inventory, and Newb_Bridge."
+description: "Get Recycling running: unzip it, check your items, add it to server.cfg, then place machines in game."
 icon: "IconDownload"
 ---
 
-<Callout type="warning">
-  Start this **after** ox_lib, oxmysql, your inventory, and Newb_Bridge.
+<Callout type="info">
+  You need Newb_Bridge, ox_lib 3.40.2 or newer, oxmysql, and an inventory and target the bridge supports. Start Recycling after all of them. The full list is on [Requirements](/mrnewbrecycling/requirements).
 </Callout>
 
-### Dependencies [step]
+### Unzip it [step]
 
-[Newb_Bridge](/newb_bridge), [ox_lib](https://github.com/overextended/ox_lib), [oxmysql](https://github.com/overextended/oxmysql), and [Server artifact and OneSync](/getting-started/download#check-your-artifact).
+Put the `MrNewb_Recycling` folder in your `resources` folder. The settings table is created the first time it starts, so there is nothing to import.
+
+### Check your items [step]
+
+Recycling adds no items of its own. The seed recipes expect `phone`, `radio`, `lockpick`, `plastic`, `metalscrap` and `copper` to already exist in your inventory.
+
+Murder mode is off by default. If you turn it on, it can hand out `phone`, `radio`, `goldchain`, `rolex` and `diamond_ring`, and it ships six items of its own in `[INSTALL]`.
 
 <Callout type="info">
   **On Kora Framework:** Only murder mode ships its own items. If you keep it on, add these records to `KoraCoreSeed.items` in `kora_core/shared/items.lua` and copy the PNGs from `[INSTALL]/images/` into `kora_inventory/images/`. They also ship as `[INSTALL]/items/kora_items.txt`.
@@ -25,38 +31,25 @@ icon: "IconDownload"
     { name = 'human_hand', label = 'Severed Hand', weight = 400, type = 'item', image = 'human_hand.png', unique = false, useable = false, shouldClose = true, description = 'Cleanly removed. The fingerprints are the valuable part.' },
 ```
 
-### Add to server.cfg [step]
+### Add it to server.cfg [step]
 
 ```cfg
 ensure ox_lib
 ensure oxmysql
+ensure ox_inventory      # or your inventory
 ensure Newb_Bridge
-ensure ox_inventory
 ensure MrNewb_Recycling
 ```
 
-Swap `ox_inventory` for the inventory you actually run.
+### Restart and open the setup [step]
 
-### First start [step]
+Restart the server, join as an admin and type `/setuprecycling`. [Configuration](/mrnewbrecycling/install/configuration) explains each page.
 
-Start the server once. `MrNewb__Settings` is created on its own. Nothing to import.
+To check it worked, stand inside a machine's load radius (120 m by default), open it, load an item that has a recipe, turn it on, wait, and collect the output.
 
-There are no custom items to paste. Seed recipes expect `phone`, `radio`, `lockpick`, `plastic`, `metalscrap`, and `copper` to already exist. Murder mode (off by default) can hand out `phone`, `radio`, `goldchain`, `rolex`, and `diamond_ring`.
+## Where next
 
-Join as an admin and run `/recyclingsetup`. The page list is on [Configuration](/mrnewbrecycling/install/configuration).
-
-### Check it [step]
-
-Stand inside a station’s load radius (default 120 m) and open it. Load an item that has a recipe, turn it on, wait, and collect the output.
-
-Commands: [Commands](/mrnewbrecycling/install/commands). Models: [Anticheat models](/mrnewbrecycling/anticheat).
-
-## Common setup mistakes
-
-| Symptom | Check |
-| --- | --- |
-| The recycler does not appear | It is placed, you are inside its load radius, and Newb_Bridge is started |
-| The prop is invisible | `stream/` is intact and the resource is started. Restart the game client |
-| “That cannot be recycled” | The item needs a recipe, and that recycler’s type has to accept it |
-| Blank pictures in the panel | That item has no image in your inventory |
-| Panel will not open | You have to be an admin (framework admin or `group.admin`). Run it in game, not from the server console |
+- [Configuration](/mrnewbrecycling/install/configuration): what every setup page does
+- [Commands](/mrnewbrecycling/install/commands): staff commands
+- [Troubleshooting](/mrnewbrecycling/troubleshooting): the usual problems and fixes
+- [Anticheat models](/mrnewbrecycling/anticheat): props to allow if your anticheat deletes them

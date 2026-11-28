@@ -6,40 +6,53 @@ icon: "IconHelp"
 
 First step for almost anything: check the server console on start. Missing items, bad job names, and failed bridges all show up there.
 
+## Install and start-up
+
+| Symptom | Check |
+| --- | --- |
+| Doctor gets an "invalid job" notice | Their job is not listed under Medical jobs in the panel, or they are under the grade floor |
+| Pharmacy tablet or register does nothing | The staff member is not clocked in, or the pharmacy's job on the **Shops** page does not match your framework job |
+| NPC pharmacist menu is empty | The patient needs a valid, unrevoked paper. See "The pharmacy menu is empty" below |
+| Console prints `[MrNewbPrescriptions] N new medicines are waiting for their items: ...` | Those medications are not in your inventory yet, so they are not added to your pharmacy. Paste the items from `[INSTALL]/items`, copy their images, then restart this resource |
+| Paper does nothing when used | It was spawned without metadata. Real papers come from the pad |
+| Bottling cannot find ingredients | Ingredients must be in the pharmacy **stock room**, not in someone's pockets |
+| Raw keys like `Ui.Insurance.Failed` on screen | Your locale file is missing keys. Copy the new ones from `locales/en.json` |
+| Blank screen after an update | Replace `web/build/` **and** `locales/en.json` together, then restart the resource |
+
 ## The paper does not open or print
 
 - The item names must exist in your inventory and match the ones on the Item names page of the setup panel. Look for "item not found" lines at start
 - The doctor's job must be listed under Medical jobs in the panel, at or above the grade floor. Otherwise they get an "invalid job" notice
 - A `medicalprescription` spawned from an admin menu has no metadata and does nothing. Real papers come from the pad
 - Printing a `medicalrecord` from the tablet needs the item and room in the inventory, plus the pharmacy job at the tablet's grade
-- The `/prescription` command only exists when `useItem = false` or `allowCommandWithItem = true`
+- The `/prescription` command only exists when the **Prescription pad** setting allows it
 
 ## The pharmacy menu is empty
 
 - The NPC menu lists only papers you are carrying for a medication that exists. Bring a valid, unrevoked `medicalprescription`
 - That medication has to be in the catalog. Check the spelling, and that a runtime-registered one was registered before use
-- "Pharmacy staff are on duty" means someone is clocked in, so the NPC steps aside. Use the counter, or turn off `HideWhenJobStaffOnline`
-- An unverified forged paper is rejected at NPC counters unless `Forgery.npcAcceptForged` is on
+- "Pharmacy staff are on duty" means someone is clocked in, so the NPC steps aside. Use the counter, or turn off the NPC pharmacist's **Hide while staff are on duty** setting
+- An unverified forged paper is rejected at NPC counters unless **Forgery** is set to let NPC pharmacies accept unverified fakes
 - Stand within a few meters of the ped
 
 ## Insurance is not charging or not discounting
 
-- `Insurance.enabled` must be on
+- **Insurance** must be turned on
 - The register applies a copay only when a **medication** is on the ticket. A general charge is full price
-- With `builtin`, the customer needs active coverage. It ends after `MaxInactiveDays`
+- With `builtin`, the customer needs active coverage. It ends after the renewal days you set under **Insurance**
 - With `m-insurance` or `custom`, make sure that resource is running and the bridge file is the one you chose
 - Buying a plan fails if the player cannot afford it, and you will see a failure alert
-- To send plan money to a society, set `Insurance.societyJob` (builtin only)
+- To send plan money to a society, set the society job under **Insurance** (builtin only)
 
 ## The register says the charge did not go through
 
-The customer has to approve within 30 seconds, only one bill can be pending per customer, they need enough in the chosen account, and the amount cannot be over `maxBillAmount` or the medication's list price. The pharmacist sees an alert, so check the amount and try again.
+The customer has to approve within 30 seconds, only one bill can be pending per customer, they need enough in the chosen account, and the amount cannot be over the hard cap in **Pharmacy economy** or the medication's list price. The pharmacist sees an alert, so check the amount and try again.
 
 ## The time clock does nothing
 
 - Stand at the clock point, within about 6 meters, with the pharmacy job at or above the grade floor
-- The pharmacy's `Job.jobName` has to match the framework job
-- The register, supply runs, and panic button all need a clock-in. Only `Debug = true` skips that, and you should not leave it on
+- The pharmacy's job on the **Shops** page has to match the framework job
+- The register, supply runs, and panic button all need a clock-in. Only **Debug mode** skips that, and you should not leave it on
 
 ## Bottling does not work
 
@@ -65,6 +78,34 @@ Copy every PNG from `[INSTALL]/imgs/` into your inventory images folder and keep
 ## Medications do not heal with my ambulance job
 
 Med heals load automatically from `resource/open/bridge/ambulancejobs/` when that job is running. For insurance on hospital bills and clearing overdoses on revive, follow [Ambulance jobs](/mrnewbprescriptions/ambulance-jobs).
+
+## Settings that need a restart
+
+Most of `/setupprescriptions` applies when you press **Save**. These need more:
+
+| Change | What to do |
+| --- | --- |
+| New medications from an update | Paste the new items from `[INSTALL]/items`, copy their images, then restart the resource. They are only added once their items exist. The console lists any still waiting |
+| A medication you add yourself | Its item has to exist in your inventory first. Restart after adding it |
+| A renamed item | The new name works straight away. The old one stays usable until the server restarts |
+| Edits to the Lua files in `resource/open/` | Restart the resource |
+
+## Settings that clash
+
+| What you see | Why it happens |
+| --- | --- |
+| Insurance does not lower a bill | It only applies when a **medication** is picked at the register. A general charge is full price |
+| The NPC pharmacist is gone | It steps aside while real pharmacy staff are on duty. Turn that off in the NPC pharmacist setting if you want it always there |
+| Billing, supply runs or the panic button work without clocking in | **Debug mode** is on, and it skips the clock-in check. Leave it off on a live server |
+| The pad writes the script to yourself | **Debug mode** again. It sends the script to you instead of a nearby patient |
+
+## Scripts that call Prescriptions
+
+| Symptom | Check |
+| --- | --- |
+| A medication registered from another script is missing | Register it before it is used, and make sure its item exists in your inventory |
+| A prescription cannot be revoked from the tablet | The tablet does not revoke. Use the `RevokePrescription` export, which stops it being filled at any counter |
+| Hospital bills ignore insurance | Your ambulance job needs the extra edit on [Ambulance jobs](/mrnewbprescriptions/ambulance-jobs) |
 
 ## Support
 

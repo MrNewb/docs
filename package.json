@@ -5,7 +5,9 @@
   "description": "MrNewb Scripts documentation",
   "packageManager": "bun@1.3.14",
   "scripts": {
+    "predev": "node scripts/changelog.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/changelog.mjs",
     "build": "next build",
     "postbuild": "bun run scripts/sitemap.mjs",
     "start": "serve out",

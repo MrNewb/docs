@@ -1,10 +1,10 @@
 ---
 title: "Configuration"
-description: "BeeKeeping settings live in /beekeepingsetup."
+description: "BeeKeeping settings live in /setupbeekeeping."
 icon: "IconSettings"
 ---
 
-Staff change settings with `/beekeepingsetup`. A save applies immediately. No restart.
+Staff change settings with `/setupbeekeeping`. A save applies immediately. No restart.
 
 The first time the panel opens, a short guide walks Access, Swarms, Shops, Honey, Bee trap, Suit, Genetics, Saving, VIP, and Logs. You can leave it and use the full page list whenever you want.
 
@@ -15,7 +15,7 @@ The first time the panel opens, a short guide walks Access, Swarms, Shops, Honey
 | Hives | Owner-only or allowlist access, hive types and models, max hives per player (`0` = unlimited), own-hive blips, honey minigame (`slide`, `none`, `ox`, or a supported third-party), debug |
 | Placement | Max place distance, place time, minimum distance between hives, allowed ground materials |
 | Wild swarms | `stationary`, `randomized`, or `off`. Locations, stings, respawn, catch limits, who can see them |
-| Shops | Keeper stands (ped, prop, or box), stock and prices, honey and wax sell prices, `PayTo` (`bank` or `cash`), context menu fallback |
+| Shops | Keeper stands (ped, prop, or box), stock and prices, honey and wax sell prices, whether pay goes to bank or cash, context menu fallback |
 | Honey zones | Map polygons per region, and priority when regions overlap. Outside every region the hive makes default honey |
 | Separator | On or off, world spots staff place (each named for its street, with a teleport button), an optional map blip on every spot (on by default), combs per batch, crank turns. Players cannot place or pick one up |
 | Production | Minutes per tick, max honey / wax / workers, worker loss chance |
@@ -69,7 +69,7 @@ These stay editable. They hold code, not the panel data. A change here needs a r
 
 | Function | File | Role |
 | --- | --- | --- |
-| `Config.IsHiveAdmin(src)` | `open/server/custom.lua` | Who can open `/beekeepingsetup` |
+| `Config.IsHiveAdmin(src)` | `open/server/custom.lua` | Who can open `/setupbeekeeping` |
 | `Config.IsPlayerHiveVip(src)` | `open/server/custom.lua` | Return true to grant VIP slots |
 | `SendBeeLog(src, action, message)` | `open/server/custom.lua` | Used when the log provider is `custom` |
 | `RollQueenTrait(src, zone)` | `open/server/custom.lua` | Return a trait id, or `''` for the default roll |

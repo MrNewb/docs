@@ -1,38 +1,41 @@
 ---
 title: "Installation"
-description: "How to install RadioIntrusion. Start it after ox_lib, your framework, your inventory, your voice resource and Newb_Bridge."
+description: "Get RadioIntrusion running: unzip it, add the items, add it to server.cfg, then configure it."
 icon: "IconDownload"
 ---
 
-<Callout type="warning">
-  Start this **after** ox_lib, your framework, your inventory, your voice resource and Newb_Bridge. The bridge looks at what is already running. If this script starts first, it can miss them.
+<Callout type="info">
+  You need Newb_Bridge, ox_lib, a framework and inventory the bridge supports, and pma-voice or saltychat. Start RadioIntrusion after all of them, voice resource included. The full list is on [Requirements](/mrnewbradiointrusion/requirements).
 </Callout>
 
-### Dependencies [step]
+### Unzip it [step]
 
-[Newb_Bridge](/newb_bridge), ox_lib, your framework and inventory through the bridge, and pma-voice or saltychat.
+Put the `MrNewbRadioIntrusion` folder in your `resources` folder. oxmysql is not needed.
 
-### Add the item [step]
+### Add the items [step]
 
-Register the device from [Item setup](/mrnewbradiointrusion/install/inventory). The radio the player must carry is your server's normal `radio` item.
+Register the device from [Item setup](/mrnewbradiointrusion/install/inventory). The radio a player has to carry is your server's normal `radio` item.
 
-### Configure [step]
-
-Edit `resource/open/shared/config.lua`. See [Configuration](/mrnewbradiointrusion/install/configuration).
-
-### Add to server.cfg [step]
-
-Swap `qbx_core` / `ox_inventory` for whatever you actually run.
+### Add it to server.cfg [step]
 
 ```cfg
 ensure ox_lib
-ensure qbx_core
-ensure ox_inventory
-ensure pma-voice
+ensure qbx_core          # or qb-core / es_extended
+ensure ox_inventory      # or your inventory
+ensure pma-voice           # or saltychat
 ensure Newb_Bridge
 ensure MrNewbRadioIntrusion
 ```
 
-### Restart the server [step]
+### Configure it [step]
 
-Restart after config or item changes.
+Open `resource/open/shared/config.lua`. Every setting is on [Configuration](/mrnewbradiointrusion/install/configuration).
+
+### Restart and check [step]
+
+Restart the server after config or item changes.
+
+## Where next
+
+- [Configuration](/mrnewbradiointrusion/install/configuration): every setting explained
+- [Item setup](/mrnewbradiointrusion/install/inventory): the item list for your inventory

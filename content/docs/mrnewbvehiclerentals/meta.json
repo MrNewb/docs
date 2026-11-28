@@ -3,6 +3,7 @@
   "icon": "IconCar",
   "pages": [
     "requirements",
-    "install"
+    "install",
+    "changelog"
   ]
 }

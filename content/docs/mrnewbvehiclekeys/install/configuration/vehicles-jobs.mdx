@@ -1,0 +1,47 @@
+---
+title: "Vehicles and jobs"
+description: "Job keys, key storages, and per-vehicle rules."
+icon: "IconSettings"
+---
+
+Part of [Configuration](/mrnewbvehiclekeys/install/configuration). Open `/setupkeys` to change these.
+
+## Job keys and key storages
+
+**Job keys**: everyone with the job gets keys to that job's listed vehicles (police and ambulance models by default). **Require on duty** counts only while clocked in. **Autolock** locks the car behind the last driver.
+
+**Key storages** (Advanced, 2 police lockers by default): a cabinet with 12 hooks where a job hangs spare keys. Players reach it through the interaction style below.
+
+## Vehicle rules and exceptions
+
+The **Exceptions** and **Vehicle rules** pages (Advanced) hold the rules in [Per-vehicle rules](#per-vehicle-rules). Factory rules: bicycles, trailers, trains and farm or yard equipment need no key, police, ambulance and fire vehicles cannot be stolen, and taxis, tow trucks and flatbeds need the advanced lockpick. The Electric and convertible page and the Missing names page (cars that show a blank name) are Advanced too.
+
+## Per-vehicle rules
+
+Each field falls back one tier at a time:
+
+```text
+plates -> models -> classes -> types -> default
+```
+
+An entry only names the settings it changes. Chances are `0.0` to `1.0` (dispatch alert chances are `0` to `100`).
+
+| Setting | Meaning |
+| --- | --- |
+| Never needs a key | Never needs or receives a key |
+| Cannot be stolen | Blocks hotwire, carjack, search, and lockpick |
+| Cannot be lockpicked | Blocks lockpicking only |
+| Needs advanced lockpick | Normal lockpick blocked |
+| Cannot be carjacked | Blocks carjacking only |
+| Parked vehicle locked chance | Chance an empty unowned vehicle is locked |
+| Driving NPC vehicle locked chance | Chance an NPC-driven vehicle is locked |
+| Search finds keys | Chance a search turns up the keys |
+| Lockpick breaks / Advanced lockpick breaks | Chance that pick breaks |
+| Hotwire, lockpick, advanced lockpick and key cutting difficulty | Easy, medium, hard, or blocked |
+| Front trunk | Rear-engine cars whose trunk is at the front |
+
+`plates` is exact plate text. `models` is a hash or spawn name. `types` is `automobile`, `bike`, `boat`, `heli`, `plane`, `submarine`, `trailer`, `train`. Pedal bikes report as `bike`, so list those by model. Server-enforced fields have to live on `models`, `types`, `plates`, or on a class that also has a `models` list. The server warns at start if a class is missing that list, or a chance is outside `0.0`–`1.0`.
+
+## Shared job vehicles
+
+Employees share keys to that job’s vehicles. **Require on duty** counts only while clocked in. **Autolock** locks the car behind the last driver. Prefer `models` and `plates`. A `classes` entry only matches on the server when that class also has a `models` list.

@@ -1,0 +1,34 @@
+---
+title: "Pharmacies and supplies"
+description: "Player-run and NPC pharmacies, adding one, supply runs and society money."
+icon: "IconSettings"
+---
+
+Part of [Configuration](/mrnewbprescriptions/install/configuration). Open `/setupprescriptions` to change these.
+
+## Two kinds of pharmacy
+
+**Player-run** (has a job set). Staff clock in, bottle at the bench, ring customers up at the register, and order stock from the tablet. Sales go into the job's society account.
+
+**NPC** (no job set). A pharmacist ped fills a script when the patient brings the paper. The ped steps aside while real staff are on duty, which you can switch off. Sales are split equally between the jobs set as NPC payout jobs.
+
+You need to be clocked in to use the register, run supplies, or press the panic button. Bottling only needs the job and a spot at the bench.
+
+## Adding a pharmacy
+
+Open the **Shops** page and add one.
+
+1. Set its location and the ped
+2. Give it a job to make it player-run, or leave the job empty for an NPC store
+3. Place the stations: clock-in, register, bottling bench, boss menu, and panic button
+4. Add shoplifting zones for any shelves you want players to be able to search
+
+The ped's radius is how far away it spawns, not how close you have to be to use it.
+
+## Supply runs
+
+Stops are on the **Supply stops** page. Each is a set of crate props at a location. They stay on the server, so players never see the coordinates. The sample stops are the Elysian Island docks, a NOOSE yard, the Cypress Flats yard, and Humane Labs. Move them anywhere you like.
+
+## Society money
+
+Pharmacy sales, insurance purchases and supply orders pay into and out of the pharmacy's society account through Newb_Bridge, which finds your banking resource on its own. If you run more than one banking resource, pin the one you want in Newb_Bridge under `Banking`. If it finds none, the console says so on start and supply runs cannot be paid for.

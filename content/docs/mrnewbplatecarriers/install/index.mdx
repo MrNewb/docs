@@ -1,48 +1,41 @@
 ---
 title: "Installation"
-description: "How to install PlateCarriers. Start this after ox_lib, your framework, your inventory, and Newb_Bridge."
+description: "Get PlateCarriers running: unzip it, add the items, add it to server.cfg, then configure it."
 icon: "IconDownload"
 ---
 
-<Callout type="warning">
-  Start this **after** ox_lib, your framework, your inventory, and Newb_Bridge. The bridge looks at what’s already running. If this script starts first, it can miss them.
+<Callout type="info">
+  You need Newb_Bridge, ox_lib, and an inventory that stores per-item metadata. Start PlateCarriers after all of them. The full list is on [Requirements](/mrnewbplatecarriers/requirements).
 </Callout>
 
-### Dependencies [step]
+### Unzip it [step]
 
-[Newb_Bridge](/newb_bridge), ox_lib, and an inventory that stores per-item metadata (`setMetadata`).
+Put the `MrNewbPlateCarriers` folder in your `resources` folder. oxmysql is not needed.
 
-### Add items and images [step]
+### Add the items [step]
 
-Paste defs from [Item setup](/mrnewbplatecarriers/install/inventory). Copy PNGs from `[INSTALL]/item_images/` into:
+Paste the list for your inventory from [Item setup](/mrnewbplatecarriers/install/inventory), then copy the pictures from [Item images](/mrnewbplatecarriers/install/inventory-images). If you are upgrading, keep your existing repair plate names.
 
-| Inventory | Image folder |
-| --- | --- |
-| ox_inventory | `ox_inventory/web/images/` |
-| qb-inventory / ps-inventory | `html/images/` |
-| one_inventory | `one_inventory/web/images/` |
-| Kora (kora_inventory) | `kora_inventory/images/` |
-
-Keep the existing repair-plate names during an upgrade.
-
-### Configure [step]
-
-Edit `resource/open/shared/config.lua` for the carrier tiers, repair plate values, clothing drawables, the HUD, keys and the serial check.
-
-Optional Buckshot_Crafting recipes: `[INSTALL]/crafting/README.md`.
-
-### Add to server.cfg [step]
-
-Swap `qbx_core` / `ox_inventory` for whatever you actually run.
+### Add it to server.cfg [step]
 
 ```cfg
 ensure ox_lib
-ensure qbx_core
-ensure ox_inventory
+ensure qbx_core          # or qb-core / es_extended
+ensure ox_inventory      # or your inventory
 ensure Newb_Bridge
 ensure MrNewbPlateCarriers
 ```
 
-### Restart the server [step]
+### Configure it [step]
 
-Restart after config or item changes. Commands: [Commands](/mrnewbplatecarriers/install/commands).
+Open `resource/open/shared/config.lua` for the carrier tiers, repair plates, clothing, the HUD and the serial check. Every setting is on [Configuration](/mrnewbplatecarriers/install/configuration). Optional Buckshot_Crafting recipes are in `[INSTALL]/crafting/README.md`.
+
+### Restart and check [step]
+
+Restart the server after config or item changes.
+
+## Where next
+
+- [Configuration](/mrnewbplatecarriers/install/configuration): every setting explained
+- [Commands](/mrnewbplatecarriers/install/commands): player commands
+- [Item setup](/mrnewbplatecarriers/install/inventory): the item list for your inventory

@@ -3,6 +3,7 @@
   "icon": "IconApple",
   "pages": [
     "requirements",
-    "install"
+    "install",
+    "changelog"
   ]
 }

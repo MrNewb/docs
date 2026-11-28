@@ -1,0 +1,37 @@
+---
+title: "Troubleshooting"
+description: "Fixes for LootTables problems, scripts that call it, and what needs a restart."
+icon: "IconTool"
+---
+
+Find your symptom, then check the right-hand side.
+
+## Setup
+
+| Symptom | Check |
+| --- | --- |
+| A loot row gives the wrong thing or nothing | The example tables use stock qb-core item names. If your inventory names things differently, change them in `/setuploottables` |
+| A new loot crate cannot be opened | Restart LootTables. Crate items are registered as usable when the resource starts |
+| Changes in the panel do not seem to apply | Press **Save**. Saved changes apply at once, and the data lives in the database after the first start |
+
+## Scripts that call LootTables
+
+| Symptom | Check |
+| --- | --- |
+| A table you registered from code is missing after a restart | It is not saved to the database or shown in the panel. Register it again when LootTables starts, with an `onResourceStart` handler for `MrNewbLootTables` |
+| Your registered table replaced another one | `RegisterLootTable` replaces any table with the same id. Use ids of your own |
+| A roll hands out an item the player has no room for | Passing the player skips the room check. Roll without the player, check room, then give |
+| A single roll returns `false` or `{}` | Check for both before you use the result |
+| A roll works but anyone can trigger it | Roll on the server, and check distance and cooldowns there |
+
+## Settings that need a restart
+
+Saving in `/setuploottables` rebuilds every table and payout live. Only one thing needs a restart.
+
+| Setting | What to do |
+| --- | --- |
+| A new loot crate item | Restart LootTables. The panel warns you while the item is not registered yet |
+
+Any change you make to the Lua files in the resource folder needs a resource restart.
+
+Still stuck? Ask in the [Discord](https://discord.gg/mrnewbscripts) and include the console output.

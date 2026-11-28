@@ -35,7 +35,7 @@ const resources: Record<string, string> = {
   'getting-started': 'Getting started',
 }
 
-const inDev = new Set(['mrnewbprescriptions', 'mrnewbdigitalpets', 'mrnewbvehiclekeys', 'mrnewbrecycling'])
+const inDev = new Set(['mrnewbprescriptions', 'mrnewbvehiclekeys', 'mrnewbrecycling'])
 
 function listPages(nodes: Node[], pages: Item[] = []) {
   for (const node of nodes) {

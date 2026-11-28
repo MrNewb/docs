@@ -3,6 +3,7 @@
   "icon": "IconRadio",
   "pages": [
     "requirements",
-    "install"
+    "install",
+    "changelog"
   ]
 }

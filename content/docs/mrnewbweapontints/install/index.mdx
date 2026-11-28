@@ -1,39 +1,35 @@
 ---
 title: "Installation"
-description: "Install WeaponTints. ox_inventory only."
+description: "Get WeaponTints running: unzip it, add the items to ox_inventory, add it to server.cfg, then restart."
 icon: "IconDownload"
 ---
 
-<Callout type="warning">
-  ox_inventory is required. This resource has no ESX / QBCore / Qbox install pages. Start this **after** ox_lib, ox_inventory, and Newb_Bridge. Keep the folder named `MrNewbWeaponTints`.
+<Callout type="info">
+  WeaponTints needs ox_inventory, plus Newb_Bridge and ox_lib. Start it after all three, and keep the folder named `MrNewbWeaponTints`. The full list is on [Requirements](/mrnewbweapontints/requirements).
 </Callout>
 
-### Dependencies [step]
+### Unzip it [step]
 
-[Newb_Bridge](/newb_bridge), ox_lib, and ox_inventory. [Server artifact and OneSync](/getting-started/download#check-your-artifact). Other inventories are not supported.
+Put the `MrNewbWeaponTints` folder in your `resources` folder. No other inventory is supported.
 
-### Add items and images [step]
+### Add the items [step]
 
-Paste every item from [Item setup](/mrnewbweapontints/install/inventory) into `ox_inventory/data/items.lua`. Each def **must** include `server.export` and `allowArmed = true` — `server.export` is the exception to the usual MrNewb item rule; `allowArmed` is required so the item can be used with a weapon out.
+Paste every item from [Item setup](/mrnewbweapontints/install/inventory) into `ox_inventory/data/items.lua`, then copy the pictures from [Item images](/mrnewbweapontints/install/inventory-images) into `ox_inventory/web/images/`.
+
+Each item has to include `server.export` and `allowArmed = true`. The export is what makes the item do something, and `allowArmed` lets a player use it with a weapon out.
 
 | Item | `server.export` |
 | --- | --- |
-| `greentint` … `platinumtint` | `'MrNewbWeaponTints.setweapontint'` |
+| `greentint` to `platinumtint` | `'MrNewbWeaponTints.setweapontint'` |
 | `newbserialfile` | `'MrNewbWeaponTints.newbserialfile'` |
 
-Tint items also set `server.tint` (1–7). MK2 weapons remap through a built-in index table.
-
-Copy the PNGs from `[INSTALL]/images/` into `ox_inventory/web/images/`. Filenames: [Item images](/mrnewbweapontints/install/inventory-images).
-
-### Configure [step]
-
-There is no config file. Names, tints, consume, and exports are the ox_inventory item defs. Notify strings are `locales/*.json`.
+Tint items also set `server.tint` from 1 to 7. MK2 weapons are remapped for you.
 
 <Callout type="info">
   **On Kora Framework:** WeaponTints does not work on it. Its items rely on ox_inventory features that `kora_inventory` does not run, so use ox_inventory for this resource.
 </Callout>
 
-### Add to server.cfg [step]
+### Add it to server.cfg [step]
 
 ```cfg
 ensure ox_lib
@@ -42,6 +38,11 @@ ensure Newb_Bridge
 ensure MrNewbWeaponTints
 ```
 
-### Restart the server [step]
+### Restart and check [step]
 
-Restart after item, image, or locale changes so ox_inventory reloads `items.lua`.
+Restart the server after item, picture or locale changes, so ox_inventory reloads `items.lua`. WeaponTints has no config file, because names, tints and exports all live in the item definitions.
+
+## Where next
+
+- [Item setup](/mrnewbweapontints/install/inventory): the full item list
+- [Configuration](/mrnewbweapontints/install/configuration): what you can change

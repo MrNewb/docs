@@ -4,6 +4,7 @@
   "pages": [
     "requirements",
     "install",
-    "compatibility"
+    "compatibility",
+    "changelog"
   ]
 }

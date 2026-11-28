@@ -3,6 +3,7 @@
   "icon": "IconYoga",
   "pages": [
     "requirements",
-    "install"
+    "install",
+    "changelog"
   ]
 }

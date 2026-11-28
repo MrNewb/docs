@@ -1,0 +1,54 @@
+---
+title: "Locksmith"
+description: "The walk-up NPC, player-run shops, the scanner and the ping tracker."
+icon: "IconSettings"
+---
+
+Part of [Configuration](/mrnewbvehiclekeys/install/configuration). Open `/setupkeys` to change these.
+
+## Locksmith
+
+**Locksmith** is one page for both kinds. One item list and one set of prices serve either.
+
+**Walk-up NPC** (default on): sells spare keys, fob upgrades and shop items. Factory spare key prices are 150 for smart keys and 75 for basic, boat and motorcycle keys. The ped steps away while a player locksmith is working, unless you turn that off.
+
+**Player-run shop** (default on): each shop has a job, a minimum grade, an optional on-duty requirement, and four spots:
+
+| Spot | What it does |
+| --- | --- |
+| Bench | Cuts a key for a plate. Uses up one `blank_key` per cut when that is required, and can run a cutting minigame |
+| Computer | The workstation. Workers pay a one-time firmware licence (100 by default, can be set per shop) to program fob button modules, and sell blank keys and the shop items |
+| Register | Bills a nearby customer. The customer always gets an accept or decline prompt. One charge is capped at 25000 by default |
+| Stash | The shop's stash (50 slots by default) |
+
+The factory shop is tied to the `police` job so you can test. Set the real job on each shop. Renaming a shop key creates a new empty stash. The `keyfob_scanner` item clones a nearby fob onto a blank key. Its range, cooldown, failure chance and police alert chance are under the job tools on the Locksmith page. Item-key mode has to be on for the bench and the scanner.
+
+Factory shop item prices: lockpick 500, advanced lockpick 10000, keyring 500, blank key 25, ping transmitter 2500, ping receiver 1500, aftermarket locks 15000. The price list key has to be the real item name.
+
+### Locksmith details
+
+**The bench.** Each shop's bench can cut a key by typing a plate, clone a key a customer brought in, or both. **Clone access** says whether a brought key can be cloned for any plate, or only for cars the customer owns. Plate typing stays open while **Cut by plate** is on. **Needs a blank key** makes each cut use blanks. You choose the blank item and how many a cut uses, how long cutting takes, and which key types the bench can cut. For the cutting minigame, see [Minigames](/mrnewbvehiclekeys/install/configuration/break-in#minigames). The built-in cutting screen also has **Segments** and **Depth**.
+
+**The computer.** The price list is shared with the walk-up NPC. **Price compared with the NPC** sets the shop's prices as a percentage of the NPC's. 0 charges the same, and a negative number is cheaper. **Sell items at the shop computer** turns the item list on or off there, and the other switches decide whether the NPC sells fob upgrades and whether shop workers program them. **Accepted payment** is the accounts a customer can pay fob upgrades from. The tablet the worker holds while the computer is open has its own prop, bone and position settings.
+
+**The walk-up NPC.** **Owned vehicles only** limits the NPC to cars the player owns. **Step away while staff are online** swaps the NPC for the real locksmiths, and brings it back when the shop is empty. You can also list prop models that act as a locksmith, and add an after-hours NPC to a player-run shop.
+
+**The scanner clone.** The scanner's clone side has its own range, cooldown, chance to fail, police alert, blank key use and a switch for alarming on a failed try. **Skip cars they have keys to** stops it cloning a key the player already has, and **Tag cloned keys** marks the copy. The scanner item is renamed here only, because the clone and the security side both read this one name.
+
+## Locksmith and tracker
+
+The walk-up ped sells spare keys, fob upgrades, and the items under its price list. The entry key has to be the real item name.
+
+The player job has a bench, register, stash, and computer. The bench burns one `blank_key` per cut when that is required. Item-key mode has to be on for the bench and the `keyfob_scanner`. The scanner sniffs a nearby fob and clones it onto a blank. Key lockers are stored in SQL. Renaming a location key creates a new empty locker.
+
+`ping_transmitter` sticks on a car from the target option. `ping_receiver` pings a blurred blip. On the **Ping GPS** page (Advanced) you set how close you must be and how long it takes to attach a transmitter, how many trackers one player can plant, the wait between pings, and how long a ping stays on the map and takes to fade. The ping is always rough, and nobody can dial it in to a pinpoint. Tracker state is in memory, so it clears on a server restart, and the ping only works while that vehicle is spawned.
+
+### The scanner device
+
+Using the `keyfob_scanner` item puts the "Pooper 9" in the player's hand and opens its screen. The screen can be driven with the mouse (the pad and back button, or clicking rows) or the keyboard: arrow keys move, Enter selects, Backspace steps back one screen and Escape closes it. The Sub-GHz screen re-reads the signal every second or so while it is open, so the bars follow the player. Its Settings page has a sound toggle, remembered per player on their own computer.
+
+The **Security** screen reads what the target car has fitted, but only once the car has been scanned. Choosing **Scan vehicle** puts the screen away and drops a small bouncing marker on the car: the front, then the driver's side, then the rear. The player uses the target on each marker, an animation plays, and the next marker appears. Going further than the **Walk-away distance** (15 metres) from the car, finishing, or running out of time takes the markers away, and a finished scan stays readable and usable on that car for `RevealSeconds`. The screen then shows: its alarm tier, its immobiliser (none, cut-off relay or keypad) and whether a GPS tracker is fitted or being jammed. From there the player can **Bypass immobiliser**, which switches an immobiliser off for two minutes (no hotwire block, no keypad PIN), or **Jam GPS**, which silences the tracker for a minute. Both take a few seconds of work, can fail, and a failed try sounds the car's alarm. The screen refreshes itself while it is open, so a bypass counts down. The times, the failure chance and the cooldown are on the **Pooper 9 scanner** card of the **Vehicle security** page, and every try is written to the staff log.
+
+## GPS tracker
+
+**GPS tracker** (Advanced, default on): a `ping_transmitter` is fitted to a car, and a `ping_receiver` pings its rough location. The location is blurred on purpose. A player can plant up to 5 trackers, and pings have a 30 second cooldown.

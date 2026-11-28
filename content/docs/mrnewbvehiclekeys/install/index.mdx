@@ -1,130 +1,47 @@
 ---
 title: "Installation"
-description: "How to install Vehicle Keys. Start this after ox_lib, oxmysql, your inventory, and Newb_Bridge."
+description: "Get Vehicle Keys running: unzip it, paste the items, add it to server.cfg, then finish in game."
 icon: "IconDownload"
 ---
 
-<Callout type="warning">
-  Start this **after** ox_lib, oxmysql, your inventory, and Newb_Bridge. If ox_inventory starts later, the keyring falls back to the old style.
+<Callout type="info">
+  You need Newb_Bridge, ox_lib 3.40.2 or newer, oxmysql and an inventory the bridge supports. Start Vehicle Keys after all of them. The full list is on [Requirements](/mrnewbvehiclekeys/requirements).
 </Callout>
 
-### Dependencies [step]
+### Unzip it [step]
 
-[Newb_Bridge](/newb_bridge), [ox_lib](https://github.com/overextended/ox_lib), [oxmysql](https://github.com/overextended/oxmysql), and [Server artifact and OneSync](/getting-started/download#check-your-artifact). You do not edit the framework for this. QBCore, Qbox, ESX and Kora are all supported. Newb_Bridge finds your framework by itself (see [Supported](/newb_bridge/supported#kora-and-whip) for Kora).
+Put the `MrNewbVehicleKeys` folder in your `resources` folder. There is no SQL file to import, because the tables are created the first time it starts.
 
-Check the `provide 'qbx_vehiclekeys'` line before the first start. Details: [Requirements](/mrnewbvehiclekeys/requirements).
+### Add the items [step]
 
-### Add the items and images [step]
+Paste the item list for your inventory from [Item setup](/mrnewbvehiclekeys/install/inventory), then copy the pictures from [Item images](/mrnewbvehiclekeys/install/inventory-images). Kora has no file to paste, so its records are on the Item setup page.
 
-Paste from [Item setup](/mrnewbvehiclekeys/install/inventory). The same text ships as `[INSTALL]/ox_inventory_items.txt` and `[INSTALL]/qb-core_items.txt`. Kora has no items file to paste. Add the records from the Kora section of that page to `KoraCoreSeed.items` in `kora_core/shared/items.lua`.
-
-Copy every PNG from `[INSTALL]/images/` into your inventory images folder.
-
-- ox_inventory: `ox_inventory/web/images/`
-- qb-inventory: `qb-inventory/html/images/`
-- kora_inventory: `kora_inventory/images/`
-
-`hotwire_kit` is optional until you turn on “require an item to hotwire”. Leave the item in anyway. The script sets the slot count.
-
-### Add the locksmith job [step]
-
-Only needed for a player-run locksmith. Add the `locksmith` job for your framework (Qbox, QBCore, ESX or Kora) from [Locksmith job](/mrnewbvehiclekeys/install/locksmith-job), then set it on each shop in `/setupkeys`. Skip this if you only use the walk-up NPC.
-
-### Add to server.cfg [step]
-
-Skip the ox_inventory line if you are not using it.
+### Add it to server.cfg [step]
 
 ```cfg
 ensure ox_lib
 ensure oxmysql
-ensure Newb_Bridge
-ensure ox_inventory
-ensure MrNewbVehicleKeys
-```
-
-On Kora, start the Kora stack first and use `kora_inventory` in place of ox_inventory:
-
-```cfg
-ensure ox_lib
-ensure oxmysql
-ensure kora_sql
-ensure kora_lib
-ensure kora_core
-ensure kora_inventory
-ensure kora_target
+ensure qbx_core          # or qb-core / es_extended
+ensure ox_inventory      # or your inventory
 ensure Newb_Bridge
 ensure MrNewbVehicleKeys
 ```
 
-If you run `kora_vehiclekeys`, remove it and set `Config.VehicleKeys = "MrNewbVehicleKeys"` in `Newb_Bridge/settings/bridge_resources.lua`. This resource provides the name `kora_vehiclekeys`, so Kora garages and dealerships use these keys. Restart those resources whenever this one restarts.
+### Restart and run the setup [step]
 
-### Add the phone app [step]
+Restart the server, join as an admin and type `/setupkeys`. The first time, it asks one question per page and suggests an answer for each. Take the suggestion or change it, then press **Save**.
 
-Optional. Skip it unless you run [LB Phone](https://lbphone.com) and want players to use their keys from the phone. MrNewbVehicleKeysPhone is a separate resource that adds a **Keys** app. It only calls this resource and changes nothing in it.
+To check it worked, give yourself a key and press **L** next to the car.
 
-Start it last, after `lb-phone` and `MrNewbVehicleKeys`:
+## Optional extras
 
-```cfg
-ensure ox_lib
-ensure lb-phone
-ensure MrNewbVehicleKeys
-ensure MrNewbVehicleKeysPhone
-```
+- **Player-run locksmith:** add the job from [Locksmith job](/mrnewbvehiclekeys/install/locksmith-job). Skip it if you only want the walk-up NPC
+- **Phone app:** [Phone app](/mrnewbvehiclekeys/phone) adds a Keys app to LB Phone
+- **Coming from an older version:** [Moving from an older version](/mrnewbvehiclekeys/install/configuration#moving-from-an-older-version) brings your old settings across
 
-The app adds itself to LB Phone on start. Players open **Keys** on their phone, pick a vehicle and lock, unlock, open the trunk, start the engine or locate it. There is nothing to set up in game. If the app is missing from the phone, check that all four resources are started in that order.
+## Where next
 
-Saving item keys to the phone needs item-based keys turned on in `/setupkeys`. Details and the action list: [Phone app](/mrnewbvehiclekeys/phone).
-
-### First start [step]
-
-Start the server once. SQL tables are created on their own, including `MrNewb__Settings`. There is no SQL file to import.
-
-Join as an admin and run `/setupkeys`. The first time it opens, a guided setup asks one question per page: how keys work, the fob, street cars, the engine, the keyring, throwing keys, break-in, police alerts, and the locksmith. Each page shows a recommended answer. Take it, or change it. Press **Save** when you are done.
-
-Advanced pages and settings stay hidden until you turn on **Advanced settings** in the left rail. The Save button shows how many changes are waiting. After a save, the panel lists the few settings that need a resource restart. Everything else is live for every player.
-
-Settings are stored in the database (`MrNewb__Settings`). The files under `resource/open/seed/` are only copied in on the first boot. After that the database copy wins and editing the seed does nothing. **Reset to the factory setup** in the panel loads the seed defaults over your saved settings.
-
-What each page does: [Configuration](/mrnewbvehiclekeys/install/configuration).
-
-### Restart and check [step]
-
-Restart the inventory, then this resource, after you paste items. Give yourself a key, lock a car with **L**, and open the fob.
-
-Commands: [Commands](/mrnewbvehiclekeys/install/commands). Locker models: [Anticheat models](/mrnewbvehiclekeys/anticheat).
-
-## Good to know
-
-- Restarting the resource takes a moment. The key system starts about 2 seconds after the resource does, so wait a moment before you test.
-- The resource starts in about 0.25 seconds of server time. Blip icons ship as one atlas image (`web/build/blips/atlas.webp` and `atlas.json`), so the web UI build stays small. Do not delete files from `web/build`.
-- On Kora, restart the whole server after changes to the Kora stack. Do not restart Newb_Bridge live.
-- Works with `sv_stateBagStrictMode` on. The script's clients do not write vehicle state bags, the server does.
-- Restarting this resource also stops MrNewbVehicleKeysPhone. Start it again afterwards ([Phone app](/mrnewbvehiclekeys/phone)).
-
-## Keys players press
-
-Players can rebind these under MrNewbVehicleKeys in FiveM’s settings.
-
-| Key | What it does |
-| --- | --- |
-| L | Lock or unlock the closest car you have a key for, about 15 meters. The on-screen fob reaches further |
-| Y | Toggle the engine. Stays off if your HUD already handles the engine |
-| . (period) | Open the keyring UI, when the keyring UI is on. Leave it unbound for `/keyring` only. On ox_inventory without the menu you open the keyring item instead |
-| E | Hotwire, driver seat only, when you do not have a key |
-| H | Search the car for keys, driver seat only |
-| I / O | Put the key in the ignition, or take it back out, when insert mode is on |
-| F11 | Change the auto-pilot mode while it is running |
-| Throw key (no key until you set one) | Throw the key for the car you sit in. Set the default key on the Keybinds page of `/setupkeys`, and players can rebind it in FiveM's key bindings. While the key fob screen is open, the screen listens for the server's default key (a letter, a digit or an F key), because the game does not hear key bindings while the screen has focus |
-
-Walking up to your own car locks and unlocks it. Players can turn that off from the fob or with `/newb_proximitylocks`.
-
-## Common setup mistakes
-
-| Symptom | Check |
-| --- | --- |
-| Keyring is the context menu | ox_inventory started after this resource, or container keyring is off in the setup menu |
-| Two `/car` commands | `AdminCommands` is on and qbx_core still registers its own `/car` and `/dv`. Turn one of them off |
-| `provide` conflict on start | Another resource also provides `qbx_vehiclekeys` |
-| Shop will not sell a renamed item | The locksmith price entry key has to be the real item name |
-| Seed file edits do nothing | The database copy wins after the first boot. Use `/setupkeys` |
-| Locker props deleted | Allow the models on [Anticheat models](/mrnewbvehiclekeys/anticheat) |
+- [Configuration](/mrnewbvehiclekeys/install/configuration): what every setup page does
+- [Commands](/mrnewbvehiclekeys/install/commands): admin commands and the keys players press
+- [Troubleshooting](/mrnewbvehiclekeys/troubleshooting): the usual problems and fixes
+- [Anticheat models](/mrnewbvehiclekeys/anticheat): props to allow if your anticheat deletes them

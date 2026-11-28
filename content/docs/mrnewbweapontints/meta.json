@@ -4,6 +4,7 @@
   "pages": [
     "requirements",
     "install",
-    "exports"
+    "exports",
+    "changelog"
   ]
 }

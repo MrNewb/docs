@@ -1,37 +1,40 @@
 ---
 title: "Installation"
-description: "How to install Yoga. Start it after ox_lib, your framework, your inventory and Newb_Bridge."
+description: "Get Yoga running: unzip it, add the items, add it to server.cfg, then configure it."
 icon: "IconDownload"
 ---
 
-<Callout type="warning">
-  Start this **after** ox_lib, your framework, your inventory and Newb_Bridge. The bridge looks at what is already running. If this script starts first, it can miss them.
+<Callout type="info">
+  You need Newb_Bridge, ox_lib, and a framework, inventory and target the bridge supports. Start Yoga after all of them. The full list is on [Requirements](/mrnewbyoga/requirements).
 </Callout>
 
-### Dependencies [step]
+### Unzip it [step]
 
-[Newb_Bridge](/newb_bridge), ox_lib, your framework, and an [inventory and target the bridge supports](/newb_bridge/supported).
+Put the `MrNewb_Yoga` folder in your `resources` folder. oxmysql is not needed.
 
 ### Add the items [step]
 
-Register the three mat items from [Item setup](/mrnewbyoga/install/inventory) and copy the images from `[INSTALL]/imgs/` into your inventory's image folder. The script registers the use of each item for you through Newb_Bridge, so the items need no `server.export`.
+Register the three mat items from [Item setup](/mrnewbyoga/install/inventory) and copy the pictures from `[INSTALL]/imgs/` into your inventory images folder. Yoga registers the use of each item for you, so the items need no `server.export`.
 
-### Configure [step]
-
-Edit `resource/open/shared/config.lua`. See [Configuration](/mrnewbyoga/install/configuration). The shipped config has one mat spot and the supply ped turned off.
-
-### Add to server.cfg [step]
-
-Swap `qbx_core` / `ox_inventory` for whatever you actually run.
+### Add it to server.cfg [step]
 
 ```cfg
 ensure ox_lib
-ensure qbx_core
-ensure ox_inventory
+ensure qbx_core          # or qb-core / es_extended
+ensure ox_inventory      # or your inventory
 ensure Newb_Bridge
 ensure MrNewb_Yoga
 ```
 
-### Restart the server [step]
+### Configure it [step]
 
-Restart after config or item changes.
+Open `resource/open/shared/config.lua`. The shipped config has one mat spot and the supply ped turned off. Every setting is on [Configuration](/mrnewbyoga/install/configuration).
+
+### Restart and check [step]
+
+Restart the server after config or item changes.
+
+## Where next
+
+- [Configuration](/mrnewbyoga/install/configuration): every setting explained
+- [Item setup](/mrnewbyoga/install/inventory): the item list for your inventory

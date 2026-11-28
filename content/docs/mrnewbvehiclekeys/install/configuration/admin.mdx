@@ -1,0 +1,61 @@
+---
+title: "Admin, logging and compatibility"
+description: "Admin commands, the Manage tab, debugging, logging and other key scripts."
+icon: "IconSettings"
+---
+
+Part of [Configuration](/mrnewbvehiclekeys/install/configuration). Open `/setupkeys` to change these.
+
+## Other key scripts
+
+**General > Other key scripts**: pick the script you are replacing and press **Answer for** it. Calls meant for it are then answered by this resource, so other scripts that ask for keys keep working without edits. Save, stop the old script, and restart this one. Keys held inside the old script are not copied.
+
+`fxmanifest.lua` also has `provide` lines so `exports['qbx_vehiclekeys']:GiveKeys(...)` resolves here. Only `qbx_vehiclekeys` is active. To replace a different script, uncomment its line, run `refresh`, and restart this resource (a full server restart is safest). Never provide a name whose original resource is still running.
+
+## Admin commands
+
+`/car` and `/dv` are off by default. Turn them on under **General > Admin & debugging** (Advanced). Names are read when the resource starts. A name another resource owns is skipped with a console warning, so give ours a different name. Details: [Commands](/mrnewbvehiclekeys/install/commands).
+
+## Manage tab
+
+**Manage** in the rail holds the live admin tools:
+
+| Section | What it does |
+| --- | --- |
+| Vehicles | Nearby vehicles by plate or model, with a teleport button |
+| Players | See what a player holds, give or take keys |
+| Vehicle locks | Add and edit lock profiles (item keys only) |
+| Key creator | Make a key for any plate. With virtual keys it grants a key without an item |
+| Parking | Create the parking areas that self-park uses (item keys only) |
+
+## Debug mode
+
+**General > Admin & debugging > Debug messages** (Advanced). It is off by default and applies right away, no restart. Keep it off on a live server.
+
+With it on, the server console and F8 print plain one-line messages with names, ids and numbers, in the form `[MrNewbVehicleKeys:settings] Sam (id 7) opened the setup panel.` The word after the colon names the area, such as `keys`, `locks`, `engine`, `locksmith`, `theft`, `admin` or `settings`. The `/whatsloaded`, `/debugkeys` and `/debuglistkeys` commands only exist when debug was on at resource start.
+
+## Restart cost
+
+The resource starts in about 0.25 seconds of server time. The blip icons ship as one atlas image (`web/build/blips/atlas.webp` and `atlas.json`), which keeps the number of files every player downloads low.
+
+## Logging
+
+Key events (grants, shares, locksmith work, admin actions) go to the console in debug mode, fire the `MrNewbVehicleKeys:Log` event, and post to a Discord webhook when this convar is set in `server.cfg`:
+
+```cfg
+set mrnewbvehiclekeys_webhook "https://discord.com/api/webhooks/..."
+```
+
+Each log row carries who, to whom, which plate and where. Messages are queued to stay inside Discord's rate limit.
+
+## Compatibility
+
+This resource provides for these key systems: `qb-vehiclekeys`, `qbx_vehiclekeys`, `qs-vehiclekeys`, `wasabi_carlock`, `Renewed-Vehiclekeys`, `mk_vehiclekeys`, `jg-vehiclekeys` and `tgiann-hotwire`. The **Integrations** page chooses which foreign events and legacy exports answer. Garage entries switch on when that garage resource is running. `provide` lines in `fxmanifest.lua` let `exports['qbx_vehiclekeys']:GiveKeys(...)` resolve here. Only `provide 'qbx_vehiclekeys'` is active in the shipped manifest.
+
+### jg-vehiclekeys
+
+As a key system we provide for, the `jg-vehiclekeys` server API is answered here: `giveKeys`, `removeKeys`, `hasKeys`, `getKeys`, the three `...Entity` key calls, `isPlayerNearVehicle`, `unlockVehicle`, `setLockState`, `canParkVehicle`, `canCollectVehicle`, `vehicleParked`, `vehicleOwnershipChanged`, `vehiclePlateChanged`, `getVehicleSecurity`, `getVehicleTrackingLocation`, `getVehicleGhostInstallations` and `changeVehiclePin`, with the same result tables. The same calls written in capitals (`GiveKeys`, `RemoveKeys`, `HasKeys`, `GetKeys`, `UnlockVehicle`, `VehicleOwnershipChanged`) work too. Switch it on in **Integrations** and add a `provide 'jg-vehiclekeys'` line, so that callers keep working when this resource restarts. Do not run the real `jg-vehiclekeys` at the same time.
+
+A few things differ. A `design` option is ignored. `expiresAt` becomes a temporary key. Alarm tiers, immobiliser and GPS come from the security above. `changeVehiclePin` only works on a car with a keypad immobiliser. `tgiann-hotwire` is answered here too.
+
+`MrNewbVehicleKeys:Client:*` and `MrNewbVehicleKeys:Server:*` are internal. Do not build on them.

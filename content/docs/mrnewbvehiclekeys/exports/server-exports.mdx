@@ -47,6 +47,8 @@ exports.MrNewbVehicleKeys:GiveKeysCustom(src, netid, plate, 'smart', {}, true, f
 | `IsInsertModeEnabled` | none | boolean |
 | `GetKeySystem` | none | The live key system object. For deep integrations only |
 | `HasPhoneKey` / `GetPhoneKeys` | `src, plate` / `src` | companion phone app |
+| `IsNpcLocksmithAvailable` | none | boolean. `true` when the walk-up locksmith is out, `false` while staff of the locksmith job are online and hiding it |
+| `GetApiVersion` | none | number, currently `3`. The level of this export surface, for companion resources to check |
 
 ## Vehicle state
 
@@ -84,7 +86,17 @@ When `CompatibilityEvents` for that resource is on, these keep working: `qb-vehi
 
 For your own server scripts, use the exports. They are not gated on the sender standing next to the car.
 
-`MrNewbVehicleKeys:Server:*` and `MrNewbVehicleKeys:Client:*` are internal. Client exports: [Client exports](/mrnewbvehiclekeys/exports/client-exports).
+### Vehicle transferred
+
+When a car changes hands, tell the keys script so shared keys on it end at once:
+
+```lua
+TriggerEvent('MrNewbVehicleKeys:Server:VehicleTransferred', plate)
+```
+
+That does the same as the `ClearSharedKeys` export. Without it, a sweep that runs every 10 minutes ends the shares for the standard framework vehicle tables.
+
+Every other `MrNewbVehicleKeys:Server:*` and `MrNewbVehicleKeys:Client:*` event is internal. Client exports: [Client exports](/mrnewbvehiclekeys/exports/client-exports).
 
 ## Police flags
 

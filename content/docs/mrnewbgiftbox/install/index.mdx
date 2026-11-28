@@ -1,46 +1,40 @@
 ---
 title: "Installation"
-description: "How to install GiftBox. Start this after ox_lib, your framework, your inventory, and Newb_Bridge. The bridge looks at what’s already running. If this script starts first, it can miss them."
+description: "Get GiftBox running: unzip it, add the items, add it to server.cfg, then configure it."
 icon: "IconDownload"
 ---
 
-<Callout type="warning">
-  Start this **after** ox_lib, your framework, your inventory, and Newb_Bridge. The bridge looks at what’s already running. If this script starts first, it can miss them.
+<Callout type="info">
+  You need Newb_Bridge, ox_lib, and a framework and inventory the bridge supports. Start GiftBox after all of them. The full list is on [Requirements](/mrnewbgiftbox/requirements).
 </Callout>
 
-### Dependencies [step]
+### Unzip it [step]
 
-[Newb_Bridge](/newb_bridge), ox_lib, and your framework plus inventory through the bridge. oxmysql is not required.
+Put the `MrNewbGiftBox` folder in your `resources` folder. oxmysql is not needed.
 
-### Add items and images [step]
+### Add the items [step]
 
-Register **each** key in `Config.GiftBoxes` as a usable item. The resource calls `bridge.framework.registerItemUse` for every entry at start. If you add `holiday_box`, you also add a `holiday_box` inventory item. Reward `item` names inside the box table must already exist in your inventory.
+Every gift box you define needs a matching usable item, and every reward item has to exist in your inventory. Paste the shipped item from [Item setup](/mrnewbgiftbox/install/inventory), then copy its picture from [Item images](/mrnewbgiftbox/install/inventory-images).
 
-Paste from [Item setup](/mrnewbgiftbox/install/inventory). Copy `giftbox.png` from `[INSTALL]/` into:
-
-| Inventory | Image folder |
-| --- | --- |
-| ox_inventory | `ox_inventory/web/images/` |
-| qb-inventory / ps-inventory | `html/images/` |
-| one_inventory | `one_inventory/web/images/` |
-| Kora (kora_inventory) | `kora_inventory/images/` |
-
-### Configure [step]
-
-Edit `resource/open/server/config.lua` (server-only). `always = true` always grants. `weight` is a relative ox_lib selector weight (not `0`-`1`). One weighted extra is rolled per open. `account` is optional (`accountType` of `cash` / `bank` / `money`, `amount`, plus `always` or `weight`).
-
-### Add to server.cfg [step]
-
-Swap `qbx_core` / `ox_inventory` for whatever you actually run.
+### Add it to server.cfg [step]
 
 ```cfg
 ensure ox_lib
-ensure qbx_core
-ensure ox_inventory
+ensure qbx_core          # or qb-core / es_extended
+ensure ox_inventory      # or your inventory
 ensure Newb_Bridge
 ensure MrNewbGiftBox
 ```
 
-### Restart the server [step]
+### Configure it [step]
 
-Restart after config or item changes.
+Open `resource/open/server/config.lua`. It is server-only. Boxes, rewards, odds and money extras are explained on [Configuration](/mrnewbgiftbox/install/configuration).
+
+### Restart and check [step]
+
+Restart the server after config or item changes.
+
+## Where next
+
+- [Configuration](/mrnewbgiftbox/install/configuration): every setting explained
+- [Item setup](/mrnewbgiftbox/install/inventory): the item list for your inventory

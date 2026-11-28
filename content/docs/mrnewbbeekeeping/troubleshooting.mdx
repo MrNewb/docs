@@ -1,0 +1,35 @@
+---
+title: "Troubleshooting"
+description: "Fixes for the usual BeeKeeping setup problems."
+icon: "IconTool"
+---
+
+Find the symptom, then check the right-hand side.
+
+| Symptom | Check |
+| --- | --- |
+| Console says ox_lib or Newb_Bridge needs a newer version, or adding a queen errors with `attempt to index a function value (field 'selector')` | One of them is too old. Update ox_lib from the [ox_lib releases](https://github.com/overextended/ox_lib/releases) or Newb_Bridge from the [Newb_Bridge releases](https://github.com/MrNewb/Newb_Bridge/releases), then restart the server |
+| Console prints `[MrNewbBeeKeeping] these items are not registered in the inventory yet: ...` about 8 seconds after start | Those items are missing from your inventory. Add them from [Item setup](/mrnewbbeekeeping/install/inventory). If they are already there, start BeeKeeping after the inventory, or restart the inventory once |
+| Items do nothing when used | Missing item defs, or this resource started before Newb_Bridge / the inventory. Check the console line above |
+| Hive is not producing | It is open, workers are zero, the queen is dead, or honey / wax are already full |
+| Honey slide will not finish | It completes at 2 percent of cells left, or at 120 seconds. Set the minigame to `none` or `ox` on the Hives page to skip it |
+| Shop is empty or will not sell | Location id does not match a stock list. If the inventory cannot register a runtime shop, turn on the context menu on the Shops page |
+| Cannot place a hive | Personal cap, too close to another hive, blocked zone, bad ground, or too far from the spot |
+| Hives vanished | Saving mode is `shutdown` and the server crashed, or Maintenance wiped inactive owners |
+| Props deleted by anticheat | Allow the models on [Anticheat models](/mrnewbbeekeeping/anticheat) |
+| `/setupbeekeeping` says no permission | `Config.IsHiveAdmin` in `resource/open/server/custom.lua` |
+| Blank item pictures in the panel | Those PNGs are not in the inventory image folder |
+
+## Other scripts
+
+| Symptom | Check |
+| --- | --- |
+| `IsPlayerHiveVip` stays `false` | VIP is off in `/setupbeekeeping`, or the player is still under the base cap. It also stays `false` when the base cap is `0` (unlimited), because there is nothing to add to |
+| `GetPlayerHiveLimit` returns `-1` | The base cap is `0`, which means unlimited |
+| VIP slots never appear for a player | VIP needs a base cap above `0`, and the player has to match the identifier list, ACE group, Discord role or your own check in `resource/open/server/custom.lua` |
+
+## Settings that need a restart
+
+Everything in `/setupbeekeeping` applies the moment you press **Save**, so nothing in the panel needs a restart. Items are the exception: new items have to exist in your inventory first, and the console prints a line about 8 seconds after start if some are missing. Edits to the Lua files in `resource/open/` need a resource restart.
+
+Still stuck? Ask in the [Discord](https://discord.gg/mrnewbscripts) and include the console output.

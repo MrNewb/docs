@@ -3,6 +3,7 @@
   "icon": "IconLicense",
   "pages": [
     "requirements",
-    "install"
+    "install",
+    "changelog"
   ]
 }

@@ -1,55 +1,41 @@
 ---
 title: "Installation"
-description: "How to install CustomPlates. Start this after ox_lib, oxmysql, your framework, your inventory, and Newb_Bridge."
+description: "Get CustomPlates running: unzip it, add the items, add it to server.cfg, then configure it."
 icon: "IconDownload"
 ---
 
-<Callout type="warning">
-  Start this **after** ox_lib, oxmysql, your framework, your inventory, and Newb_Bridge. The bridge looks at what’s already running. If this script starts first, it can miss them.
+<Callout type="info">
+  You need Newb_Bridge, ox_lib, oxmysql, and a framework and inventory the bridge supports. Start CustomPlates after all of them. The full list is on [Requirements](/mrnewbcustomplates/requirements).
 </Callout>
 
-### Dependencies [step]
+### Unzip it [step]
 
-[Newb_Bridge](/newb_bridge), ox_lib, oxmysql, [Server artifact and OneSync](/getting-started/download#check-your-artifact). Vehicle keys go through the bridge so the old plate key is removed and a new one is issued.
+Put the `MrNewbCustomPlates` folder in your `resources` folder.
 
-### Add items and images [step]
+### Add the items [step]
 
-Paste from [Item setup](/mrnewbcustomplates/install/inventory). Copy `customizableplate.png` from `[INSTALL]/itemimages/` into:
+There is one item, `customizableplate`. Paste it from [Item setup](/mrnewbcustomplates/install/inventory), then copy its picture from [Item images](/mrnewbcustomplates/install/inventory-images). The name has to match the one in the config.
 
-| Inventory | Image folder |
-| --- | --- |
-| ox_inventory | `ox_inventory/web/images/` |
-| qb-inventory / ps-inventory | `html/images/` |
-| one_inventory | `one_inventory/web/images/` |
-| Kora (kora_inventory) | `kora_inventory/images/` |
-
-### Configure [step]
-
-Edit `resource/open/shared/config.lua`:
-
-- `PlateItemName` — must match the inventory item (`customizableplate`)
-- `Settings.MinCharacters` / `MaxCharacters` — shipped `8` / `8`. Max is clamped to 8.
-- `FilteredWords` — rejected **substrings** (case-insensitive)
-- `ProgressBarEnabled` — `true` (shipped) walks to the rear, then a 5s apply progress
-- `EnableOxExclusive` — shipped `false`. `true` blocks giving this item to another player on ox_inventory (not rearranging it in your own inventory)
-
-Labels: `locales/en.json`. Plate text must be alphanumeric. The player must be **outside** the vehicle, within `10.0` of a **networked** vehicle they own. The server re-checks at `12.0`.
-
-If `jg-mechanic` is started, the resource calls `vehiclePlateUpdated(oldPlate, newPlate)` after a successful apply.
-
-### Add to server.cfg [step]
-
-Swap `qbx_core` / `ox_inventory` for whatever you actually run.
+### Add it to server.cfg [step]
 
 ```cfg
 ensure ox_lib
 ensure oxmysql
-ensure qbx_core
-ensure ox_inventory
+ensure qbx_core          # or qb-core / es_extended
+ensure ox_inventory      # or your inventory
 ensure Newb_Bridge
 ensure MrNewbCustomPlates
 ```
 
-### Restart the server [step]
+### Configure it [step]
 
-Restart after config or item changes.
+Open `resource/open/shared/config.lua` for the plate length, the word filter and the apply animation. Every setting is on [Configuration](/mrnewbcustomplates/install/configuration).
+
+### Restart and check [step]
+
+Restart the server after config or item changes.
+
+## Where next
+
+- [Configuration](/mrnewbcustomplates/install/configuration): every setting explained
+- [Item setup](/mrnewbcustomplates/install/inventory): the item list for your inventory

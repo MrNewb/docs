@@ -1,44 +1,40 @@
 ---
 title: "Installation"
-description: "How to install VehicleRentals. Start this after ox_lib, your framework, your inventory, and Newb_Bridge."
+description: "Get VehicleRentals running: unzip it, add the items, add it to server.cfg, then configure it."
 icon: "IconDownload"
 ---
 
-<Callout type="warning">
-  Start this **after** ox_lib, your framework, your inventory, and Newb_Bridge. The bridge looks at what’s already running. If this script starts first, it can miss them.
+<Callout type="info">
+  You need Newb_Bridge, ox_lib, and a framework and inventory the bridge supports. Vehicle keys and fuel come through the bridge too. Start VehicleRentals after all of them. The full list is on [Requirements](/mrnewbvehiclerentals/requirements).
 </Callout>
 
-### Dependencies [step]
+### Unzip it [step]
 
-[Newb_Bridge](/newb_bridge), ox_lib, your framework, and an [inventory the bridge supports](/newb_bridge/supported#inventory), including `one_inventory`. Vehicle keys and fuel come through the bridge too. Both lists are on [Supported](/newb_bridge/supported).
+Put the `MrNewbVehicleRentals` folder in your `resources` folder. oxmysql is not needed.
 
-### Add items and images [step]
+### Add the items [step]
 
-The only item is `rental_paperwork`. Paste the def from [Item setup](/mrnewbvehiclerentals/install/inventory). Copy `[INSTALL]/images/rental_paperwork.png` into:
+There is one item, `rental_paperwork`. Paste it from [Item setup](/mrnewbvehiclerentals/install/inventory), then copy its picture from [Item images](/mrnewbvehiclerentals/install/inventory-images). The paperwork is only a token, and cars are returned from the rental menu.
 
-| Inventory | Image folder |
-| --- | --- |
-| ox_inventory | `ox_inventory/web/images/` |
-| qb-inventory / ps-inventory | `html/images/` |
-| one_inventory | `one_inventory/web/images/` |
-| Kora (kora_inventory) | `kora_inventory/images/` |
-
-The paperwork is a token; return is from the rental menu.
-
-### Configure [step]
-
-Edit `resource/open/shared/config.lua` (`Config.Agencies`, `Config.BlipCategory`, `Config.BlipCategoryLabel`). Location fields, `platePrefix`, blip categories, stock `price`, and spawn pads are documented on the [resource page](/mrnewbvehiclerentals). There is no deposit; `price` is charged from **bank** and refunded to **bank** on a valid return.
-
-### Add to server.cfg [step]
-
-Swap `qbx_core` / `ox_inventory` for whatever you actually run.
+### Add it to server.cfg [step]
 
 ```cfg
 ensure ox_lib
-ensure qbx_core
-ensure ox_inventory
+ensure qbx_core          # or qb-core / es_extended
+ensure ox_inventory      # or your inventory
 ensure Newb_Bridge
 ensure MrNewbVehicleRentals
 ```
 
-### Restart the server [step]
+### Configure it [step]
+
+Open `resource/open/shared/config.lua` for the agencies and map blips. There is no deposit: the price is charged to the bank and refunded to the bank on a valid return. Every setting is on [Configuration](/mrnewbvehiclerentals/install/configuration).
+
+### Restart and check [step]
+
+Restart the server after config or item changes.
+
+## Where next
+
+- [Configuration](/mrnewbvehiclerentals/install/configuration): every setting explained
+- [Item setup](/mrnewbvehiclerentals/install/inventory): the item list for your inventory

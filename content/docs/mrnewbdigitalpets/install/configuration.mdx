@@ -15,7 +15,7 @@ The first time you open it, a short tutorial plays. The sidebar is grouped like 
 | Group | Pages | What you decide |
 | --- | --- | --- |
 | Raising | Life, Needs, Care, Rarity, Goals | How long an egg takes, the level cap, how fast stats drain, what each care button restores and how long it cools down, the odds of an Ultra or Shiny hatch, and the trophies, daily streak, toy effects and style shop |
-| World | Shop, Pedometer, Outings, Spots | The coin shop, step counting, landmark trips, and map zones that cheer certain species up |
+| World | Shop, Pedometer, Outings, Spots | The coin shop and its shopkeeper, step counting, landmark and swimming trips, player gifts, the Find Uncle family hunts, and map zones that cheer certain species up |
 | Handheld | Handheld | The display mode (UI or DUI), the prop model, the animation, and the bone it attaches to |
 | General | General, Custom pets | Debug and the inventory item name. Custom pets is for advanced users who add their own pet species, see [Make your own digital pet](/mrnewbdigitalpets/make-your-own-pet) |
 
@@ -51,23 +51,23 @@ A few things to know about DUI mode:
 
 You rarely need to change these, but here is what they do.
 
-| Setting | Plain English |
+| Panel page | Plain English |
 | --- | --- |
-| `Item` | The inventory item name. Defaults to `digital_pet` |
-| `StarterName` | The name shown before a player renames their pet |
-| `HatchMinutes` | How long the egg waits before hatching. Default 15 |
-| `MaxLevel` | Level cap. Default 50 |
-| `DaysUntilDeath` | Real days of neglect before the pet dies. Default 30 |
-| `NeedDrain` | For each need, how often (`Every`, seconds) it drops and by how much (`Lose`) while the toy is closed |
-| `Care` | For each button, how much it restores (`Fill`), the cooldown in seconds (`Wait`), and the XP it gives (`Xp`) |
-| `Rarity` | Percent chance of `Ultra` and `Shiny`. Ultra is rolled first |
-| `Shop` | `Enabled`, plus the item list. Each item needs a unique `id`, a `label`, a `cost` in pet coins, and a `happiness` value |
-| `Pedometer` | `Enabled`, the steps needed for the Walk bonus, and the soft session goal |
-| `Outings` | `Enabled`, the cooldown, arrival radius, whether it sets a waypoint, the reward, and the list of places |
-| `FavoriteSpots` | `Enabled`, the happiness tick, its cooldown, and zones tied to a species trait (`beach`, `city`, or `wild`) |
-| `Handheld` | Prop models, a fallback, the animation, the bone, and `DisplayMode` (`ui` or `dui`) |
-| `Streak`, `Trophies`, `Toys`, `Style` | The Goals page: the daily care streak rewards, the trophy payout, whether toys have effects, and the style shop (hats, shells, scenes) |
-| `Debug` | Extra logging. Off by default. Set it on **General > Debug output** in the panel. It prints plain one-line messages with names, ids and numbers, as `[MrNewb_DigitalPets:server] area: text` or `[MrNewb_DigitalPets:client] area: text`. Leave off on a live server |
+| General | The inventory item name. Defaults to `digital_pet` |
+| Life | The name shown before a player renames their pet |
+| Life | How long the egg waits before hatching. Default 15 minutes |
+| Life | Level cap. Default 50 |
+| Life | Real days of neglect before the pet dies. Default 30 |
+| Needs | For each need, how often (in seconds) it drops and by how much while the toy is closed |
+| Care | For each button, how much it restores, the cooldown in seconds, and the XP it gives |
+| Rarity | Percent chance of an Ultra or Shiny hatch. Ultra is rolled first |
+| Shop | On or off, plus the item list. Each item needs a unique id, a label, a cost in pet coins, and a happiness value |
+| Pedometer | On or off, the steps needed for the Walk bonus, and the soft session goal |
+| Outings | On or off, the cooldown, arrival radius, whether it sets a waypoint, the reward, and the list of places |
+| Spots | On or off, the happiness tick, its cooldown, and zones tied to a species trait (beach, city, or wild) |
+| Handheld | Prop models, a fallback, the animation, the bone, and the display mode (UI or DUI) |
+| Goals | The daily care streak rewards, the trophy payout, whether toys have effects, and the style shop (hats, shells, scenes) |
+| General | Extra logging. Off by default. Set it on **General > Debug output** in the panel. It prints plain one-line messages with names, ids and numbers, as `[MrNewb_DigitalPets:server] area: text` or `[MrNewb_DigitalPets:client] area: text`. Leave off on a live server |
 
 Custom shop items can use an `https://` image or a `nui://<resource>/...` path. The stock toys use bundled art.
 
@@ -106,6 +106,6 @@ bridge.inventory.addItem(source, 'digital_pet', 1)
 exports.ox_inventory:AddItem(source, 'digital_pet', 1)
 ```
 
-It arrives as an egg and hatches after `HatchMinutes`. You can sell it in any shop script, hand it out as a job reward, or drop it in loot like a normal item.
+It arrives as an egg and hatches after the egg time set on the **Life** page. You can sell it in any shop script, hand it out as a job reward, or drop it in loot like a normal item.
 
 Events and callbacks that start with `MrNewbDigitalPets:` are the UI talking to the server. Do not build on them.

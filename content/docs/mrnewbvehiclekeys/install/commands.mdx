@@ -11,7 +11,7 @@ icon: "IconTerminal2"
 | `/clearoldkeys` | Deletes keys for cars that are not spawned. Keys for cars that are out stay. 30 second cooldown. Only when keys are real items |
 | `/anchor` | Drops or raises the anchor on a nearby boat, jetski, or sub. Within 8 meters, slower than 10 mph. Works from the shore |
 | `/newb_proximitylocks` | Turns your own walk-up auto lock on or off. Same toggle as the fob |
-| `/keyring` | Opens the keyring UI. Only when the **Keyring menu** is on and its open setting allows the command. See [Keyring UI](/mrnewbvehiclekeys/install/configuration#keyring-ui) |
+| `/keyring` | Opens the keyring UI. Only when the **Keyring menu** is on and its open setting allows the command. See [Keyring UI](/mrnewbvehiclekeys/install/configuration/keys#keyring-ui) |
 | `/givekeys` | Only when keys are virtual. Shares the closest car you have a key for with the nearest player. You need to be within 10 meters of that car. Five second cooldown |
 | `/throwkeys` | Tosses a key on the ground. Not registered on ox_inventory — use the Throw Keys button on the item, or the keyring UI on virtual keys. On other inventories, sit in the car first |
 | `/movekeys` | Lets you drag the key fob screen anywhere you like and make it bigger or smaller, then save it. Only when the fob screen is on in `/setupkeys`. The position and size are kept on your own computer (client KVP), so it follows you between sessions but not between machines. **Reset** puts it back. See [Moving the key fob](#moving-the-key-fob) |
@@ -64,7 +64,7 @@ The position is a share of your screen, so it holds if you change resolution. It
 
 ## Debug
 
-Leave Debug Mode off on a live server. Turn it on under **General > Admin & debugging** (Advanced must be on). See [Debug mode](/mrnewbvehiclekeys/install/configuration#debug-mode).
+Leave Debug Mode off on a live server. Turn it on under **General > Admin & debugging** (Advanced must be on). See [Debug mode](/mrnewbvehiclekeys/install/configuration/admin#debug-mode).
 
 The debug commands are only registered when Debug Mode was already on as the resource started. Turn it on, save, then restart the resource to get them.
 
@@ -73,3 +73,20 @@ The debug commands are only registered when Debug Mode was already on as the res
 | `/whatsloaded` | Which framework, inventory, notification, and target the bridge picked, and whether item keys and ox key mode are on. The server console half prints too |
 | `/debugkeys` | Reloads the client as if you just joined |
 | `/debuglistkeys [id]` | Full key data for that player in the server console |
+
+## Keys players press
+
+Players can rebind these under MrNewbVehicleKeys in FiveM’s settings.
+
+| Key | What it does |
+| --- | --- |
+| L | Lock or unlock the closest car you have a key for, about 15 meters. The on-screen fob reaches further |
+| Y | Toggle the engine. Stays off if your HUD already handles the engine |
+| . (period) | Open the keyring UI, when the keyring UI is on. Leave it unbound for `/keyring` only. On ox_inventory without the menu you open the keyring item instead |
+| E | Hotwire, driver seat only, when you do not have a key |
+| H | Search the car for keys, driver seat only |
+| I / O | Put the key in the ignition, or take it back out, when insert mode is on |
+| F11 | Change the auto-pilot mode while it is running |
+| Throw key (no key until you set one) | Throw the key for the car you sit in. Set the default key on the Keybinds page of `/setupkeys`, and players can rebind it in FiveM's key bindings. While the key fob screen is open, the screen listens for the server's default key (a letter, a digit or an F key), because the game does not hear key bindings while the screen has focus |
+
+Walking up to your own car locks and unlocks it. Players can turn that off from the fob or with `/newb_proximitylocks`.

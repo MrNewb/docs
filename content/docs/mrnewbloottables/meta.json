@@ -4,8 +4,10 @@
   "pages": [
     "requirements",
     "install",
+    "troubleshooting",
     "configuration",
     "integration",
-    "exports"
+    "exports",
+    "changelog"
   ]
 }

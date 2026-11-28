@@ -1,0 +1,58 @@
+---
+title: "Locking and engine"
+description: "How cars lock, how the engine starts, and how players reach the eye menu."
+icon: "IconSettings"
+---
+
+Part of [Configuration](/mrnewbvehiclekeys/install/configuration). Open `/setupkeys` to change these.
+
+## Starting the engine
+
+Under **Locking and engine > Starting the engine** you pick one of three ways, plus an ignition switch.
+
+| Choice | What happens |
+| --- | --- |
+| Starts on its own | The engine starts as soon as a driver with a key sits down. The engine key still switches it off and on |
+| Press the engine key | The car stays off until the driver presses the engine key (Y by default). Getting in is not enough. This is the factory default |
+| Another script does it | A HUD or another script owns the engine key. This script leaves the engine key alone |
+
+**Key must be inserted** (insert mode) is a separate switch. With it on, the driver puts the key in with **I** and takes it out with **O**. Putting the key in starts the engine, and taking it out turns the engine off. While the key is in, it leaves the driver's inventory and stays in the car. The give-a-key-if-the-engine-is-running and hotwire-gives-a-key options are off while insert mode is on. None of the eye-menu options for lock, unlock, start engine, stop engine and roof are offered while insert mode is on, and the key fob has no remote start, summon or self-park. The fob's lock, unlock and roof buttons, and the lock key (L), still work.
+
+Which one to pick:
+
+- Most servers: **Press the engine key**.
+- Players should not have to press anything: **Starts on its own**.
+- You want a roleplay ignition step: turn on insert mode.
+- Your HUD has its own engine toggle: **Another script does it**. Two scripts answering the same key fight each other. The panel warns you when it finds a known HUD running with its engine toggle on, and the guided setup picks this choice for you. A HUD with its engine key turned off does not count.
+
+Remote start on the key fob and the eye-menu Start engine option work whichever way you choose. If you pick the engine key and then switch that key off under Keybinds, nobody can start a car with it, and the panel warns you.
+
+## Lock sound
+
+Under **Locking and engine > Locking and street cars** (Advanced):
+
+| Option | What plays |
+| --- | --- |
+| Off | Nothing |
+| Car sound (`native`) | The lock chirp from this resource's audio files, played from the car. Default |
+| Horn | A short horn tap |
+| Both | The chirp and a short horn tap |
+
+For Car sound and Both you can set the range (20 m by default) and whether the horn chirp plays too. The audio bank, sound name and sound group are only for servers that add their own audio files.
+
+## Locking details
+
+These sit on the **Locking and street cars** and **Proximity locks** pages (Advanced).
+
+- **Lock key range:** how far away the lock key looks for a car. It is 15 m by default
+- **Hold to close up or open up:** holding the lock button on the fob also raises the windows, closes the roof and shuts the doors. Holding unlock lowers the windows and the roof. Each part has its own switch, and the roof only applies to convertibles on the model list
+- **Street cars:** unowned cars can roll once, the first time someone tries the door, or all be left unlocked. You can also set the chance that a parked car, and a car an NPC is driving, starts locked. Both are 10 percent by default
+- **Engine stays on when exiting:** getting out leaves the engine running
+- **Keys if the engine is running:** sitting in a car that is already running hands over a key. It is off while the key has to be inserted
+- **Bounce on unlock:** the car dips when it unlocks
+- **Engine animation:** the clip the driver plays in the seat when the engine is toggled. Off plays nothing
+- **Proximity locks:** you set how far the owner walks before the car locks (10 m by default) and how close they come before it unlocks (5 m). Keep the unlock distance shorter. You also set how long a stored car waits before it locks, and whether new players start with it turned on. They can still switch it on their own fob
+
+## Interaction style
+
+**General > Interaction style** sets how players reach locksmiths and key storages: **Target** (third eye, default), **Help text prompt**, or **3D text**. With the last two, players press E. The eye-target options page only exists while Target is selected.

@@ -1,0 +1,73 @@
+---
+title: "Troubleshooting"
+description: "Fixes for Vehicle Keys setup problems, other scripts that call it, settings that clash, and changes that need a restart."
+icon: "IconTool"
+---
+
+Find your symptom, then check the right-hand side. If nothing here fits, run `/whatsloaded` as an admin to see which framework, inventory and target Newb_Bridge picked, then ask in the [Discord](https://discord.gg/mrnewbscripts).
+
+## Install and start-up
+
+| Symptom | Check |
+| --- | --- |
+| Keyring is the context menu | ox_inventory started after this resource, or the keyring container is off in the setup menu |
+| `provide` conflict on start | Another resource also provides `qbx_vehiclekeys`. Remove it, or delete that `provide` line (see [Requirements](/mrnewbvehiclekeys/requirements)) |
+| Shop will not sell a renamed item | The locksmith price entry key has to be the real item name |
+| Seed file edits do nothing | The database copy wins after the first boot. Change it in `/setupkeys` instead |
+| Locker props deleted | Allow the models on [Anticheat models](/mrnewbvehiclekeys/anticheat) |
+| Nothing responds for a moment after a restart | The key system starts about 2 seconds after the resource does. Give it a moment before you test |
+| Keys phone app disappeared after restarting this resource | The phone app depends on it and stops too. Start `MrNewbVehicleKeysPhone` again |
+
+## Other scripts calling Vehicle Keys
+
+These cover garages, dealerships, job scripts and anything else that gives, checks or removes keys.
+
+| Symptom | Check |
+| --- | --- |
+| Another script says it cannot find a keys export | Vehicle Keys is not started yet, or it started after that script. Start it first, and guard calls with `GetResourceState('MrNewbVehicleKeys') == 'started'` |
+| A script written for another key system does nothing | Open **General > Other key scripts** in `/setupkeys`, pick the script you are replacing and save. Its calls are only answered once you have done that |
+| Calls meant for some other key system are ignored | Only the key systems listed under [Compatibility](/mrnewbvehiclekeys/install/configuration/admin#compatibility) are answered. Check that script's switch on the Integrations page |
+| Both the old script and this one react to the same event | Stop the old key script. Two key systems answering the same events will conflict. Never provide a name whose original resource is still running |
+| Server `HasKeys` always returns false | It takes the player's server id and the vehicle's network id. To check by plate, call `HasKeysByPlate` |
+| A client export only affects the local player | `GiveKeys`, `RemoveKeys` and the other client exports act on the player who runs them. For another player, call the server export |
+| A key you gave from a script stops working after a while | Temp keys expire on a timer. Use the normal give-keys exports for keys that should stay |
+| Keys do not follow a car after it is sold or its plate changes | Call `ClearSharedKeys`, or trigger `MrNewbVehicleKeys:Server:VehicleTransferred`, when ownership changes, and `TransferVehicleSecurity` when a plate changes. See [Server exports](/mrnewbvehiclekeys/exports/server-exports) |
+| A companion resource reports the keys API is too old | Update Vehicle Keys and the companion together. `GetApiVersion` tells you the level, currently 3 |
+| Your code relies on `MrNewbVehicleKeys:Server:*` or `:Client:*` events and breaks after an update | Those are internal and can change. Use the exports instead |
+
+## Settings that clash
+
+| What you see | Why it happens |
+| --- | --- |
+| Both this script and your HUD start the engine, or the engine key does nothing | Two scripts are answering the same key. Pick **Another script does it** under Starting the engine, or turn the HUD's engine toggle off. A HUD with its toggle already off does not count |
+| Nobody can start a car with the engine key | The engine key is switched off on the Keybinds page, but **Press the engine key** is still the chosen way to start |
+| Give-a-key-if-the-engine-is-running and hotwire-gives-a-key do nothing | **Key must be inserted** is on. Both are off while it is on, because a key that is not in the ignition cannot be handed over |
+| The lock, unlock, start and roof options are missing from the eye menu | The same insert mode switch removes them. The key and the engine key do those jobs |
+| Remote start stops working on a car | It has a keypad immobiliser fitted. A keypad lock turns remote start off |
+| The fob buttons page does nothing | **Fob style** is set to Branded. Branded fobs follow the maker's layout, so fob buttons only apply to the Legacy fob |
+| The Key types and Fob buttons pages are missing | **Fob screen** is off. Keys still work, but nothing appears on screen, and those pages are hidden |
+| The Boat anchor page is missing | Boat keys are turned off |
+| Locksmith and key storages vanished | Item keys are off. Virtual keys cannot be cut or hung in a locker, so those switch off |
+| The keyring container is on, but the keyring still opens as a screen | The container stays off while the keyring screen is on. Pick one on the Keyring page |
+| The `.` keybind does nothing | **Opens with** is set to Item, which is the default. Switch it to Both or Command |
+| The keyring key clashes with ox_inventory | F2 belongs to ox_inventory, so it is not used. Choose another key on the Keybinds page, or leave it unbound and use `/keyring` |
+| A minigame never appears | It was picked for the wrong action, or the other resource is not started. The built-in ones only work for their own action. Look for a yellow or red console line |
+| A rule on a vehicle class has no effect on the server | The server cannot read a car's class. Put the rule on a model, type or plate as well. See [Per-vehicle rules](/mrnewbvehiclekeys/install/configuration/vehicles-jobs#per-vehicle-rules) |
+| A job's car asks for a PIN, or cannot get a keypad | Cars shared with a job never ask its members for a PIN, and one cannot be fitted to them. The **Skip the PIN in job vehicles** switch changes this |
+| Two `/car` commands | The admin commands are on and qbx_core, or a HUD, still registers its own `/car` and `/dv`. Turn one off, or give ours a different name |
+
+## Settings that need a restart
+
+Almost everything in `/setupkeys` goes live for every player the moment you press **Save**. After a save, the panel lists the few that do not. These are the ones:
+
+| Setting | What to do |
+| --- | --- |
+| ox_inventory features | Restart MrNewbVehicleKeys. The hooks attach when the resource starts |
+| Keyring container | Restart MrNewbVehicleKeys. The container is registered with ox_inventory at start |
+| `/car` and `/dv` | Turning one on works straight away. Turning one off, or renaming it, needs a restart before FiveM lets go of the old name |
+| New item names | The items must already exist in your inventory. Restart the inventory after adding them |
+| Renamed items | The old name keeps working until you restart MrNewbVehicleKeys |
+| Keybind defaults | Only players who have not rebound that key get the new default. Players who rebound it keep theirs |
+| The keybind or command for the keyring | Adding one applies at once. Taking it away needs a restart or a relog, because FiveM cannot unregister a key |
+
+Edits to the code files under `resource/open/` always need a resource restart. They are listed under [Needs a restart](/mrnewbvehiclekeys/install/configuration#needs-a-restart).

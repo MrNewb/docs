@@ -1,0 +1,67 @@
+---
+title: "Keys and fob"
+description: "Key storage, the keyring, the key fob, throwing keys and the boat anchor."
+icon: "IconSettings"
+---
+
+Part of [Configuration](/mrnewbvehiclekeys/install/configuration). Open `/setupkeys` to change these.
+
+## Key behaviour
+
+These sit on the **Keys and inventory** page.
+
+- **Use ox_inventory features** (ox_inventory only): ox tells the script the moment a key is picked up or dropped. Off, the script checks the inventory every few seconds instead, which works with any inventory. **Key check** sets that interval and only applies when ox features are off
+- **Aftermarket locks:** the kit changes a car's lock code so old keys stop working. **Who can install** is owners only, or owners plus chosen jobs on any owned car, such as a customer's car at a shop. The chosen jobs can be limited to on duty
+- **Save fob upgrades:** fob upgrades on owned cars are saved to the database
+- **Owner name on keys:** the key description says who owns the car
+- **Key pictures:** each key shows its maker's picture. Copy the `vehicle_key_*.png` files, or turn this off (see [Item images](/mrnewbvehiclekeys/install/inventory-images#key-pictures))
+
+## Keyring UI
+
+With the **Keyring menu** on, the keyring is a menu that saves keys on the player instead of an item or container. Players browse their keys, see time left on loaned keys, share a car with a nearby player and take it back. Sharing a key gives the other player a saved virtual key straight away. It stays on their keyring after they relog until the owner takes it back.
+
+**Opens with** picks how it opens:
+
+| Choice | Opens with |
+| --- | --- |
+| Both | The keyring item, the keybind and `/keyring` |
+| Item | Only using the keyring item |
+| Command | Only the keybind and `/keyring`. Use this on servers without an item keyring |
+
+The default is **Item**, so the keybind does nothing until you switch to Both or Command.
+
+The default keybind is `.` (PERIOD). F2 belongs to ox_inventory, so it is not used. Clear the keyring key under Keybinds in `/setupkeys` to leave it unbound and keep `/keyring` only. Each key in the keybind list can also be switched off in `/setupkeys`. Players can still rebind it in FiveM settings, and a player's own binding is never overwritten by your default.
+
+## Key fob
+
+**Fob style** has two options:
+
+- **Legacy**: this script's own fob. It carries the extra buttons you set up.
+- **Branded**: the car maker's own fob (Karin, Pfister, Dinka and the rest). Every button works: lock, unlock, trunk, alarm and start. A car whose maker has no fob, and boats, fall back to the Legacy fob. The Fob buttons page does not apply to Branded keys, and locksmiths cannot add modules to them. At the locksmith bench, whoever cuts a key picks the brand.
+
+The fob style also decides what players see in the keyring screen.
+
+**Fob buttons** (Advanced) is a table of the extra buttons on smart keys: remote start, open doors, convertible roof, self park, summon, autopilot, dance mode, proximity locks and emergency lights. For each button:
+
+| Column | Meaning |
+| --- | --- |
+| Shown | The button exists on keys and in the locksmith menu. Hidden means gone, even from keys that already list it |
+| Free | Added to every new smart key |
+| Sold | A locksmith can add it for the price |
+| Price | Dollars. Only for Sold buttons |
+
+With Sold on, an Advanced job picker restricts the button to the chosen jobs. With no jobs chosen, any job can use it.
+
+**Key types** (Advanced) sets which style each car gets: smart, basic, luxury, boat or motorcycle. A model rule beats a class rule, and the default covers the rest. **Hold to close up or open up** (Advanced) makes a held lock or unlock button on the fob also close or open the windows, the roof and the doors.
+
+**Fob screen and range** turns the on-screen remote on or off. With it off, keys still work but nothing appears. The lock range sets how far away the fob can still lock or unlock a car, up to 424 m, which is as far as OneSync keeps a car in view. **Fob animation** picks the animation and the prop players hold when they press a fob button.
+
+**Brand logos** (Advanced) is where the maker's logo on each fob comes from. Search the list of makes, or scan the server for the makes you stream. For a make or model with no bundled logo, or to replace one, add an image link (an `https` link, for example from FiveManage) next to its make or model name. A model name beats its make, and **Reset** goes back to the bundled file.
+
+**Missing names** (Advanced) finds cars that show a blank or `NULL` name and lets you give them one.
+
+## Throwing keys and the boat anchor
+
+**Throwing keys** lets a player toss the key for the car they are sitting in out of the window, so someone else can pick it up. You set how long a thrown key stays on the ground and the command name. You can also change the model that flies out of the window and the animation a player plays when they pick the key up. The key to press is on the Keybinds page. How players reach it depends on the inventory: [Commands](/mrnewbvehiclekeys/install/commands) lists the options.
+
+**Boat anchor** (Advanced) lets players drop the anchor from the boat fob or with `/anchor`. You set how close the player has to be, in metres, and how slowly the boat must be moving. They do not have to be in the boat. The page is hidden while boat keys are off.

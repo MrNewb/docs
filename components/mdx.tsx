@@ -8,6 +8,7 @@ import { ProviderKey, ProviderTable } from '@/components/ProviderChart'
 import { YouTubePoster } from '@/components/YouTubePoster'
 import { DocLink } from '@/components/brand-link'
 import { LinkEmbed } from '@/components/link-embed'
+import { Changelog } from '@/components/Changelog'
 
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
   return {
@@ -22,6 +23,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     Tab,
     YouTubePoster,
     LinkEmbed,
+    Changelog,
     ProviderKey,
     ProviderTable,
     ...components,

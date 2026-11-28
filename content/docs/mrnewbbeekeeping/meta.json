@@ -4,7 +4,9 @@
   "pages": [
     "requirements",
     "install",
+    "troubleshooting",
     "anticheat",
-    "exports"
+    "exports",
+    "changelog"
   ]
 }

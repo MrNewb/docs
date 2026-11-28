@@ -1,0 +1,39 @@
+---
+title: "Troubleshooting"
+description: "Fixes for Recycling setup problems, other scripts that use it, and what needs a restart."
+icon: "IconTool"
+---
+
+Find your symptom, then check the right-hand side.
+
+## Install and start-up
+
+| Symptom | Check |
+| --- | --- |
+| The recycler does not appear | It is placed, you are inside its load radius, and Newb_Bridge is started |
+| The prop is invisible | `stream/` is intact and the resource is started. Restart the game client |
+| “That cannot be recycled” | The item needs a recipe, and that recycler’s type has to accept it |
+| Blank pictures in the panel | That item has no image in your inventory |
+| Panel will not open | You have to be an admin (framework admin or `group.admin`). Run it in game, not from the server console |
+
+## Settings that clash
+
+| What you see | Why it happens |
+| --- | --- |
+| A recipe gives nothing back | Its output items have to exist in your inventory. The seed recipes expect `phone`, `radio`, `lockpick`, `plastic`, `metalscrap` and `copper` |
+| Nobody can use a recycler | Only one player can use a machine at a time, and only the player who loaded an item can take it back out |
+| Murder mode items are missing | Murder mode is off by default. If you turn it on, add its items from the install page |
+
+## Other scripts
+
+| Symptom | Check |
+| --- | --- |
+| `SetRecyclerRunning` returns `false` | The entity does not exist, or it is not a `mrnewb_recycler_post`. It only changes the spinning visual. It does not start the machine or change what it produces |
+| The rotor spins on its own again | Pass `nil` to give control back to the server. See [Exports](/mrnewbrecycling/exports) |
+| A script needs to know a machine is running | Read `GlobalState.recyclingRunning`. A running recycler maps to its finish time, and idle ones are absent |
+
+## Settings that need a restart
+
+Everything in `/setuprecycling` goes live the moment you press **Save**, for the server and every player. Nothing in the panel needs a restart. Any change you make to the Lua files in the resource folder does.
+
+Still stuck? Ask in the [Discord](https://discord.gg/mrnewbscripts) and include the console output.

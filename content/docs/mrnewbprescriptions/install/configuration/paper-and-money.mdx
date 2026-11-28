@@ -1,0 +1,35 @@
+---
+title: "Paper, doctors and money"
+description: "The prescription pad and paper, doctor history, the pharmacy economy, supply orders and insurance."
+icon: "IconSettings"
+---
+
+Part of [Configuration](/mrnewbprescriptions/install/configuration). Open `/setupprescriptions` to change these.
+
+## Paper and doctors
+
+| Setting | Plain English |
+| --- | --- |
+| Item names | The item names the script listens for: pad, paper, record, blank paper |
+| Prescription pad | Whether using the pad opens the form, and the optional `/prescription` command |
+| Prescription paper | Partial fills and the clinic header lines |
+| Doctor history | How many scripts each doctor keeps in their history. Oldest are dropped past this |
+| Medical jobs | Which jobs can write scripts, and from what grade |
+
+## Money
+
+| Setting | Plain English |
+| --- | --- |
+| Pharmacy economy | Which account the patient is charged from, whether the sale goes into the society, an optional employee tip percent, and a hard cap on any single bill |
+| Supply orders | The price per item on a supply run (default 50), and the max units per order (30). You can also set prices for specific items |
+| Insurance | On or off, the provider, the card item, renewal days, and the plans |
+
+**Insurance providers.** `builtin` keeps everything in this resource. `m-insurance` hands it to the m-Insurance resource through a bridge file. `custom` is a file you fill in yourself. Insurance only lowers a bill when a **medication** is picked at the register. A general charge is full price.
+
+The default plans:
+
+| Plan | Price | Patient pays |
+| --- | --- | --- |
+| Basic | 1,000 | 25% |
+| Premium | 2,000 | 15% |
+| Platinum | 3,000 | 10% |

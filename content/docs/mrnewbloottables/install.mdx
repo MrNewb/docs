@@ -1,67 +1,46 @@
 ---
 title: "Installation"
-description: "How to install LootTables. Start it after ox_lib, oxmysql, your inventory and Newb_Bridge, then set up your tables in the in-game panel."
+description: "Get LootTables running: unzip it, add it to server.cfg, allow your admins, then build your tables in game."
 icon: "IconDownload"
 ---
 
-<Callout type="warning">
-  Start this **after** ox_lib, oxmysql, your framework, your inventory and Newb_Bridge, and **before** any script that calls its exports. The bridge looks at what is already running. If this script starts first, it can miss them.
+<Callout type="info">
+  You need Newb_Bridge, ox_lib 3.40.2 or newer and oxmysql, plus an inventory the bridge supports if scripts give items or you use loot crates. Start LootTables after all of them and **before** any script that calls it. The full list is on [Requirements](/mrnewbloottables/requirements).
 </Callout>
 
-### Dependencies [step]
+### Unzip it [step]
 
-[Newb_Bridge](/newb_bridge), ox_lib and oxmysql. If your scripts let LootTables give items, or you use loot crates, an [inventory the bridge supports](/newb_bridge/supported#inventory) (including `one_inventory`) has to be running too.
+Put the `MrNewbLootTables` folder in your `resources` folder and keep that name. LootTables adds no items, so every item in your tables has to exist in your inventory already.
 
-LootTables ships no items. Every item name in your tables must already exist in your inventory.
-
-### Add to server.cfg [step]
-
-Keep the folder named `MrNewbLootTables`. Swap `qbx_core` and `ox_inventory` for whatever you run.
+### Add it to server.cfg [step]
 
 ```cfg
 ensure ox_lib
 ensure oxmysql
-ensure qbx_core
-ensure ox_inventory
+ensure qbx_core          # or qb-core / es_extended
+ensure ox_inventory      # or your inventory
 ensure Newb_Bridge
 ensure MrNewbLootTables
 ensure your_script_that_uses_loot
 ```
 
-<Callout type="info">
-  **On Kora Framework:** Every loot `name` has to exist in Kora's item registry.
-</Callout>
-
 ### Allow your admins [step]
 
-The setup panel is for admins only. Give your admin group the ACE permission, in `server.cfg` or `permissions.cfg`:
+The panel is for admins only. Give your admin group this permission in `server.cfg` or `permissions.cfg`, using whichever group your admins are in:
 
 ```cfg
 add_ace group.admin command.setuploottables allow
 ```
 
-Use whichever group your admins are in. Anyone without the permission gets nothing from the panel.
+### Restart and open the panel [step]
 
-### Start the server [step]
+Restart the server, join as an admin and type `/setuploottables`. The first start fills the database with four example loot tables and nine example jobs. From the panel you can edit them or make your own, set the odds and pay tiers, and roll a table to test it without giving anything out. [Configuration](/mrnewbloottables/configuration) explains each setting.
 
-On the first start LootTables creates its own database table and fills it with the four example loot tables and nine example jobs. After that the panel owns the data. See [Configuration](/mrnewbloottables/configuration) for what each setting does.
+Saved changes apply at once. The one exception is a new loot crate item, which needs a LootTables restart.
 
-### Open the panel [step]
+## Where next
 
-In game, as an admin, type `/setuploottables`. From there you can:
-
-- edit the example tables or make your own, picking items from your inventory's item list
-- set the odds and count range for every row
-- set the three pay tiers for each job
-- roll a table to test it without giving anything out
-- copy ready-made code for a table or a job to paste into your script
-
-Saved changes apply immediately. The one exception is a new loot crate item: restart LootTables after adding one.
-
-### Use it in your scripts [step]
-
-Call the exports from the scripts that should hand out loot or pay. Working examples are on the [integration page](/mrnewbloottables/integration).
-
-### Restart when you add a crate item [step]
-
-Restart LootTables after adding a **new loot crate item**, because the item has to be registered as usable when the resource starts. Everything else in the panel applies as soon as you save.
+- [Integration](/mrnewbloottables/integration): examples for using it in your scripts
+- [Configuration](/mrnewbloottables/configuration): what every setting does
+- [Troubleshooting](/mrnewbloottables/troubleshooting): the usual problems and fixes
+- [Exports](/mrnewbloottables/exports): every export with its arguments

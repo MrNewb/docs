@@ -1,0 +1,98 @@
+---
+title: "Configuration"
+description: "Vehicle Keys settings live in /setupkeys. Start here, then open the page for the area you want."
+icon: "IconSettings"
+---
+
+Run `/setupkeys` as an admin. Changes are saved to the database and pushed to connected players without a restart, except the few listed under [Needs a restart](#needs-a-restart).
+
+The first time it opens, a guided setup walks the essentials one question at a time and shows a recommended answer for each. You can leave it and use the full page list at any time.
+
+The left rail groups the pages: Keys, Key fob, Locking and engine, Break-in, Vehicles, Jobs, Locksmith, Police and tracking, and General. **Manage** holds the live admin tools. Use the search box at the top to find any single setting. Every setting shows its limits, marks a changed value, and has a reset to default.
+
+- **Advanced settings** in the rail shows the extra pages and settings (keybinds, proximity locks, eye-target options, key types, fob buttons, vehicle rules, admin and debug, and more). Easy mode hides them.
+- **Save** shows how many changes are waiting and applies them all at once. It reads Saved when nothing is pending. If you close with unsaved changes, the panel asks first.
+- After a save, a note lists any setting that needs a resource restart.
+- **Export or import** (Advanced) copies your whole setup as JSON, or loads one you paste in. The export starts with the MrNewbVehicleKeys version, the Newb_Bridge version, and the framework, inventory, target and other providers Newb_Bridge is using, which is what support asks for. The Discord webhook is never included and an import keeps your own. If the export came from a different version, the message after the import names both versions. An import only changes the panel on screen until you press **Save**, and **Undo** in the message that appears puts it back.
+- **Reset to the factory setup** replaces every saved setting with the seed defaults. The panel keeps a copy for the session so you can restore it.
+
+## Moving from an older version
+
+If you ran an older MrNewbVehicleKeys, you do not have to enter your settings again. The script can read your old config files and turn them into the current settings.
+
+1. Copy the old files into the `import` folder inside `MrNewbVehicleKeys`:
+   - `import/beta/` takes the beta version's `configs` folder: `config.lua`, `buttons.lua`, `overrides.lua`, `vehicletypes.lua` and the parking spot files `legion.lua`, `locksmith.lua` and `pinkcage.lua` (in a `parkingspots` folder)
+   - `import/release/` takes the release version's `src/shared` folder: `config.lua`, `FobOptions.lua` and `ParkingSpots.lua`
+2. Restart MrNewbVehicleKeys (or the server). The folder is only read at start, so files added later are not seen.
+3. Run `/setupkeys`, turn on **Advanced settings**, and press **Import from an older version**. The window lists the files it found. If it says none, they were not there at start.
+4. Press **Import**, look through the panel, then press **Save**. Nothing is saved until you do, and **Undo** puts everything back.
+
+You can use one folder or both. If both are filled, the beta values win where they overlap. Only the file names above are read, so extra parking files you made yourself are skipped.
+
+Only plain values come across: numbers, text, true or false, lists and coordinates. Code in your old files, such as validation checks, dispatch, minigames, fob button actions and admin checks, is never run or copied. The window lists each one after the import so you can recreate it by hand if you still need it. Settings the new version has no match for are listed there too.
+
+Your current settings stay as they are, except for the values found in the old files. Lists such as locksmith items and locations, key storages, job keys and vehicle rules are merged by name: matching entries are updated, new ones are added, and nothing is deleted. Parking spots are saved as soon as you press Import, and duplicates are removed.
+
+## How settings are stored
+
+Settings live in the `MrNewb__Settings` table. The files under `resource/open/seed/` are copied in only on the first boot, when no saved row exists. After that the database copy wins, and editing a seed file changes nothing. Reset in the panel loads the seed back over your saved settings.
+
+## Needs a restart
+
+Only these need a resource restart after a save: the ox_inventory features switch, the keyring container switch, `/car` and `/dv` command names, and renamed item names (the old name keeps working until the restart). New items must already exist in your inventory. Keybind defaults only apply to players who have not rebound that key.
+
+A few files stay editable because they hold code. A change there needs a resource restart:
+
+| File | What you edit |
+| --- | --- |
+| `resource/open/shared/hooks.lua` | Validation checks (return `false` to block lock, hotwire, search, lockpick, or engine start) and the key fob buttons |
+| `resource/open/shared/minigames.lua` | Third-party minigame wiring |
+| `resource/open/server/open_hooks.lua` | `LogVehicleKeysAction(src, action, data)` |
+| `resource/open/server/dispatch.lua` | Police alert |
+| `resource/open/client/integrations.lua` | Lockpick item integration |
+
+## Quick setups
+
+The first screen of the panel offers two ways to start. Each one only changes how keys are stored, and you see every change before you save.
+
+- **Virtual keys:** keys are a hidden list each player carries, with no items. Simple to run. Locksmiths and key storages need real key items, so they switch off
+- **Item keys:** every key is a real inventory item that can be dropped, given or stolen. Cars unlock and start with the key in your pocket, and locksmiths and key storages work
+
+Whether the key has to go in the ignition is a separate choice under **Locking and engine**.
+
+## What to set first
+
+| Setting | Default | What it does |
+| --- | --- | --- |
+| Keys as items | on | On = keys are inventory items. Off = virtual keys, kept as a list and opened from the keyring UI. Switch this before launch |
+| Keyring container | off (10 slots when on) | ox_inventory only. The keyring is a real container you open like a bag. It stays off while the keyring menu is on |
+| Keyring menu | on | The keyring is a screen that lists and shares keys, on every inventory. See [Keyring UI](/mrnewbvehiclekeys/install/configuration/keys#keyring-ui) |
+| Keyring menu opens with | item | How the keyring screen opens: both, item or command |
+| Keyring sharing | on, 10 m | Owners share a car from the keyring UI and can take it back. A limit of 0 means no limit |
+| Aftermarket locks | on | Owners can change a lock so old keys stop working |
+| Key must be inserted | off | Key has to go in the ignition (I) before the engine starts. Turns off give-key-if-running and hotwire-gives-a-key while it is on, and takes the lock, unlock, start, stop and roof options off the eye menu. Remote start, summon and self-park are off too |
+| Engine key | on, unless a known HUD runs | Starts off when a known HUD is running with its own engine toggle on. See [Starting the engine](/mrnewbvehiclekeys/install/configuration/locking#starting-the-engine) |
+| Start the engine on entry | on | On = getting in does not start the engine. Off = a driver with a key has the engine started on entry |
+| Walk-up locking | on | Auto lock and unlock as the owner walks away or back |
+| Lock range and fob range | 15 / 150 m | L key, and the on-screen fob |
+| Hotwire | on, 3 attempts | Requiring an item makes `hotwire_kit` mandatory |
+| Lockpicks | on | Opens a locked door. Does not start the car |
+| Search for keys | on | Search a car for left-in keys |
+| Carjack | on | Pulls the driver out at weapon point |
+| Police alerts | on | Alerts for hotwire, lockpick, and hijacking. Chances are 0–100 |
+| Walk-up locksmith | on | Walk-up ped. Hides while a player locksmith is online |
+| Player locksmith | on | Player locksmith. Factory job name is `police` so you can test. Set the real job on each location |
+| Job key lockers | 2 police lockers | Cabinets where a job hangs spare keys |
+| Admin commands | off | Turns on `/car` and `/dv` |
+| Integrations | qb and qbx on | Which foreign key events this resource answers |
+| Debug mode | off | Verbose logging and the debug commands |
+
+## The settings pages
+
+- [Keys and fob](/mrnewbvehiclekeys/install/configuration/keys): key storage, the keyring, the key fob, throwing keys
+- [Locking and engine](/mrnewbvehiclekeys/install/configuration/locking): locking, street cars, starting the engine, proximity locks
+- [Break-in and minigames](/mrnewbvehiclekeys/install/configuration/break-in): hotwire, lockpicks, searching, carjacking, minigames
+- [Locksmith](/mrnewbvehiclekeys/install/configuration/locksmith): walk-up NPC, player shops, the scanner, ping GPS
+- [Vehicle security](/mrnewbvehiclekeys/install/configuration/security): alarms, immobilisers, keypad PIN, police GPS
+- [Vehicles and jobs](/mrnewbvehiclekeys/install/configuration/vehicles-jobs): job keys, key storages, per-vehicle rules
+- [Admin, logging and compatibility](/mrnewbvehiclekeys/install/configuration/admin): admin commands, Manage tab, debugging, logging, other key scripts

@@ -1,0 +1,57 @@
+---
+title: "Vehicle security"
+description: "Alarms, immobilisers, the keypad PIN, GPS, the scanner and the police tools."
+icon: "IconSettings"
+---
+
+Part of [Configuration](/mrnewbvehiclekeys/install/configuration). Open `/setupkeys` to change these.
+
+## Vehicle security
+
+Equipment that protects a car, fitted from the inventory. Everything here is on the **Vehicle security** page of `/setupkeys`: fitting, who can fit each item, alarms, GPS, the keypad PIN, the scanner, the police tools and the staff log.
+
+The items are in [Inventory items](/mrnewbvehiclekeys/install/inventory), and their pictures in [Item images](/mrnewbvehiclekeys/install/inventory-images#security-item-pictures). The locksmith NPC and the locksmith computer sell them from the same price list as the rest of the catalogue.
+
+### Fitting
+
+Use the item next to a parked, registered car with its engine off and nobody in it. A progress bar runs (**Fitting time**), the item is used up, and a failed or cancelled fit keeps it.
+
+Who may fit it is set per item on the **Who can fit it** card. The shipped lists are `mechanic` and `locksmith` for the alarms, cut-off relay, keypad lock and GPS, so only those jobs can fit them, and they can do it on any registered car without a key. Empty an item's list and anyone holding the item can fit it, but then they must hold a key for that car (or be an admin), so nobody can fit equipment on a stranger's car. **On duty only** makes the job lists count only on duty.
+
+The GPS jammer and the removal kit are open to anyone by default, because they are tampering tools.
+
+### Alarms
+
+| Tier | Who hears it |
+| --- | --- |
+| Basic | Every car, no item. The siren, plus the police alert from the dispatch settings |
+| Linked (`alarm_module_linked`) | The siren, and the owner when they are online, with a flashing blip. The owner testing their own car does not alert themselves. `/clearalarm` removes the blip, and it also goes after a minute or when the owner is back at the car |
+| Dispatch (`alarm_module_dispatch`) | Everything above, and police dispatch to the jobs picked under **Dispatch alarm goes to** |
+
+Lockpicking sounds the alarm as the pick goes in, and hotwiring and carjacking as they start. **Wait between alerts** stops one car raising an alert over and over. A jammed car sends no wireless alert.
+
+### Immobilisers and the keypad PIN
+
+An immobiliser (`ignition_cutoff_relay`) blocks hotwiring, and a valid key is still needed. A keypad lock (`keypad_cutoff_module`) does that and also asks for a four digit PIN at every engine start. It turns remote start off. The PIN is chosen when the keypad lock is fitted, typed on a pad that looks like the hotwire minigame, and changed with `/enginepin`.
+
+- **PIN entry time** is how long the pad stays open.
+- **Wrong tries** in a row sound the alarm and lock the pad for the **Retry delay**.
+- A job vehicle, a car shared with a job, never has a keypad. One cannot be fitted to it, nobody can set up or change a PIN on it, and nobody is asked for one, so a job's car cannot be locked out by a PIN its members were not given. The **Skip the PIN in job vehicles** switch turns this off.
+- A sold car has its PIN cleared, and the first key holder to sit in it chooses a new one.
+- The PIN is kept as a salted hash. Four digits only have 10,000 combinations, so what protects the car is the retry limit and the alarm, not the hash.
+
+### GPS
+
+`gps_tracker_module` fits the same tracker as the transmitter. It belongs to the car's registered owner, and it is what lets police follow a flagged car live. `gps_signal_jammer` silences it for the **Jam time**, which also blocks the receiver ping and the wireless side of the alarm. `tracker_extraction_kit` removes it. **Use up the jammer** and **Use up the removal kit** choose whether they are used up.
+
+### Police tools
+
+On-duty police (the **Police jobs**, **On duty only** and **Lowest grade**) can flag a car, follow it live while its GPS is fitted and not jammed, and strip the immobiliser from a flagged car. The commands are in [Commands](/mrnewbvehiclekeys/install/commands#police). Other scripts, such as an MDT or a phone, set the flag with the `FlagVehicle` export.
+
+### The scanner
+
+The keyfob scanner can scan a car and then bypass or jam it. See [The scanner device](/mrnewbvehiclekeys/install/configuration/locksmith#the-scanner-device).
+
+### Staff log
+
+Fitting, jamming, tracker removal, PIN lockouts, alarms, police flags, tracks and disables, scanner scans and tries, and admin changes are written through ox_lib's logger. The **Staff log** card has the on and off switch and the Discord webhook, and **Do not log these** (with Advanced on) skips single events.

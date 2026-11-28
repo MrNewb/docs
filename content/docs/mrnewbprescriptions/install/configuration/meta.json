@@ -1,0 +1,10 @@
+{
+  "title": "Configuration",
+  "icon": "IconSettings",
+  "pages": [
+    "pharmacies",
+    "paper-and-money",
+    "medicine",
+    "crime-and-behaviour"
+  ]
+}

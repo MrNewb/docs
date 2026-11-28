@@ -31,6 +31,12 @@ icon: "IconDeviceDesktop"
 | `SetVehicleHotwireImmune` | `vehicle, immune` | boolean. The server applies it, and only for an admin, someone with a real key, or the vehicle's owner. A borrowed temporary key is not enough |
 | `OpenKeyFob` | `plate, buttons` | boolean |
 | `StartVehicleAlarm`, `ToggleTrunk`, `ToggleRemoteStart` (starts or stops from the real engine state), `DanceMode`, `SelfParkVehicle`, `SummonVehicle`, `ToggleAutoPilot` | `vehicle` | boolean |
+| `ToggleHood` | `vehicle` | boolean |
+| `ToggleVehiclePanel` | `vehicle, panel` | `{ ok, reason }`. `panel` is `'trunk'` or `'hood'`. When `ok` is false, `reason` is `locked`, `no_keys`, `busy`, `vehicle_not_found` or `invalid` |
+| `HasVehiclePanel` / `IsVehiclePanelOpen` | `vehicle, panel` | boolean. Whether the car has that trunk or hood, and whether it is open right now |
+| `IsNpcLocksmithAvailable` | none | boolean. `true` when the walk-up locksmith is out, `false` while staff of the locksmith job are online and hiding it |
+| `GetApiVersion` | none | number, currently `3`. The level of this export surface, for companion resources to check |
+| `ResolveKeyAnimationProp` | `brand, image` | The prop model the key animation uses for that maker and key picture |
 | `IsItemBasedMode` / `IsInsertModeEnabled` | none | boolean |
 | `GetKeySystem` | none | The live key system object. For deep integrations only |
 | `ThrowKeys` / `DestroyKey` | `slot` | ox_inventory button actions. Not for general scripting |

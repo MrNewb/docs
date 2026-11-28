@@ -4,8 +4,10 @@
   "pages": [
     "requirements",
     "install",
+    "troubleshooting",
     "anticheat",
     "exports",
-    "phone"
+    "phone",
+    "changelog"
   ]
 }

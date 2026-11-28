@@ -42,21 +42,13 @@ Kora jobs are records in a list, not a table keyed by job name. Each record carr
 | `type` | Service grouping. `'none'` for a normal job |
 | `grades` | Array, lowest grade first. Each entry has `name` and `payment`; `isboss = true` marks the boss grade |
 
-Kora grades start at 1, the script's grades start at 0. The bridge converts, so Clerk stays grade `0` in `/prescriptionssetup` and in any `minimumGrade` setting. Do not shift your numbers by one.
+Kora grades start at 1, the script's grades start at 0. The bridge converts, so Clerk stays grade `0` in `/setupprescriptions` and in any `minimumGrade` setting. Do not shift your numbers by one.
 
 A kora_core update can overwrite `shared/jobs.lua`, so keep a copy of your addition. A resource can also register the job at runtime with `exports.kora_core:registerShared('jobs', 'pharmacy', record)`, but Kora removes records a resource registered when that resource stops, so the seed file is the safer place.
 
 ## Point the pharmacy at it
 
-In `/prescriptionssetup`, open **Shops**, pick the pharmacy, and set the job name. If you edit the file instead, it looks like this:
-
-```lua
-Job = {
-    enabled = true,
-    jobName = 'pharmacy', -- must match the framework job
-    minimumGrade = 0,
-}
-```
+In `/setupprescriptions`, open **Shops**, pick the pharmacy, and set the job name.
 
 If you rename the job, say to `moreos`, change it in your framework **and** on every pharmacy that uses it.
 
@@ -70,7 +62,7 @@ If you rename the job, say to `moreos`, change it in your framework **and** on e
 | Dispatch jobs | Who gets pinged for the panic button, forged sheets, and shoplifting |
 | Overdose dispatch jobs | Who gets pinged for overdoses. `false` keeps them quiet |
 
-Each permission is a minimum grade, with `0` as the lowest. Admin access to `/prescriptionssetup` comes from the framework admin check in Newb_Bridge.
+Each permission is a minimum grade, with `0` as the lowest. Admin access to `/setupprescriptions` comes from the framework admin check in Newb_Bridge.
 
 ## No player pharmacy?
 

@@ -3,6 +3,7 @@
   "icon": "IconPumpkinScary",
   "pages": [
     "requirements",
-    "install"
+    "install",
+    "changelog"
   ]
 }

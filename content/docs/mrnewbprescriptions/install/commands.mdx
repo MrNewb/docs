@@ -1,6 +1,6 @@
 ---
 title: "Commands"
-description: "Chat commands for Prescriptions. Most setup lives in /prescriptionssetup."
+description: "Chat commands for Prescriptions. Most setup lives in /setupprescriptions."
 icon: "IconTerminal2"
 ---
 
@@ -8,7 +8,7 @@ icon: "IconTerminal2"
 
 | Command | What it does |
 | --- | --- |
-| `/prescription` | Opens the write pad. Only registered when the pad item is **not** the way to open it (`useItem = false`), or when `allowCommandWithItem = true`. You can rename it with `PrescriptionPad.command` |
+| `/prescription` | Opens the write pad. Only available when the **Prescription pad** setting lets doctors open the pad with a command instead of the item, or allows both. You can rename the command on the same setting |
 
 Most doctors just use the `prescriptionpad` item.
 
@@ -16,19 +16,19 @@ Most doctors just use the `prescriptionpad` item.
 
 | Command | What it does |
 | --- | --- |
-| `/prescriptionssetup` | Opens the in-game setup |
+| `/setupprescriptions` | Opens the in-game setup |
 | `/staffdebug` | Copies a short Newb_Bridge provider report to your clipboard for support. Needs Debug turned on in the panel |
 
 ## Test commands
 
 Each one is off until you turn its switch on in the panel's Extras page, and all of them should stay off on a live server.
 
-| Command | Switch | What it does |
-| --- | --- | --- |
-| `/testprescription` | `TestPrescriptionCommand` | Opens a sample prescription paper |
-| `/testdoctorcreate` | `TestDoctorCreateCommand` | Opens the doctor write pad |
-| `/testbottling` | `TestBottlingCommand` | Opens the bottling minigame |
+| Command | What it does |
+| --- | --- |
+| `/testprescription` | Opens a sample prescription paper |
+| `/testdoctorcreate` | Opens the doctor write pad |
+| `/testbottling` | Opens the bottling minigame |
 
 <Callout type="warning">
-  With `Debug = true`, the clocked-in check on billing, supply runs, and the panic button is skipped. Do not leave it on.
+  With **Debug mode** on, the clocked-in check on billing, supply runs, and the panic button is skipped. Do not leave it on.
 </Callout>

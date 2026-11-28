@@ -1,0 +1,36 @@
+---
+title: "Crime, behaviour and logs"
+description: "Shoplifting, forgery, prompt style, debug, test commands and logging."
+icon: "IconSettings"
+---
+
+Part of [Configuration](/mrnewbprescriptions/install/configuration). Open `/setupprescriptions` to change these.
+
+## Crime
+
+| Setting | Plain English |
+| --- | --- |
+| Shoplifting | Master switch, how long a shelf stays empty (2 hours), the per-player cooldown, odds of getting something, odds of police being called, and the loot pool. Each pharmacy can override any of it |
+| Forgery | The underground desk. Allow altering real scripts, allow blank fakes, how convincing a fake can get (capped at 70%), the chance a blank forge fails, and whether NPC pharmacies accept unverified fakes |
+
+## Behaviour
+
+| Setting | Plain English |
+| --- | --- |
+| Prompt style | How players interact: `target`, `drawtext`, or `helptext` |
+| Debug | Off by default. Under Extras with Advanced on (**Debug mode**). It prints plain one-line messages such as `[MrNewbPrescriptions:server] area: text`, with names, ids and numbers. It also changes behaviour: the duty check is skipped for billing, supply runs and the panic button, and the prescription pad writes the script to yourself instead of a nearby patient. Leave it off on a live server |
+| Test commands | Test commands. All off for a live server. See [Commands](/mrnewbprescriptions/install/commands) |
+| NPC pharmacist | Hide the NPC pharmacist while staff are on duty |
+| Medication hooks | Run the stubs in `resource/open/server/medication_hooks.lua` |
+
+## Logs
+
+Dispenses, bills, forged papers, shoplifting and overdose treatment are logged. We recommend **ox_lib logging** (Datadog, Fivemanage or Loki, set up in ox_lib itself). The script already sends every line to it, so there is nothing to switch on here, and the history stays searchable.
+
+If you also want the lines in Discord, open the **Extras** page, paste a webhook link into **Logs**, and press **Save webhook**. Use **Send a test message** to check it.
+
+- The link is stored on the server only. It is never sent to a player, never shown again after you save it, and not part of the exported settings. The panel only tells you whether one is set.
+- Paste a new link to replace it, or press **Remove webhook** to turn Discord logging off.
+- Posts are queued and spaced out, so a burst of activity cannot hit Discord's rate limit.
+
+The file `resource/open/server/utility.lua` holds the log function if you want to send the lines somewhere else.

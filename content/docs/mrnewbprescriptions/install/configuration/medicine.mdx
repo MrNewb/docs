@@ -1,0 +1,30 @@
+---
+title: "Medications and overdose"
+description: "The medication catalog, bottling, effects, overdose, and updates that add new medications."
+icon: "IconSettings"
+---
+
+Part of [Configuration](/mrnewbprescriptions/install/configuration). Open `/setupprescriptions` to change these.
+
+## Medicine
+
+| Setting | Plain English |
+| --- | --- |
+| Effects | How the overdose plays out, and the strength and dose ranges when bottling |
+| Bottling | How many pills in the minigame, the animations, and the seal step |
+
+## Overdose in a nutshell
+
+Every dose a player takes counts toward an overdose, and each one stops counting after 30 minutes. At the threshold (6 doses by default, set on the Overdose and bottling page) the overdose starts. It plays out in stages, with hallucinations in the late ones, and the last stage is fatal. A revive clears it.
+
+## Medications
+
+The catalog lives on the **The meds** page. Each medication has a name, the number of uses per bottle, the most doses a script can be written for, a price, an icon, an effect, a duration, and a recipe made of stock-room ingredients. Adding your own is covered in [Medications and effects](/mrnewbprescriptions/effects).
+
+### New medications after an update
+
+When an update brings new medications, they are added to your pharmacy on the next start, but only once their items exist in your inventory. Paste the new items from the install folder, copy their images, and restart the resource. The console lists any medication that is still waiting for its item. A medication you deleted is never added back.
+
+### Safety warnings on the pad
+
+Some medications carry a warning for certain conditions, for example Alta Amoxi with a penicillin allergy. When the doctor ticks a matching condition on the pad, a red note appears under the medication asking them to check with the patient. It is a warning only, so the doctor can still sign.

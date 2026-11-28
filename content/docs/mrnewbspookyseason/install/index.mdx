@@ -1,54 +1,41 @@
 ---
 title: "Installation"
-description: "How to install SpookySeason. Start this after ox_lib, your framework, your inventory, and Newb_Bridge."
+description: "Get SpookySeason running: unzip it, add the items, add it to server.cfg, then configure it."
 icon: "IconDownload"
 ---
 
-<Callout type="warning">
-  Start this **after** ox_lib, your framework, your inventory, and Newb_Bridge. The bridge looks at what’s already running. If this script starts first, it can miss them.
+<Callout type="info">
+  You need Newb_Bridge, ox_lib, and a framework, inventory and target the bridge supports. Start SpookySeason after all of them. The full list is on [Requirements](/mrnewbspookyseason/requirements).
 </Callout>
 
-### Dependencies [step]
+### Unzip it [step]
 
-[Newb_Bridge](/newb_bridge), ox_lib, your framework, and an [inventory and target the bridge supports](/newb_bridge/supported), including `one_inventory`. [Server artifact and OneSync](/getting-started/download#check-your-artifact).
+Put the `MrNewbsSpookySeason` folder in your `resources` folder. Ghost hunts also need [pengu_digiscanner](https://github.com/PenguScript/pengu_digiscanner). Without it, pumpkins, graves, trick-or-treat, shops and crates still run.
 
-Ghost hunts also need [pengu_digiscanner](https://github.com/PenguScript/pengu_digiscanner). Without it, pumpkins, graves, trick-or-treat, shops, and crates still run.
+### Add the items [step]
 
-### Add items and images [step]
+There are five required items: `event_token`, `candy_corn`, `chocolate_bar`, `pumpkin_basket` and `rotten_casket`. Register `id_card` too if grave or casket loot should give it. Paste them from [Item setup](/mrnewbspookyseason/install/inventory), then copy the pictures from [Item images](/mrnewbspookyseason/install/inventory-images).
 
-Paste from [Item setup](/mrnewbspookyseason/install/inventory). Copy PNGs from `[INSTALL]/images/` into:
-
-| Inventory | Image folder |
-| --- | --- |
-| ox_inventory | `ox_inventory/web/images/` |
-| qb-inventory / ps-inventory | `html/images/` |
-| one_inventory | `one_inventory/web/images/` |
-| Kora (kora_inventory) | `kora_inventory/images/` |
-
-Required names: `event_token`, `candy_corn`, `chocolate_bar`, `pumpkin_basket`, `rotten_casket`. Also register `id_card` if grave / rotten-casket loot should grant it.
-
-### Configure [step]
-
-| File | Contents |
-| --- | --- |
-| `resource/open/shared/config.lua` | `Config.WeatherFeature`, `Config.TrickOrTreatBlips`, `Config.Shops`, `Config.Decorations` |
-| `resource/open/server/config.lua` | Server-only. `Config.LootTypes`, `Config.Pumpkins`, `Config.Graves`, `Config.GhostHunts`, `Config.TrickOrTreat` |
-
-Shop prices are **event_token** counts. Loot `cash` rows pay the cash account. Field tables: [Configuration](/mrnewbspookyseason/install/configuration).
-
-### Add to server.cfg [step]
-
-Swap `qbx_core` / `ox_inventory` for whatever you actually run. If you use ghost hunts, start pengu_digiscanner before this resource.
+### Add it to server.cfg [step]
 
 ```cfg
 ensure ox_lib
-ensure qbx_core
-ensure ox_inventory
+ensure qbx_core          # or qb-core / es_extended
+ensure ox_inventory      # or your inventory
 ensure Newb_Bridge
-ensure pengu_digiscanner
+ensure pengu_digiscanner       # only for ghost hunts
 ensure MrNewbsSpookySeason
 ```
 
-### Restart the server [step]
+### Configure it [step]
 
-Restart after config or item changes.
+Open `resource/open/shared/config.lua` and `resource/open/server/config.lua` (server-only). Shop prices are counted in `event_token`. Every setting is on [Configuration](/mrnewbspookyseason/install/configuration).
+
+### Restart and check [step]
+
+Restart the server after config or item changes.
+
+## Where next
+
+- [Configuration](/mrnewbspookyseason/install/configuration): every setting explained
+- [Item setup](/mrnewbspookyseason/install/inventory): the item list for your inventory

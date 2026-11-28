@@ -1,0 +1,13 @@
+{
+  "title": "Configuration",
+  "icon": "IconSettings",
+  "pages": [
+    "keys",
+    "locking",
+    "break-in",
+    "locksmith",
+    "security",
+    "vehicles-jobs",
+    "admin"
+  ]
+}

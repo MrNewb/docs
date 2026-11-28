@@ -1,0 +1,45 @@
+---
+title: "Break-in and minigames"
+description: "Hotwiring, lockpicks, searching, carjacking, and the minigames behind them."
+icon: "IconSettings"
+---
+
+Part of [Configuration](/mrnewbvehiclekeys/install/configuration). Open `/setupkeys` to change these.
+
+## Break-in
+
+- **Hotwire** (default on): 3 attempts, 10 second cooldown, built-in arrows minigame. It can require an item such as `hotwire_kit`.
+- **Lockpicks** (default on): opens a locked door only. It does not start the car. Each lockpick item (Advanced) sets its own difficulty, break chance and police alert chance, and whether it opens cars that need a better pick. The alarm sounds for 45 seconds by default.
+- **Searching cars** (default on): 5 second search, 3 attempts per car, 50 percent chance to find the keys. Extra loot can turn up instead.
+- **Carjacking** (default on): pulls an NPC driver out at weapon point. Maximum car speed 20 mph, distance 10 m. Only the listed weapons work, and you can require police online. The driver can be searched for keys for about 2 minutes afterwards.
+- **Forcing doors** (Advanced, default on): the listed jobs (police, ambulance and mechanic by default) pry a locked door open. It does not start the car.
+
+**Police alerts**: hotwire, lockpick and carjack each have a chance from 0 to 100 (50 by default) to alert the listed jobs. Each lockpick item can override its own chance. Forcing a door only alerts if you turn that on.
+
+## Minigames
+
+Three actions can run a minigame: hotwiring, lockpicking and cutting a key at the locksmith bench. Each one has its own setting for which minigame it uses, plus a difficulty (easy, medium or hard) and a number of rounds.
+
+| Action | Where you set it | Built-in minigame |
+| --- | --- | --- |
+| Hotwire, ignition hack | **Hotwire** page, **Ignition hack minigame** | Arrows. Sports classics, sports, super and open wheel cars use this one by default |
+| Hotwire, wire puzzle | **Hotwire** page, **Wire puzzle minigame** | Arrows. Every other car uses this one by default |
+| Lockpick | **Lockpicks** page | Lockpick |
+| Key cutting | **Locksmith** page, **Cutting minigame** | Key cutting |
+
+Each choice is one of these:
+
+- **The built-in one:** it only works for its own action. Pick the arrows for hotwire, the lockpick for lockpicking, or key cutting for the bench. If you pick one for the wrong action, the script uses `ox_lib` instead and prints a yellow line in the console
+- **Progress bar** (hotwire and lockpicks): no minigame. The player holds still while a bar fills. You set how long it takes and whether it can be cancelled
+- **Off:** the action succeeds with no challenge
+- **A minigame from another resource:** that resource has to be started before Vehicle Keys. The choices are `ox_lib`, `ps-ui`, `t3_lockpick`, `bagus`, `bl_ui`, `bl-progress`, `bl-keyspam`, `bl-circle`, `bl-keycircle`, `bl-numberslide`, `bl-rapidlines`, `bl-circleshake`, `bit-unlock`, `xmmx`, `rainmadlockpick`, `rainmadaction`, `rainmadquick`, `rainmadmash` and `rainmadangled`
+
+If a minigame name is not recognised, the script falls back to `ox_lib` and prints a red line in the console naming the ones it knows.
+
+Difficulty can also be set per car on the **Vehicle rules** page, and each lockpick item can have its own.
+
+## Theft stress and hotwire method
+
+Theft stress goes to the stress script chosen on the **Integrations** page (automatic picks the first supported one that is running, or choose none). The amount for each crime is on its own page: Hotwire, Lockpicks, Carjack and Search for keys. `0` turns that one off. A missing provider never stops the action.
+
+The **Which challenge a car gets** card on the **Hotwire** page chooses the challenge each car gets: the ignition hack or the wire puzzle. The default is used first, then the car's class (Sports Classics, Sports, Super and Open Wheel get the ignition hack by default), and a spawn name listed for a method beats the class. With Advanced on, the minigame, difficulty and rounds are set for each method.

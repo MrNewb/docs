@@ -1,0 +1,7 @@
+---
+title: "Changelog"
+description: "What changed in each version."
+icon: "IconHistory"
+---
+
+<Changelog resource="MrNewb_DigitalPets" initial={{"1.1.3":["Fixed the arcade, Go-Kart and About screens reading colours and animation settings from the locale files. Translations can no longer break them, and they no longer do a text lookup every frame.","Players who have animations turned off in Windows now get a calmer toy: the hatch reveal appears at once, the progress toasts fade without popping, and the swim, gift and arcade result effects stop.","DUI display mode: letting go of the printed buttons now registers even if the game window loses focus.","The scrub game stops scrubbing when the pointer is interrupted instead of staying stuck.","Admin setup panel: on/off settings can be toggled by clicking their label, expandable lists report whether they are open or closed to screen readers, and unnamed shop and species rows show a translated 'Untitled' label.","The setup panel text is now sized in rem so it scales with the UI scale.","The script now checks at startup that ox_lib is 3.40.2 or newer. If it is older, the server console prints a red message with the version it found and where to update, instead of failing later with errors such as 'attempt to index a function value (field selector)'.","Internal events are renamed to the resource:side:pastTense form, for example MrNewbDigitalPets:client:usedItem. If you have custom scripts that trigger a MrNewbDigitalPets event directly, update the names."]}} />

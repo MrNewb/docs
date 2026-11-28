@@ -1,0 +1,42 @@
+---
+title: "Configuration"
+description: "Prescriptions is set up in the /setupprescriptions panel. Start here, then open the page for the area you want."
+icon: "IconSettings"
+---
+
+Run `/setupprescriptions` as an admin. A short guide plays the first time. **Save** writes everything to the database and applies it live for every player. **Reset** goes back to the defaults.
+
+## The panel
+
+| Group | Pages |
+| --- | --- |
+| Shops | Shops (locations, job, stations), Supply stops, Restock prices, Shoplifting |
+| Medicine | The meds, Scripts (paper), Overdose and bottling, Fake scripts |
+| Money | The till, Insurance desks, Plans |
+| Staff | Who can do what |
+| Server | Extras (prompt style, test commands), Debug (what loaded) |
+
+Stations are placed with an on-screen tool. Stand where you want the point and confirm. That covers the clock-in point, cash register, bottling bench, boss menu, panic button, and supply stops. Supply stop coordinates stay on the server and are never sent to players.
+
+## Export and import settings
+
+Turn on **Advanced settings** in the left rail of the panel, then press **Export or import**. **Export** fills the box with every setting as JSON. Press **Copy** and paste it into a support ticket or keep it as a backup. The export starts with the Prescriptions version, the Newb_Bridge version, and the framework, inventory, target and other providers Newb_Bridge is using, so support can see your setup at a glance.
+
+To load a setup, paste an export into the box and press **Import**. The settings are checked the same way as a normal save, then saved and applied. An import only accepts an export made by Prescriptions. If the export was made by a different version, the panel shows both versions and what will happen (settings the export lacks use this server's defaults, settings this version does not have are dropped), and the button changes to **Import anyway** so you have to confirm.
+
+## Install size
+
+Blip icons ship as one atlas image (`web/build/blips/atlas.webp` and `atlas.json`). The resource starts in about 0.09 seconds of server time.
+
+## Languages
+
+Text lives in `locales/en.json` and loads through ox_lib. For another language, copy `en.json` to `<code>.json`, translate the values, keep **every** key, and set `setr ox:locale "<code>"` in `server.cfg`. A missing key shows up as raw text on screen. The web panels use the `Ui.*` keys.
+
+## The settings pages
+
+Grouped the way you will think about them.
+
+- [Pharmacies and supplies](/mrnewbprescriptions/install/configuration/pharmacies): player-run and NPC pharmacies, adding one, supply runs, society money
+- [Paper, doctors and money](/mrnewbprescriptions/install/configuration/paper-and-money): the pad and paper, the pharmacy economy, supply orders, insurance
+- [Medications and overdose](/mrnewbprescriptions/install/configuration/medicine): the medication catalog, bottling, effects, overdose
+- [Crime, behaviour and logs](/mrnewbprescriptions/install/configuration/crime-and-behaviour): shoplifting, forgery, prompt style, debug, logging
